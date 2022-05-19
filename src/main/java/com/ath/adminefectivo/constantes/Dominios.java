@@ -1,0 +1,132 @@
+package com.ath.adminefectivo.constantes;
+
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+/**
+ * Clase encargada de exponer las codigos de los parametros persistidos en base
+ * de datos
+ * 
+ * @author CamiloBenavides
+ */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class Dominios {
+
+	public static final String DELIMITADOR_TABULADOR = "T";
+	public static final String DELIMITADOR_BLANK = "B";
+	public static final String DELIMITADOR_CSV = "C";
+	public static final String DELIMITADOR_PIPE = "P";
+	public static final String DELIMITADOR_OTRO = "O";
+	
+	public static final String TIPO_DATO_ENTERO = "N";
+	public static final String TIPO_DATO_DECIMAL = "D";
+	public static final String TIPO_DATO_TEXTO = "T";
+	public static final String TIPO_DATO_CARACTER = "C";
+	public static final String TIPO_DATO_FECHA = "F";
+	public static final String TIPO_DATO_HORA = "H";
+	public static final String TIPO_FECHA_HORA = "Y";
+	
+	public static final String PERIODICIDAD_DIARIA = "D";
+	public static final String PERIODICIDAD_SEMANAL = "S";
+	public static final String PERIODICIDAD_QUINCENAL = "Q";
+	public static final String PERIODICIDAD_MENSUAL = "M";
+	public static final String PERIODICIDAD_BIMENSUAL = "B";
+	public static final String PERIODICIDAD_TRIMESTRAL = "T";
+	public static final String PERIODICIDAD_SEMESTRAL = "X";
+	public static final String PERIODICIDAD_ANUAL = "A";
+	
+	public static final String MULTIFORMATO_LINEA_INICIAL = "I";
+	public static final String MULTIFORMATO_CODIGO_STD = "C";
+	
+	public static final String VIGENCIA_ACTIVO = "A";
+	public static final String VIGENCIA_REEMPLAZO = "R";
+	public static final String VIGENCIA_PROCESADO = "P";
+	public static final String VIGENCIA_LEIDO = "L";
+	
+	public static final String ESTADO_CONCILIACION_CONCILIADO = "C";
+	public static final String ESTADO_CONCILIACION_NO_CONCILIADO = "NC";
+	public static final String ESTADO_CONCILIACION_FALLIDA = "F";
+	public static final String ESTADO_CONCILIACION_FUERA_DE_CONCILIACION = "FC";
+	public static final String ESTADO_CONCILIACION_POSPUESTA = "P";
+	public static final String ESTADO_CONCILIACION_CANCELADA = "CA";
+	
+	public static final String TIPO_CONCILIACION_MANUAL = "M";
+	public static final String TIPO_CONCILIACION_AUTOMATICA = "A";
+	
+	public static final String TIPO_OPERA_RETIRO= "R";
+	public static final String TIPO_OPERA_CONSIGNACION= "C";
+	public static final String TIPO_OPERA_CAMBIO= "CM";
+	public static final String TIPO_OPERA_VENTA= "V";
+	public static final String TIPO_OPERA_TRASLADO= "T";
+	public static final String TIPO_OPERA_INTERCAMBIO= "I";
+	public static final String TIPO_OPERA_RECOLECCION= "RC";
+	public static final String TIPO_OPERA_PROVISION= "P";
+	
+	public static final String ESTADOS_OPERA_PROGRAMADO = "P";
+	public static final String ESTADOS_OPERA_EJECUTADO = "E";
+	public static final String ESTADOS_OPERA_CANCELADO = "C";
+	public static final String ESTADOS_OPERA_FALLIDO = "F";
+	public static final String ESTADOS_OPERA_FALLIDO_NO = "FNF";
+	
+	public static final String TIPOS_TRANSPORTE_URBANO = "U";
+	public static final String TIPOS_TRANSPORTE_INTERURBANO1 = "I2";
+	public static final String TIPOS_TRANSPORTE_INTERURBANO2 = "I2";
+	public static final String TIPOS_TRANSPORTE_AEREO_COMERCIAL = "A";
+	public static final String TIPOS_TRANSPORTE_AEREO_CHARTER = "AC";
+	
+	public static final String TIPO_SERVICIO_PROGRAMADA = "P";
+	public static final String TIPO_SERVICIO_ESPECIAL = "E";
+	
+	public static final String TIPOS_PUNTO_FONDO = "F";
+	public static final String TIPOS_PUNTO_BAN_REP = "BR";
+	public static final String TIPOS_PUNTO_OFICINA = "O";
+	public static final String TIPOS_PUNTO_CAJERO = "C";
+	public static final String TIPOS_PUNTO_CLIENTE = "CL";
+	public static final String TIPOS_PUNTO_BANCO = "B";
+	
+	public static final String FORMATO_FECHA_HORA_F1 = "F1";
+	public static final String FORMATO_FECHA_HORA_F2 = "F2";
+	
+	public static final String FORMATO_FECHA_F1 = "F1";
+	public static final String FORMATO_FECHA_F2 = "F2";
+	
+	public static final String CARACTER_INVALIDO_TX_C1 = "C1";
+	public static final String CARACTER_INVALIDO_TX_C2 = "C2";
+	public static final String CARACTER_INVALIDO_TX_C3 = "C3";
+	
+	
+	/**
+	 * Estados de los registros cargados
+	 */	
+	public static final String ESTADO_VALIDACION_ACEPTADO = "ACEPTADO";
+	public static final String ESTADO_VALIDACION_REGISTRO_ERRADO = "ERRADO";
+	public static final String ESTADO_VALIDACION_CORRECTO = "OK";
+	
+	
+	/**
+	 * Dominio de agrupamiento de los detalles de archivo
+	 */	
+	public static final String AGRUPADOR_DEFINICION_ARCHIVOS_PRELIMINARES = "PRELIMINAR";
+	public static final String AGRUPADOR_DEFINICION_ARCHIVOS_DEFINITIVO = "DEFINITIVO";
+	
+	/**
+	 * Dominios estados de los procesos del dia
+	 */	
+	public static final String ESTADO_PROCESO_DIA_COMPLETO = "COMPLETO";
+	public static final String ESTADO_PROCESO_DIA_PROCESO = "PROCESO";
+	
+	/**
+	 * Dominios dias no habiles
+	 */
+	public static final String DOMINIO_DIAS_NO_HABILES = "DIASNOHABILES";
+	
+	/**
+	 * Tipos de reglas validos por el motor de reglas
+	 */
+	public static final String TIPO_REGLA_FIJA = "FIJ";
+	public static final String TIPO_REGLA_INCLUIDOS = "INC";
+	public static final String TIPO_REGLA_EXCLUIDOS = "EXC";
+	public static final String TIPO_REGLA_CONSULTA_SQL = "SQL";
+	
+	
+}

@@ -1,0 +1,226 @@
+package com.ath.adminefectivo.constantes;
+
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+/**
+ * Interfaz encargada de exponer las constantes logicas del aplicativo
+ * 
+ * @author CamiloBenavides
+ */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class Constantes {
+
+	public static final String ZONE_ID = "America/Bogota";
+	public static final String TIMEZONE = "EST";
+	public static final String FECHA_PATTERN = "dd-MM-yyyy";
+	public static final String FECHA_HORA_PATTERN = "dd-MM-yyyy hh:mm:ss a";
+	public static final String FORMATO_FECHA_ARCHIVOS = "ddMMyyyyhhmmss";
+	public static final String REGISTRO_ACTIVO = "ACT";
+	public static final String REGISTRO_INACTIVO = "INA";
+	public static final String SI = "SI";
+	public static final String NO = "NO";
+
+	/**
+	 * Constantes estado Cargue
+	 */
+
+	public static final String ESTADO_CARGUE_PENDIENTE = "PEND";
+	public static final String ESTADO_CARGUE_ERROR = "ERROR";
+	public static final String ESTADO_CARGUE_VALIDO = "OK";
+
+	/**
+	 * Formatos de fecha
+	 */
+	public static final String FECHA_PATTERN_DD_MM_YYYY = "dd-MM-yyyy";
+	public static final String FECHA_PATTERN_DD_MM_YYYY_WITH_SLASH = "dd/MM/yyyy";
+	public static final String FECHA_PATTERN_YYYY_MM_DD = "yyyy-MM-dd";
+	public static final String FECHA_PATTERN_YYYYMMDD = "yyyyMMdd";
+	public static final String FECHA_PATTERN_HHMMSS = "hhmmss";
+	public static final String FECHA_PATTERN_HH_MM_SS = "HH:mm:ss";
+	public static final String FECHA_HORA_PATTERN_DD_MM_YYYY_HH_MM_SS = "dd-MM-yyyy HH:mm:ss";
+	public static final String FECHA_HORA_PATTERN_DD_MM_YYYY_T_HH_MM_SS = "dd-MM-yyyy'T'HH:mm:ss";
+
+	/*
+	 * Parametro header necesario para el envio de los documentos a front
+	 */
+	public static final String PARAMETER_HEADER = "attachment;filename=";
+
+	/**
+	 * PROGRAMACION PRELIMINAR
+	 */
+	public static final Object PROGRAMACION_PRELIMINAR = "PRELIMINAR";
+
+	/**
+	 * Constante del agrupador de los delimitadores
+	 */
+	public static final String DOMINIO_DELIMITADOR = "DELIMITADOR";
+
+	/**
+	 * Constante del agrupador de los delimitadores
+	 */
+	public static final String DOMINIO_MULTIFORMATO = "MULTIFORMATO";
+	
+	/**
+	 * Constante del agrupador de vigencia
+	 */
+	public static final String DOMINIO_VIGENCIA = "VIGENCIA";
+	
+	/**
+	 * Constante del agrupador de los estados
+	 */
+	public static final String DOMINIO_ESTADO = "ESTADO";
+	
+	/**
+	 * Constante del agrupador de los tipos de operacion
+	 */
+	public static final String DOMINIO_TIPO_OPERACION = "TIPO_OPERACION";
+	
+	/**
+	 * Constante del agrupador de los estados de operacion
+	 */
+	public static final String DOMINIO_ESTADOS_OPERACION = "ESTADOS_OPERACION";
+	
+	/**
+	 * Constante del agrupador de los tipos de transporte
+	 */
+	public static final String DOMINIO_TIPOS_TRANSPORTE = "TIPOS_TRANSPORTE";
+	
+	/**
+	 * Constante del agrupador de los tipo de servicio
+	 */
+	public static final String DOMINIO_TIPO_SERVICIO = "TIPO_SERVICIO";
+	
+	/**
+	 * Constante del agrupador de los estados de conciliacion
+	 */
+	public static final String DOMINIO_ESTADO_CONCILIACION = "ESTADO_CONCILIACION";
+	
+	/**
+	 * Constante del agrupador de los tipos de conciliacion
+	 */
+	public static final String DOMINIO_TIPOS_CONCILIACION = "TIPO_CONCILIACION";
+	
+	/**
+	 * Constante del agrupador de los tipos punto
+	 */
+	public static final String DOMINIO_FORMATO_FECHA_HORA = "FORMATO_FECHA_HORA";
+	
+	/**
+	 * Constante del agrupador de los tipos punto
+	 */
+	public static final String DOMINIO_FORMATO_FECHA = "FORMATO_FECHA";
+	
+	/**
+	 * Constante del agrupador de los tipos punto
+	 */
+	public static final String DOMINIO_TIPOS_PUNTO = "TIPOS_PUNTO";
+	
+	/**
+	 * Constante del agrupador de los tipos punto
+	 */
+	public static final String DOMINIO_CARACTER_INVALIDO_TX = "CARACTER_INVALIDO_TX";
+	/**
+	 * Delimintadores de los archivos
+	 */
+	public static final String DELIMITADOR_OTROS = "O";
+
+	/**
+	 * Constante del tipo registro estandar
+	 */
+	public static final String CODIGO_MULTIFORMATO_STD = "CODIGO_MULTIFORMATO_STD";
+	
+	/**
+	 * Constante ID del multiformato por estandar
+	 */
+	public static final int ID_MULTIFORMATO_STD = 1;
+	
+	/**
+	 * Constante de linea inicial de multiformato estandar
+	 */
+	public static final String MULTIFORMATO_LINEA_INICIAL = "MULTIFORMATO_LINEA_INICIAL";
+
+	/**
+	 * Expresión regular del punto
+	 */
+	public static final String EXPRESION_REGULAR_PUNTO = "\\.";
+
+	public static final String REGEX_PUNTO = "\\.";
+	
+	/**
+	 * Expresión regular formato valido de horas en formato am/pm 
+	 */
+	public static final String REGEX_FORMATO_VALIDO_HORAS = "^(?:0?[0-9]|1[0-2]):[0-5][0-9](:[0-5][0-9])?\\s?([AaPp][Mm])?$";
+	
+	/**
+	 * Expresión regular formato valido de horas en formato 24 horas
+	 */
+	public static final String REGEX_FORMATO_VALIDO_HORAS_24H = "^([01]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$";
+	
+	/**
+	 * Expresión regular formato valido números enteros
+	 */
+	public static final String REGEX_FORMATO_NUMERO_ENTERO = "[+-]?\\d*";
+	
+	/**
+	 * Expresión regular formato valido números decimales
+	 */
+	public static final String REGEX_FORMATO_NUMERO_DECIMAL = "[+-]?\\d*(\\.\\d+)?";
+	
+	/**
+	 * Expresión regular para permitir numeros de 1 a 9
+	 */
+	public static final String REGEX_NUMEROS_PERMITIDOS = "[1-9]";
+	
+	/**
+	 * Caracter serparador de las extenciones de los archivos
+	 */
+	public static final String SEPARADOR_EXTENSION_ARCHIVO = ".";
+	
+	/**
+	 * Caracter serparador los registros separados por punto y coma
+	 */
+	public static final String SEPARADOR_PUNTO_Y_COMA = ";";
+
+	/**
+	 * Caracter separador de las fechas de los archivos
+	 */
+	public static final String SEPARADOR_FECHA_ARCHIVO = "_";
+	
+	/**
+	 * Variable que determina que una operacion esta conciliable
+	 */
+	public static final String CONCILIABLE_SI = "SI";
+	
+	 /**
+	  *  La Estructura no es validada.
+	 */
+	public static final String ESTRUCTURA_OK = "OK";
+	
+	/**
+	 * Constante de control y cierre de procesos, para evitar ciclos infinitos
+	 */
+	public static final int NUMERO_MAXIMO_CICLOS = 30;
+	
+	
+	//////////////////////////////////////// MENSAJES ///////////////////////////////////////////
+	/**
+	 * Mensaje de campo requerido 
+	 */
+	public static final String CAMPO_REQUERIDO = "El campo es requerido y no puede ser nulo o vacio.";
+	
+	/**
+	 * Mensaje de campo no valido 
+	 */
+	public static final String CAMPO_NO_VALIDO ="El tipo campo no es válido";
+	
+	/**
+	 * 
+	 */
+	public static final String DETALLE_NO_VALIDO = "El detalle para este elemento no es válido.";
+	
+	/**
+	 * Error lanzado en caso de que la regla de no tenga un mensaje definido
+	 */
+	public static final String MENSAJE_ERROR_VALIDACION_CAMPOS = "Ocurrió un error con al regla número {0}";
+}

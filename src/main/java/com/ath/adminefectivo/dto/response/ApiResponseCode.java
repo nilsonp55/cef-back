@@ -1,0 +1,281 @@
+package com.ath.adminefectivo.dto.response;
+
+import org.springframework.http.HttpStatus;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+/**
+ * Clase en donde se centralizan los mensajes de error y mensajes de exito
+ *
+ * @author CamiloBenavides
+ */
+@Getter
+@AllArgsConstructor
+public enum ApiResponseCode {
+	/**
+	 * Codigo de respuesta exitoso
+	 */
+	SUCCESS("S000", "Success", HttpStatus.OK),
+
+	/**
+	 * Codigo generico de error
+	 */
+	GENERIC_ERROR("E400", "Ocurrió un error interno, intente de nuevo más tarde", HttpStatus.BAD_REQUEST),
+
+	/**
+	 * Error de en la persistencia de documentos
+	 */
+	ERROR_LIMITE_ARCHIVOS("E001", "La persistencia de archivos aplica únicamente para un archivo cargado. ",
+			HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * Error al encontrar el archivo cargado
+	 */
+	ERROR_ARCHIVOS_NO_EXISTE_BD("E002",
+			"No se encontró el documento solicitado, por favor consulta con el administrador ",
+			HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * Error descarga del archivo desde el repositorio
+	 */
+	ERROR_ARCHIVOS_NO_EXISTE_REPO("E003",
+			"No se encontró en el repositorio el documento solicitado, por favor consulta con el administrador ",
+			HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * Error eliminación de archivos
+	 */
+	ERROR_ELIMINAR_ARCHIVO_FISICO("E004", "Ocurrión un error al eliminar el documento del repositorio. ",
+			HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * Error al persistir el archivo en el respositorio
+	 */
+	ERROR_PERSISTIR_ARCHIVO("E005", "No se pudo persistir el documento en el repositorio. ",
+			HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * Error de que el tipo de archivo no existe
+	 */
+	ERROR_TIPO_CARGUE_ARCHIVO("E006", "El tipo del archivo a cargar no existe. ", HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * Error al cargar el archivo de la ubicacion especificada
+	 */
+	ERROR_LECTURA_CARGUE_ARCHIVO("E007", "No se pudo cargar el archivo de la ubicacion especificada. ",
+			HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * Error el delimitador del archivo dentro del maestro archivos no es valido
+	 */
+	ERROR_DELIMITADOR_NO_VALIDO("E008", "El delimitador no es valido ", HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * Error si el delimitador es null o si el el delimitador otro no existe
+	 */
+	ERROR_DELIMITADOR_VACIO("E009",
+			"El deliminatador no puede ser nulo, y si su valor es 'Otro', el campo deliminatod otro, no puede se nulo. ",
+			HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * Error con el estado de los archivos
+	 */
+	ERROR_ESTADO_ARCHIVO("E010", "El estado del archivo no es valido. ", HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * Error al intentar mover los archivos a carpetas finales
+	 */
+	ERROR_MOVER_ARCHIVOS("E011", "No se pudo realizar la copia del archivo a la carpeta final ",
+			HttpStatus.BAD_REQUEST),
+	
+	/**
+	 * Error al realizar la lectura del documento
+	 */
+	ERROR_LECTURA_DOCUMENTO("E012",	"Ocurrió un error al realizar la conversión y lectura de los datos del archivo ",
+			HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * Error al consultar un maestro definicion
+	 */
+	ERROR_MAESTRO_DEFINICION_NO_VALIDO("E020", "No se encontró el maestro definición archivo consultado ",
+			HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * Error al consultar un detalle definicion archivo
+	 */
+	ERROR_DETALLE_DEFINICION_NO_VALIDO("E021", "No se encontró el detalle definición archivo consultado ",
+			HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * Error con la extención del archivo
+	 */
+	ERROR_FORMATO_NO_VALIDO("E022", "El archivo no tiene la extención parametrizada en su maestro ",
+			HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * Error mascara invalida
+	 */
+	ERROR_MASCARA_NO_VALIDA("E023", "El archivo no tiene la mascara parametrizada en su maestro",
+			HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * Error no se puede obtener la fecha del nombre del archivo
+	 */
+	ERROR_FECHA_NO_VALIDA("E024", "El archivo no cuenta con una fecha valida", HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * Error la fecha que tiene el archivo no corresponde a la fecha del sistema
+	 */
+	ERROR_FECHA_ARCHIVO_DIA("E025", "La fecha del archivo no corresponde al la fecha actual",
+			HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Error no exite la caperta solicitada
+	 */
+	ERROR_CARPETA_NO_ENCONTRADA("E026", "No se encontró la carpeta solicitada, o no se pudo acceder.",
+			HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * Error al convertir el tipo de registro enviado en el archivo a entero
+	 */
+	ERROR_TIPO_REGISTRO("E030", "El tipo registro enviado no es válido. ", HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * El valor del campo multiformato no es valido.
+	 */
+	ERROR_MULTIFORMATO_INVALIDO("E031", "El valor del campo multiformato no es valido. ",
+			HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * No se encontró la posicion del campo multiformato en el documento solicitado.
+	 */
+	ERROR_MULTIFORMATO_POSICION("E032", "No se encontró la posicion del campo multiformato en el documento solicitado ",
+			HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Ocurrió un error al consultar la table de puntos código
+	 */
+	ERROR_PUNTOS_CODIGO_NO_ENCONTRADO("E903", "Ocurrió un error al consultar la table de puntos código", HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * Ocurrió un error al consultar la table de fondos
+	 */
+	ERROR_FONDOS_NO_ENCONTRADO("E904", "Ocurrió un error al consultar la table de fondos", HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Ocurrió un error al consultar la table de puntos
+	 */
+	ERROR_PUNTOS_NO_ENCONTRADO("E905", "Ocurrió un error al consultar la table de puntos", HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Ocurrió un error al consultar la table de ciudades
+	 */
+	ERROR_CIUDADES_NO_ENCONTRADO("E906", "Ocurrió un error al consultar la table de ciudades", HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Ocurrió un error al consultar la table de ciudades
+	 */
+	ERROR_BANCOS_NO_ENCONTRADO("E911", "Ocurrió un error al consultar la tabla de bancos", HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Ocurrió un error al consultar la table de conciliados
+	 */
+	ERROR_CONCILIADOS_NO_ENCONTRADO("E907", "Ocurrió un error, no hay datos de servicios conciliados", HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * Ocurrió un error al consultar la table de oepraciones programadas
+	 */
+	ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO("E908", "No hay datos de operaciones programadas", HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Ocurrió un error al consultar la table de operaciones certificadas
+	 */
+	ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO("E909", "No hay datos de operaciones certificadas", HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * Ocurrió un error al consultar la table de fondos
+	 */
+	ERROR_OPERACIONES_A_CONCILIAR_NO_ENCONTRADO("E910", "No hay datos de operaciones a conciliar", HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Ocurrió un error al consultar la tabla de transportadoras
+	 */
+	ERROR_TRANSPORTADORAS_NO_ENCONTRADO("E912", "Ocurrió un error al consultar la table de transportadoras", HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * No se puede realizar el cierre del dia por que no han finalizado todos los proceso
+	 */
+	ERROR_PROCESOS_NO_COMPLETADOS("E040", "No se puede realizar el cierre del dia, existen procesos pendientes para la fecha actual. ",
+			HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * No se puede encontrar un dia habil que cumpla con los criterios parametrizados.
+	 */
+	ERROR_CALCULO_DIA_HABIL("E041", "No se puede encontrar un dia habil que cumpla con los criterios parametrizados. ",
+			HttpStatus.PRECONDITION_FAILED),
+
+		/**
+	 * No la regla de validacion no tiene un formato valido
+	 */
+	ERROR_FORMATO_REGLA_NO_VALIDA("E042", "La regla de validación no tiene un formato valido. ", HttpStatus.BAD_REQUEST),
+
+	/**
+	 * Error de en la persistencia de documentos
+	 */
+	ERROR_COPIAR_PROPIEDADES("E901", "Ocurrió un error en la implementación del metodo copiar propiedades  ",
+			HttpStatus.BAD_REQUEST),
+
+	/**
+	 * Error cuando no existe el valor de un domino tipo texto
+	 */
+	ERROR_DOMINIO_NOT_FOUND("E902", "No se encontró el valor del dominio consultado.  ", HttpStatus.BAD_REQUEST),
+
+	/**
+	 * Error en la libreria openCSV el leer el documento.
+	 */
+	ERROR_CONVERSION_CSV("E903", "Ocurrió un error al leer el archivo CSV", HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * Error cuando no existe el valor de un parametro
+	 */
+	ERROR_PARAMETRO_NOT_FOUND("E904", "No se encontró el valor del parámetro consultado.  ", HttpStatus.BAD_REQUEST),
+	
+	/**
+	 * El parametro no contiene un entero valido
+	 */
+	ERROR_PARAMETRO_NO_ENTERO("E905", "El valor del parámetro no corresponde a un número entero.  ", HttpStatus.BAD_REQUEST),
+
+	/**
+	 * El parametro no contiene un entero valido
+	 */
+	ERROR_PARAMETRO_NO_FECHA("E906", "El valor del parámetro no corresponde a una fecha válida. ", HttpStatus.BAD_REQUEST),
+
+
+	/**
+	 * Error cuando no existe el valor de una regla
+	 */
+	ERROR_REGLA_NOT_FOUND("E910", "No se encontró el valor de la regla consultado.  ", HttpStatus.BAD_REQUEST),
+	
+
+	/**
+	 * Error tipo de regla no implementada
+	 */
+	ERROR_TIPO_REGLA_NOT_FOUND("E911", "No se encontró el tipo de regla consultado.  ", HttpStatus.BAD_REQUEST);
+
+	
+	/**
+	 * Código asociado a la respuesta
+	 */
+	private String code;
+
+	/**
+	 * Descripción asociada a la respuesta
+	 */
+	private String description;
+
+	/**
+	 * {@link HttpStatus}.
+	 */
+	private HttpStatus httpStatus;
+}
