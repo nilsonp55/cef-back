@@ -48,7 +48,6 @@ public interface IOperacionesProgramadasRepository
 			+ "(oc.fechaEjecucion = op.fechaOrigen OR oc.fechaEjecucion = op.fechaDestino) AND "
 			+ "oc.codigoFondoTDV = op.codigoFondoTDV AND oc.tipoOperacion = op.tipoOperacion AND "
 			+ "(oc.valorTotal + oc.valorFaltante - oc.valorSobrante) = op.valorTotal AND "
-			+ "oc.tipoPuntoOrigen = op.tipoPuntoOrigen AND oc.tipoPuntoDestino = op.tipoPuntoDestino AND "
 			+ "oc.codigoPuntoOrigen = op.codigoPuntoOrigen AND oc.codigoPuntoDestino = op.codigoPuntoDestino AND "
 			+ "oc.estadoConciliacion = op.estadoConciliacion "
 			+ "WHERE op.estadoConciliacion = ?1 AND op.idOperacion = ?2 AND oc.idCertificacion = ?3")
@@ -74,5 +73,12 @@ public interface IOperacionesProgramadasRepository
 	 */
 	List<OperacionesProgramadas> findByCodigoFondoTDVAndEstadoConciliacion(Integer codigoFondoTDV,
 			String estadoConciliacion);
+	/**
+	 * Retorna una lista de operaciones programadas por idArchivoCargado
+	 * @param idArchivoCargado
+	 * @return List<OperacionesProgramadas>
+	 * @author cesar.castano
+	 */
+	List<OperacionesProgramadas> findByIdArchivoCargado(Integer idArchivoCargado);
 
 }

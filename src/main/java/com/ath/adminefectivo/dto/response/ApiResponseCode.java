@@ -10,7 +10,6 @@ import lombok.Getter;
  *
  * @author CamiloBenavides
  */
-@Getter
 @AllArgsConstructor
 public enum ApiResponseCode {
 	/**
@@ -88,11 +87,11 @@ public enum ApiResponseCode {
 	 */
 	ERROR_MOVER_ARCHIVOS("E011", "No se pudo realizar la copia del archivo a la carpeta final ",
 			HttpStatus.BAD_REQUEST),
-	
+
 	/**
 	 * Error al realizar la lectura del documento
 	 */
-	ERROR_LECTURA_DOCUMENTO("E012",	"Ocurrió un error al realizar la conversión y lectura de los datos del archivo ",
+	ERROR_LECTURA_DOCUMENTO("E012", "Ocurrió un error al realizar la conversión y lectura de los datos del archivo ",
 			HttpStatus.PRECONDITION_FAILED),
 
 	/**
@@ -129,7 +128,7 @@ public enum ApiResponseCode {
 	 */
 	ERROR_FECHA_ARCHIVO_DIA("E025", "La fecha del archivo no corresponde al la fecha actual",
 			HttpStatus.PRECONDITION_FAILED),
-	
+
 	/**
 	 * Error no exite la caperta solicitada
 	 */
@@ -152,73 +151,144 @@ public enum ApiResponseCode {
 	 */
 	ERROR_MULTIFORMATO_POSICION("E032", "No se encontró la posicion del campo multiformato en el documento solicitado ",
 			HttpStatus.PRECONDITION_FAILED),
-	
+
 	/**
 	 * Ocurrió un error al consultar la table de puntos código
 	 */
-	ERROR_PUNTOS_CODIGO_NO_ENCONTRADO("E903", "Ocurrió un error al consultar la table de puntos código", HttpStatus.PRECONDITION_FAILED),
+	ERROR_PUNTOS_CODIGO_NO_ENCONTRADO("E903", "Ocurrió un error al consultar la table de puntos código",
+			HttpStatus.PRECONDITION_FAILED),
 
 	/**
 	 * Ocurrió un error al consultar la table de fondos
 	 */
-	ERROR_FONDOS_NO_ENCONTRADO("E904", "Ocurrió un error al consultar la table de fondos", HttpStatus.PRECONDITION_FAILED),
-	
+	ERROR_FONDOS_NO_ENCONTRADO("E904", "Ocurrió un error al consultar la table de fondos",
+			HttpStatus.PRECONDITION_FAILED),
+
 	/**
 	 * Ocurrió un error al consultar la table de puntos
 	 */
-	ERROR_PUNTOS_NO_ENCONTRADO("E905", "Ocurrió un error al consultar la table de puntos", HttpStatus.PRECONDITION_FAILED),
-	
+	ERROR_PUNTOS_NO_ENCONTRADO("E905", "Ocurrió un error al consultar la table de puntos",
+			HttpStatus.PRECONDITION_FAILED),
+
 	/**
 	 * Ocurrió un error al consultar la table de ciudades
 	 */
-	ERROR_CIUDADES_NO_ENCONTRADO("E906", "Ocurrió un error al consultar la table de ciudades", HttpStatus.PRECONDITION_FAILED),
-	
+	ERROR_CIUDADES_NO_ENCONTRADO("E906", "Ocurrió un error al consultar la table de ciudades",
+			HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * Ocurrió un error al consultar la table de clientes corporativos
+	 */
+	ERROR_CLIENTES_CORPORATIVOS_NO_ENCONTRADO("E915", "Ocurrió un error al consultar la table de clientes corporativos", HttpStatus.PRECONDITION_FAILED),
+
 	/**
 	 * Ocurrió un error al consultar la table de ciudades
 	 */
-	ERROR_BANCOS_NO_ENCONTRADO("E911", "Ocurrió un error al consultar la tabla de bancos", HttpStatus.PRECONDITION_FAILED),
+	ERROR_BANCOS_NO_ENCONTRADO("E911", "Ocurrió un error al consultar la tabla de bancos",
+			HttpStatus.PRECONDITION_FAILED),
+	/**
+	 * Ocurrió un error al consultar la table de oficinas
+	 */
+	ERROR_OFICINAS_NO_ENCONTRADO("E914", "Ocurrió un error al consultar la table de oficinas", HttpStatus.PRECONDITION_FAILED),
 	
+	/**
+	 * Ocurrió un error al consultar la table de cajeros
+	 */
+	ERROR_CAJEROS_NO_ENCONTRADO("E919", "Ocurrió un error al consultar la tabla de cajeros", HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Ocurrió un error al consultar la table de estados de la operacion
+	 */
+	ERROR_ESTADOS_OPERACION_NO_VALIDO("E917", "Ocurrió un error, estados de la operacion no validos", HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Ocurrió un error al consultar los modelos del archivo cargado
+	 */
+	ERROR_MODELOS_ARCHIVO_NO_VALIDO("E921", "Ocurrió un error, modelo del archivo cargado no valido", HttpStatus.PRECONDITION_FAILED),
+
+
 	/**
 	 * Ocurrió un error al consultar la table de conciliados
 	 */
-	ERROR_CONCILIADOS_NO_ENCONTRADO("E907", "Ocurrió un error, no hay datos de servicios conciliados", HttpStatus.PRECONDITION_FAILED),
+	ERROR_CONCILIADOS_NO_ENCONTRADO("E907", "Ocurrió un error, no hay datos de servicios conciliados",
+			HttpStatus.PRECONDITION_FAILED),
 
 	/**
 	 * Ocurrió un error al consultar la table de oepraciones programadas
 	 */
-	ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO("E908", "No hay datos de operaciones programadas", HttpStatus.PRECONDITION_FAILED),
+	ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO("E908", "No hay datos de operaciones programadas",
+			HttpStatus.PRECONDITION_FAILED),
+
+
+	/**
+	 * Ocurrió un error al consultar la table de oepraciones programadas
+	 */
+	ERROR_DETALLE_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO("E918", "No hay datos de detalle de operaciones programadas", HttpStatus.PRECONDITION_FAILED),
 	
 	/**
 	 * Ocurrió un error al consultar la table de operaciones certificadas
 	 */
-	ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO("E909", "No hay datos de operaciones certificadas", HttpStatus.PRECONDITION_FAILED),
+	ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO("E909", "No hay datos de operaciones certificadas",
+			HttpStatus.PRECONDITION_FAILED),
 
 	/**
 	 * Ocurrió un error al consultar la table de fondos
 	 */
-	ERROR_OPERACIONES_A_CONCILIAR_NO_ENCONTRADO("E910", "No hay datos de operaciones a conciliar", HttpStatus.PRECONDITION_FAILED),
-	
+	ERROR_OPERACIONES_A_CONCILIAR_NO_ENCONTRADO("E910", "No hay datos de operaciones a conciliar",
+			HttpStatus.PRECONDITION_FAILED),
+
 	/**
 	 * Ocurrió un error al consultar la tabla de transportadoras
 	 */
-	ERROR_TRANSPORTADORAS_NO_ENCONTRADO("E912", "Ocurrió un error al consultar la table de transportadoras", HttpStatus.PRECONDITION_FAILED),
-	
-	/**
-	 * No se puede realizar el cierre del dia por que no han finalizado todos los proceso
-	 */
-	ERROR_PROCESOS_NO_COMPLETADOS("E040", "No se puede realizar el cierre del dia, existen procesos pendientes para la fecha actual. ",
+	ERROR_TRANSPORTADORAS_NO_ENCONTRADO("E912", "Ocurrió un error al consultar la table de transportadoras",
 			HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * Ocurrió un error al de que no es un fondo
+	 */
+	ERROR_NO_ES_FONDO("E920", "Ocurrió un error el valor indicado no es un fondo. ", HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * Ocurrió un error al de que no es un BANREP
+	 */
+	ERROR_NO_ES_BANREP("E921", "Ocurrió un error el valor indicado no es un punto BAN REP. ",
+			HttpStatus.PRECONDITION_FAILED),
+	/**
+	 * Ocurrió un error al consultar la tabla de sitios clientes
+	 */
+	ERROR_SITIOS_CLIENTES_NO_ENCONTRADO("E916", "Ocurrió un error al consultar la table de sitios clientes", HttpStatus.PRECONDITION_FAILED),
 	
 	/**
-	 * No se puede encontrar un dia habil que cumpla con los criterios parametrizados.
+	 * Ocurrió un error al consultar la tabla de archivos cargados
+	 */
+	ERROR_ARCHICOS_CARGADOS_NO_ENCONTRADO("E913", "No hay datos de archivos cargados", HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Ocurrió un error al consultar el tipo de registro
+	 */
+	ERROR_TIPO_REGISTRO_NO_VALIDO("E926", "Tipo de registro no valido", HttpStatus.PRECONDITION_FAILED),
+	
+	
+	/**
+	 * No se puede realizar el cierre del dia por que no han finalizado todos los
+	 * proceso
+	 */
+	ERROR_PROCESOS_NO_COMPLETADOS("E040",
+			"No se puede realizar el cierre del dia, existen procesos pendientes para la fecha actual. ",
+			HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * No se puede encontrar un dia habil que cumpla con los criterios
+	 * parametrizados.
 	 */
 	ERROR_CALCULO_DIA_HABIL("E041", "No se puede encontrar un dia habil que cumpla con los criterios parametrizados. ",
 			HttpStatus.PRECONDITION_FAILED),
 
-		/**
+	/**
 	 * No la regla de validacion no tiene un formato valido
 	 */
-	ERROR_FORMATO_REGLA_NO_VALIDA("E042", "La regla de validación no tiene un formato valido. ", HttpStatus.BAD_REQUEST),
+	ERROR_FORMATO_REGLA_NO_VALIDA("E042", "La regla de validación no tiene un formato valido. ",
+			HttpStatus.BAD_REQUEST),
 
 	/**
 	 * Error de en la persistencia de documentos
@@ -230,7 +300,7 @@ public enum ApiResponseCode {
 	 * Error cuando no existe el valor de un domino tipo texto
 	 */
 	ERROR_DOMINIO_NOT_FOUND("E902", "No se encontró el valor del dominio consultado.  ", HttpStatus.BAD_REQUEST),
-
+	
 	/**
 	 * Error en la libreria openCSV el leer el documento.
 	 */
@@ -240,16 +310,22 @@ public enum ApiResponseCode {
 	 * Error cuando no existe el valor de un parametro
 	 */
 	ERROR_PARAMETRO_NOT_FOUND("E904", "No se encontró el valor del parámetro consultado.  ", HttpStatus.BAD_REQUEST),
-	
-	/**
-	 * El parametro no contiene un entero valido
-	 */
-	ERROR_PARAMETRO_NO_ENTERO("E905", "El valor del parámetro no corresponde a un número entero.  ", HttpStatus.BAD_REQUEST),
 
 	/**
 	 * El parametro no contiene un entero valido
 	 */
-	ERROR_PARAMETRO_NO_FECHA("E906", "El valor del parámetro no corresponde a una fecha válida. ", HttpStatus.BAD_REQUEST),
+	ERROR_PARAMETRO_NO_ENTERO("E905", "El valor del parámetro no corresponde a un número entero.  ",
+			HttpStatus.BAD_REQUEST),
+
+	/**
+	 * El parametro no contiene un entero valido
+	 */
+	ERROR_PARAMETRO_NO_FECHA("E906", "El valor del parámetro no corresponde a una fecha válida. ",
+			HttpStatus.BAD_REQUEST),
+	/**
+	 * Error cuando no existe el valor de un domino tipo texto
+	 */
+	ERROR_DOMINIO_EXIST("E907", "Ya existe un dominio con el valor consultado.  ", HttpStatus.BAD_REQUEST),
 
 
 	/**
@@ -257,12 +333,41 @@ public enum ApiResponseCode {
 	 */
 	ERROR_REGLA_NOT_FOUND("E910", "No se encontró el valor de la regla consultado.  ", HttpStatus.BAD_REQUEST),
 	
-
 	/**
 	 * Error tipo de regla no implementada
 	 */
-	ERROR_TIPO_REGLA_NOT_FOUND("E911", "No se encontró el tipo de regla consultado.  ", HttpStatus.BAD_REQUEST);
+	ERROR_TIPO_REGLA_NOT_FOUND("E911", "No se encontró el tipo de regla consultado.  ", HttpStatus.BAD_REQUEST),
 
+	/**
+	 * Error punto ya existente
+	 */
+	ERROR_PUNTO_EXIST("E912", "Punto ya existente.  ", HttpStatus.CONFLICT),
+	
+	/**
+	 * Error banco ya existente
+	 */
+	ERROR_BANCO_EXIST("E913", "Banco ya existente.  ", HttpStatus.CONFLICT),
+	
+	/**
+	 * Error punto ya existente
+	 */
+	ERROR_FONDO_EXIST("E914", "Fondo ya existente.  ", HttpStatus.CONFLICT),
+	
+	/**
+	 * Error oficina ya existente
+	 */
+	ERROR_OFICINA_EXIST("E915", "Oficina ya existente.  ", HttpStatus.CONFLICT),
+	
+	/**
+	 * Error sitio cliente ya existente
+	 */
+	ERROR_SITIO_CLIENTE_EXIST("E916", "Sitio cliente ya existente.  ", HttpStatus.CONFLICT),
+	
+	/**
+	 * Error cajero ya existente
+	 */
+	ERROR_CAJERO_EXIST("E917", "Cajero ya existente.  ", HttpStatus.CONFLICT);
+	
 	
 	/**
 	 * Código asociado a la respuesta
@@ -278,4 +383,31 @@ public enum ApiResponseCode {
 	 * {@link HttpStatus}.
 	 */
 	private HttpStatus httpStatus;
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public HttpStatus getHttpStatus() {
+		return httpStatus;
+	}
+
+	public void setHttpStatus(HttpStatus httpStatus) {
+		this.httpStatus = httpStatus;
+	}
+
+	
+	
 }

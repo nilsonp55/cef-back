@@ -2,6 +2,7 @@ package com.ath.adminefectivo.delegate;
 
 import java.util.List;
 
+import com.ath.adminefectivo.dto.CreatePuntosDTO;
 import com.ath.adminefectivo.dto.PuntosDTO;
 import com.querydsl.core.types.Predicate;
 
@@ -18,4 +19,29 @@ public interface IPuntosDelegate {
 	 * @author cesar.castano
 	 */
 	List<PuntosDTO> getPuntos(Predicate predicate);
+	
+	/**
+	 * Delegate encargado de la persistencia de los puntos
+	 * 
+	 * @return PuntosDTO
+	 * @author Bayron Andres Perez M.
+	 */
+	PuntosDTO guardarPunto(CreatePuntosDTO rreatePuntosDTO);
+	
+	/**
+	 * Delegate encargado de la actualizacion de los puntos
+	 * 
+	 * @return PuntosDTO
+	 * @author Bayron Andres Perez M.
+	 */
+	PuntosDTO actualizarPunto(CreatePuntosDTO rreatePuntosDTO);
+	
+	/**
+	 * Delegate encargado de retornar un punto por
+	 * 
+	 * @return List<PuntosDTO>
+	 * @author cesar.castano
+	 */
+	PuntosDTO getPuntoById(Integer idPunto);
+	
 }

@@ -20,6 +20,15 @@ public final class Constantes {
 	public static final String REGISTRO_INACTIVO = "INA";
 	public static final String SI = "SI";
 	public static final String NO = "NO";
+	public static final String ENTRADA = "I";
+	public static final String SALIDA = "O";
+	public static final String SOBRANTE_OTROS_FONDOS = "3";
+	public static final String FALTANTE_OTROS_FONDOS = "4";
+	public static final String SOBRANTE_BRINKS = "4";
+	public static final String FALTANTE_BRINKS = "5";
+	public static final Integer NUMERO_INICIA_VALORES_OTROS_FONDOS = 17;
+	public static final Integer NUMERO_INICIA_VALORES_BRINKS = 18;
+
 
 	/**
 	 * Constantes estado Cargue
@@ -41,6 +50,24 @@ public final class Constantes {
 	public static final String FECHA_HORA_PATTERN_DD_MM_YYYY_HH_MM_SS = "dd-MM-yyyy HH:mm:ss";
 	public static final String FECHA_HORA_PATTERN_DD_MM_YYYY_T_HH_MM_SS = "dd-MM-yyyy'T'HH:mm:ss";
 
+	/**
+	 * Constantes tipo puntos
+	 */
+	public static final String PUNTO_BANCO = "BANCO";
+	public static final String PUNTO_BANC_REP = "BAN_REP";
+	public static final String PUNTO_CAJERO = "CAJERO";
+	public static final String PUNTO_SITIO_CLIENTE = "CLIENTE";
+	public static final String PUNTO_FONDO = "FONDO";
+	public static final String PUNTO_OFICINA = "OFICINA";
+	
+	/**
+	 * Constantes nombres archivo
+	 */
+
+	public static final String NOMBRE_ARCHIVO_OTROS_FONDOS = "ITVCS";
+	public static final String NOMBRE_ARCHIVO_BRINKS = "BRINK";
+
+	
 	/*
 	 * Parametro header necesario para el envio de los documentos a front
 	 */
@@ -110,16 +137,48 @@ public final class Constantes {
 	 * Constante del agrupador de los tipos punto
 	 */
 	public static final String DOMINIO_FORMATO_FECHA = "FORMATO_FECHA";
+
+	/**
+	 * Constante del formato de fecha Hora F1
+	 */
+	public static final String DOMINIO_FORMATO_FECHA_HORA_F1 = "FORMATO_FECHA_HORA_1";
+	
+	/**
+	 * Constante del formato de fecha Hora F2
+	 */
+	public static final String DOMINIO_FORMATO_FECHA_HORA_F2 = "FORMATO_FECHA_HORA_2";
+
+	/**
+	 * Constante del formato de fecha Hora F3
+	 */
+	public static final String DOMINIO_FORMATO_FECHA_HORA_F3 = "FORMATO_FECHA_HORA_3";
+	
+	/**
+	 * Constante del formato de fecha F1
+	 */
+	public static final String DOMINIO_FORMATO_FECHA_F1 = "FORMATO_FECHA";
+	
+	/**
+	 * Constante del formato de fecha F2
+	 */
+	public static final String DOMINIO_FORMATO_FECHA_F2 = "FORMATO_FECHA";
 	
 	/**
 	 * Constante del agrupador de los tipos punto
 	 */
 	public static final String DOMINIO_TIPOS_PUNTO = "TIPOS_PUNTO";
 	
+
+	
 	/**
 	 * Constante del agrupador de los tipos punto
 	 */
 	public static final String DOMINIO_CARACTER_INVALIDO_TX = "CARACTER_INVALIDO_TX";
+	
+	/**
+	 * Constante del agrupador de los tipos punto
+	 */
+	public static final String DOMINIO_TIPO_ARCHIVO = "TIPO_ARCHIVO";
 	/**
 	 * Delimintadores de los archivos
 	 */
@@ -202,6 +261,70 @@ public final class Constantes {
 	 */
 	public static final int NUMERO_MAXIMO_CICLOS = 30;
 	
+	/**
+	 * Constante para identificar el tipo servicio de un archivo
+	 */
+	public static final String CAMPO_ARCHIVO_TIPO_SERVICIO = "TIPOSERVICIO";
+	
+	/**
+	 * Constante para identificar el banco origen de un archivo
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_ENTIDAD_DESTINO = "ENTIDADDESTINO";
+	
+	/**
+	 * Constante para identificar el fondo origen de un archivo
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN = "CODIGOORIGEN";
+	
+	/**
+	 * Constante para identificar el fondo destino de un archivo
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO = "CODIGODESTINO";
+	
+	/**
+	 * Constante para identificar la fecha programacion
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_FECHAPROGRAMACION= "FECHAPROGRAMACION";
+	
+	/**
+	 * Constante para identificar la fecha de origen
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_FECHAORIGEN= "FECHAORIGEN";
+	
+	/**
+	 * Constante para identificar la fecha de destino
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_FECHADESTINO = "FECHADESTINO";
+	
+	/**
+	 * Constante para identificar el campo tipo servicio del archivo
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_TIPOSERVICIO = "TIPOSERVICIO";
+	
+	/**
+	 * Constante para identificar el campo valor total del archivo
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_VALORTOTAL = "VALOR TOTAL";
+	
+	/**
+	 * Constante para identificar el campo id negociacion del archivo
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_IDNEGOCIACION = "IDNEGOCIACION";
+	
+	/**
+	 * Constante para identificar el campo tasa del archivo
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_TASA = "TASA";
+	
+	/**
+	 * Constante para indicar el valor SALIDA
+	 */
+	public static final String VALOR_SALIDA = "SALIDA";
+	
+	/**
+	 * Constante para indicar el valor ENTRADA
+	 */
+	public static final String VALOR_ENTRADA = "ENTRADA";
 	
 	//////////////////////////////////////// MENSAJES ///////////////////////////////////////////
 	/**
@@ -223,4 +346,15 @@ public final class Constantes {
 	 * Error lanzado en caso de que la regla de no tenga un mensaje definido
 	 */
 	public static final String MENSAJE_ERROR_VALIDACION_CAMPOS = "Ocurrió un error con al regla número {0}";
+	
+	/**
+	 * No se encontraron archivos por procesar en el proceso de operaciones programadas
+	 */
+	public static final String MENSAJE_NO_SE_ENCONTRARON_ARCHIVOS_OP = "No se encontraron archivos por procesar operaciones programadas.";
+	
+	/**
+	 * Se generaron las operaciones programadas de forma exitosa.
+	 */
+	public static final String MENSAJE_GENERO_OPERACIONES_PROGRAMADAS_CORRECTO = "Se han generado las operaciones programadas de forma correcta.";
+	
 }

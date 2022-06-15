@@ -51,4 +51,13 @@ public interface IOperacionesCertificadasRepository
 	 */
 	List<OperacionesCertificadas> findByCodigoFondoTDVAndEstadoConciliacion(Integer codigoFondoTDV,
 			String estadoConciliacion);
+			
+	/**
+	 * Retorna una lista de operaciones certificadas segun el codigo del servicio tdv
+	 * @param codigoServicio
+	 * @return List<OperacionesCertificadas>
+	 * @author cesar.castano
+	 */
+	OperacionesCertificadas findByCodigoServicioTdv(String codigoServicio);
+
 }

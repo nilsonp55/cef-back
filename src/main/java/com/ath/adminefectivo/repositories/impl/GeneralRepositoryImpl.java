@@ -35,6 +35,8 @@ public class GeneralRepositoryImpl implements IGeneralRepository{
 	public boolean ejecutarQueryNativa(String consulta, String parametro) {
 		
 		Query query =  entityManager.createNativeQuery(consulta);
+		System.out.println("consulta "+ consulta);
+		System.out.println("PARAMETRO "+ parametro);
 		query.setParameter("parametro", parametro);
 		
 		return (boolean)  query.getSingleResult();

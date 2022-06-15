@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.ath.adminefectivo.dto.FondosDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.Fondos;
+import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.IFondosRepository;
 import com.ath.adminefectivo.service.IFondosService;
@@ -50,5 +51,49 @@ public class FondosServiceImpl implements IFondosService {
 
 		}
 		return fondo;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Fondos getCodigoFondo(String nombreTransportadora, Integer codigoCompensacion, String codigoCiudad) {
+		
+		return fondosRepository.obtenerCodigoFondoTDV(
+				nombreTransportadora, codigoCompensacion, codigoCiudad);
+
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Fondos getCodigoFondo(String nombreTransportadora, String tipoPuntoBanco, String nombreBanco,
+			String nombreCiudad) {
+		
+		return fondosRepository.obtenerCodigoFondoTDV1(
+				nombreTransportadora, tipoPuntoBanco, nombreBanco, nombreCiudad);
+		
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Boolean getCodigoPuntoFondo(Integer codigoPunto) {
+		Boolean estado = true;
+		var fondo = fondosRepository.findByCodigoPunto(codigoPunto);
+		if (fondo == null) {
+			estado = false;
+		}
+		return estado;
+	}
+
+	@Override
+	public Fondos getCodigoFondoCertificacion(String codigoTransportadora, String tipoPuntoBanco, String nombreBanco,
+			String codigoCiudad) {
+
+		return fondosRepository.obtenerCodigoFondoTDV2(
+				codigoTransportadora, tipoPuntoBanco, nombreBanco, codigoCiudad);
 	}
 }

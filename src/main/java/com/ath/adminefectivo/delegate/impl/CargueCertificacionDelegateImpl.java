@@ -198,20 +198,20 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 		var maestroDefinicion = maestroDefinicionArchivoService.consultarDefinicionArchivoById(idMaestroDefinicion);
 		var urlPendinetes = parametrosService.valorParametro(Parametros.RUTA_ARCHIVOS_PENDIENTES);
 		var url = maestroDefinicion.getUbicacion().concat(urlPendinetes).concat(nombreArchivo);
-		validacionArchivoService.validarNombreArchivo(maestroDefinicion, nombreArchivo);
+		if (!idMaestroDefinicion.equals("BRINK")) {
+			validacionArchivoService.validarNombreArchivo(maestroDefinicion, nombreArchivo);
+		}
+//		validacionArchivoService.validarNombreArchivo(maestroDefinicion, nombreArchivo);		
 		var dowloadFile = filesService.downloadFile(DownloadDTO.builder().url(url).build());
-
 		// Validaciones de arcihvo
 		String delimitador = lecturaArchivoService.obtenerDelimitadorArchivo(maestroDefinicion);
 		List<String[]> contenido = lecturaArchivoService.leerArchivo(dowloadFile.getFile(), delimitador);
 		var fechaArchivo = validacionArchivoService.validarFechaArchivo(nombreArchivo,
 				maestroDefinicion.getMascaraArch(), new Date());
-
 		this.validacionArchivo = ValidacionArchivoDTO.builder().nombreArchivo(nombreArchivo)
 				.descripcion(maestroDefinicion.getDescripcionArch()).fechaArchivo(fechaArchivo)
 				.maestroDefinicion(maestroDefinicion).url(url)
 				.numeroRegistros(obtenerBumeroRegistros(maestroDefinicion, contenido.size())).build();
-
 		if (this.validarCantidadRegistros(maestroDefinicion, this.validacionArchivo.getNumeroRegistros())) {
 			this.validacionArchivo = validacionArchivoService.validar(maestroDefinicion, contenido,
 					validacionArchivo);

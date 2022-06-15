@@ -49,6 +49,8 @@ public final class Dominios {
 	public static final String ESTADO_CONCILIACION_FUERA_DE_CONCILIACION = "FC";
 	public static final String ESTADO_CONCILIACION_POSPUESTA = "P";
 	public static final String ESTADO_CONCILIACION_CANCELADA = "CA";
+
+
 	
 	public static final String TIPO_CONCILIACION_MANUAL = "M";
 	public static final String TIPO_CONCILIACION_AUTOMATICA = "A";
@@ -67,6 +69,7 @@ public final class Dominios {
 	public static final String ESTADOS_OPERA_CANCELADO = "C";
 	public static final String ESTADOS_OPERA_FALLIDO = "F";
 	public static final String ESTADOS_OPERA_FALLIDO_NO = "FNF";
+
 	
 	public static final String TIPOS_TRANSPORTE_URBANO = "U";
 	public static final String TIPOS_TRANSPORTE_INTERURBANO1 = "I2";
@@ -86,6 +89,7 @@ public final class Dominios {
 	
 	public static final String FORMATO_FECHA_HORA_F1 = "F1";
 	public static final String FORMATO_FECHA_HORA_F2 = "F2";
+	public static final String FORMATO_FECHA_HORA_3 = "F3";
 	
 	public static final String FORMATO_FECHA_F1 = "F1";
 	public static final String FORMATO_FECHA_F2 = "F2";
@@ -127,6 +131,12 @@ public final class Dominios {
 	public static final String TIPO_REGLA_INCLUIDOS = "INC";
 	public static final String TIPO_REGLA_EXCLUIDOS = "EXC";
 	public static final String TIPO_REGLA_CONSULTA_SQL = "SQL";
+	
+	/**
+	 * Tipos de archivo 
+	 */
+	public static final String TIPO_ARCHIVO_IPPSV = "IPPSV";
+	public static final String TIPO_ARCHIVO_ISTRC = "ISTRC";
 	
 	
 }

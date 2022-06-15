@@ -41,23 +41,11 @@ public class OperacionesCertificadas {
 	@Column(name = "CODIGO_FONDO_TDV")
 	private Integer codigoFondoTDV;
 	
-	@Column(name = "CODIGO_BANCO")
-	private Integer codigoBanco;
-	
-	@Column(name = "CODIGO_CIUDAD")
-	private Integer codigoCiudad;
-	
 	@Column(name = "CODIGO_PUNTO_ORIGEN")
 	private Integer codigoPuntoOrigen;
 	
 	@Column(name = "CODIGO_PUNTO_DESTINO")
 	private Integer codigoPuntoDestino;
-	
-	@Column(name = "TIPO_PUNTO_ORIGEN")
-	private String tipoPuntoOrigen;
-	
-	@Column(name = "TIPO_PUNTO_DESTINO")
-	private String tipoPuntoDestino;
 	
 	@Column(name = "FECHA_EJECUCION")
 	private Date fechaEjecucion;
@@ -99,6 +87,15 @@ public class OperacionesCertificadas {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "FECHA_MODIFICACION")
 	private Date fechaModificacion;
+	
+	@Column(name = "CODIGO_SERVICO_TDV")
+	private String codigoServicioTdv;
+	
+	@Column(name = "ENTRADA_SALIDA")
+	private String entradaSalida;
+	
+	@Column(name = "ID_ARCHIVO_CARGADO")
+	private Long idArchivoCargado;
 	
 	@OneToMany(mappedBy = "operacionesCertificadas")
 	private List<ConciliacionServicios> conciliacionServicios;

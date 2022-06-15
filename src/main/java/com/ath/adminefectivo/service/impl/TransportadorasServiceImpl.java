@@ -47,4 +47,19 @@ public class TransportadorasServiceImpl implements ITransportadorasService {
 					ApiResponseCode.ERROR_TRANSPORTADORAS_NO_ENCONTRADO.getHttpStatus());
 		}
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getcodigoTransportadora(String nombre) {
+		var transportadora = transportadorasRepository.findByNombreTransportadora(nombre);
+		if (transportadora == null) {
+			throw new AplicationException(ApiResponseCode.ERROR_TRANSPORTADORAS_NO_ENCONTRADO.getCode(),
+					ApiResponseCode.ERROR_TRANSPORTADORAS_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_TRANSPORTADORAS_NO_ENCONTRADO.getHttpStatus());
+		} else {
+			return transportadora.getCodigo();
+		}
+	}
 }

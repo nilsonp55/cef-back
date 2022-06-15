@@ -1,11 +1,15 @@
 package com.ath.adminefectivo.entities;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -40,4 +44,25 @@ public class Puntos {
 	
 	@Column(name = "CODIGO_CIUDAD")
 	private String codigoCiudad;
+	
+	@Column(name = "ESTADO")
+	private String estado;
+	
+	//@OneToMany(mappedBy = "puntos", cascade = {CascadeType.ALL}, orphanRemoval = true)
+	//private List<Oficinas> oficinas;
+	
+	//@OneToMany(mappedBy = "puntos", cascade = {CascadeType.ALL}, orphanRemoval = true)
+	//private List<SitiosClientes> sitiosClientes;
+	
+	//@OneToMany(mappedBy = "puntos", cascade = {CascadeType.ALL}, orphanRemoval = true)
+	//private List<PuntosCodigoTDV> puntosCodigoTDV;
+	
+	//@OneToMany(mappedBy = "puntos", cascade = {CascadeType.ALL}, orphanRemoval = true)
+	//private List<Fondos> fondos;
+	
+	//@OneToMany(mappedBy = "puntos", cascade = {CascadeType.ALL}, orphanRemoval = true)
+	//private List<CajerosATM> cajeroATM;
+	
+	//@OneToMany(mappedBy = "puntos", cascade = {CascadeType.ALL}, orphanRemoval = true)
+	//private List<Bancos> bancos;
 }

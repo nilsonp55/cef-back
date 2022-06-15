@@ -1,6 +1,9 @@
 package com.ath.adminefectivo.service;
 
+import java.util.List;
+
 import com.ath.adminefectivo.dto.FechasConciliacionDTO;
+import com.ath.adminefectivo.entities.ArchivosCargados;
 
 /**
  * @author cesar.castano
@@ -26,4 +29,12 @@ public interface IOperacionesCertificadasService {
 	 * @param estado
 	 */
 	Integer numeroOperacionesPorEstadoyFecha(FechasConciliacionDTO fechaConciliacion, String estado);
+
+	/**
+	 * Servicio encargado de procesar los archivos cargados a la entidad OperacionesCertificadas
+	 * @param archivosCargados
+	 * @return Boolean
+	 * @author cesar.castano
+	 */
+	Boolean procesarArchivosCertificaciones(List<ArchivosCargados> archivosCargados);
 }

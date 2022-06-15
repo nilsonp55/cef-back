@@ -84,5 +84,26 @@ public interface IArchivosCargadosService {
 	 * @author CamiloBenavides
 	 */
 	Boolean persistirDetalleArchivoCargado(ValidacionArchivoDTO validacionArchivo,  boolean soloErrores);
+	
+	/**
+	 * Metodo encagado de obtener los archivos cargados actuales que no se han
+	 * procesado o generado el debido proceso de las operaciones programadas a traves
+	 * del tipo de archivo cargado
+	 * 
+	 * @param idModeloArchivo
+	 * @return List<ArchivosCargadosDTO>
+	 * @author duvan.naranjo
+	 */
+	List<ArchivosCargadosDTO> getArchivosCargadosSinProcesar(String idModeloArchivo);
+	
+	/**
+	 * Metodo encagado de actualizar el archivo
+	 * 
+	 * @param archivosCargadosDTO
+	 * @return 
+	 * @author duvan.naranjo
+	 */
+	void actualizarArchivosCargados(ArchivosCargadosDTO archivosCargadosDTO);
+	
 
 }

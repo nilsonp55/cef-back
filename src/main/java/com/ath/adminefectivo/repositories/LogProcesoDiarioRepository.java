@@ -3,6 +3,7 @@ package com.ath.adminefectivo.repositories;
 import java.util.Date;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
 import com.ath.adminefectivo.entities.LogProcesoDiario;
 
@@ -11,7 +12,7 @@ import com.ath.adminefectivo.entities.LogProcesoDiario;
  *
  * @author CamiloBenavides
  */
-public interface LogProcesoDiarioRepository extends JpaRepository<LogProcesoDiario, Long> {
+public interface LogProcesoDiarioRepository extends JpaRepository<LogProcesoDiario, Long>, QuerydslPredicateExecutor<LogProcesoDiario> {
 
 	
 

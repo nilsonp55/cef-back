@@ -12,5 +12,7 @@ import com.ath.adminefectivo.entities.Transportadoras;
  */
 public interface ITransportadorasRepository
 		extends JpaRepository<Transportadoras, String>, QuerydslPredicateExecutor<Transportadoras> {
-
+	
+	//TODO: Ajustar comentario cesar.castaño
+	Transportadoras findByNombreTransportadora(String nombreTransportadora);
 }

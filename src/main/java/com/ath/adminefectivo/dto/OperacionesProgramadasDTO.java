@@ -29,12 +29,8 @@ public class OperacionesProgramadasDTO {
 	private Integer codigoFondoTDV;
 	
 	private String entradaSalida;
-	
-	private String tipoPuntoOrigen;
 
 	private Integer codigoPuntoOrigen;
-	
-	private String tipoPuntoDestino;
 	
 	private Integer codigoPuntoDestino;
 	
@@ -63,6 +59,7 @@ public class OperacionesProgramadasDTO {
 	private Integer idOperacionRelac;
 	
 	private String tipoServicio;
+		
 	
 	private String usuarioCreacion;
 	
@@ -71,6 +68,10 @@ public class OperacionesProgramadasDTO {
 	private Date fechaCreacion;
 	
 	private Date fechaModificacion;
+	
+	private boolean esCambio;
+	
+	private String idServicio;
 
 	private List<ConciliacionServicios> conciliacionServicios;
 	
@@ -97,4 +98,5 @@ public class OperacionesProgramadasDTO {
 
 		return operacionesProgramadasDTO;
 	};
+
 }

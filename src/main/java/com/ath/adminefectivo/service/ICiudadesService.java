@@ -26,4 +26,14 @@ public interface ICiudadesService {
 	 * @author cesar.castano
 	 */
 	String getNombreCiudad(String codigo);
+	
+	/**
+	 * Servicio encargado de consultar el codigo de una Ciudad por nombre Este
+	 * servicio lanza un error en caso de que la ciudad no exista
+	 * 
+	 * @param nombre
+	 * @return Integer
+	 * @author cesar.castano
+	 */
+	String getCodigoCiudad(String nombre);
 }

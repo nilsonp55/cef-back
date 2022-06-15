@@ -33,7 +33,7 @@ import com.querydsl.core.types.Predicate;
  * @author CamiloBenavides
  */
 @RestController
-@RequestMapping(ArchivosCargadosEndpoint.V1_0_1)
+@RequestMapping("${endpoints.ArchivosCargados}")
 public class ArchivosCargadosController {
 
 	@Autowired
@@ -45,7 +45,7 @@ public class ArchivosCargadosController {
 	 * @return ResponseEntity<ApiResponseADE<List<ArchivosCargadosDTO>>>
 	 * @author CamiloBenavides
 	 */
-	@GetMapping(value = ArchivosCargadosEndpoint.FINDALL)
+	@GetMapping(value = "${endpoints.ArchivosCargados.consultar}")
 	public ResponseEntity<ApiResponseADE<List<ArchivosCargadosDTO>>> getAll() {
 
 		var consulta = archivosCargadosDelegate.getAll();
@@ -64,7 +64,7 @@ public class ArchivosCargadosController {
 	 * @return ResponseEntity<ApiResponseADE<Page<ArchivosCargadosDTO>>>
 	 * @author CamiloBenavides
 	 */
-	@GetMapping(value = ArchivosCargadosEndpoint.FINDALL_PAGE)
+	@GetMapping(value = "${endpoints.ArchivosCargados.consultarPage}")
 	public ResponseEntity<ApiResponseADE<Page<ArchivosCargadosDTO>>> getAll(
 			@QuerydslPredicate(root = ArchivosCargados.class) Predicate predicate, Pageable page) {
 
@@ -83,7 +83,7 @@ public class ArchivosCargadosController {
 	 *         creada con el id autoincremental
 	 * @author CamiloBenavides
 	 */
-	@PostMapping(value = ArchivosCargadosEndpoint.SAVE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "${endpoints.ArchivosCargados.guardar}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<List<ArchivosCargados>>> guardarArchivo(
 			@RequestBody(required = true) ArchivosCargadosDTO archivo) {
 
@@ -100,7 +100,7 @@ public class ArchivosCargadosController {
 	 * @return ResponseEntity<ApiResponseADE<Boolean>>
 	 * @author CamiloBenavides
 	 */
-	@DeleteMapping(value = ArchivosCargadosEndpoint.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@DeleteMapping(value = "${endpoints.ArchivosCargados.eliminar}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<Boolean>> eliminarArchivo(@RequestParam("id") Long idArchivo) {
 
 		var archivoPersistido = archivosCargadosDelegate.eliminarArchivo(idArchivo);

@@ -27,4 +27,45 @@ public interface IBancosService {
 	 */
 	String getAbreviatura(Integer codigo);
 	
+	/**
+	 * Servicio encargado de consultar el codigo punto del banco por codigo de compensacion
+	 * Este servicio lanza un error en caso de que el banco no exista
+	 * 
+	 * @param codigoCompensacion
+	 * @return String
+	 * @author cesar.castano
+	 */
+	Integer getCodigoPuntoBanco(Integer codigoCompensacion);
+
+	
+	/**
+	 * Servicio encargado de consultar el banco por codigo punto, 
+	 * y convertirlo a DTO
+	 * 
+	 * @param codigoPunto
+	 * @return BancosDTO
+	 * @author duvan.naranjo
+	 */
+	BancosDTO findBancoByCodigoPunto(int codigoPunto);
+	
+	/**
+	 * Servicio encargado de consultar el banco por abreviatura, 
+	 * y convertirlo a DTO
+	 * 
+	 * @param abreviatura
+	 * @return BancosDTO
+	 * @author duvan.naranjo
+	 */
+	BancosDTO findBancoByAbreviatura(String abreviatura);
+	
+		/**
+	 * Servicio encargado de consultar el codigo punto del banco por codigo de compensacion
+	 * Este servicio lanza un error en caso de que el banco no exista
+	 * 
+	 * @param codigoPunto
+	 * @return Boolean
+	 * @author cesar.castano
+	 */
+	Boolean getCodigoPunto(Integer codigoPunto);
+
 }

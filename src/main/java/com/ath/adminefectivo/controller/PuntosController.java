@@ -7,10 +7,15 @@ import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.http.MediaType;
 
 import com.ath.adminefectivo.delegate.IPuntosDelegate;
+import com.ath.adminefectivo.dto.CreatePuntosDTO;
 import com.ath.adminefectivo.dto.PuntosDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
@@ -28,7 +33,7 @@ public class PuntosController {
 
 	@Autowired
 	IPuntosDelegate puntosDelegate;
-	
+
 	/**
 	 * Servicio encargado de retornar la consulta de todos los Puntos
 	 * 
@@ -38,6 +43,37 @@ public class PuntosController {
 	@GetMapping(value = "${endpoints.Puntos.consultar}")
 	public ResponseEntity<ApiResponseADE<List<PuntosDTO>>> getPuntos(@QuerydslPredicate(root = Puntos.class) Predicate predicate) {
 		List<PuntosDTO> consulta = puntosDelegate.getPuntos(predicate);
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
+	}
+
+	/**
+	 * Servicio encargado de guardar los Puntos
+	 * 
+	 * @return ResponseEntity<ApiResponseADE<PuntosDTO>>
+	 * @author Bayron Andres Perez M
+	 */
+	@PostMapping(value = "${endpoints.Puntos.guardar}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, 
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ApiResponseADE<PuntosDTO>> persistirPuntos(@RequestBody CreatePuntosDTO createPuntosDTO) {
+
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ApiResponseADE<PuntosDTO>(puntosDelegate.guardarPunto(createPuntosDTO),
+						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
+
+	}
+	
+	/**
+	 * Servicio encargado de retornar la consulta de todos los Puntos
+	 * 
+	 * @return ResponseEntity<ApiResponseADE<List<PuntosDTO>>>
+	 * @author cesar.castano
+	 */
+	@GetMapping(value = "${endpoints.Puntos.consultar}/{id}")
+	public ResponseEntity<ApiResponseADE<PuntosDTO>> getPuntos(@PathVariable Integer id) {
+		PuntosDTO consulta = puntosDelegate.getPuntoById(id);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));

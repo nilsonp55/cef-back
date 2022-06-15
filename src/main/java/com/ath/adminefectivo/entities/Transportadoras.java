@@ -34,4 +34,10 @@ public class Transportadoras {
 	
 	@Column(name = "ABREVIATURA")
 	private String abreviatura;
+	
+	@Column(name = "ABREVIATURA_2")
+	private String abreviatura2;
+	
+	@Column(name = "NOMBRE_2")
+	private String nombre2;
 }

@@ -46,4 +46,19 @@ public class CiudadServiceImpl implements ICiudadesService{
 					ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getHttpStatus());
 		}
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getCodigoCiudad(String nombre) {
+		var ciudadOpt = ciudadesRepository.findByNombreCiudad(nombre);
+		if (Objects.isNull(ciudadOpt)) {
+			throw new AplicationException(ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getCode(),
+					ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getHttpStatus());
+		} else {
+			return ciudadOpt.getCodigoDANE();
+		}
+	}
 }

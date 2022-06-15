@@ -109,7 +109,6 @@ public class CargueDefinitivoDelegateImpl implements ICargueDefinitivoDelegate {
 	@Override
 	@Transactional
 	public ValidacionArchivoDTO validarArchivo(String idMaestroDefinicion, String nombreArchivo) {
-
 		this.validacionesAchivoCargado(idMaestroDefinicion, nombreArchivo);
 		if (Objects.equals(this.validacionArchivo.getEstadoValidacion(), Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO)) {
 			archivosCargadosService.persistirDetalleArchivoCargado(validacionArchivo, true);
@@ -200,8 +199,8 @@ public class CargueDefinitivoDelegateImpl implements ICargueDefinitivoDelegate {
 		this.validacionArchivo = new ValidacionArchivoDTO();
 		// Validaciones del archivo
 		var maestroDefinicion = maestroDefinicionArchivoService.consultarDefinicionArchivoById(idMaestroDefinicion);
-		var urlPendinetes = parametrosService.valorParametro(Parametros.RUTA_ARCHIVOS_PENDIENTES);
-		var url = maestroDefinicion.getUbicacion().concat(urlPendinetes).concat(nombreArchivo);
+		var urlPendientes = parametrosService.valorParametro(Parametros.RUTA_ARCHIVOS_PENDIENTES);
+		var url = maestroDefinicion.getUbicacion().concat(urlPendientes).concat(nombreArchivo);
 		validacionArchivoService.validarNombreArchivo(maestroDefinicion, nombreArchivo);
 		var dowloadFile = filesService.downloadFile(DownloadDTO.builder().url(url).build());
 

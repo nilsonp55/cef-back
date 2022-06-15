@@ -2,6 +2,8 @@ package com.ath.adminefectivo.dto;
 
 import java.util.function.Function;
 
+import javax.persistence.Column;
+
 import com.ath.adminefectivo.entities.Transportadoras;
 import com.ath.adminefectivo.utils.UtilsObjects;
 
@@ -25,6 +27,10 @@ public class TransportadorasDTO {
 	private String nombreTransportadora;
 	
 	private String abreviatura;
+	
+	private String nombre2;
+	
+	private String abreviatura2;
 	
 	/**
 	 * Funcion que retorna la entidad recibiendo un DTO *

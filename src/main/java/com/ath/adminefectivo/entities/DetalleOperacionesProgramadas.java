@@ -40,13 +40,13 @@ public class DetalleOperacionesProgramadas {
 	private Integer idOperacion;
 	
 	@Column(name = "DENOMINACION")
-	private Integer denominacion;
+	private String denominacion;
 	
 	@Column(name = "CALIDAD")
 	private Integer calidad;
 	
 	@Column(name = "FAMILIA")
-	private Integer familia;
+	private String familia;
 	
 	@Column(name = "VALOR")
 	private Double valorDetalle;

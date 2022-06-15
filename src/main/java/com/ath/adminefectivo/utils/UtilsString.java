@@ -1,5 +1,7 @@
 package com.ath.adminefectivo.utils;
 
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -179,5 +181,25 @@ public class UtilsString {
 			return false;
 		}
 
+	}
+	/**
+	 * recibe un string y lo convierte en tipo date segun los dominios existentes
+	 * 
+	 * @param fecha
+	 * @param listaDominioFecha
+	 * @return Date
+	 * @author duvan.naranjo
+	 */
+	public static Date convertirFecha(String fecha, List<String> listaDominioFecha) {
+		String[] strArray = new String[listaDominioFecha.size()];
+		strArray = listaDominioFecha.toArray(strArray);
+		if(isFecha(fecha, listaDominioFecha)) {
+			try {
+				return DateUtils.parseDate(fecha, strArray);
+			} catch (ParseException e) {
+				return null;
+			}
+		}
+		return null;
 	}
 }

@@ -25,5 +25,14 @@ public interface IPuntosCodigoTdvService {
 	 * @author cesar.castano
 	 */
 	PuntosCodigoTDV getEntidadPuntoCodigoTDV(String codigo);
+
+	/**
+	 * Servicio encargado de consultar el codigoPunto. Este
+	 * servicio lanza un error en caso de que el codigo punto no exista
+	 * @param codigoPuntoTdv
+	 * @return Integer
+	 * @author cesar.castano
+	 */
+	Integer getCodigoPunto(String codigoPuntoTdv, String codigoTdv);
 	
 }
