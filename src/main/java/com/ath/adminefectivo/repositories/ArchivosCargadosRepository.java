@@ -19,8 +19,13 @@ import com.ath.adminefectivo.entities.Puntos;
 @Repository
 public interface ArchivosCargadosRepository
 		extends JpaRepository<ArchivosCargados, Long>, QuerydslPredicateExecutor<ArchivosCargados> {
-	//TODO: comentarios cesar.castano
-	List<ArchivosCargados> findByIdModeloArchivoAndIdArchivo(String idModeloArchivo, Long idArchivo);
+
+	/**
+	 * Metodo encargado de realizar la consulta de los archivos cargados  y no han sido procesados
+	 * @return List<ArchivosCargados>
+	 * @author cesar.castano
+	 */
+//	List<ArchivosCargados> findByIdModeloArchivo(String idModeloArchivo);
 	
 	/**
 	 * Metodo encargado de realizar la consulta de los archivos cargados que fueron cargados 
@@ -52,5 +57,7 @@ public interface ArchivosCargadosRepository
 	 * @author duvan.naranjo
 	 */
 	public List<ArchivosCargados> findByEstadoCargueAndIdModeloArchivo(String estadoCargue, String idModeloArchivo);
+
+	List<ArchivosCargados> findByIdModeloArchivoOrIdModeloArchivo(String tipoArchivoItvcs, String tipoArchivoIstrc);
 
 }

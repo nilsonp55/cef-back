@@ -25,4 +25,5 @@ public class DetalleOperacionesDTO {
 	private String familia;
 	
 	private Double valorDetalle;
+	
 }

@@ -3,7 +3,6 @@ package com.ath.adminefectivo.service;
 import java.util.List;
 
 import com.ath.adminefectivo.dto.OficinasDTO;
-import com.ath.adminefectivo.entities.Oficinas;
 import com.querydsl.core.types.Predicate;
 
 public interface IOficinasService {
@@ -21,6 +20,7 @@ public interface IOficinasService {
 	/**
 	 * Servicio encargado de consultar el codigo de Punto con el codigo de Oficina
 	 * @param codigoOficina
+	 * @param codigoBancoAval
 	 * @return Integer
 	 */
 	Integer getCodigoPunto(Integer codigoOficina, Integer codigoBancoAval);
@@ -28,7 +28,7 @@ public interface IOficinasService {
 	/**
 	 * Servicio encargado de consultar el codigo de Punto en la entidad Oficinas
 	 * @param codigoPunto
-	 * @return Oficinas
+	 * @return Boolean
 	 */
 	Boolean getCodigoPuntoOficina(Integer codigoPunto);
 

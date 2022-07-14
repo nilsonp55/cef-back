@@ -56,4 +56,13 @@ public class PuntosDTO {
 		UtilsObjects.copiarPropiedades(t, puntosDTO);
 		return puntosDTO;
 	};
+	
+	/**
+	 * Función encargada de recibir un DTO y retornar un objeto con los mismos datos
+	 */
+	public static final Function<PuntosDTO, Puntos> CONVERTER_ENTITY = (PuntosDTO t) -> {
+		var puntos = new Puntos();
+		UtilsObjects.copiarPropiedades(t, puntos);
+		return puntos;
+	};
 }

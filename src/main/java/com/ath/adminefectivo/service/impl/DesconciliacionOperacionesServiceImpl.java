@@ -75,11 +75,13 @@ public class DesconciliacionOperacionesServiceImpl implements IDesconciliacionOp
 
 		conciliacionServiciosHistoricoService.crearRegistroEnConciliacionHistorico(regConciliado);
 		if (regConciliado.isPresent()) {
-			operacionesProgramadasService.actualizarEstadoEnProgramadas(regConciliado.get().getIdOperacion(),
+			operacionesProgramadasService.actualizarEstadoEnProgramadas(
+					regConciliado.get().getOperacionesProgramadas().getIdOperacion(),
 					dominioService.valorTextoDominio(
 							Constantes.DOMINIO_ESTADO_CONCILIACION, 
 							Dominios.ESTADO_CONCILIACION_NO_CONCILIADO));
-			operacionesCertificadasService.actualizarEstadoEnCertificadas(regConciliado.get().getIdCertificacion(),
+			operacionesCertificadasService.actualizarEstadoEnCertificadas(
+					regConciliado.get().getOperacionesCertificadas().getIdCertificacion(),
 					dominioService.valorTextoDominio(
 							Constantes.DOMINIO_ESTADO_CONCILIACION, 
 							Dominios.ESTADO_CONCILIACION_NO_CONCILIADO));

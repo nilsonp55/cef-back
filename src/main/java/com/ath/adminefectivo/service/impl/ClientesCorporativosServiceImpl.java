@@ -2,14 +2,13 @@ package com.ath.adminefectivo.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.dto.ClientesCorporativosDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
-import com.ath.adminefectivo.entities.ClientesCorporativos;
-import com.ath.adminefectivo.entities.SitiosClientes;
 import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.repositories.IClientesCorporativosRepository;
 import com.ath.adminefectivo.service.IClientesCorporativosService;
@@ -41,8 +40,9 @@ public class ClientesCorporativosServiceImpl implements IClientesCorporativosSer
 	 */
 	@Override
 	public Integer getCodigoCliente(Integer codigoBanco, String nit) {
-		var clientesCorporativos = clientesCorporativosRepository.findByCodigoBancoAvalAndIdentificacion(codigoBanco, nit);
-		if (clientesCorporativos == null) {
+		var clientesCorporativos = clientesCorporativosRepository.findByCodigoBancoAvalAndIdentificacion(
+												codigoBanco, nit);
+		if (Objects.isNull(clientesCorporativos)) {
 			throw new AplicationException(ApiResponseCode.ERROR_CLIENTES_CORPORATIVOS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_CLIENTES_CORPORATIVOS_NO_ENCONTRADO.getDescription(),
 					ApiResponseCode.ERROR_CLIENTES_CORPORATIVOS_NO_ENCONTRADO.getHttpStatus());
@@ -58,9 +58,9 @@ public class ClientesCorporativosServiceImpl implements IClientesCorporativosSer
 	public Boolean getCodigoPuntoCliente(Integer codigoPunto) {
 		Boolean estado = true;
 		var sitiosCliente = sitiosClientesService.getCodigoPuntoSitio(codigoPunto);
-		if(sitiosCliente != null) {
+		if(!Objects.isNull(sitiosCliente)) {
 			var cliente = clientesCorporativosRepository.findByCodigoCliente(sitiosCliente.getCodigoCliente());
-			if(cliente == null) {
+			if(Objects.isNull(cliente)) {
 				estado = false;
 			}
 		}else {

@@ -11,6 +11,7 @@ public interface IDetalleOperacionesProgramadasService {
 
 	/**
 	 * Metodo encargado de crear el registro en la tabla DetalleOperacionesProgramadas
+	 * @param detalleOperacionesDTO
 	 * @return DetalleOperacionesProgramadas
 	 * @author cesar.castano
 	 */
@@ -18,8 +19,9 @@ public interface IDetalleOperacionesProgramadasService {
 	
 	/**
 	 * Metodo encargado de obtener el valor sumarizado del detalle por idOperacion
-	 * @return Integer
+	 * @param idOperacion
+	 * @return Double
 	 * @author cesar.castano
 	 */
-	Double obtenerValorDetalle(Integer idOpreacion);
+	Double obtenerValorDetalle(Integer idOperacion);
 }

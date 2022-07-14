@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.function.Function;
 
 import com.ath.adminefectivo.entities.DetalleOperacionesProgramadas;
+import com.ath.adminefectivo.entities.OperacionesProgramadas;
 import com.ath.adminefectivo.utils.UtilsObjects;
 
 import lombok.AllArgsConstructor;
@@ -21,8 +22,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DetalleOperacionesProgramadasDTO {
+	
+	private Integer idDetalleOperacion;
 
-	private Integer idOperacion;
+	private OperacionesProgramadas operaciones;
 	
 	private String denominacion;
 	
@@ -47,8 +50,16 @@ public class DetalleOperacionesProgramadasDTO {
 	public static final Function<DetalleOperacionesProgramadasDTO, DetalleOperacionesProgramadas> CONVERTER_ENTITY = (DetalleOperacionesProgramadasDTO t) -> {
 
 		var detalleOperacionesProgramadas = new DetalleOperacionesProgramadas();
-		UtilsObjects.copiarPropiedades(t, detalleOperacionesProgramadas);		
-
+		detalleOperacionesProgramadas.setCalidad(t.getCalidad());
+		detalleOperacionesProgramadas.setDenominacion(t.getDenominacion());
+		detalleOperacionesProgramadas.setFamilia(t.getFamilia());
+		detalleOperacionesProgramadas.setFechaCreacion(t.getFechaCreacion());
+		detalleOperacionesProgramadas.setFechaModificacion(t.getFechaModificacion());
+		detalleOperacionesProgramadas.setIdDetalleOperacion(t.getIdDetalleOperacion());
+		detalleOperacionesProgramadas.setOperacionesProgramadas(t.getOperaciones());
+		detalleOperacionesProgramadas.setUsuarioCreacion(t.getUsuarioCreacion());
+		detalleOperacionesProgramadas.setUsuarioModificacion(t.getUsuarioModificacion());
+		detalleOperacionesProgramadas.setValorDetalle(t.getValorDetalle());
 		return detalleOperacionesProgramadas;
 	};
 	

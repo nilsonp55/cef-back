@@ -253,6 +253,13 @@ public enum ApiResponseCode {
 	 */
 	ERROR_NO_ES_BANREP("E921", "Ocurrió un error el valor indicado no es un punto BAN REP. ",
 			HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Ocurrió un error al de que no son bancos iguales
+	 */
+	ERROR_NO_ES_IGUAL_BANCO("E922", "Ocurrió un error el valor indicado en el banco origen no es igual al banco destino. ",
+			HttpStatus.PRECONDITION_FAILED),
+
 	/**
 	 * Ocurrió un error al consultar la tabla de sitios clientes
 	 */
@@ -261,13 +268,52 @@ public enum ApiResponseCode {
 	/**
 	 * Ocurrió un error al consultar la tabla de archivos cargados
 	 */
-	ERROR_ARCHICOS_CARGADOS_NO_ENCONTRADO("E913", "No hay datos de archivos cargados", HttpStatus.PRECONDITION_FAILED),
+	ERROR_ARCHIVOS_CARGADOS_NO_ENCONTRADO("E913", "No hay datos de archivos cargados", HttpStatus.PRECONDITION_FAILED),
 	
 	/**
 	 * Ocurrió un error al consultar el tipo de registro
 	 */
 	ERROR_TIPO_REGISTRO_NO_VALIDO("E926", "Tipo de registro no valido", HttpStatus.PRECONDITION_FAILED),
 	
+	/**
+	 * Ocurrió un error al consultar el Log Proceso Diario
+	 */
+	ERROR_LOGPROCESODIARIO_NO_ENCONTRADO("E927", "Log Proceso Diario no encontrado", HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Ocurrió un error al consultar el Log Proceso Diario
+	 */
+	ERROR_LOGPROCESODIARIO_YA_EXISTE("E928", "Log Proceso Diario ya existe", HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Ocurrió un error al consultar el Log Proceso Diario
+	 */
+	ERROR_CODIGO_PROCESO_NO_EXISTE("E929", "Codigo Proceso no existe en Log Proceso Diario", HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Ocurrió un error al consultar el Log Proceso Diario
+	 */
+	ERROR_PROCESO_YA_CERRADO("E930", "Error, Proceso Diario Definitivo ya esta CERRADO", HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Ocurrió un error al consultar el Log Proceso Diario
+	 */
+	ERROR_PROCESO_SIGUE_ABIERTO("E930", "Error, Proceso Diario Definitivo sigue ABIERTO", HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Ocurrió un error al consultar el Log Proceso Diario
+	 */
+	ERROR_FALTAN_ARCHIVOS_POR_CARGAR("E931", "Error, Faltan archivos de Programacion Definitiva por cargar", HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Ocurrió un error al consultar el Log Proceso Diario
+	 */
+	ERROR_HAY_ARCHIVOS_FALLIDOS_CARGUE_CERTIFICACION("E932", "Error, Hay archivos fallidos de cargue de certificacion", HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * Ocurrió un error al consultar el Log Proceso Diario
+	 */
+	ERROR_NO_CUMPLE_MINIMO_ARCHIVOS_CARGADOS_CERTIFICACION("E933", "Error, No cumple con el minimo de archivos cargados certificacion", HttpStatus.PRECONDITION_FAILED),
 	
 	/**
 	 * No se puede realizar el cierre del dia por que no han finalizado todos los

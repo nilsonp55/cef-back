@@ -2,8 +2,6 @@ package com.ath.adminefectivo.dto;
 
 import java.util.function.Function;
 
-import javax.persistence.Column;
-
 import com.ath.adminefectivo.entities.Transportadoras;
 import com.ath.adminefectivo.utils.UtilsObjects;
 

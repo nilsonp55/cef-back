@@ -92,6 +92,10 @@ public class ProgramadasNoConciliadasDTO {
 	@JsonProperty("idServicio")
 	private String idServicio;
 	
+	private String tdv;
+	
+	private Integer bancoAVAL;
+	
 	/**
 	 * Funcion que convierte el archivo DTO ProgramadasNoConciliadasDTO a Entity OperacionesProgramadas
 	 * @author cesar.castano

@@ -14,8 +14,6 @@ import com.ath.adminefectivo.entities.LogProcesoDiario;
  */
 public interface LogProcesoDiarioRepository extends JpaRepository<LogProcesoDiario, Long>, QuerydslPredicateExecutor<LogProcesoDiario> {
 
-	
-
 	/**
 	 * Retorna el numero de procesos para una fecha y un estado en particular
 	 * 
@@ -25,5 +23,14 @@ public interface LogProcesoDiarioRepository extends JpaRepository<LogProcesoDiar
 	 * @author CamiloBenavides
 	 */
 	Integer countByFechaFinalizacionAndEstadoProceso(Date fecha,  String estadoProceso);
-	
+
+	/**
+	 * Retorna la entidad para un codigo de pro ceso
+	 * 
+	 * @param codigoProceso
+	 * @return LogProcesoDiario
+	 * @author cesar.castano
+	 */
+	LogProcesoDiario findByCodigoProceso(String codigoProceso);
+
 }

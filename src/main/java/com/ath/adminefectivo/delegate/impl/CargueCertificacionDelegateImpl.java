@@ -17,11 +17,15 @@ import com.ath.adminefectivo.constantes.Parametros;
 import com.ath.adminefectivo.delegate.ICargueCertificacionDelegate;
 import com.ath.adminefectivo.dto.ArchivosCargadosDTO;
 import com.ath.adminefectivo.dto.DownloadDTO;
+import com.ath.adminefectivo.dto.LogProcesoDiarioDTO;
 import com.ath.adminefectivo.dto.MaestrosDefinicionArchivoDTO;
 import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoDTO;
+import com.ath.adminefectivo.dto.response.ApiResponseCode;
+import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.service.IArchivosCargadosService;
 import com.ath.adminefectivo.service.IFilesService;
 import com.ath.adminefectivo.service.ILecturaArchivoService;
+import com.ath.adminefectivo.service.ILogProcesoDiarioService;
 import com.ath.adminefectivo.service.IMaestroDefinicionArchivoService;
 import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.IValidacionArchivoService;
@@ -50,6 +54,9 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 
 	@Autowired
 	ILecturaArchivoService lecturaArchivoService;
+	
+	@Autowired
+	ILogProcesoDiarioService logProcesoDiarioService;
 
 	private ValidacionArchivoDTO validacionArchivo;
 	
@@ -85,6 +92,7 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	 */
 	@Override
 	public ValidacionArchivoDTO validarArchivo(String idMaestroDefinicion, String nombreArchivo) {
+		validarLogProcesoDiario();
 		this.validacionesAchivoCargado(idMaestroDefinicion, nombreArchivo);
 		if (Objects.equals(this.validacionArchivo.getEstadoValidacion(), Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO)) {
 			archivosCargadosService.persistirDetalleArchivoCargado(validacionArchivo, true);
@@ -97,6 +105,7 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	 */
 	@Override
 	public ValidacionArchivoDTO procesarArchivo(String idMaestroDefinicion, String nombreArchivo) {
+		validarLogProcesoDiario();
 		this.validacionesAchivoCargado(idMaestroDefinicion, nombreArchivo);
 		archivosCargadosService.persistirDetalleArchivoCargado(validacionArchivo, false);
 
@@ -198,7 +207,7 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 		var maestroDefinicion = maestroDefinicionArchivoService.consultarDefinicionArchivoById(idMaestroDefinicion);
 		var urlPendinetes = parametrosService.valorParametro(Parametros.RUTA_ARCHIVOS_PENDIENTES);
 		var url = maestroDefinicion.getUbicacion().concat(urlPendinetes).concat(nombreArchivo);
-		if (!idMaestroDefinicion.equals("BRINK")) {
+		if (!idMaestroDefinicion.equals("ISRPO")) {
 			validacionArchivoService.validarNombreArchivo(maestroDefinicion, nombreArchivo);
 		}
 //		validacionArchivoService.validarNombreArchivo(maestroDefinicion, nombreArchivo);		
@@ -237,5 +246,24 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 		return archivosCargados;
 
 	}
-
+	
+	/**
+	 * Metodo encargado de validar el log de proceso diario
+	 * @author cesar.castano
+	 */
+	private void validarLogProcesoDiario() {
+		var log = logProcesoDiarioService.obtenerEntidadLogProcesoDiario(
+										Dominios.CODIGO_PROCESO_LOG_CERTIFICACION);
+		if (Objects.isNull(log)) {
+			throw new NegocioException(ApiResponseCode.ERROR_CODIGO_PROCESO_NO_EXISTE.getCode(),
+					ApiResponseCode.ERROR_CODIGO_PROCESO_NO_EXISTE.getDescription(),
+					ApiResponseCode.ERROR_CODIGO_PROCESO_NO_EXISTE.getHttpStatus());
+		}else {
+			if (log.getEstadoProceso().equals(Dominios.ESTADO_PROCESO_DIA_COMPLETO)) {
+				throw new NegocioException(ApiResponseCode.ERROR_PROCESO_YA_CERRADO.getCode(),
+						ApiResponseCode.ERROR_PROCESO_YA_CERRADO.getDescription(),
+						ApiResponseCode.ERROR_PROCESO_YA_CERRADO.getHttpStatus());
+			}
+		}
+	}
 }

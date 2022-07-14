@@ -1,5 +1,6 @@
 package com.ath.adminefectivo.delegate;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -78,5 +79,13 @@ public interface IConciliacionOperacionesDelegate {
 	 * @author cesar.castano
 	 */
 	ResumenConciliacionesDTO consultaResumenConciliaciones(FechasConciliacionDTO fechaConciliacion);
+
+	/**
+	 * Delegate encargado de hacer la conciliacion automatica de operaciones
+	 * @param fechaConciliacion
+	 * @return Boolean
+	 * @author cesar.castano
+	 */
+	Boolean conciliacionAutomatica();
 
 }

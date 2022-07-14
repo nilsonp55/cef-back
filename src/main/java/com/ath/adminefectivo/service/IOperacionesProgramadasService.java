@@ -1,5 +1,6 @@
 package com.ath.adminefectivo.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -60,12 +61,29 @@ public interface IOperacionesProgramadasService {
 	List<OperacionesProgramadasDTO> generarOperacionesProgramadas(List<ArchivosCargadosDTO> archivos);
 
 	/**
-	 * Servicio encargado de procesar los archivos cargados a la entidad OperacionesProgramadas
-	 * @param archivoscargados
-	 * @return Boolean
+	 * Servicio encargado de obtener los registros de OperacionesProgramadas
+	 * que estan dentro de la conciliacion
+	 * @return List<OperacionesProgramadas>
 	 * @author cesar.castano
 	 */
-	Boolean procesarArchivos(List<ArchivosCargados> archivosCargados);
+	List<OperacionesProgramadas> obtenerOperacionesProgramadas();
+	
+	/**
+	 * Servicio encargado de obtener la entidad OperacionesProgramadas para un IdOperacion
+	 * @return OperacionesProgramadas
+	 * @author cesar.castano
+	 */
+	OperacionesProgramadas obtenerEntidadOperacionesProgramadasporId(Integer idOperacion);
+	
+	/**
+	 * Servicio encargado de procesar los archivos cargados a la entidad OperacionesProgramadas
+	 * 
+	 * @param fechaInicio
+	 * @param fechaFin
+	 * @return List<OperacionesProgramadasDTO>
+	 * @author duvan.naranjo
+	 */
+	List<OperacionesProgramadasDTO> getOperacionesProgramadasPorFechas(String tipoContabilidad, Date fechaInicio, Date fechaFin);
 
 
 }

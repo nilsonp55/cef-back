@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+  <servers>
+      <server>
+        <id>maven-central</id>
+        <username>prv_jmazo</username>
+        <password>Cambio2022*A</password>
+      </server>
+  </servers>
+
+  <mirrors>
+        <mirror>
+            <id>maven-central</id>
+            <url>https://devops-nexus.ath.net/repository/centralizacion-efectivo-group/</url>
+            <mirrorOf>maven-central</mirrorOf>
+        </mirror>
+  </mirrors>
+  <profiles>
+    <profile>
+      <id>ControlEfectivoRepos</id>
+      <repositories>
+    
+        <repository>
+          <id>maven-central</id>
+          <name>maven-central</name>
+          <url>https://devops-nexus.ath.net/repository/centralizacion-efectivo-group/</url>
+        </repository>
+    
+      </repositories>
+      <pluginRepositories>
+        <pluginRepository>
+            <id>maven-central</id>
+            <url>https://devops-nexus.ath.net/repository/centralizacion-efectivo-group/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
+  </profiles>
+  
+  <activeProfiles>
+    <activeProfile>ControlEfectivoRepos</activeProfile>
+  </activeProfiles>
+</settings>

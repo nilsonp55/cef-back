@@ -63,6 +63,7 @@ public interface IPuntosService {
 	 * @author duvan.naranjo
 	 */
 	PuntosDTO getPuntoByTipoPuntoAndCodigoCiudad(String tipoPunto, String codigoCiudad);
+
 	/**
 	 * Servicio encargado de la persistencia de los puntos para banco
 	 * 

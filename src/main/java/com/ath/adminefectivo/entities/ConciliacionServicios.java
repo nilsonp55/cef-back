@@ -38,12 +38,6 @@ public class ConciliacionServicios {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer idConciliacion;
 	
-	@Column(name = "ID_OPERACION")
-	private Integer idOperacion;
-	
-	@Column(name = "ID_CERTIFICACION")
-	private Integer idCertificacion;
-	
 	@Column(name = "FECHA_CONCILIACION")
 	private Date fechaConciliacion;
 	
@@ -61,11 +55,11 @@ public class ConciliacionServicios {
 	private String usuarioCreacion;
 	
 	@ManyToOne
-	@JoinColumn(name = "ID_OPERACION", insertable = false, updatable = false)
+	@JoinColumn(name = "ID_OPERACION")
 	private OperacionesProgramadas operacionesProgramadas;
 	
 	@ManyToOne
-	@JoinColumn(name = "ID_CERTIFICACION", insertable = false, updatable = false)
+	@JoinColumn(name = "ID_CERTIFICACION")
 	private OperacionesCertificadas operacionesCertificadas;
 	
 }

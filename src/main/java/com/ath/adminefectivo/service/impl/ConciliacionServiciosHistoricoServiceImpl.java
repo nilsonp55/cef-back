@@ -11,9 +11,12 @@ import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.ConciliacionServiciosHistoricoDTO;
 import com.ath.adminefectivo.entities.ConciliacionServicios;
+import com.ath.adminefectivo.entities.ConciliacionServiciosHistorico;
 import com.ath.adminefectivo.repositories.IConciliacionServiciosHistoricoRepository;
 import com.ath.adminefectivo.service.IConciliacionServiciosHistoricoService;
 import com.ath.adminefectivo.service.IDominioService;
+import com.ath.adminefectivo.service.IOperacionesCertificadasService;
+import com.ath.adminefectivo.service.IOperacionesProgramadasService;
 
 @Service
 public class ConciliacionServiciosHistoricoServiceImpl implements IConciliacionServiciosHistoricoService{
@@ -23,6 +26,12 @@ public class ConciliacionServiciosHistoricoServiceImpl implements IConciliacionS
 	
 	@Autowired
 	IDominioService dominioService;
+	
+	@Autowired
+	IOperacionesProgramadasService operacionesProgramadasService;
+	
+	@Autowired
+	IOperacionesCertificadasService operacionesCertificadasService;
 	
 	/**
 	 * {@inheritDoc}
@@ -37,16 +46,22 @@ public class ConciliacionServiciosHistoricoServiceImpl implements IConciliacionS
 			conciliacion.setFechaConciliacion(regConciliado.get().getFechaConciliacion());
 			conciliacion.setFechaCreacion(new java.util.Date());
 			conciliacion.setFechaModificacion(new java.util.Date());
-			conciliacion.setIdCertificacion(regConciliado.get().getIdCertificacion());
 			conciliacion.setIdConciliacion(regConciliado.get().getIdConciliacion());
-			conciliacion.setIdOperacion(regConciliado.get().getIdOperacion());
+			var certificaciones = operacionesCertificadasService.
+									obtenerEntidadOperacionesCertificacionesporId(
+									regConciliado.get().getOperacionesCertificadas().getIdCertificacion());
+			conciliacion.setCertificaciones(certificaciones);
+			var operaciones = operacionesProgramadasService.
+									obtenerEntidadOperacionesProgramadasporId(
+									regConciliado.get().getOperacionesProgramadas().getIdOperacion());
+			conciliacion.setOperaciones(operaciones);
 			conciliacion.setTipoConciliacion(dominioService.valorTextoDominio(
 										Constantes.DOMINIO_TIPOS_CONCILIACION, 
 										Dominios.TIPO_CONCILIACION_MANUAL));
 			conciliacion.setUsuarioCreacion("user1");
 			conciliacion.setUsuarioModificacion("user1");
-			conciliacionServiciosHistoricoRepository
-					.save(ConciliacionServiciosHistoricoDTO.CONVERTER_ENTITY.apply(conciliacion));
+			ConciliacionServiciosHistorico entidadConciliacion = ConciliacionServiciosHistoricoDTO.CONVERTER_ENTITY.apply(conciliacion);
+			conciliacionServiciosHistoricoRepository.save(entidadConciliacion);
 		} catch (Exception e) {
 			e.getMessage();
 		}

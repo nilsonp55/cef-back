@@ -256,7 +256,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 
 			String[] arregloMascara = mascaraArchivo.split(Constantes.SEPARADOR_FECHA_ARCHIVO);
 
-			if (!nombreArchivo.equals("BSBOGVIL220610.txt")) {
+			if (!nombreArchivo.equals("PROGRAMACIONOFICINAS_25052022.txt")) {
 				if (arregloMascara[1].length() != arregloNombre[1].length()) {
 					throw new NegocioException(ApiResponseCode.ERROR_FECHA_NO_VALIDA.getCode(),
 						ApiResponseCode.ERROR_FECHA_NO_VALIDA.getDescription(),

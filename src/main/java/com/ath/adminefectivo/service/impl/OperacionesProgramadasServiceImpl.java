@@ -33,11 +33,8 @@ import com.ath.adminefectivo.dto.TransportadorasDTO;
 import com.ath.adminefectivo.dto.compuestos.DetalleOperacionesDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionesProgramadasNombresDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
-import com.ath.adminefectivo.entities.ArchivosCargados;
 import com.ath.adminefectivo.entities.DetalleOperacionesProgramadas;
 import com.ath.adminefectivo.entities.OperacionesProgramadas;
-import com.ath.adminefectivo.entities.RegistrosCargados;
-import com.ath.adminefectivo.entities.id.DetallesDefinicionArchivoPK;
 import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.IOperacionesProgramadasRepository;
@@ -90,7 +87,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
 	@Autowired
 	IDominioService dominioService;
-	
+
 	@Autowired
 	IOficinasService oficinaService;
 
@@ -108,23 +105,24 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
 	@Autowired
 	IBancosService bancosService;
-	
+
 	@Autowired
 	ISitiosClientesService sitiosClientesService;
-	
+
 	@Autowired
 	ICajerosService cajerosService;
 
 	@Autowired
 	IArchivosCargadosService archivosCargadosService;
-	
+
 	@Autowired
 	IClientesCorporativosService clientesCorporativosService;
 
 	@Autowired
 	IDetalleOperacionesProgramadasService detalleOperacionesProgramadasService;
 
-
+	private OperacionesProgramadasDTO operaciones;
+	private List<OperacionesProgramadas> operacionesp;
 	private List<TransportadorasDTO> listaTransportadoras;
 	private List<FondosDTO> listaFondos;
 	private List<PuntosDTO> listaPuntos;
@@ -137,14 +135,13 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	@Override
 	public Boolean actualizarEstadoEnProgramadas(Integer idOperacion, String estado) {
 
-		Optional<OperacionesProgramadas> operaciones = operacionesProgramadasRepository.findById(idOperacion);
-		if (operaciones.isPresent()) {
+		Optional<OperacionesProgramadas> operacionesP = operacionesProgramadasRepository.findById(idOperacion);
+		if (operacionesP.isPresent()) {
 			try {
-				operaciones.get().setEstadoConciliacion(estado);
-				operaciones.get().setIdOperacion(idOperacion);
-				operaciones.get().setFechaModificacion(new Date());
-				operaciones.get().setUsuarioModificacion("user1");
-				operacionesProgramadasRepository.save(operaciones.get());
+				operacionesP.get().setEstadoConciliacion(estado);
+				operacionesP.get().setFechaModificacion(new Date());
+				operacionesP.get().setUsuarioModificacion("user1");
+				operacionesProgramadasRepository.save(operacionesP.get());
 			} catch (Exception e) {
 				e.getMessage();
 			}
@@ -162,15 +159,15 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	@Override
 	public Page<OperacionesProgramadasNombresDTO> getNombresProgramadasConciliadas(
 			List<OperacionesProgramadas> operacionesProgramadasList, Predicate predicate) {
-		
+
 		List<OperacionesProgramadasNombresDTO> listOperacionesProgramas = new ArrayList<>();
 		this.getListados(predicate);
 		for (OperacionesProgramadas programadas : operacionesProgramadasList) {
 			var operacionesProgramadas = new OperacionesProgramadasNombresDTO();
 			// Obtiene nombres de transportadora y Banco dueño del fondo
-			operacionesProgramadas.setNombreTransportadora(this.getNombreTransportadora(
-						programadas.getCodigoFondoTDV()));	
-			operacionesProgramadas.setNombreBanco(this.getNombreBanco(programadas.getCodigoFondoTDV()));	
+			operacionesProgramadas
+					.setNombreTransportadora(this.getNombreTransportadora(programadas.getCodigoFondoTDV()));
+			operacionesProgramadas.setNombreBanco(this.getNombreBanco(programadas.getCodigoFondoTDV()));
 			// Obtiene nombres de tipo origen y nombre ciudad origen
 			operacionesProgramadas.setNombrePuntoOrigen(this.getNombrePunto(programadas.getCodigoPuntoOrigen()));
 			operacionesProgramadas.setNombreCiudadOrigen(this.getNombreCiudad(programadas.getCodigoPuntoOrigen()));
@@ -187,6 +184,11 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 						.setTipoConciliacion(programadas.getConciliacionServicios().get(0).getTipoConciliacion());
 			operacionesProgramadas
 						.setIdConciliacion(programadas.getConciliacionServicios().get(0).getIdConciliacion());
+			// Datos Complementarios
+			operacionesProgramadas.setBancoAVAL(fondosService.getEntidadFondo(
+					programadas.getCodigoFondoTDV()).getBancoAVAL());
+			operacionesProgramadas.setTdv(fondosService.getEntidadFondo(
+					programadas.getCodigoFondoTDV()).getTdv());
 			listOperacionesProgramas.add(operacionesProgramadas);
 		}
 		return new PageImpl<>(listOperacionesProgramas);
@@ -197,8 +199,15 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	 */
 	@Override
 	public Integer numeroOperacionesPorEstadoyFecha(FechasConciliacionDTO fechaConciliacion, String estado) {
-		return operacionesProgramadasRepository.countByEstadoConciliacionAndFechaOrigenBetween(estado,
+		Integer cuentaProgramadas = operacionesProgramadasRepository
+				.countByEstadoConciliacionAndFechaOrigenBetween(estado,
 				fechaConciliacion.getFechaConciliacionInicial(), fechaConciliacion.getFechaConciliacionFinal());
+		if(Objects.isNull(cuentaProgramadas)) {
+			throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getCode(),
+					ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getHttpStatus());
+		}
+		return cuentaProgramadas;
 	}
 
 	/**
@@ -218,25 +227,65 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		});
 		return listadoOperacionesProgramadas;
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<OperacionesProgramadas> obtenerOperacionesProgramadas() {
+		operacionesp = operacionesProgramadasRepository.conciliacionAutomatica(
+				dominioService.valorTextoDominio(Constantes.DOMINIO_ESTADO_CONCILIACION,
+												Dominios.ESTADO_CONCILIACION_NO_CONCILIADO));
+		if (Objects.isNull(operacionesp)) {
+			throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_A_CONCILIAR_NO_ENCONTRADO.getCode(),
+					ApiResponseCode.ERROR_OPERACIONES_A_CONCILIAR_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_OPERACIONES_A_CONCILIAR_NO_ENCONTRADO.getHttpStatus());
+		}
+		return operacionesp;
+	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Boolean procesarArchivos(List<ArchivosCargados> archivosCargados) {
-
-		for (ArchivosCargados elemento : archivosCargados) {
-			if(elemento.getIdModeloArchivo().equals("ISRPO")) {
-				procesarArchivoOficinas(elemento);
-				actualizarValorTotal(elemento.getIdArchivo().intValue());
-			}
-			if(elemento.getIdModeloArchivo().equals("CAJER")) {
-				procesarArchivoCajeros(elemento);
-			}
+	public OperacionesProgramadas obtenerEntidadOperacionesProgramadasporId(Integer idOperacion) {
+		OperacionesProgramadas operacionesP = operacionesProgramadasRepository.findById(idOperacion).get();
+		if(Objects.isNull(operacionesP)) {
+			throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getCode(),
+					ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getHttpStatus());
 		}
-		return true;
+		return operacionesP;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<OperacionesProgramadasDTO> getOperacionesProgramadasPorFechas(String tipoContabilidad, Date fechaInicio, Date fechaFin) {
+		List<OperacionesProgramadas> listaOperacionesProgramadas = new ArrayList<>();
+		if(tipoContabilidad.equals("PM")) {
+			listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaProgramacionBetween("CONSIGNACION", fechaInicio,
+					fechaFin));
+			listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaProgramacionBetween("RETIRO", fechaInicio,
+					fechaFin));
+			listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaProgramacionBetween("VENTA", fechaInicio,
+					fechaFin));
+		}
+		
+		
+		List<OperacionesProgramadasDTO> listadoOperacionesProgramadasDTO = new ArrayList<>();
+		if (!listaOperacionesProgramadas.isEmpty()) {
+			listaOperacionesProgramadas.forEach(operacionProgramada -> listadoOperacionesProgramadasDTO
+					.add(OperacionesProgramadasDTO.CONVERTER_DTO.apply(operacionProgramada)));
+		}
+
+		return listadoOperacionesProgramadasDTO;
 	}
 
+	/**
+	 * ------------------------------------------------- INICIO METODOS PRIVADOS --------------------------------------------------------------------
+	 */
 
 	/**
 	 * Metodo encargado de realizar las consultas necesarias del archivo recibido
@@ -251,7 +300,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
 		MaestrosDefinicionArchivoDTO maestrosDefinicionArchivoDTO = maestroDefinicionArchivoService
 				.consultarDefinicionArchivoById(archivo.getIdModeloArchivo());
-
+		
 		String delimitador = lecturaArchivoService.obtenerDelimitadorArchivo(maestrosDefinicionArchivoDTO);
 
 		List<RegistrosCargadosDTO> listadoRegistrosCargados = registrosCargadosService
@@ -264,7 +313,9 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 			listadoRegistrosCargados
 					.forEach(registroCargado -> listadoOperacionesProgramadas.add(this.procesarRegistroCargado(
 							registroCargado.getContenido().split(delimitador), listadoDetalleArchivo, archivo)));
-
+			if(archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_ISRPO)) {
+				actualizarValorTotalOficinas(archivo.getIdArchivo().intValue());
+			}
 		}
 		return listadoOperacionesProgramadas;
 	}
@@ -281,17 +332,32 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	 */
 	private OperacionesProgramadasDTO procesarRegistroCargado(String[] contenido,
 			List<DetallesDefinicionArchivoDTO> detalleArchivo, ArchivosCargadosDTO archivo) {
+
 		OperacionesProgramadasDTO operacionProgramada = null;
 		String tipoServicio = contenido[this.obtenerNumeroCampoTipoServ(detalleArchivo)];
 
-		if (tipoServicio.toUpperCase().trim().contains(Dominios.TIPO_OPERA_CONSIGNACION)) {
+		if (archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IPPSV)
+				&& tipoServicio.toUpperCase().trim().contains(Dominios.TIPO_OPERA_CONSIGNACION)) {
 			operacionProgramada = this.generarOperacionConsignacion(contenido, detalleArchivo, archivo, false);
-		} else if (tipoServicio.toUpperCase().trim().contains(Dominios.TIPO_OPERA_RETIRO)) {
+		} else if (archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IPPSV)
+				&& tipoServicio.toUpperCase().trim().contains(Dominios.TIPO_OPERA_RETIRO)) {
 			operacionProgramada = this.generarOperacionRetiro(contenido, detalleArchivo, archivo, false);
-		} else if (tipoServicio.toUpperCase().trim().contains(Dominios.TIPO_OPERA_VENTA)) {
+		} else if (archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IPPSV)
+				&& tipoServicio.toUpperCase().trim().contains(Dominios.TIPO_OPERA_VENTA)) {
 			operacionProgramada = this.generarOperacionVenta(contenido, detalleArchivo, archivo);
-		} else if (tipoServicio.toUpperCase().trim().contains(Dominios.TIPO_OPERA_CAMBIO)) {
+		} else if (archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IPPSV)
+				&& tipoServicio.toUpperCase().trim().contains(Dominios.TIPO_OPERA_CAMBIO)) {
 			operacionProgramada = this.generarOperacionCambio(contenido, detalleArchivo, archivo);
+		} else if (archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_ISTRC)
+				&& tipoServicio.toUpperCase().trim().contains(Dominios.TIPO_OPERA_INTERCAMBIO)) {
+			operacionProgramada = this.generarOperacionIntercambio(contenido, detalleArchivo, archivo);
+		} else if (archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_ISTRC)
+				&& tipoServicio.toUpperCase().trim().contains(Dominios.TIPO_OPERA_TRASLADO)) {
+			operacionProgramada = this.generarOperacionTraslado(contenido, detalleArchivo, archivo);
+		} else if (archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_ISRPO)){
+			operacionProgramada = this.procesarArchivoOficinas(contenido, detalleArchivo, archivo);
+		} else if (archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_ISRPC)) {
+			operacionProgramada = this.procesarArchivoCajeros(contenido, detalleArchivo, archivo);
 		}
 		return operacionProgramada;
 	}
@@ -309,11 +375,10 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 				deta -> deta.getNombreCampo().toUpperCase().trim().equals(Constantes.CAMPO_ARCHIVO_TIPO_SERVICIO))
 				.findFirst().orElse(null);
 		if (!Objects.isNull(detalle)) {
-			return detalle.getId().getNumeroCampo()-1;
+			return detalle.getId().getNumeroCampo() - 1;
 		}
 		return 1;
 	}
-	
 
 	/**
 	 * Funcion encargada de realizar la logica de la operacion consignacion
@@ -393,9 +458,8 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 				.codigoPuntoDestino(puntoFondoDestino.getCodigoPunto())
 				.idArchivoCargado(Math.toIntExact(archivo.getIdArchivo())).build();
 
-		var operacionProgramadaEnt = operacionesProgramadasRepository
-				.save(OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(this.completarOperacionesProgramadas(operacionesProgramadasDTO, contenido,
-						detalleArchivo)));
+		var operacionProgramadaEnt = operacionesProgramadasRepository.save(OperacionesProgramadasDTO.CONVERTER_ENTITY
+				.apply(this.completarOperacionesProgramadas(operacionesProgramadasDTO, contenido, detalleArchivo)));
 		return OperacionesProgramadasDTO.CONVERTER_DTO.apply(operacionProgramadaEnt);
 	}
 
@@ -418,9 +482,11 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 				Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN);
 		PuntosDTO puntoFondoDestino = this.consultarPuntoPorDetalle(contenido, detalleArchivo,
 				Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO);
-		BancosDTO bancoDestino = this.consultarBancoPorDetalle(contenido, detalleArchivo, Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_DESTINO);
+		BancosDTO bancoDestino = this.consultarBancoPorDetalle(contenido, detalleArchivo,
+				Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_DESTINO);
 
-		if (!Objects.isNull(puntoFondoOrigen) && !puntoFondoOrigen.getTipoPunto().toUpperCase().trim().equals(Dominios.TIPOS_PUNTO_FONDO)) {
+		if (!Objects.isNull(puntoFondoOrigen)
+				&& !puntoFondoOrigen.getTipoPunto().toUpperCase().trim().equals(Dominios.TIPOS_PUNTO_FONDO)) {
 			throw new AplicationException(ApiResponseCode.ERROR_NO_ES_FONDO.getCode(),
 					ApiResponseCode.ERROR_NO_ES_FONDO.getDescription(),
 					ApiResponseCode.ERROR_NO_ES_FONDO.getHttpStatus());
@@ -439,19 +505,20 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 					.save(OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(operacionesProgramadasCompra));
 			operacionesProgramadasDTO.setIdOperacionRelac(operacionProgramadaEntity.getIdOperacion());
 		} else {
-			PuntosDTO puntoBancoDestino = this.consultarPuntoPorDetalle(contenido, detalleArchivo, Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_DESTINO);
-			if (!Objects.isNull(puntoFondoDestino) && puntoFondoDestino.getTipoPunto().equals(Dominios.TIPOS_PUNTO_BANCO)) {
+			PuntosDTO puntoBancoDestino = this.consultarPuntoPorDetalle(contenido, detalleArchivo,
+					Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_DESTINO);
+			if (!Objects.isNull(puntoFondoDestino)
+					&& puntoFondoDestino.getTipoPunto().equals(Dominios.TIPOS_PUNTO_BANCO)) {
 				operacionesProgramadasDTO.setCodigoPuntoDestino(bancoDestino.getCodigoPunto());
 			}
 		}
 
-		var operacionProgramadaEnt = operacionesProgramadasRepository
-				.save(OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(this.completarOperacionesProgramadas(operacionesProgramadasDTO, contenido,
-						detalleArchivo)));
+		var operacionProgramadaEnt = operacionesProgramadasRepository.save(OperacionesProgramadasDTO.CONVERTER_ENTITY
+				.apply(this.completarOperacionesProgramadas(operacionesProgramadasDTO, contenido, detalleArchivo)));
 		return OperacionesProgramadasDTO.CONVERTER_DTO.apply(operacionProgramadaEnt);
 
 	}
-	
+
 	/**
 	 * Metodo encargado de realizar la logica para la operacion venta compra
 	 * 
@@ -467,9 +534,11 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		OperacionesProgramadasDTO operacionesProgramadasDTO = null;
 		PuntosDTO puntoFondoDestino = this.consultarPuntoPorDetalle(contenido, detalleArchivo,
 				Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO);
-		BancosDTO bancoDestino = this.consultarBancoPorDetalle(contenido, detalleArchivo, Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_DESTINO);
+		BancosDTO bancoDestino = this.consultarBancoPorDetalle(contenido, detalleArchivo,
+				Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_DESTINO);
 
-		if (!Objects.isNull(puntoFondoDestino) && !puntoFondoDestino.getTipoPunto().toUpperCase().trim().equals(Dominios.TIPOS_PUNTO_FONDO)) {
+		if (!Objects.isNull(puntoFondoDestino)
+				&& !puntoFondoDestino.getTipoPunto().toUpperCase().trim().equals(Dominios.TIPOS_PUNTO_FONDO)) {
 			throw new AplicationException(ApiResponseCode.ERROR_NO_ES_FONDO.getCode(),
 					ApiResponseCode.ERROR_NO_ES_FONDO.getDescription(),
 					ApiResponseCode.ERROR_NO_ES_FONDO.getHttpStatus());
@@ -519,6 +588,253 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	}
 
 	/**
+	 * Funcion encargada de realizar la logica de la operacion intercambio
+	 * 
+	 * @param contenido
+	 * @param detallesArchivo
+	 * @param archivo
+	 * @return OperacionesProgramadasDTO
+	 * @author duvan.naranjo
+	 */
+	@Transactional
+	private OperacionesProgramadasDTO generarOperacionIntercambio(String[] contenido,
+			List<DetallesDefinicionArchivoDTO> detallesArchivo, ArchivosCargadosDTO archivo) {
+
+		OperacionesProgramadasDTO operacionesProgramadasIntercambio1 = this.generarOperacionIntercambioSalida(contenido,
+				detallesArchivo, archivo);
+
+		OperacionesProgramadasDTO operacionesProgramadasIntercambio2 = this
+				.generarOperacionIntercambioEntrada(contenido, detallesArchivo, archivo);
+
+		operacionesProgramadasIntercambio1.setIdOperacionRelac(operacionesProgramadasIntercambio2.getIdOperacion());
+
+		operacionesProgramadasRepository
+				.save(OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(operacionesProgramadasIntercambio1));
+
+		return operacionesProgramadasIntercambio1;
+	}
+
+	/**
+	 * Funcion encargada de realizar la logica de la operacion traslado
+	 * 
+	 * @param contenido
+	 * @param detallesArchivo
+	 * @param archivo
+	 * @return OperacionesProgramadasDTO
+	 * @author duvan.naranjo
+	 */
+	@Transactional
+	private OperacionesProgramadasDTO generarOperacionTraslado(String[] contenido,
+			List<DetallesDefinicionArchivoDTO> detallesArchivo, ArchivosCargadosDTO archivo) {
+
+		if (!this.esTrasladoMismoBanco(contenido, detallesArchivo)) {
+			throw new NegocioException(ApiResponseCode.ERROR_NO_ES_IGUAL_BANCO.getCode(),
+					ApiResponseCode.ERROR_NO_ES_IGUAL_BANCO.getDescription(),
+					ApiResponseCode.ERROR_NO_ES_IGUAL_BANCO.getHttpStatus());
+		}
+
+		OperacionesProgramadasDTO operacionesProgramadasTraslado1 = this.generarOperacionTraslado1(contenido,
+				detallesArchivo, archivo);
+
+		OperacionesProgramadasDTO operacionesProgramadasTraslado2 = this.generarOperacionTraslado2(contenido,
+				detallesArchivo, archivo);
+
+		operacionesProgramadasTraslado1.setIdOperacionRelac(operacionesProgramadasTraslado2.getIdOperacion());
+
+		operacionesProgramadasRepository
+				.save(OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(operacionesProgramadasTraslado1));
+
+		return operacionesProgramadasTraslado1;
+	}
+
+	/**
+	 * Metodo encargado de realizar la logica del registro de operaciones
+	 * programadas para la salida por parte de un traslado
+	 * 
+	 * @param contenido
+	 * @param detallesArchivo
+	 * @param archivo
+	 * @return OperacionesProgramadasDTO
+	 * @author duvan.naranjo
+	 */
+	private OperacionesProgramadasDTO generarOperacionTraslado1(String[] contenido,
+			List<DetallesDefinicionArchivoDTO> detallesArchivo, ArchivosCargadosDTO archivo) {
+
+		OperacionesProgramadasDTO operacionesProgramadasDTO = null;
+		PuntosDTO puntoFondoOrigen = this.consultarPuntoPorDetalle(contenido, detallesArchivo,
+				Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN);
+
+		PuntosDTO puntoFondoDestino = this.consultarPuntoPorDetalle(contenido, detallesArchivo,
+				Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO);
+
+		BancosDTO bancoOrigen = this.consultarBancoPorDetalle(contenido, detallesArchivo,
+				Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_ORIGEN);
+
+		if (!Objects.isNull(puntoFondoOrigen)
+				&& !puntoFondoOrigen.getTipoPunto().toUpperCase().trim().equals(Dominios.TIPOS_PUNTO_FONDO)) {
+			throw new AplicationException(ApiResponseCode.ERROR_NO_ES_FONDO.getCode(),
+					ApiResponseCode.ERROR_NO_ES_FONDO.getDescription(),
+					ApiResponseCode.ERROR_NO_ES_FONDO.getHttpStatus());
+		} else if (!Objects.isNull(puntoFondoDestino)
+				&& !puntoFondoDestino.getTipoPunto().toUpperCase().trim().equals(Dominios.TIPOS_PUNTO_FONDO)) {
+			throw new AplicationException(ApiResponseCode.ERROR_NO_ES_FONDO.getCode(),
+					ApiResponseCode.ERROR_NO_ES_FONDO.getDescription(),
+					ApiResponseCode.ERROR_NO_ES_FONDO.getHttpStatus());
+		}
+
+		operacionesProgramadasDTO = OperacionesProgramadasDTO.builder()
+				.codigoFondoTDV(puntoFondoOrigen.getCodigoPunto()).entradaSalida(Constantes.VALOR_SALIDA)
+				.codigoPuntoOrigen(puntoFondoOrigen.getCodigoPunto())
+				.codigoPuntoDestino(puntoFondoDestino.getCodigoPunto())
+				.idArchivoCargado(Math.toIntExact(archivo.getIdArchivo())).build();
+
+		return this.completarOperacionesProgramadas(operacionesProgramadasDTO, contenido, detallesArchivo);
+	}
+
+	/**
+	 * Metodo encargado de realizar la logica del registro de operaciones
+	 * programadas para la entrada por parte de un traslado
+	 * 
+	 * @param contenido
+	 * @param detallesArchivo
+	 * @param archivo
+	 * @return OperacionesProgramadasDTO
+	 * @author duvan.naranjo
+	 */
+	private OperacionesProgramadasDTO generarOperacionTraslado2(String[] contenido,
+			List<DetallesDefinicionArchivoDTO> detallesArchivo, ArchivosCargadosDTO archivo) {
+
+		OperacionesProgramadasDTO operacionesProgramadasDTO = null;
+		PuntosDTO puntoFondoDestino = this.consultarPuntoPorDetalle(contenido, detallesArchivo,
+				Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO);
+
+		BancosDTO bancoOrigen = this.consultarBancoPorDetalle(contenido, detallesArchivo,
+				Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_ORIGEN);
+
+		if (!Objects.isNull(puntoFondoDestino)
+				&& !puntoFondoDestino.getTipoPunto().toUpperCase().trim().equals(Dominios.TIPOS_PUNTO_FONDO)) {
+			throw new AplicationException(ApiResponseCode.ERROR_NO_ES_FONDO.getCode(),
+					ApiResponseCode.ERROR_NO_ES_FONDO.getDescription(),
+					ApiResponseCode.ERROR_NO_ES_FONDO.getHttpStatus());
+		}
+
+		operacionesProgramadasDTO = OperacionesProgramadasDTO.builder()
+				.codigoFondoTDV(puntoFondoDestino.getCodigoPunto()).entradaSalida(Constantes.VALOR_ENTRADA)
+				.codigoPuntoOrigen(puntoFondoDestino.getCodigoPunto()).codigoPuntoDestino(bancoOrigen.getCodigoPunto())
+				.idArchivoCargado(Math.toIntExact(archivo.getIdArchivo())).build();
+
+		OperacionesProgramadas traslado = operacionesProgramadasRepository
+				.save(OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(
+						this.completarOperacionesProgramadas(operacionesProgramadasDTO, contenido, detallesArchivo)));
+		return OperacionesProgramadasDTO.CONVERTER_DTO.apply(traslado);
+	}
+
+	/**
+	 * Metodo encargado de realizar la logica del registro de operaciones
+	 * programadas para la salida por parte de un traslado
+	 * 
+	 * @param contenido
+	 * @param detallesArchivo
+	 * @param archivo
+	 * @return OperacionesProgramadasDTO
+	 * @author duvan.naranjo
+	 */
+	private OperacionesProgramadasDTO generarOperacionIntercambioSalida(String[] contenido,
+			List<DetallesDefinicionArchivoDTO> detallesArchivo, ArchivosCargadosDTO archivo) {
+
+		OperacionesProgramadasDTO operacionesProgramadasDTO = null;
+		PuntosDTO puntoFondoOrigen = this.consultarPuntoPorDetalle(contenido, detallesArchivo,
+				Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN);
+
+		PuntosDTO puntoFondoDestino = this.consultarPuntoPorDetalle(contenido, detallesArchivo,
+				Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO);
+
+		if (!Objects.isNull(puntoFondoOrigen)
+				&& !puntoFondoOrigen.getTipoPunto().toUpperCase().trim().equals(Dominios.TIPOS_PUNTO_FONDO)) {
+			throw new AplicationException(ApiResponseCode.ERROR_NO_ES_FONDO.getCode(),
+					ApiResponseCode.ERROR_NO_ES_FONDO.getDescription(),
+					ApiResponseCode.ERROR_NO_ES_FONDO.getHttpStatus());
+		} else if (!Objects.isNull(puntoFondoDestino)
+				&& !puntoFondoDestino.getTipoPunto().toUpperCase().trim().equals(Dominios.TIPOS_PUNTO_FONDO)) {
+			throw new AplicationException(ApiResponseCode.ERROR_NO_ES_FONDO.getCode(),
+					ApiResponseCode.ERROR_NO_ES_FONDO.getDescription(),
+					ApiResponseCode.ERROR_NO_ES_FONDO.getHttpStatus());
+		}
+
+		operacionesProgramadasDTO = OperacionesProgramadasDTO.builder()
+				.codigoFondoTDV(puntoFondoOrigen.getCodigoPunto()).entradaSalida(Constantes.VALOR_SALIDA)
+				.codigoPuntoOrigen(puntoFondoOrigen.getCodigoPunto())
+				.codigoPuntoDestino(puntoFondoDestino.getCodigoPunto())
+				.idArchivoCargado(Math.toIntExact(archivo.getIdArchivo())).build();
+
+		return this.completarOperacionesProgramadas(operacionesProgramadasDTO, contenido, detallesArchivo);
+	}
+
+	/**
+	 * Metodo encargado de realizar la logica del registro de operaciones
+	 * programadas para la entrada por parte de un traslado
+	 * 
+	 * @param contenido
+	 * @param detallesArchivo
+	 * @param archivo
+	 * @return OperacionesProgramadasDTO
+	 * @author duvan.naranjo
+	 */
+	private OperacionesProgramadasDTO generarOperacionIntercambioEntrada(String[] contenido,
+			List<DetallesDefinicionArchivoDTO> detallesArchivo, ArchivosCargadosDTO archivo) {
+
+		OperacionesProgramadasDTO operacionesProgramadasDTO = null;
+		PuntosDTO puntoFondoDestino = this.consultarPuntoPorDetalle(contenido, detallesArchivo,
+				Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO);
+
+		PuntosDTO puntoFondoOrigen = this.consultarPuntoPorDetalle(contenido, detallesArchivo,
+				Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN);
+
+		if (!Objects.isNull(puntoFondoDestino)
+				&& !puntoFondoDestino.getTipoPunto().toUpperCase().trim().equals(Dominios.TIPOS_PUNTO_FONDO)) {
+			throw new AplicationException(ApiResponseCode.ERROR_NO_ES_FONDO.getCode(),
+					ApiResponseCode.ERROR_NO_ES_FONDO.getDescription(),
+					ApiResponseCode.ERROR_NO_ES_FONDO.getHttpStatus());
+		}
+
+		operacionesProgramadasDTO = OperacionesProgramadasDTO.builder()
+				.codigoFondoTDV(puntoFondoDestino.getCodigoPunto()).entradaSalida(Constantes.VALOR_ENTRADA)
+				.codigoPuntoOrigen(puntoFondoDestino.getCodigoPunto())
+				.codigoPuntoDestino(puntoFondoOrigen.getCodigoPunto())
+				.idArchivoCargado(Math.toIntExact(archivo.getIdArchivo())).build();
+
+		return this.completarOperacionesProgramadas(operacionesProgramadasDTO, contenido, detallesArchivo);
+	}
+
+	/**
+	 * Funcion encargada de realizar la validación si la entidad destino es igual a
+	 * la entidad origen
+	 * 
+	 * @param contenido
+	 * @param detallesArchivo
+	 * @return boolean
+	 * @author duvan.naranjo
+	 */
+	private boolean esTrasladoMismoBanco(String[] contenido, List<DetallesDefinicionArchivoDTO> detallesArchivo) {
+		DetallesDefinicionArchivoDTO entidadOrigen = detallesArchivo.stream().filter(
+				deta -> deta.getNombreCampo().toUpperCase().equals(Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_ORIGEN))
+				.findFirst().orElse(null);
+		DetallesDefinicionArchivoDTO entidadDestino = detallesArchivo.stream().filter(
+				deta -> deta.getNombreCampo().toUpperCase().equals(Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_DESTINO))
+				.findFirst().orElse(null);
+
+		if (!Objects.isNull(entidadOrigen) && !Objects.isNull(entidadDestino)) {
+			String bancoOrigen = contenido[entidadOrigen.getId().getNumeroCampo() - 1].trim();
+			String bancoDestino = contenido[entidadDestino.getId().getNumeroCampo() - 1].trim();
+			if (bancoOrigen.equals(bancoDestino)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * Metodo encargado de realizar el llenado de campos de operaciones programadas
 	 * provenientes del archivo cargado
 	 * 
@@ -555,10 +871,13 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 						.equals(Constantes.CAMPO_DETALLE_ARCHIVO_VALORTOTAL))
 				.findFirst().orElse(null).getId().getNumeroCampo() - 1].trim());
 
-		String idNegociacion = contenido[detalleArchivo.stream()
-				.filter(deta -> deta.getNombreCampo().toUpperCase().trim()
-						.equals(Constantes.CAMPO_DETALLE_ARCHIVO_IDNEGOCIACION))
-				.findFirst().orElse(null).getId().getNumeroCampo() - 1].trim();
+		DetallesDefinicionArchivoDTO idNegociacion = detalleArchivo.stream().filter(deta -> deta.getNombreCampo()
+				.toUpperCase().trim().equals(Constantes.CAMPO_DETALLE_ARCHIVO_IDNEGOCIACION)).findFirst().orElse(null);
+		String idNegoc = null;
+		if (!Objects.isNull(idNegociacion)) {
+			idNegoc = contenido[idNegociacion.getId().getNumeroCampo() - 1].trim();
+		}
+
 		String tasaNegociacion = contenido[detalleArchivo.stream()
 				.filter(deta -> deta.getNombreCampo().toUpperCase().trim()
 						.equals(Constantes.CAMPO_DETALLE_ARCHIVO_TASA))
@@ -572,7 +891,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		operacionesProgramadasDTO.setFechaDestino(UtilsString.convertirFecha(fechaDestino, listaDominioFecha));
 		operacionesProgramadasDTO.setTipoOperacion(tipoOperacion);
 		operacionesProgramadasDTO.setValorTotal(valorTotal);
-		operacionesProgramadasDTO.setIdNegociacion(idNegociacion);
+		operacionesProgramadasDTO.setIdNegociacion(idNegoc);
 		operacionesProgramadasDTO.setTasaNegociacion(tasaNegociacion);
 		operacionesProgramadasDTO.setEstadoOperacion(Dominios.ESTADOS_OPERA_PROGRAMADO);
 		operacionesProgramadasDTO.setEstadoConciliacion(Dominios.ESTADO_CONCILIACION_NO_CONCILIADO);
@@ -583,7 +902,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
 		return operacionesProgramadasDTO;
 	}
-	
+
 	/**
 	 * Metodo encargado de realizar la filtracion de un detalle por nombre campo
 	 * para obtener el banco por una abreviatura
@@ -598,14 +917,15 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 			String nombreCampo) {
 		DetallesDefinicionArchivoDTO detalle = detallesArchivo.stream()
 				.filter(deta -> deta.getNombreCampo().toUpperCase().equals(nombreCampo)).findFirst().orElse(null);
-		if(!Objects.isNull(detalle)) {
+		if (!Objects.isNull(detalle)) {
 			return bancosService.findBancoByAbreviatura(contenido[detalle.getId().getNumeroCampo() - 1].trim());
 		}
 		return null;
 	}
-	
+
 	/**
-	 * Metodo encargado de realizar la consulta de un punto por detalle y nombre campo
+	 * Metodo encargado de realizar la consulta de un punto por detalle y nombre
+	 * campo
 	 * 
 	 * @param contenido
 	 * @param detalle
@@ -617,15 +937,15 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
 		DetallesDefinicionArchivoDTO detalle = detallesArchivo.stream()
 				.filter(deta -> deta.getNombreCampo().toUpperCase().equals(nombreCampo)).findFirst().orElse(null);
-		if(!Objects.isNull(detalle)) {
+		if (!Objects.isNull(detalle)) {
 			return puntosService.getPuntoByNombrePunto(contenido[detalle.getId().getNumeroCampo() - 1].trim());
 		}
 		return null;
 	}
-	
+
 	/**
-	 * Metodo encargado de consultar un banco por medio del detalle de un archivo
-	 * y su ciudad
+	 * Metodo encargado de consultar un banco por medio del detalle de un archivo y
+	 * su ciudad
 	 * 
 	 * @param contenido
 	 * @param detallesArchivo
@@ -636,7 +956,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	private Integer consultarBancoPorCiudad(String[] contenido, List<DetallesDefinicionArchivoDTO> detallesArchivo,
 			String nombreCampo) {
 		PuntosDTO puntoFondoDestino = this.consultarPuntoPorDetalle(contenido, detallesArchivo, nombreCampo);
-		if(!Objects.isNull(puntoFondoDestino)) {
+		if (!Objects.isNull(puntoFondoDestino)) {
 			PuntosDTO puntoBancoDestino = puntosService.getPuntoByTipoPuntoAndCodigoCiudad(Dominios.TIPOS_PUNTO_BAN_REP,
 					puntoFondoDestino.getCodigoCiudad());
 			return puntoBancoDestino.getCodigoPunto();
@@ -668,21 +988,21 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	 * @author cesar.castano
 	 */
 	private String getNombreBanco(Integer codigoFondoTDV) {
-		FondosDTO fondos = listaFondos.stream().filter(fondo ->
-				fondo.getCodigoPunto().equals(codigoFondoTDV)).findFirst().orElse(null);
-		if(!Objects.isNull(fondos)) {
-			var punto = listaPuntos.stream().filter(puntoT -> 
-				puntoT.getCodigoPunto().equals(fondos.getBancoAVAL()) && 
-				puntoT.getTipoPunto().equals(dominioService.valorTextoDominio(
-						Constantes.DOMINIO_TIPOS_PUNTO,
-						Dominios.TIPOS_PUNTO_BANCO))).findFirst().orElse(null);
-			if(Objects.isNull(punto)) {
+		FondosDTO fondos = listaFondos.stream().filter(fondo -> fondo.getCodigoPunto().equals(codigoFondoTDV))
+				.findFirst().orElse(null);
+		if (!Objects.isNull(fondos)) {
+			var punto = listaPuntos.stream()
+					.filter(puntoT -> puntoT.getCodigoPunto().equals(fondos.getBancoAVAL())
+							&& puntoT.getTipoPunto().equals(dominioService
+									.valorTextoDominio(Constantes.DOMINIO_TIPOS_PUNTO, Dominios.TIPOS_PUNTO_BANCO)))
+					.findFirst().orElse(null);
+			if (Objects.isNull(punto)) {
 				throw new NegocioException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
 						ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription(),
 						ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
 			}
 			return punto.getNombrePunto();
-		}else {
+		} else {
 			throw new NegocioException(ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getDescription(),
 					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getHttpStatus());
@@ -727,10 +1047,10 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	 */
 	private String getNombrePunto(Integer codigoPunto) {
 		PuntosDTO puntos = listaPuntos.stream().filter(punto -> 
-				punto.getCodigoPunto().equals(codigoPunto)).findFirst().orElse(null);
+			punto.getCodigoPunto().equals(codigoPunto)).findFirst().orElse(null);
 		if(!Objects.isNull(puntos)) {
 			return puntos.getNombrePunto();
-		}else {
+		} else {
 			throw new NegocioException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription(),
 					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
@@ -746,92 +1066,111 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	 * @author cesar.castano
 	 */
 	private String getNombreCiudad(Integer codigoPunto) {
-		PuntosDTO puntos = listaPuntos.stream().filter(punto -> 
-					punto.getCodigoPunto().equals(codigoPunto)).findFirst().orElse(null);
-		if(!Objects.isNull(puntos)) {
-			CiudadesDTO ciudad = listaCiudades.stream().filter(ciud ->
-					ciud.getCodigoDANE().equals(puntos.getCodigoCiudad())).findFirst().orElse(null);
-			if(Objects.isNull(ciudad)) {
+		PuntosDTO puntos = listaPuntos.stream().filter(punto -> punto.getCodigoPunto().equals(codigoPunto)).findFirst()
+				.orElse(null);
+		if (!Objects.isNull(puntos)) {
+			CiudadesDTO ciudad = listaCiudades.stream()
+					.filter(ciud -> ciud.getCodigoDANE().equals(puntos.getCodigoCiudad())).findFirst().orElse(null);
+			if (Objects.isNull(ciudad)) {
 				throw new NegocioException(ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getCode(),
 						ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getDescription(),
 						ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getHttpStatus());
-			}else {
+			} else {
 				return ciudad.getNombreCiudad();
 			}
-		}else {
+		} else {
 			throw new NegocioException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
-				ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription(),
-				ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
+					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
 		}
 	}
-	
+
 	/**
-	 * Metodo encargado de persistir el archivo de cargue de Oficinas en OperacionesProgramadas
+	 * Metodo encargado de persistir el archivo de cargue de Oficinas en
+	 * OperacionesProgramadas
+	 * 
 	 * @param elemento
 	 * @return void
 	 */
-	private void procesarArchivoOficinas(ArchivosCargados elemento) {
-		Integer numeroAnterior = 0;
+	private OperacionesProgramadasDTO procesarArchivoOficinas(String[] contenido,
+			List<DetallesDefinicionArchivoDTO> detalleArchivo, ArchivosCargadosDTO archivo) {
 		Integer idOperacion = 0;
-		for (var i = 0; i < elemento.getRegistrosCargados().size(); i++) {
-			String[] fila = elemento.getRegistrosCargados().get(i).getContenido().split(", ");
-			if(Integer.parseInt(fila[0]) != numeroAnterior) {
-				if (Integer.parseInt(fila[10].trim()) + Integer.parseInt(fila[11].trim()) != 0){
-					var operaciones = new OperacionesProgramadasDTO();
-					operaciones.setCodigoFondoTDV(fondosService
-								.getCodigoFondo(fila[9], determinarCodigoCompensacion(fila), fila[8])
-								.getCodigoPunto());
-					operaciones.setEntradaSalida(asignarEntradaSalida(asignarTipoOperacion(fila)));
-					operaciones.setCodigoPuntoOrigen(determinarPuntoOrigen(fila));
-					operaciones.setCodigoPuntoDestino(determinarPuntoDestino(fila));
-					operaciones.setEstadoConciliacion(dominioService.valorTextoDominio(
-								Constantes.DOMINIO_ESTADO_CONCILIACION,
-								Dominios.ESTADO_CONCILIACION_NO_CONCILIADO));
-					operaciones.setEstadoOperacion(asignarEstadoOperacion(fila[2]));
-					operaciones.setFechaCreacion(new Date());
-					operaciones.setFechaDestino(asignarFecha(fila[4]));
-					operaciones.setFechaModificacion(new Date());
-					operaciones.setFechaOrigen(asignarFecha(fila[4]));
-					operaciones.setFechaProgramacion(asignarFecha(fila[4]));
-					operaciones.setIdArchivoCargado(elemento.getIdArchivo().intValue());
-					operaciones.setIdNegociacion(null);
-					operaciones.getIdOperacionRelac();
-					operaciones.setTasaNegociacion(null);
-					operaciones.setTipoOperacion(asignarTipoOperacion(fila));
-					operaciones.setTipoServicio(asignarTipoServicio(fila[4]));
-					operaciones.setTipoTransporte(null);
-					operaciones.setUsuarioCreacion("User1");
-					operaciones.setUsuarioModificacion("User1");
-					operaciones.setValorTotal(asignarValorTotal(fila));
-					operaciones.setIdServicio(fila[0]);
-					var operacionesP = operacionesProgramadasRepository.save(
+		String orderId = determinarOrderId(contenido, detalleArchivo);
+		String shipIn = determinarShipIn(contenido, detalleArchivo);
+		String shipOut = determinarShipOut(contenido, detalleArchivo);
+		var operacionesProg = operacionesProgramadasRepository.findByIdServicio(orderId);
+		if(Objects.isNull(operacionesProg)) {
+			if (Integer.parseInt(shipIn) + Integer.parseInt(shipOut) != 0){
+				operaciones = new OperacionesProgramadasDTO();
+				String transportadora = determinarTransportadora(contenido, detalleArchivo, 
+										Constantes.CAMPO_DETALLE_ARCHIVO_TRANSPORTADORA);
+				String ciudad = determinarCiudad(contenido, detalleArchivo, 
+										Constantes.CAMPO_DETALLE_ARCHIVO_CIUDAD);
+				operaciones.setCodigoFondoTDV(fondosService
+										.getCodigoFondo(transportadora, 
+										determinarCodigoCompensacion(contenido, detalleArchivo), 
+										ciudad)
+										.getCodigoPunto());
+				operaciones.setEntradaSalida(asignarEntradaSalida(asignarTipoOperacion(contenido, detalleArchivo)));
+				operaciones.setCodigoPuntoOrigen(determinarPuntoOrigen(
+										contenido, detalleArchivo, transportadora, ciudad));
+				operaciones.setCodigoPuntoDestino(determinarPuntoDestino(
+										contenido, detalleArchivo, transportadora, ciudad));
+				operaciones.setEstadoConciliacion(dominioService.valorTextoDominio(
+										Constantes.DOMINIO_ESTADO_CONCILIACION,
+										Dominios.ESTADO_CONCILIACION_NO_CONCILIADO));
+				operaciones.setEstadoOperacion(determinarEstadoOperacion(contenido, detalleArchivo));
+				operaciones.setFechaCreacion(new Date());
+				Date fechaDestino = determinarFechaDestino(contenido, detalleArchivo, 
+										Constantes.CAMPO_DETALLE_ARCHIVO_FECHA_ENTREGA);
+				operaciones.setFechaDestino(fechaDestino);
+				operaciones.setFechaModificacion(new Date());
+				operaciones.setFechaOrigen(fechaDestino);
+				operaciones.setFechaProgramacion(determinarFechaProgramacion(contenido, detalleArchivo));
+				operaciones.setIdArchivoCargado(archivo.getIdArchivo().intValue());
+				operaciones.setIdNegociacion(null);
+				operaciones.getIdOperacionRelac();
+				operaciones.setTasaNegociacion(null);
+				operaciones.setTipoOperacion(asignarTipoOperacion(contenido, detalleArchivo));
+				operaciones.setTipoServicio(determinarTipoServicio(contenido, detalleArchivo));
+				operaciones.setTipoTransporte(null);
+				operaciones.setUsuarioCreacion("User1");
+				operaciones.setUsuarioModificacion("User1");
+				operaciones.setValorTotal(asignarValorTotal(shipIn, shipOut));
+				operaciones.setIdServicio(orderId);
+				var operacionesP = operacionesProgramadasRepository.save(
 							OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(operaciones));
-					idOperacion = operacionesP.getIdOperacion();
-					crearDetalleOperacionesProgramadas(fila, idOperacion);
-					numeroAnterior = Integer.parseInt(fila[0]);
-				}
-			}else {
-				if (Integer.parseInt(fila[10].trim()) + Integer.parseInt(fila[11].trim()) != 0){
-					crearDetalleOperacionesProgramadas(fila, idOperacion);
-				}
+				idOperacion = operacionesP.getIdOperacion();
+				crearDetalleOperacionesProgramadas(contenido, idOperacion, detalleArchivo);
+			}
+		}else {
+			if (Integer.parseInt(shipIn) + Integer.parseInt(shipOut) != 0){
+				idOperacion = operacionesProg.getIdOperacion();
+				crearDetalleOperacionesProgramadas(contenido, idOperacion, detalleArchivo);
 			}
 		}
+		return operaciones;
 	}
-	
+
 	/**
 	 * Metodo encargado de obtener el codigo de compensacion
+	 * 
 	 * @param fila
 	 * @return Integer
 	 * @author cesar.castano
 	 */
-	private Integer determinarCodigoCompensacion(String[] fila) {
+	private Integer determinarCodigoCompensacion(String[] contenido, 
+									List<DetallesDefinicionArchivoDTO> detalleArchivo) {
 		Integer compensacion = 0;
-		String[] fila1 = fila[5].split("-");
-		if(fila1[0].equals("CLI")) {
-			compensacion = Integer.parseInt(fila1[1].trim());
+		String[] referenceId = contenido[detalleArchivo.stream()
+		     				            .filter(deta -> deta.getNombreCampo().toUpperCase().trim()
+		     				            .equals(Constantes.CAMPO_DETALLE_ARCHIVO_REFERENCEDID))
+		     							.findFirst().orElse(null).getId().getNumeroCampo() - 1].trim().split("-");
+		if(referenceId[0].equals(Constantes.CLIENTE)) {
+			compensacion = Integer.parseInt(referenceId[1]);
     	}else {
-    		if(fila1[1].equals("SUC")) {
-    			compensacion = Integer.parseInt(fila1[0].trim());
+    		if(referenceId[1].equals(Constantes.SUCURSAL)) {
+    			compensacion = Integer.parseInt(referenceId[0]);
     		}
     	}
     	return compensacion;
@@ -839,49 +1178,59 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
 	/**
 	 * Metodo encargado de determinar el tipo de punto origen
+	 * 
 	 * @param fila
 	 * @return Integer
 	 * @author cesar.castano
 	 */
-    private Integer determinarPuntoOrigen(String[] fila) {
+    private Integer determinarPuntoOrigen(String[] contenido, List<DetallesDefinicionArchivoDTO> detalleArchivo,
+    										String transportadora, String ciudad) {
     	Integer codigo = 0;
-		if(this.asignarEntradaSalida(asignarTipoOperacion(fila)).equals("O")) {
-			return fondosService.getCodigoFondo(fila[9], determinarCodigoCompensacion(fila), fila[8]).getCodigoPunto();
+		if(this.asignarEntradaSalida(asignarTipoOperacion(contenido, detalleArchivo)).equals("O")) {
+			return fondosService.getCodigoFondo(transportadora, 
+												determinarCodigoCompensacion(contenido, detalleArchivo), 
+												ciudad)
+								.getCodigoPunto();
 		}else {
-			codigo = validarEntradaSalida(fila);
+			codigo = asignarClienteOficina(contenido, detalleArchivo);
 		}
 		return codigo;
 	}
 
-    /**
+	/**
 	 * Metodo encargado de determinar el tipo de punto destino
+	 * 
 	 * @param fila
 	 * @return Integer
 	 * @author cesar.castano
 	 */
-    private Integer determinarPuntoDestino(String[] fila) {
+    private Integer determinarPuntoDestino(String[] contenido, List<DetallesDefinicionArchivoDTO> detalleArchivo,
+    										String transportadora, String ciudad) {
     	Integer codigo = 0;
-		if(this.asignarEntradaSalida(asignarTipoOperacion(fila)).equals("O")) {
-			codigo = validarEntradaSalida(fila);
+		if(this.asignarEntradaSalida(asignarTipoOperacion(contenido, detalleArchivo)).equals("O")) {
+			codigo = asignarClienteOficina(contenido, detalleArchivo);
 		}else {
-			return fondosService.getCodigoFondo(fila[9], determinarCodigoCompensacion(fila), fila[8]).getCodigoPunto();
+			return fondosService.getCodigoFondo(transportadora, 
+					determinarCodigoCompensacion(contenido, detalleArchivo), 
+					ciudad)
+					.getCodigoPunto();
 		}
 		return codigo;
 	}
-    
+
 	/**
      * Metodo que valida la entrada o la salida
      * @param fila
      * @return Integer
      */
-    private Integer validarEntradaSalida(String[] fila) {
+    private Integer asignarClienteOficina(String[] contenido, List<DetallesDefinicionArchivoDTO> detalleArchivo) {
     	Integer codigo = 0;
-    	String[] fila1 = fila[5].split("-");
-    	if(fila1[0].equals("CLI")) {
-    		codigo = asignarCodigoCliente(fila);
+    	String[] referenceId = determinarReferencedId(contenido, detalleArchivo);
+    	if(referenceId[0].equals(Constantes.CLIENTE)) {
+    		codigo = asignarCodigoCliente(contenido, detalleArchivo);
     	}else {
-    		if(fila1[1].equals("SUC")) {
-    			codigo = asignarCodigoOficina(fila);
+    		if(referenceId[1].equals(Constantes.SUCURSAL)) {
+    			codigo = asignarCodigoOficina(contenido, detalleArchivo);
     		}
     	}
     	return codigo;
@@ -893,27 +1242,26 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
      * @return Integer
      * @author cesar.castano
      */
-	private Integer asignarCodigoCliente(String[] fila) {
+	private Integer asignarCodigoCliente(String[] contenido, List<DetallesDefinicionArchivoDTO> detalleArchivo) {
 		
-		String[] fila1 = fila[5].split("-");
-		Integer codigoPunto = bancosService.getCodigoPuntoBanco(Integer.parseInt(fila1[1]));
-		Integer cliente = clientesCorporativosService.getCodigoCliente(codigoPunto, fila1[2].trim());
+		String[] referenceId = determinarReferencedId(contenido, detalleArchivo);
+		Integer codigoPunto = bancosService.getCodigoPuntoBanco(Integer.parseInt(referenceId[1]));
+		Integer cliente = clientesCorporativosService.getCodigoCliente(codigoPunto, referenceId[2].trim());
 		return 9999;
 //		return sitiosClientesService.getCodigoPuntoSitio(cliente);
-
 	}
-	
+
 	/**
      * Metodo encargado de asignar el codigo punto de la oficina
      * @param fila
      * @return Integer
      * @author cesar.castano
      */
-	private Integer asignarCodigoOficina(String[] fila) {
+	private Integer asignarCodigoOficina(String[] contenido, List<DetallesDefinicionArchivoDTO> detalleArchivo) {
 		
-		String[] fila1 = fila[5].split("-");
-		Integer codigoPunto = bancosService.getCodigoPuntoBanco(Integer.parseInt(fila1[0]));
-		return oficinaService.getCodigoPunto(Integer.parseInt(fila1[2]), codigoPunto);
+		String[] referenceId = determinarReferencedId(contenido, detalleArchivo);
+		Integer codigoPunto = bancosService.getCodigoPuntoBanco(Integer.parseInt(referenceId[0]));
+		return oficinaService.getCodigoPunto(Integer.parseInt(referenceId[2]), codigoPunto);
 
 	}
 
@@ -923,36 +1271,36 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
      * @return Integer
      * @author cesar.castano
      */
-	private Double asignarValorTotal(String[] fila) {
+	private Double asignarValorTotal(String ShipIn, String ShipOut) {
 		Double valorTotal = 0.0;
-		if(!fila[10].equals("0")) {
-			valorTotal = Double.parseDouble(fila[11].trim());
-
+		if(!ShipIn.equals("0")) {
+			valorTotal = Double.parseDouble(ShipIn);
 		}else {
-			if(!fila[11].equals("0")) {
-				valorTotal = Double.parseDouble(fila[11].trim());
+			if(!ShipOut.equals("0")) {
+				valorTotal = Double.parseDouble(ShipOut);
 			}
 		}
 		return valorTotal;
 	}
 
 	/**
-     * Metodo encargado de asignar la entrada o la salida de la operacion
-     * @param tipoOperacion
-     * @return String
-     * @author cesar.castano
-     */
+	 * Metodo encargado de asignar la entrada o la salida de la operacion
+	 * 
+	 * @param tipoOperacion
+	 * @return String
+	 * @author cesar.castano
+	 */
 	private String asignarEntradaSalida(String tipoOperacion) {
 		var entradaSalida = " ";
 		if (tipoOperacion.equals(dominioService.valorTextoDominio(
 									Constantes.DOMINIO_TIPO_OPERACION,
 									Dominios.TIPO_OPERA_PROVISION))) {
-			entradaSalida = "O";
+			entradaSalida = Constantes.SALIDA;
 		}else {
 			if (tipoOperacion.equals(dominioService.valorTextoDominio(
 										Constantes.DOMINIO_TIPO_OPERACION,
 										Dominios.TIPO_OPERA_RECOLECCION))) {
-				entradaSalida = "I";
+				entradaSalida = Constantes.ENTRADA;
 			}
 		}
 		return entradaSalida;
@@ -964,14 +1312,14 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
      * @return Date
      * @author cesar.castano
      */
-	private Date asignarFecha(String fila) {
+	private Date asignarFecha(String contenido) {
 		Date fecha = null;
 		try {
 			DateFormat formato = new SimpleDateFormat(
 									dominioService.valorTextoDominio(
 									Constantes.DOMINIO_FORMATO_FECHA_HORA_F3,
 									Dominios.FORMATO_FECHA_HORA_3));
-			fecha = formato.parse(fila);
+			fecha = formato.parse(contenido);
 		} catch (ParseException e) {
 			e.getMessage();
 		}
@@ -984,28 +1332,28 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
      * @return String
      * @author cesar.castano
      */
-	private String asignarEstadoOperacion(String fila) {
+	private String asignarEstadoOperacion(String contenido) {
 		var estadoOperacion = "";
-		switch (fila) {
-			case "APRVD": {
+		switch (contenido) {
+			case Constantes.ESTADO_PEDIDO_APRVD: {
 			estadoOperacion = dominioService.valorTextoDominio(
 					Constantes.DOMINIO_ESTADOS_OPERACION,
 					Dominios.ESTADOS_OPERA_EJECUTADO);
 			break;
 		}
-			case "DELIV": {
+			case Constantes.ESTADO_PEDIDO_DELIV: {
 			estadoOperacion = dominioService.valorTextoDominio(
 					Constantes.DOMINIO_ESTADOS_OPERACION,
 					Dominios.ESTADOS_OPERA_EJECUTADO);
 			break;
 		}
-			case "CANCEL": {
+			case Constantes.ESTADO_PEDIDO_CANCEL: {
 			estadoOperacion = dominioService.valorTextoDominio(
 					Constantes.DOMINIO_ESTADOS_OPERACION,
 					Dominios.ESTADOS_OPERA_CANCELADO);
 			break;
 		}
-			case "DECLI": {
+			case Constantes.ESTADO_PEDIDO_DECLI: {
 			estadoOperacion = dominioService.valorTextoDominio(
 					Constantes.DOMINIO_ESTADOS_OPERACION,
 					Dominios.ESTADOS_OPERA_FALLIDO);
@@ -1021,18 +1369,21 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
 	/**
 	 * Metodo que retorna el tipo de Operacion
+	 * 
 	 * @param fila
 	 * @return String
 	 * @author cesar.castano
 	 */
-	private String asignarTipoOperacion(String[] fila) {
+	private String asignarTipoOperacion(String[] contenido, List<DetallesDefinicionArchivoDTO> detalleArchivo) {
 		var tipoOperacion = "";
-		if(!fila[10].trim().equals("0")) {
+		String shipIn = determinarShipIn(contenido, detalleArchivo);
+		String shipOut = determinarShipOut(contenido, detalleArchivo);
+		if(!shipIn.equals("0")) {
 			tipoOperacion = dominioService.valorTextoDominio(
 						Constantes.DOMINIO_TIPO_OPERACION,
 						Dominios.TIPO_OPERA_PROVISION);
 		} else {
-			if(!fila[11].trim().equals("0")) {
+			if(!shipOut.equals("0")) {
 				tipoOperacion = dominioService.valorTextoDominio(
 						Constantes.DOMINIO_TIPO_OPERACION,
 						Dominios.TIPO_OPERA_RECOLECCION);
@@ -1043,42 +1394,51 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
 	/**
 	 * Metodo encargado de crear el detalle de las operaciones programadas
+	 * 
 	 * @param fila
 	 * @param idOperacion
 	 * @return DetalleOperacionesProgramadas
 	 * @author cesar.castano
 	 */
-	private DetalleOperacionesProgramadas crearDetalleOperacionesProgramadas(String[] fila, Integer idOperacion) {
-		String[] fila1 = fila[12].split(" - ");
+	private DetalleOperacionesProgramadas crearDetalleOperacionesProgramadas(String[] contenido, 
+			Integer idOperacion, List<DetallesDefinicionArchivoDTO> detalleArchivo) {
+		String shipIn = determinarShipIn(contenido, detalleArchivo);
+		String shipOut = determinarShipOut(contenido, detalleArchivo);
+		String[] fila1 = contenido[detalleArchivo.stream()
+		            .filter(deta -> deta.getNombreCampo().toUpperCase().trim()
+		            .equals(Constantes.CAMPO_DETALLE_ARCHIVO_DENOMINACION))
+					.findFirst().orElse(null).getId().getNumeroCampo() - 1].trim().split(" - ");
 		var detalleOperacionesDTO = new DetalleOperacionesDTO();
 		detalleOperacionesDTO.setIdOperacion(idOperacion);
 		if (fila1.length > 1) {
 			detalleOperacionesDTO.setFamilia(fila1[1].trim());
-		}else {
+		} else {
 			detalleOperacionesDTO.setFamilia(null);
 		}
 		detalleOperacionesDTO.setCalidad(null);
 		detalleOperacionesDTO.setDenominacion(fila1[0].trim());
-		detalleOperacionesDTO.setValorDetalle(this.asignarValorTotal(fila));
+		detalleOperacionesDTO.setValorDetalle(this.asignarValorTotal(shipIn, shipOut));
 		return detalleOperacionesProgramadasService.crearRegistroDetalle(detalleOperacionesDTO);
 	}
-	
+
 	/**
 	 * Metodo que se encarga de restar dias a una fecha
+	 * 
 	 * @param fecha
 	 * @param dias
 	 * @return Date
 	 * @author cesar.castano
 	 */
-	public Date sumarRestarDiasFecha(Date fecha, int dias){
-	      var calendar = Calendar.getInstance();
-	      calendar.setTime(fecha); // Configuramos la fecha que se recibe
-	      calendar.add(Calendar.DAY_OF_YEAR, dias);  // numero de días a añadir, o restar en caso de días<0
-	      return calendar.getTime(); // Devuelve el objeto Date con los nuevos días añadidos
-	 }
-	
+	public Date sumarRestarDiasFecha(Date fecha, int dias) {
+		var calendar = Calendar.getInstance();
+		calendar.setTime(fecha); // Configuramos la fecha que se recibe
+		calendar.add(Calendar.DAY_OF_YEAR, dias); // numero de días a añadir, o restar en caso de días<0
+		return calendar.getTime(); // Devuelve el objeto Date con los nuevos días añadidos
+	}
+
 	/**
 	 * Metodo encargado de asignar el tipo de Servicio
+	 * 
 	 * @param fila
 	 * @return String
 	 * @author cesar.castano
@@ -1088,93 +1448,310 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		var tipoServicio = "";
 		fecha = asignarFecha(fila);
 		Date fechaDiaAnterior = this.sumarRestarDiasFecha(fecha, -1);
-		if (Integer.parseInt(fechaDiaAnterior.toString().substring(12, 13)) <= 18) {
+		if (Integer.parseInt(fechaDiaAnterior.toString().
+					substring(12, 13)) <= Constantes.HORA_TIPO_SERVICIO_PROGRAMADA) {
 			tipoServicio = dominioService.valorTextoDominio(
 					Constantes.DOMINIO_TIPO_SERVICIO,
 					Dominios.TIPO_SERVICIO_PROGRAMADA);
-		}else {
-			tipoServicio =  dominioService.valorTextoDominio(
-					Constantes.DOMINIO_TIPO_SERVICIO,
+		} else {
+			tipoServicio = dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_SERVICIO,
 					Dominios.TIPO_SERVICIO_ESPECIAL);
 		}
 		return tipoServicio;
 	}
-	
+
 	/**
-	 * Metodp encargado de  actualizar el valor total en OperacionesProgramadas
+	 * Metodp encargado de actualizar el valor total en OperacionesProgramadas
+	 * 
 	 * @param idArchivoCargado
 	 * @author cesar.castano
 	 */
-	private void actualizarValorTotal(Integer idArchivoCargado) {
-		List<OperacionesProgramadas> operaciones = operacionesProgramadasRepository.
+	private void actualizarValorTotalOficinas(Integer idArchivoCargado) {
+		List<OperacionesProgramadas> operacionesP = operacionesProgramadasRepository.
 				findByIdArchivoCargado(idArchivoCargado);
-		if(operaciones.isEmpty()) {
+		if(operacionesP.isEmpty()) {
 			throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getDescription(),
 					ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getHttpStatus());
 		}else {
-			for (OperacionesProgramadas operacionesProgramadas : operaciones) {
-				Double valorDetalle = detalleOperacionesProgramadasService.obtenerValorDetalle(operacionesProgramadas.getIdOperacion());
-				operacionesProgramadas.setIdOperacion(operacionesProgramadas.getIdOperacion());
+			for (OperacionesProgramadas operacionesProgramadas : operacionesP) {
+				Double valorDetalle = detalleOperacionesProgramadasService.obtenerValorDetalle(
+						operacionesProgramadas.getIdOperacion());
 				operacionesProgramadas.setValorTotal(valorDetalle);
 				operacionesProgramadasRepository.save(operacionesProgramadas);
 			}
 		}
 	}
-	
+
 	/**
-	 * Metodo que se encarga de persistir en la tabla de OperacionesProgramadas, el archivo plano de CAJEROS
+	 * Metodo que se encarga de persistir en la tabla de OperacionesProgramadas, el
+	 * archivo plano de CAJEROS
+	 * 
 	 * @param elemento
 	 * @author cesar.castano
 	 */
-	private void procesarArchivoCajeros(ArchivosCargados elemento) {
+	private OperacionesProgramadasDTO procesarArchivoCajeros(String[] contenido,
+					List<DetallesDefinicionArchivoDTO> detalleArchivo, ArchivosCargadosDTO archivo) {
 		
-		for (var i = 0; i < elemento.getRegistrosCargados().size(); i++) {
-			String[] fila = elemento.getRegistrosCargados().get(i).getContenido().split(", ");
-			var operaciones = new OperacionesProgramadasDTO();
-			operaciones.setCodigoFondoTDV(fondosService.getCodigoFondo(
-											fila[7], 
+		var operaciones = new OperacionesProgramadasDTO();
+		String transportadora = determinarTransportadora(contenido, detalleArchivo, 
+								Constantes.CAMPO_DETALLE_ARCHIVO_TRANSPORTADORA);
+		String nombreBanco = determinarNombreBanco(contenido, detalleArchivo);
+		String ciudad = determinarCiudad(contenido, detalleArchivo, 
+								Constantes.CAMPO_DETALLE_ARCHIVO_CIUDAD);
+		operaciones.setCodigoFondoTDV(fondosService.getCodigoFondo(
+											transportadora, 
 											dominioService.valorTextoDominio(Constantes.DOMINIO_TIPOS_PUNTO, 
 																				Dominios.TIPOS_PUNTO_BANCO), 
-											fila[6], 
-											fila[8])
+											nombreBanco, 
+											ciudad)
 											.getCodigoPunto());
-			operaciones.setEntradaSalida(Constantes.SALIDA);
-			operaciones.setCodigoPuntoOrigen(fondosService.getCodigoFondo(
-											fila[7], 
+		operaciones.setEntradaSalida(Constantes.SALIDA);
+		operaciones.setCodigoPuntoOrigen(fondosService.getCodigoFondo(
+											transportadora, 
 											dominioService.valorTextoDominio(Constantes.DOMINIO_TIPOS_PUNTO, 
 																				Dominios.TIPOS_PUNTO_BANCO), 
-											fila[6], 
-											fila[8])
+											nombreBanco, 
+											ciudad)
 											.getCodigoPunto());
-			operaciones.setCodigoPuntoDestino(cajerosService.getCodigoPunto(fila[4]));
-			operaciones.setEstadoConciliacion(dominioService.valorTextoDominio(
+		operaciones.setCodigoPuntoDestino(cajerosService.getCodigoPunto(
+											determinarReference(contenido, detalleArchivo)));
+		operaciones.setEstadoConciliacion(dominioService.valorTextoDominio(
 											Constantes.DOMINIO_ESTADO_CONCILIACION,
 											Dominios.ESTADO_CONCILIACION_NO_CONCILIADO));
-			operaciones.setEstadoOperacion(dominioService.valorTextoDominio(
+		operaciones.setEstadoOperacion(dominioService.valorTextoDominio(
 											Constantes.DOMINIO_ESTADOS_OPERACION,
 											Dominios.ESTADOS_OPERA_EJECUTADO));
-			operaciones.setFechaCreacion(new Date());
-			operaciones.setFechaDestino(asignarFecha(fila[3]));
-			operaciones.setFechaModificacion(new Date());
-			operaciones.setFechaOrigen(asignarFecha(fila[3]));
-			operaciones.setFechaProgramacion(asignarFecha(fila[3]));
-			operaciones.setIdArchivoCargado(elemento.getIdArchivo().intValue());
-			operaciones.setIdNegociacion(null);
-			operaciones.setIdOperacionRelac(null);
-			operaciones.setTasaNegociacion(null);
-			operaciones.setTipoOperacion(dominioService.valorTextoDominio(
+		operaciones.setFechaCreacion(new Date());
+		Date fechaDestino = determinarFechaDestino(contenido, detalleArchivo, 
+											Constantes.CAMPO_DETALLE_ARCHIVO_FECHA_ENTREGA);
+		operaciones.setFechaDestino(fechaDestino);
+		operaciones.setFechaModificacion(new Date());
+		operaciones.setFechaOrigen(fechaDestino);
+		operaciones.setFechaProgramacion(fechaDestino);
+		operaciones.setIdArchivoCargado(archivo.getIdArchivo().intValue());
+		operaciones.setIdNegociacion(null);
+		operaciones.setIdOperacionRelac(null);
+		operaciones.setTasaNegociacion(null);
+		operaciones.setTipoOperacion(dominioService.valorTextoDominio(
 											Constantes.DOMINIO_TIPO_OPERACION,
 											Dominios.TIPO_OPERA_PROVISION));
-			operaciones.setTipoServicio(dominioService.valorTextoDominio(
+		operaciones.setTipoServicio(dominioService.valorTextoDominio(
 											Constantes.DOMINIO_TIPO_SERVICIO,
 											Dominios.TIPO_SERVICIO_PROGRAMADA));
-			operaciones.setTipoTransporte(null);
-			operaciones.setUsuarioCreacion("User1");
-			operaciones.setUsuarioModificacion("User1");
-			operaciones.setValorTotal(Double.parseDouble(fila[9].trim()));
-			operaciones.setIdServicio(fila[0]);
-			operacionesProgramadasRepository.save(OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(operaciones));
-		}
+		operaciones.setTipoTransporte(null);
+		operaciones.setUsuarioCreacion("User1");
+		operaciones.setUsuarioModificacion("User1");
+		operaciones.setValorTotal(Double.parseDouble(determinarValor(contenido, detalleArchivo)));
+		operaciones.setIdServicio(determinarNumeroOrden(contenido, detalleArchivo));
+		operacionesProgramadasRepository.save(OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(operaciones));
+		return operaciones;
 	}
+	
+	/**
+	 * Metodo utilizado para determinar el campo ShipIn
+	 * @param contenido
+	 * @param detalleArchivo
+	 * @return String
+	 * @author cesar.castano
+	 */
+	private String determinarShipIn(String[] contenido, List<DetallesDefinicionArchivoDTO> detalleArchivo) {
+		return contenido[detalleArchivo.stream()
+		                     		.filter(deta -> deta.getNombreCampo().toUpperCase().trim()
+		                     		.equals(Constantes.CAMPO_DETALLE_ARCHIVO_SHIPIN))
+		                     		.findFirst().orElse(null).getId().getNumeroCampo() - 1].trim();
+	}
+
+	/**
+	 * Metodo utilizado para determinar el campo OrderId
+	 * @param contenido
+	 * @param detalleArchivo
+	 * @return String
+	 * @author cesar.castano
+	 */
+	private String determinarOrderId(String[] contenido, List<DetallesDefinicionArchivoDTO> detalleArchivo) {
+		return contenido[detalleArchivo.stream()
+		                     		.filter(deta -> deta.getNombreCampo().toUpperCase().trim()
+		                     		.equals(Constantes.CAMPO_DETALLE_ARCHIVO_ORDERID))
+		                     		.findFirst().orElse(null).getId().getNumeroCampo() - 1].trim();
+	}
+	
+	/**
+	 * Metodo utilizado para determinar el campo ShipOut
+	 * @param contenido
+	 * @param detalleArchivo
+	 * @return String
+	 * @author cesar.castano
+	 */
+	private String determinarShipOut(String[] contenido, List<DetallesDefinicionArchivoDTO> detalleArchivo) {
+		return contenido[detalleArchivo.stream()
+		                     		.filter(deta -> deta.getNombreCampo().toUpperCase().trim()
+		                     		.equals(Constantes.CAMPO_DETALLE_ARCHIVO_SHIPOUT))
+		                     		.findFirst().orElse(null).getId().getNumeroCampo() - 1].trim();
+	}
+	
+	/**
+	 * Metodo utilizado para determinar el campo Transportadora
+	 * @param contenido
+	 * @param detalleArchivo
+	 * @param constante
+	 * @return String
+	 * @author cesar.castano
+	 */
+	private String determinarTransportadora(String[] contenido, 
+											List<DetallesDefinicionArchivoDTO> detalleArchivo,
+											String constante) {
+		return contenido[detalleArchivo.stream()
+		            .filter(deta -> deta.getNombreCampo().toUpperCase().trim()
+				    .equals(constante))
+				    .findFirst().orElse(null).getId().getNumeroCampo() -1].trim();
+
+	}
+
+	/**
+	 * Metodo utilizado para determinar el campo Ciudad
+	 * @param contenido
+	 * @param detalleArchivo
+	 * @param constante
+	 * @return String
+	 * @author cesar.castano
+	 */
+	private String determinarCiudad(String[] contenido, 
+									List<DetallesDefinicionArchivoDTO> detalleArchivo,
+									String constante) {
+		return contenido[detalleArchivo.stream()
+				            .filter(deta -> deta.getNombreCampo().toUpperCase().trim()
+						    .equals(constante))
+						    .findFirst().orElse(null).getId().getNumeroCampo() - 1].trim();
+	}
+	
+	/**
+	 * Metodo utilizado para determinar el campo EstadoOperacion
+	 * @param contenido
+	 * @param detalleArchivo
+	 * @return String
+	 * @author cesar.castano
+	 */
+	private String determinarEstadoOperacion(String[] contenido, List<DetallesDefinicionArchivoDTO> detalleArchivo) {
+		return asignarEstadoOperacion(contenido[detalleArchivo.stream()
+					                        .filter(deta -> deta.getNombreCampo().toUpperCase().trim()
+											.equals(Constantes.CAMPO_DETALLE_ARCHIVO_ESTATUS))
+											.findFirst().orElse(null).getId().getNumeroCampo() - 1].trim());
+	}
+	
+	/**
+	 * Metodo utilizado para determinar el campo FechaDestino
+	 * @param contenido
+	 * @param detalleArchivo
+	 * @param constante
+	 * @return String
+	 * @author cesar.castano
+	 */
+	private Date determinarFechaDestino(String[] contenido, 
+										List<DetallesDefinicionArchivoDTO> detalleArchivo,
+										String Constante) {
+		return asignarFecha(contenido[detalleArchivo.stream()
+		    				    .filter(deta -> deta.getNombreCampo().toUpperCase().trim()
+		    				    .equals(Constante))
+		    				    .findFirst().orElse(null).getId().getNumeroCampo() - 1].trim());
+	}
+
+	/**
+	 * Metodo utilizado para determinar el campo Fecha Programacion
+	 * @param contenido
+	 * @param detalleArchivo
+	 * @return String
+	 * @author cesar.castano
+	 */
+	private Date determinarFechaProgramacion(String[] contenido, List<DetallesDefinicionArchivoDTO> detalleArchivo) {
+		return asignarFecha(contenido[detalleArchivo.stream()
+		                     	.filter(deta -> deta.getNombreCampo().toUpperCase().trim()
+		                     	.equals(Constantes.CAMPO_DETALLE_ARCHIVO_FECHA_APROBACION))
+		                     	.findFirst().orElse(null).getId().getNumeroCampo() - 1].trim());
+	}
+	
+	/**
+	 * Metodo utilizado para determinar el campo Tipo Servicio
+	 * @param contenido
+	 * @param detalleArchivo
+	 * @return String
+	 * @author cesar.castano
+	 */
+	private String determinarTipoServicio(String[] contenido, List<DetallesDefinicionArchivoDTO> detalleArchivo) {
+		return asignarTipoServicio(contenido[detalleArchivo.stream()
+				                        .filter(deta -> deta.getNombreCampo().toUpperCase().trim()
+				              			.equals(Constantes.CAMPO_DETALLE_ARCHIVO_FECHA_APROBACION))
+				              			.findFirst().orElse(null).getId().getNumeroCampo() - 1].trim());
+	}
+	
+	/**
+	 * Metodo utilizado para determinar el campo ReferencedId
+	 * @param contenido
+	 * @param detalleArchivo
+	 * @return String
+	 * @author cesar.castano
+	 */
+	private String[] determinarReferencedId(String[] contenido, List<DetallesDefinicionArchivoDTO> detalleArchivo) {
+		return contenido[detalleArchivo.stream()
+		            .filter(deta -> deta.getNombreCampo().toUpperCase().trim()
+		            .equals(Constantes.CAMPO_DETALLE_ARCHIVO_REFERENCEDID))
+					.findFirst().orElse(null).getId().getNumeroCampo() - 1].trim().split("-");
+	}
+	
+	/**
+	 * Metodo utilizado para determinar el campo NombreBanco
+	 * @param contenido
+	 * @param detalleArchivo
+	 * @return String
+	 * @author cesar.castano
+	 */
+	private String determinarNombreBanco(String[] contenido, List<DetallesDefinicionArchivoDTO> detalleArchivo) {
+		return contenido[detalleArchivo.stream()
+		            .filter(deta -> deta.getNombreCampo().toUpperCase().trim()
+		            .equals(Constantes.CAMPO_DETALLE_ARCHIVO_BANCO))
+					.findFirst().orElse(null).getId().getNumeroCampo() - 1].trim();
+	}
+	
+	/**
+	 * Metodo utilizado para determinar el campo Reference
+	 * @param contenido
+	 * @param detalleArchivo
+	 * @return String
+	 * @author cesar.castano
+	 */
+	private String determinarReference(String[] contenido, List<DetallesDefinicionArchivoDTO> detalleArchivo) {
+		return contenido[detalleArchivo.stream()
+		            .filter(deta -> deta.getNombreCampo().toUpperCase().trim()
+		            .equals(Constantes.CAMPO_DETALLE_ARCHIVO_REFERENCE))
+					.findFirst().orElse(null).getId().getNumeroCampo() - 1].trim();
+	}
+	
+	/**
+	 * Metodo utilizado para determinar el campo NumeroOrden
+	 * @param contenido
+	 * @param detalleArchivo
+	 * @return String
+	 * @author cesar.castano
+	 */
+	private String determinarNumeroOrden(String[] contenido, List<DetallesDefinicionArchivoDTO> detalleArchivo) {
+		return contenido[detalleArchivo.stream()
+		            .filter(deta -> deta.getNombreCampo().toUpperCase().trim()
+		            .equals(Constantes.CAMPO_DETALLE_ARCHIVO_NUMEROORDEN))
+					.findFirst().orElse(null).getId().getNumeroCampo() - 1].trim();
+	}
+	
+	/**
+	 * Metodo utilizado para determinar el campo Valor
+	 * @param contenido
+	 * @param detalleArchivo
+	 * @return String
+	 * @author cesar.castano
+	 */
+	private String determinarValor(String[] contenido, List<DetallesDefinicionArchivoDTO> detalleArchivo) {
+		return contenido[detalleArchivo.stream()
+		            .filter(deta -> deta.getNombreCampo().toUpperCase().trim()
+		            .equals(Constantes.CAMPO_DETALLE_ARCHIVO_VALOR))
+					.findFirst().orElse(null).getId().getNumeroCampo() - 1].trim();
+	}
+
 }

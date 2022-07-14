@@ -11,7 +11,6 @@ import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.BancosDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
-import com.ath.adminefectivo.entities.Bancos;
 import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.repositories.IBancosRepository;
 import com.ath.adminefectivo.service.IBancosService;
@@ -72,7 +71,7 @@ public class BancosServiceImpl implements IBancosService {
 	@Override
 	public Integer getCodigoPuntoBanco(Integer codigoCompensacion) {
 		var bancoOpt = bancosRepository.findByCodigoCompensacion(codigoCompensacion);
-		if (bancoOpt == null) {
+		if (Objects.isNull(bancoOpt)) {
 			throw new AplicationException(ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getDescription(),
 					ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getHttpStatus());
@@ -86,7 +85,7 @@ public class BancosServiceImpl implements IBancosService {
 	 */
 	@Override
 	public BancosDTO findBancoByCodigoPunto(int codigoPunto) {
-		Bancos bancoOpt = bancosRepository.findBancoByCodigoPunto(codigoPunto);
+		var bancoOpt = bancosRepository.findBancoByCodigoPunto(codigoPunto);
 
 		if (!Objects.isNull(bancoOpt)) {
 			return BancosDTO.CONVERTER_DTO.apply(bancoOpt);
@@ -102,7 +101,7 @@ public class BancosServiceImpl implements IBancosService {
 	 */
 	@Override
 	public BancosDTO findBancoByAbreviatura(String abreviatura) {
-		Bancos bancoOpt = bancosRepository.findBancoByAbreviatura(abreviatura);
+		var bancoOpt = bancosRepository.findBancoByAbreviatura(abreviatura);
 
 		if (!Objects.isNull(bancoOpt)) {
 			return BancosDTO.CONVERTER_DTO.apply(bancoOpt);
@@ -120,7 +119,7 @@ public class BancosServiceImpl implements IBancosService {
 	public Boolean getCodigoPunto(Integer codigoPunto) {
 		Boolean estado = true;
 		var bancoOpt = bancosRepository.findByCodigoPunto(codigoPunto);
-		if (bancoOpt == null) {
+		if (Objects.isNull(bancoOpt)) {
 			estado = false;
 		}
 		return estado;

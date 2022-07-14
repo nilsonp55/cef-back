@@ -1,6 +1,7 @@
 package com.ath.adminefectivo.service.impl;
 
 import java.util.Date;
+import java.util.Objects;
 
 import javax.transaction.Transactional;
 
@@ -13,10 +14,13 @@ import com.ath.adminefectivo.dto.ConciliacionDTO;
 import com.ath.adminefectivo.dto.FechasConciliacionDTO;
 import com.ath.adminefectivo.dto.ParametrosConciliacionManualDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
+import com.ath.adminefectivo.entities.ConciliacionServicios;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.IConciliacionOperacionesRepository;
 import com.ath.adminefectivo.service.IConciliacionServiciosService;
 import com.ath.adminefectivo.service.IDominioService;
+import com.ath.adminefectivo.service.IOperacionesCertificadasService;
+import com.ath.adminefectivo.service.IOperacionesProgramadasService;
 
 @Service
 public class ConciliacionServiciosServiceImpl implements IConciliacionServiciosService {
@@ -26,6 +30,12 @@ public class ConciliacionServiciosServiceImpl implements IConciliacionServiciosS
 
 	@Autowired
 	IDominioService dominioService;
+	
+	@Autowired
+	IOperacionesProgramadasService operacionesProgramadasService;
+	
+	@Autowired
+	IOperacionesCertificadasService operacionesCertificadasService;
 
 	/**
 	 * {@inheritDoc}
@@ -57,13 +67,19 @@ public class ConciliacionServiciosServiceImpl implements IConciliacionServiciosS
 			var conciliacion = new ConciliacionDTO();
 			conciliacion.setFechaConciliacion(new Date());
 			conciliacion.setFechaModificacion(new Date());
-			conciliacion.setIdCertificacion(elemento.getIdCertificacion());
-			conciliacion.setIdOperacion(elemento.getIdOperacion());
-			conciliacion.setTipoConciliacion(dominioService.valorTextoDominio(Constantes.DOMINIO_TIPOS_CONCILIACION,
-					Dominios.TIPO_CONCILIACION_MANUAL));
+			var certificaciones = operacionesCertificadasService.
+					obtenerEntidadOperacionesCertificacionesporId(elemento.getIdCertificacion());
+			conciliacion.setCertificaciones(certificaciones);
+			var operaciones = operacionesProgramadasService.
+					obtenerEntidadOperacionesProgramadasporId(elemento.getIdOperacion());
+			conciliacion.setOperaciones(operaciones);
+			conciliacion.setTipoConciliacion(dominioService.valorTextoDominio(
+											Constantes.DOMINIO_TIPOS_CONCILIACION,
+											Dominios.TIPO_CONCILIACION_MANUAL));
 			conciliacion.setUsuarioModificacion("user1");
 			conciliacion.setUsuarioCreacion("user1");
-			conciliacionServiciosRepository.save(ConciliacionDTO.CONVERTER_ENTITY.apply(conciliacion));
+			ConciliacionServicios entidadConciliacion = ConciliacionDTO.CONVERTER_ENTITY.apply(conciliacion);
+			conciliacionServiciosRepository.save(entidadConciliacion);
 		} catch (Exception e) {
 			e.getMessage();
 		}
@@ -75,7 +91,14 @@ public class ConciliacionServiciosServiceImpl implements IConciliacionServiciosS
 	 */
 	@Override
 	public Integer numeroOperacionesPorRangoFechas(FechasConciliacionDTO fechaConciliacion) {
-		return conciliacionServiciosRepository.countByFechaConciliacionBetween(
+		Integer cuentaConciliadas = conciliacionServiciosRepository.countByFechaConciliacionBetween(
 				fechaConciliacion.getFechaConciliacionInicial(), fechaConciliacion.getFechaConciliacionFinal());
+		if (Objects.isNull(cuentaConciliadas)) {
+			throw new NegocioException(ApiResponseCode.ERROR_CONCILIADOS_NO_ENCONTRADO.getCode(),
+					ApiResponseCode.ERROR_CONCILIADOS_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_CONCILIADOS_NO_ENCONTRADO.getHttpStatus());
+		}
+		return cuentaConciliadas;
 	}
+
 }

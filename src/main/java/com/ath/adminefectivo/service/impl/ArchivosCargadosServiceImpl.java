@@ -183,11 +183,11 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 	 */
 	@Override
 	public List<ArchivosCargadosDTO> getArchivosCargadosSinProcesar(String idModeloArchivo) {
+
 		List<ArchivosCargadosDTO> resultado = new ArrayList<>();
 
 		List<ArchivosCargados> archivosCargados = archivosCargadosRepository
 				.findByEstadoCargueAndIdModeloArchivo(Constantes.ESTRUCTURA_OK, idModeloArchivo);
-//				.findByEstadoCargue(Constantes.ESTRUCTURA_OK);
 
 		if (!Objects.isNull(archivosCargados)) {
 			archivosCargados.forEach(arch -> {
