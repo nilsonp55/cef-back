@@ -30,6 +30,17 @@ public interface IDetalleDefinicionArchivoService {
 	 * @author duvan.naranjo
 	 */
 	List<DetallesDefinicionArchivoDTO> consultarDetalleDefinicionArchivoByIdMaestro(String idMaestro);
+	
+	/**
+	 * Metodo encargado de consultar archivo detalle por 
+	 * idArchivo y numero de campo
+	 * 
+	 * @param idArchivo
+	 * @param numeroCampo
+	 * @return List<DetallesDefinicionArchivoDTO>
+	 * @author duvan.naranjo
+	 */
+	List<DetallesDefinicionArchivoDTO> consultarDetalleDefinicionArchivoByIdArchivoNumeroCampo(String idArchivo, Integer numeroCampo);
 
 
 

@@ -19,11 +19,31 @@ public interface ITransportadorasService {
 
 	/**
 	 * Servicio encargado de consultar el nombre de la Transportadora por codigo Este
-	 * servicio lanza un error en caso de que la ciudad no exista
+	 * servicio lanza un error en caso de que la transportadora no exista
 	 * 
 	 * @param codigo
 	 * @return String
 	 * @author cesar.castano
 	 */
 	String getNombreTransportadora(String codigo);
+	
+	/**
+	 * Servicio encargado de consultar el codigo de la Transportadora por nombre Este
+	 * servicio lanza un error en caso de que la transportadora no exista
+	 * 
+	 * @param nombre
+	 * @return String
+	 * @author cesar.castano
+	 */
+	String getcodigoTransportadora(String nombre);
+	
+	/**
+	 * Servicio encargado de consultar la Transportadora por codigo Este
+	 * servicio retorna un exepcion en caso no de existir
+	 * 
+	 * @param codigo 
+	 * @return TransportadorasDTO
+	 * @author duvan.naranjo
+	 */
+	TransportadorasDTO getTransportadoraPorCodigo(String codigo);
 }

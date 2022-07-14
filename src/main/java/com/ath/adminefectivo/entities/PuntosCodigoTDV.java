@@ -3,6 +3,8 @@ package com.ath.adminefectivo.entities;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
@@ -26,13 +28,17 @@ import lombok.NoArgsConstructor;
 public class PuntosCodigoTDV {
 
 	@Id
-	@Column(name = "CODIGO_TDV")
-	private String codigoTDV;
-	
 	@Column(name = "CODIGO_PUNTO")
 	private Integer codigoPunto;
 	
+	@Column(name = "CODIGO_TDV")
+	private String codigoTDV;
+	
 	@Column(name = "CODIGO_PROPIO_TDV")
 	private String codigoPropioTDV;
+	
+	//@ManyToOne
+	//@JoinColumn(name = "COD_PUNTO", nullable = false)
+	//private Puntos puntos;
 	
 }

@@ -64,4 +64,64 @@ public class BancosServiceImpl implements IBancosService {
 					ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getHttpStatus());
 		}
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Integer getCodigoPuntoBanco(Integer codigoCompensacion) {
+		var bancoOpt = bancosRepository.findByCodigoCompensacion(codigoCompensacion);
+		if (Objects.isNull(bancoOpt)) {
+			throw new AplicationException(ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getCode(),
+					ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getHttpStatus());
+		} else {
+			return bancoOpt.getCodigoPunto();
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public BancosDTO findBancoByCodigoPunto(int codigoPunto) {
+		var bancoOpt = bancosRepository.findBancoByCodigoPunto(codigoPunto);
+
+		if (!Objects.isNull(bancoOpt)) {
+			return BancosDTO.CONVERTER_DTO.apply(bancoOpt);
+		} else {
+			throw new AplicationException(ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getCode(),
+					ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getHttpStatus());
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public BancosDTO findBancoByAbreviatura(String abreviatura) {
+		var bancoOpt = bancosRepository.findBancoByAbreviatura(abreviatura);
+
+		if (!Objects.isNull(bancoOpt)) {
+			return BancosDTO.CONVERTER_DTO.apply(bancoOpt);
+		} else {
+			throw new AplicationException(ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getCode(),
+					ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getHttpStatus());
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Boolean getCodigoPunto(Integer codigoPunto) {
+		Boolean estado = true;
+		var bancoOpt = bancosRepository.findByCodigoPunto(codigoPunto);
+		if (Objects.isNull(bancoOpt)) {
+			estado = false;
+		}
+		return estado;
+	}
 }

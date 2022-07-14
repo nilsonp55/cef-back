@@ -20,4 +20,12 @@ public interface IPuntosCodigoTDVRepository
 	 * @author cesar.castano
 	 */
 	public PuntosCodigoTDV findByCodigoTDV(String codigoTDV);
+	
+	/**
+	 * Retorna el objeto PuntosCodigoTDV para un codigoPropioTDV
+	 * @param codigoPropioTdv
+	 * @return
+	 */
+	public PuntosCodigoTDV findByCodigoPropioTDVAndCodigoTDV(String codigoPropioTdv, String codigoTdv);
+
 }

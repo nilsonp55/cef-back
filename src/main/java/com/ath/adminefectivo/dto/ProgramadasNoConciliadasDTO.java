@@ -32,14 +32,8 @@ public class ProgramadasNoConciliadasDTO {
 	@JsonProperty("entradaSalida")
 	private String entradaSalida;
 	
-	@JsonProperty("tipoPuntoOrigen")
-	private String tipoPuntoOrigen;
-	
 	@JsonProperty("codigoPuntoOrigen")
 	private Integer codigoPuntoOrigen;
-	
-	@JsonProperty("tipoPuntoDestino")
-	private String tipoPuntoDestino;
 	
 	@JsonProperty("codigoPuntoDestino")
 	private Integer codigoPuntoDestino;
@@ -94,6 +88,13 @@ public class ProgramadasNoConciliadasDTO {
 	
 	@JsonProperty("fechaModificacion")
 	private Date fechaModificacion;
+	
+	@JsonProperty("idServicio")
+	private String idServicio;
+	
+	private String tdv;
+	
+	private Integer bancoAVAL;
 	
 	/**
 	 * Funcion que convierte el archivo DTO ProgramadasNoConciliadasDTO a Entity OperacionesProgramadas

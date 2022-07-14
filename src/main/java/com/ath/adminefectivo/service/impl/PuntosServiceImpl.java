@@ -9,9 +9,20 @@ import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.dto.PuntosDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
+import com.ath.adminefectivo.entities.Bancos;
+import com.ath.adminefectivo.entities.CajerosATM;
+import com.ath.adminefectivo.entities.Fondos;
+import com.ath.adminefectivo.entities.Oficinas;
 import com.ath.adminefectivo.entities.Puntos;
+import com.ath.adminefectivo.entities.SitiosClientes;
 import com.ath.adminefectivo.exception.AplicationException;
+import com.ath.adminefectivo.exception.ConflictException;
+import com.ath.adminefectivo.repositories.CajerosATMRepository;
+import com.ath.adminefectivo.repositories.IBancosRepository;
+import com.ath.adminefectivo.repositories.IFondosRepository;
+import com.ath.adminefectivo.repositories.IOficinasRepository;
 import com.ath.adminefectivo.repositories.IPuntosRepository;
+import com.ath.adminefectivo.repositories.ISitiosClientesRepository;
 import com.ath.adminefectivo.service.IPuntosService;
 import com.querydsl.core.types.Predicate;
 
@@ -20,6 +31,21 @@ public class PuntosServiceImpl implements IPuntosService {
 
 	@Autowired
 	IPuntosRepository puntosRepository;
+
+	@Autowired
+	IBancosRepository bancosRepository;
+	
+	@Autowired
+	IOficinasRepository oficinasRepository;
+
+	@Autowired
+	CajerosATMRepository cajerosATMRepository;
+	
+	@Autowired
+	ISitiosClientesRepository sitiosClienteRepository;
+	
+	@Autowired
+	IFondosRepository fondosRepository;
 
 	/**
 	 * {@inheritDoc}
@@ -46,14 +72,14 @@ public class PuntosServiceImpl implements IPuntosService {
 		return puntosOpt;
 
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public String getNombrePunto(String tipoPunto, Integer codigoPunto) {
 		var puntosOpt = puntosRepository.findByCodigoPuntoAndTipoPunto(codigoPunto, tipoPunto);
-		if (Objects.isNull(puntosOpt)) {
+		if (Objects.isNull(puntosOpt)) { 
 			throw new AplicationException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription(),
 					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
@@ -61,4 +87,168 @@ public class PuntosServiceImpl implements IPuntosService {
 		return puntosOpt.getNombrePunto();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Integer getcodigoPunto(String tipoPunto, String nombrePunto) {
+		var puntosOpt = puntosRepository.findByTipoPuntoAndNombrePunto(tipoPunto, nombrePunto);
+		if (Objects.isNull(puntosOpt)) {
+			throw new AplicationException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
+					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
+		} 
+		return puntosOpt.getCodigoPunto();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Puntos guardarPuntoBanco(Puntos punto, Bancos banco) {
+		if (punto.getCodigoPunto() != null && puntosRepository
+				.existsById(punto.getCodigoPunto())) {		
+			throw new ConflictException(ApiResponseCode.ERROR_PUNTO_EXIST.getDescription());		
+		}
+		Puntos puntoResponse = puntosRepository.save(punto);
+		
+		if (banco.getCodigoPunto() != null && bancosRepository
+				.existsById(banco.getCodigoPunto())) {		
+			throw new ConflictException(ApiResponseCode.ERROR_BANCO_EXIST.getDescription());		
+		}
+		
+		banco.setCodigoPunto(puntoResponse.getCodigoPunto());
+		bancosRepository.save(banco);
+		
+		return puntoResponse;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Puntos guardarPuntoOficina(Puntos punto, Oficinas oficina) {
+		if (punto.getCodigoPunto() != null && puntosRepository
+				.existsById(punto.getCodigoPunto())) {		
+			throw new ConflictException(ApiResponseCode.ERROR_PUNTO_EXIST.getDescription());		
+		}
+		Puntos puntoResponse = puntosRepository.save(punto);
+		
+		if (oficina.getCodigoPunto() != null && oficinasRepository
+				.existsById(oficina.getCodigoPunto())) {		
+			throw new ConflictException(ApiResponseCode.ERROR_OFICINA_EXIST.getDescription());		
+		}
+		
+		oficina.setCodigoPunto(puntoResponse.getCodigoPunto());
+		oficinasRepository.save(oficina);
+		
+		return puntoResponse;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Puntos guardarPuntoCajeroATM(Puntos punto, CajerosATM cajerosATM) {
+		if (punto.getCodigoPunto() != null && puntosRepository
+				.existsById(punto.getCodigoPunto())) {		
+			throw new ConflictException(ApiResponseCode.ERROR_PUNTO_EXIST.getDescription());		
+		}
+		Puntos puntoResponse = puntosRepository.save(punto);
+		
+		if (cajerosATM.getCodigoPunto() != null && cajerosATMRepository
+				.existsById(cajerosATM.getCodigoPunto())) {		
+			throw new ConflictException(ApiResponseCode.ERROR_CAJERO_EXIST.getDescription());		
+		}
+		
+		cajerosATM.setCodigoPunto(puntoResponse.getCodigoPunto());
+		cajerosATMRepository.save(cajerosATM);
+		
+		return puntoResponse;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public PuntosDTO getPuntoByNombrePunto(String nombrePunto) {
+		var punto = puntosRepository.findByNombrePunto(nombrePunto);
+		if(!Objects.isNull(punto)) {
+			return PuntosDTO.CONVERTER_DTO.apply(punto);
+		}
+		return null;
+	}
+	
+	public Puntos guardarPuntoSitioCliente(Puntos punto, SitiosClientes sitiosClientes) {
+		if (punto.getCodigoPunto() != null && puntosRepository
+				.existsById(punto.getCodigoPunto())) {		
+			throw new ConflictException(ApiResponseCode.ERROR_PUNTO_EXIST.getDescription());		
+		}
+		Puntos puntoResponse = puntosRepository.save(punto);
+		
+		if (sitiosClientes.getCodigoPunto() != null && sitiosClienteRepository
+				.existsById(sitiosClientes.getCodigoPunto())) {		
+			throw new ConflictException(ApiResponseCode.ERROR_SITIO_CLIENTE_EXIST.getDescription());		
+		}
+		
+		sitiosClientes.setCodigoPunto(puntoResponse.getCodigoPunto());
+		sitiosClienteRepository.save(sitiosClientes);
+		
+		return puntoResponse;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Puntos guardarPuntoFondo(Puntos punto, Fondos fondo) {
+		if (punto.getCodigoPunto() != null && puntosRepository
+				.existsById(punto.getCodigoPunto())) {		
+			throw new ConflictException(ApiResponseCode.ERROR_PUNTO_EXIST.getDescription());		
+		}
+		Puntos puntoResponse = puntosRepository.save(punto);
+		
+		if (fondo.getCodigoPunto() != null && fondosRepository
+				.existsById(fondo.getCodigoPunto())) {		
+			throw new ConflictException(ApiResponseCode.ERROR_FONDO_EXIST.getDescription());		
+		}
+		
+		fondo.setCodigoPunto(puntoResponse.getCodigoPunto());
+		fondosRepository.save(fondo);
+		
+		return puntoResponse;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public PuntosDTO getPuntoByTipoPuntoAndCodigoCiudad(String tipoPunto, String codigoCiudad) {
+		var punto = puntosRepository.findByTipoPuntoAndCodigoCiudad(tipoPunto, codigoCiudad);
+		if(!Objects.isNull(punto)) {
+			return PuntosDTO.CONVERTER_DTO.apply(punto);
+		}
+		return null;
+	}
+	/**
+	 * {@inheritDoc}
+	 */
+	public Puntos getPuntoById(Integer idPunto) {
+		return puntosRepository.findById(idPunto).get();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Boolean getEntidadPuntoBanrep(String tipoPunto, Integer codigoPunto) {
+		var puntosOpt = puntosRepository.findByCodigoPuntoAndTipoPunto(codigoPunto, tipoPunto);
+		if (Objects.isNull(puntosOpt)) {
+			throw new AplicationException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
+					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
+		} 
+		return true;
+	}
+
 }

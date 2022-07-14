@@ -4,7 +4,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
 
+import javax.persistence.Column;
+
 import com.ath.adminefectivo.entities.ConciliacionServicios;
+import com.ath.adminefectivo.entities.DetalleOperacionesProgramadas;
 import com.ath.adminefectivo.entities.OperacionesProgramadas;
 import com.ath.adminefectivo.utils.UtilsObjects;
 
@@ -30,11 +33,7 @@ public class OperacionesProgramadasDTO {
 	
 	private String entradaSalida;
 	
-	private String tipoPuntoOrigen;
-
 	private Integer codigoPuntoOrigen;
-	
-	private String tipoPuntoDestino;
 	
 	private Integer codigoPuntoDestino;
 	
@@ -63,7 +62,7 @@ public class OperacionesProgramadasDTO {
 	private Integer idOperacionRelac;
 	
 	private String tipoServicio;
-	
+		
 	private String usuarioCreacion;
 	
 	private String usuarioModificacion;
@@ -71,8 +70,22 @@ public class OperacionesProgramadasDTO {
 	private Date fechaCreacion;
 	
 	private Date fechaModificacion;
+	
+	private boolean esCambio;
+	
+	private String idServicio;
+	
+	private Integer comisionBR;
+	
+	private Boolean esEntrada;
+	
+	private Integer idOrdenTDV;
+	
+	private String codigoMoneda;
 
 	private List<ConciliacionServicios> conciliacionServicios;
+	
+	private List<DetalleOperacionesProgramadas> detalleOperacionesProgramadas;
 	
 	/**
 	 * Funcion que convierte el archivo DTO ProgramadasNoConciliadasDTO a Entity OperacionesProgramadas
@@ -97,4 +110,5 @@ public class OperacionesProgramadasDTO {
 
 		return operacionesProgramadasDTO;
 	};
+
 }

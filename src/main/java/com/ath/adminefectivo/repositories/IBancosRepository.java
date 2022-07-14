@@ -11,5 +11,37 @@ import com.ath.adminefectivo.entities.Bancos;
  * @author cesar.castano
  */
 public interface IBancosRepository extends JpaRepository<Bancos, Integer>, QuerydslPredicateExecutor<Bancos> {
+	
+	/**
+	 * Retorna la entidad Bancos con base en el codigo punto
+	 * @param codigoPunto
+	 * @return Bancos
+	 * @author 
+	 */
+	Bancos findBancoByCodigoPunto(int codigoPunto);
+	
+	/**
+	 * Retorna la entidad Bancos con base en la abreviatura
+	 * @param abreviatura
+	 * @return Bancos
+	 * @author 
+	 */
+	Bancos findBancoByAbreviatura(String abreviatura);
+
+	/**
+	 * Retorna la entidad Bancos con base en el codigo de compensacion
+	 * @param codigoCompensacion
+	 * @return Bancos
+	 * @author cesar.castano
+	 */
+	Bancos findByCodigoCompensacion(Integer codigoCompensacion);
+
+	/**
+	 * Retorna la entidad Bancos con base en el codigo punto
+	 * @param codigoCompensacion
+	 * @return Bancos
+	 * @author cesar.castano
+	 */
+	Bancos findByCodigoPunto(Integer codigoPunto);
 
 }

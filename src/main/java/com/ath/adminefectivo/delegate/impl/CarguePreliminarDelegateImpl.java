@@ -111,6 +111,8 @@ public class CarguePreliminarDelegateImpl implements ICarguePreliminarDelegate {
 		this.validacionesAchivoCargado(idMaestroDefinicion, nombreArchivo);
 		if (Objects.equals(this.validacionArchivo.getEstadoValidacion(), Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO)) {
 			archivosCargadosService.persistirDetalleArchivoCargado(validacionArchivo, true);
+		}else {
+			archivosCargadosService.persistirDetalleArchivoCargado(validacionArchivo, false);
 		}
 		return ValidacionArchivoDTO.conversionRespuesta(this.validacionArchivo);
 	}

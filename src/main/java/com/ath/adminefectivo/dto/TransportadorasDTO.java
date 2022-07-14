@@ -26,6 +26,10 @@ public class TransportadorasDTO {
 	
 	private String abreviatura;
 	
+	private String nombre2;
+	
+	private String abreviatura2;
+	
 	/**
 	 * Funcion que retorna la entidad recibiendo un DTO *
 	 */

@@ -1,15 +1,21 @@
 package com.ath.adminefectivo.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
 
+import com.ath.adminefectivo.dto.ArchivosCargadosDTO;
 import com.ath.adminefectivo.dto.FechasConciliacionDTO;
+import com.ath.adminefectivo.dto.OperacionesProgramadasDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionesProgramadasNombresDTO;
+import com.ath.adminefectivo.entities.ArchivosCargados;
 import com.ath.adminefectivo.entities.OperacionesProgramadas;
 import com.querydsl.core.types.Predicate;
 
 /**
+ * Servicio encargado de generar la lógica de operaciones programadas
+ * 
  * @author cesar.castano
  */
 public interface IOperacionesProgramadasService {
@@ -43,5 +49,41 @@ public interface IOperacionesProgramadasService {
 	 * @param estado
 	 */
 	Integer numeroOperacionesPorEstadoyFecha(FechasConciliacionDTO fechaConciliacion, String estado);
+
+	/**
+	 * Metodo encargado de realizar la logica necesaria para generar una 
+	 * operacion programdas basada en un archivo cargado
+	 * 
+	 * @return List<OperacionesProgramadasDTO>
+	 * @param archivos
+	 * @author duvan.naranjo
+	 */
+	List<OperacionesProgramadasDTO> generarOperacionesProgramadas(List<ArchivosCargadosDTO> archivos);
+
+	/**
+	 * Servicio encargado de obtener los registros de OperacionesProgramadas
+	 * que estan dentro de la conciliacion
+	 * @return List<OperacionesProgramadas>
+	 * @author cesar.castano
+	 */
+	List<OperacionesProgramadas> obtenerOperacionesProgramadas();
+	
+	/**
+	 * Servicio encargado de obtener la entidad OperacionesProgramadas para un IdOperacion
+	 * @return OperacionesProgramadas
+	 * @author cesar.castano
+	 */
+	OperacionesProgramadas obtenerEntidadOperacionesProgramadasporId(Integer idOperacion);
+	
+	/**
+	 * Servicio encargado de procesar los archivos cargados a la entidad OperacionesProgramadas
+	 * 
+	 * @param fechaInicio
+	 * @param fechaFin
+	 * @return List<OperacionesProgramadasDTO>
+	 * @author duvan.naranjo
+	 */
+	List<OperacionesProgramadasDTO> getOperacionesProgramadasPorFechas(String tipoContabilidad, Date fechaInicio, Date fechaFin);
+
 
 }

@@ -49,6 +49,8 @@ public final class Dominios {
 	public static final String ESTADO_CONCILIACION_FUERA_DE_CONCILIACION = "FC";
 	public static final String ESTADO_CONCILIACION_POSPUESTA = "P";
 	public static final String ESTADO_CONCILIACION_CANCELADA = "CA";
+
+
 	
 	public static final String TIPO_CONCILIACION_MANUAL = "M";
 	public static final String TIPO_CONCILIACION_AUTOMATICA = "A";
@@ -67,6 +69,7 @@ public final class Dominios {
 	public static final String ESTADOS_OPERA_CANCELADO = "C";
 	public static final String ESTADOS_OPERA_FALLIDO = "F";
 	public static final String ESTADOS_OPERA_FALLIDO_NO = "FNF";
+
 	
 	public static final String TIPOS_TRANSPORTE_URBANO = "U";
 	public static final String TIPOS_TRANSPORTE_INTERURBANO1 = "I2";
@@ -86,6 +89,7 @@ public final class Dominios {
 	
 	public static final String FORMATO_FECHA_HORA_F1 = "F1";
 	public static final String FORMATO_FECHA_HORA_F2 = "F2";
+	public static final String FORMATO_FECHA_HORA_3 = "F3";
 	
 	public static final String FORMATO_FECHA_F1 = "F1";
 	public static final String FORMATO_FECHA_F2 = "F2";
@@ -108,11 +112,12 @@ public final class Dominios {
 	 */	
 	public static final String AGRUPADOR_DEFINICION_ARCHIVOS_PRELIMINARES = "PRELIMINAR";
 	public static final String AGRUPADOR_DEFINICION_ARCHIVOS_DEFINITIVO = "DEFINITIVO";
+	public static final String AGRUPADOR_DEFINICION_ARCHIVOS_CERTIFICACION = "CERTIFICACION";
 	
 	/**
 	 * Dominios estados de los procesos del dia
 	 */	
-	public static final String ESTADO_PROCESO_DIA_COMPLETO = "COMPLETO";
+	public static final String ESTADO_PROCESO_DIA_COMPLETO = "CERRADO";
 	public static final String ESTADO_PROCESO_DIA_PROCESO = "PROCESO";
 	
 	/**
@@ -128,5 +133,21 @@ public final class Dominios {
 	public static final String TIPO_REGLA_EXCLUIDOS = "EXC";
 	public static final String TIPO_REGLA_CONSULTA_SQL = "SQL";
 	
+	/**
+	 * Tipos de archivo 
+	 */
+	public static final String TIPO_ARCHIVO_IPPSV = "IPPSV";
+	public static final String TIPO_ARCHIVO_ISTRC = "ISTRC";
+	public static final String TIPO_ARCHIVO_ITVCS = "ITVCS";
+	public static final String TIPO_ARCHIVO_ISRPO = "ISRPO";
+	public static final String TIPO_ARCHIVO_ISRPC = "ISRPC";
+	
+	/**
+	 * Codigo Proceso 
+	 */
+	public static final String CODIGO_PROCESO_LOG_PRELIMINAR = "CARG_PRELIMINAR";
+	public static final String CODIGO_PROCESO_LOG_DEFINITIVO = "CARG_DEFINITIVO";
+	public static final String CODIGO_PROCESO_LOG_CERTIFICACION = "CARG_CERTIFICACION";
+	public static final String CODIGO_PROCESO_LOG_CONCILIACION = "CONCILIACION";
 	
 }

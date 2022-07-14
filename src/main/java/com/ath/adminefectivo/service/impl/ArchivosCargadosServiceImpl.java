@@ -1,9 +1,12 @@
 package com.ath.adminefectivo.service.impl;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -141,6 +144,7 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 	 * {@inheritDoc}
 	 */
 	@Override
+	@Transactional
 	public Boolean persistirDetalleArchivoCargado(ValidacionArchivoDTO validacionArchivo, boolean soloErrores) {
 		ArchivosCargados archivosCargados = ArchivosCargados.builder().estado(Constantes.REGISTRO_ACTIVO)
 				.estadoCargue(validacionArchivo.getEstadoValidacion())
@@ -151,6 +155,8 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 				.fechaCreacion(new Date()).build();
 
 		var archivoCargadoEntity = archivosCargadosRepository.save(archivosCargados);
+		
+		
 
 		if (Objects.nonNull(validacionArchivo.getDescripcionErrorEstructura())) {
 
@@ -173,6 +179,35 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<ArchivosCargadosDTO> getArchivosCargadosSinProcesar(String idModeloArchivo) {
+
+		List<ArchivosCargadosDTO> resultado = new ArrayList<>();
+
+		List<ArchivosCargados> archivosCargados = archivosCargadosRepository
+				.findByEstadoCargueAndIdModeloArchivo(Constantes.ESTRUCTURA_OK, idModeloArchivo);
+
+		if (!Objects.isNull(archivosCargados)) {
+			archivosCargados.forEach(arch -> {
+				resultado.add(ArchivosCargadosDTO.CONVERTER_DTO.apply(arch));
+			});
+			System.out.println("ENTRO no nulo " + archivosCargados.size());
+			return resultado;
+		}
+		return null;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void actualizarArchivosCargados(ArchivosCargadosDTO archivosCargadosDTO) {
+		archivosCargadosRepository.save(ArchivosCargadosDTO.CONVERTER_ENTITY.apply(archivosCargadosDTO));
+	}
+
+	/**
 	 * Método encargado de organizar y separar las informacion de las lineas
 	 * 
 	 * @param listValidacion
@@ -188,12 +223,10 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 		var listaPersistencia = listValidacion.stream()
 				.filter(x -> !soloErrores || Objects.equals(x.getEstado(), Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO))
 				.toList();
-
 		for (ValidacionLineasDTO lineas : listaPersistencia) {
 
 			var registrosCargadosPk = RegistrosCargadosPK.builder().consecutivoRegistro(lineas.getNumeroLinea())
 					.idArchivo(idArchivo).build();
-
 			var registroCargado = RegistrosCargados.builder().estado(Constantes.REGISTRO_ACTIVO)
 					.estadoRegistro(lineas.getEstado()).contenido(lineas.getContenidoTxt())
 					.tipoRegistro(lineas.getTipo()).usuarioCreacion("ATH").fechaCreacion(new Date())
@@ -202,6 +235,7 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 			if (Objects.nonNull(lineas.getCampos()) && !lineas.getCampos().isEmpty()) {
 				List<FallasRegistro> fallasRegistro = new ArrayList<>();
 				lineas.getCampos().forEach(camp -> {
+
 					var fallasRegistroPk = FallasRegistroPK.builder().idArchivo(idArchivo)
 							.consecutivoRegistro((long) lineas.getNumeroLinea())
 							.numeroCampo((long) camp.getNumeroCampo()).build();

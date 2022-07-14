@@ -12,5 +12,21 @@ import com.ath.adminefectivo.entities.Transportadoras;
  */
 public interface ITransportadorasRepository
 		extends JpaRepository<Transportadoras, String>, QuerydslPredicateExecutor<Transportadoras> {
+	
+	/**
+	 * Retorna la entidad Transportadoras con base en el nombre de la transportadora
+	 * @param nombreTransportadora
+	 * @return Transportadoras
+	 * @author cesar.castano
+	 */
+	Transportadoras findByNombreTransportadora(String nombreTransportadora);
 
+	/**
+	 * Metodo encargado de realizar la consulta por codigo de la transportadora
+	 * 
+	 * @param codigo
+	 * @return Transportadoras
+	 * @author duvan.naranjo
+	 */
+	Transportadoras findByCodigo(String codigo);
 }

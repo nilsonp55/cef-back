@@ -20,11 +20,67 @@ public interface IFondosService {
 
 	/**
 	 * Servicio encargado de consultar los datos del Fondo por codigo Este
-	 * servicio lanza un error en caso de que la ciudad no exista
+	 * servicio lanza un error en caso de que el fondo no exista
 	 * 
 	 * @param codigo
 	 * @return Fondos
 	 * @author cesar.castano
 	 */
 	Fondos getDatosFondos(String codigo);
+	
+	/**
+	 * Servicio encargado de consultar el codigo del Fondo. Este
+	 * servicio lanza un error en caso de que el fondo no exista
+	 * 
+	 * @param nombreTransportadora
+	 * @param codigoCompensacion
+	 * @param codigoCiudad
+	 * @return Fondos
+	 * @author cesar.castano
+	 */
+	Fondos getCodigoFondo(String nombreTransportadora, Integer codigoCompensacion, String codigoCiudad);
+	
+	/**
+	 * Servicio encargado de consultar el codigo del Fondo. Este
+	 * servicio lanza un error en caso de que el fondo no exista
+	 * 
+	 * @param nombreTransportadora
+	 * @param tipoPuntoBanco
+	 * @param nombreBanco
+	 * @param nombreCiudad
+	 * @return Fondos
+	 * @author cesar.castano
+	 */
+	Fondos getCodigoFondo(String nombreTransportadora, String tipoPuntoBanco, String nombreBanco, String nombreCiudad);
+
+	/**
+	 * Servicio encargado de consultar el codigo del Fondo. Este
+	 * servicio lanza un error en caso de que el fondo no exista
+	 * 
+	 * @param codigoTransportadora
+	 * @param numeroNit
+	 * @param codigoCiudad
+	 * @return Fondos
+	 * @author cesar.castano
+	 */
+	Fondos getCodigoFondoCertificacion(String codigoTransportadora, String numeroNit, String codigoCiudad);
+	
+	/**
+	 * Servicio encargado de consultar el codigo Punto. Este
+	 * servicio lanza un error en caso de que el fondo no exista
+	 * 
+	 * @param codigoPunto
+	 * @return Fondos
+	 * @author cesar.castano
+	 */
+	Boolean getCodigoPuntoFondo(Integer codigoPunto);
+	
+	/**
+	 * Servicio encargado de consultar el codigo Punto. Este
+	 * servicio lanza un error en caso de que el fondo no exista
+	 * @param codigoPunto
+	 * @return Fondos
+	 * @author cesar.castano
+	 */
+	Fondos getEntidadFondo(Integer codigoPunto);
 }

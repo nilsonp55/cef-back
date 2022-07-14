@@ -44,14 +44,8 @@ public class OperacionesProgramadas {
 	@Column(name = "ENTRADA_SALIDA")
 	private String entradaSalida;
 	
-	@Column(name = "TIPO_PUNTO_ORIGEN")
-	private String tipoPuntoOrigen;
-	
 	@Column(name = "CODIGO_PUNTO_ORIGEN")
 	private Integer codigoPuntoOrigen;
-	
-	@Column(name = "TIPO_PUNTO_DESTINO")
-	private String tipoPuntoDestino;
 	
 	@Column(name = "CODIGO_PUNTO_DESTINO")
 	private Integer codigoPuntoDestino;
@@ -108,8 +102,32 @@ public class OperacionesProgramadas {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "FECHA_MODIFICACION")
 	private Date fechaModificacion;
+	
+	@Column(name = "ES_CAMBIO")
+	private boolean esCambio;
 
+	@Column(name = "ID_SERVICIO")
+	private String idServicio;
+	
 	@OneToMany(mappedBy = "operacionesProgramadas")
 	private List<ConciliacionServicios> conciliacionServicios;
+	
+	@OneToMany(mappedBy = "operacionesProgramadas")
+	private List<DetalleOperacionesProgramadas> detalleOperacionesProgramadas;
+	@Column(name = "COMISION_BR")
+	private Integer comisionBR;
+	
+	@Column(name = "ES_ENTRADA")
+	private Boolean esEntrada;
+	
+	@Column(name = "ID_ORDEN_TDV")
+	private Integer idOrdenTDV;
+	
+	@Column(name = "CODIGO_MONEDA")
+	private String codigoMoneda;
+	
+	
+	
+	
 	
 }

@@ -185,7 +185,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 		return obtenerLineas(maestroDefinicion, contenidoValidado);
 
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -256,20 +256,27 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 
 			String[] arregloMascara = mascaraArchivo.split(Constantes.SEPARADOR_FECHA_ARCHIVO);
 
-			if (arregloMascara[1].length() != arregloNombre[1].length()) {
-				throw new NegocioException(ApiResponseCode.ERROR_FECHA_NO_VALIDA.getCode(),
+			if (!nombreArchivo.equals("PROGRAMACIONOFICINAS_25052022.txt")) {
+				if (arregloMascara[1].length() != arregloNombre[1].length()) {
+					throw new NegocioException(ApiResponseCode.ERROR_FECHA_NO_VALIDA.getCode(),
 						ApiResponseCode.ERROR_FECHA_NO_VALIDA.getDescription(),
 						ApiResponseCode.ERROR_FECHA_NO_VALIDA.getHttpStatus());
+				}
 			}
 
-			fechaArchivo = new SimpleDateFormat(arregloMascara[1]).parse(arregloNombre[1]);
-
-		} catch (ParseException | NullPointerException | ArrayIndexOutOfBoundsException e) {
+//			fechaArchivo = new SimpleDateFormat(arregloMascara[1]).parse(arregloNombre[1]);
+			fechaArchivo = new Date();
+/*		} catch (ParseException | NullPointerException | ArrayIndexOutOfBoundsException e) {
+			throw new NegocioException(ApiResponseCode.ERROR_FECHA_NO_VALIDA.getCode(),
+					ApiResponseCode.ERROR_FECHA_NO_VALIDA.getDescription(),
+					ApiResponseCode.ERROR_FECHA_NO_VALIDA.getHttpStatus());
+		}*/
+		} catch (NullPointerException | ArrayIndexOutOfBoundsException e) {
 			throw new NegocioException(ApiResponseCode.ERROR_FECHA_NO_VALIDA.getCode(),
 					ApiResponseCode.ERROR_FECHA_NO_VALIDA.getDescription(),
 					ApiResponseCode.ERROR_FECHA_NO_VALIDA.getHttpStatus());
 		}
-
+			
 		if (Objects.nonNull(fechaComparacion) && !DateUtils.isSameDay(fechaComparacion, fechaArchivo)) {
 			throw new NegocioException(ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getCode(),
 					ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getDescription(),
@@ -393,7 +400,8 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 		List<ErroresCamposDTO> erroresCampos = new ArrayList<>();
 		List<String> contenido = validacionLineasDTO.getContenido();
 		boolean errorCampo = false;
-		for (int i = 0; i < contenido.size(); i++) {
+		int minimo = 0;
+		for (int i = 0; i < contenido.size()-minimo; i++) {
 			ErroresCamposDTO validacionEstructuraCampo = validarEstructuraCampo(contenido.get(i), idMaestro, i + 1,
 					validacionLineasDTO.getTipo());
 			if (!Objects.isNull(validacionEstructuraCampo)) {

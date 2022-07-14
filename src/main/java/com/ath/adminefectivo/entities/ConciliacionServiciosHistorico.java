@@ -1,6 +1,5 @@
 package com.ath.adminefectivo.entities;
 
-import java.time.LocalDate;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -8,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -36,18 +37,12 @@ public class ConciliacionServiciosHistorico {
 	@Column(name = "ID_CONCILIACION")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer idConciliacion;
-	
-	@Column(name = "ID_OPERACION")
-	private Integer idOperacion;
-	
-	@Column(name = "ID_CERTIFICACION")
-	private Integer idCertificacion;
-	
+
 	@Column(name = "ESTADO")
 	private String estado;
 	
 	@Column(name = "FECHA_CONCILIACION")
-	private LocalDate fechaConciliacion;
+	private Date fechaConciliacion;
 	
 	@Column(name = "USUARIO_CREACION")
 	private String usuarioCreacion;
@@ -65,4 +60,12 @@ public class ConciliacionServiciosHistorico {
 	
 	@Column(name = "TIPO_CONCILIACION")
 	private String tipoConciliacion;
+	
+	@ManyToOne
+	@JoinColumn(name = "ID_OPERACION")
+	private OperacionesProgramadas operacionesProgramadas;
+	
+	@ManyToOne
+	@JoinColumn(name = "ID_CERTIFICACION")
+	private OperacionesCertificadas operacionesCertificadas;
 }

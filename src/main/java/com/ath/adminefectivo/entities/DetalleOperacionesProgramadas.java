@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -36,17 +38,14 @@ public class DetalleOperacionesProgramadas {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer idDetalleOperacion;
 	
-	@Column(name = "ID_OPERACION")
-	private Integer idOperacion;
-	
 	@Column(name = "DENOMINACION")
-	private Integer denominacion;
+	private String denominacion;
 	
 	@Column(name = "CALIDAD")
 	private Integer calidad;
 	
 	@Column(name = "FAMILIA")
-	private Integer familia;
+	private String familia;
 	
 	@Column(name = "VALOR")
 	private Double valorDetalle;
@@ -64,5 +63,9 @@ public class DetalleOperacionesProgramadas {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "FECHA_MODIFICACION")
 	private Date fechaModificacion;
+	
+	@ManyToOne
+	@JoinColumn(name = "ID_OPERACION")
+	private OperacionesProgramadas operacionesProgramadas;
 	
 }

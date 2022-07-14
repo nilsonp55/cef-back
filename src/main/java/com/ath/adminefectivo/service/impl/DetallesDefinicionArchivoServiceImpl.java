@@ -55,4 +55,24 @@ public class DetallesDefinicionArchivoServiceImpl implements IDetalleDefinicionA
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<DetallesDefinicionArchivoDTO> consultarDetalleDefinicionArchivoByIdArchivoNumeroCampo(String idArchivo,
+			Integer numeroCampo) {
+		var detalleDefinicion = detallesDefinicionArchivoRepository.findByIdIdArchivoAndIdNumeroCampo(idArchivo, numeroCampo);
+		
+		if (!detalleDefinicion.isEmpty()) {
+			List<DetallesDefinicionArchivoDTO> listDetalleDefinicionDto = new ArrayList<>();
+			detalleDefinicion.forEach(
+					entity -> listDetalleDefinicionDto.add(DetallesDefinicionArchivoDTO.CONVERTER_DTO.apply(entity)));
+			return listDetalleDefinicionDto;
+		} else {
+			throw new NegocioException(ApiResponseCode.ERROR_DETALLE_DEFINICION_NO_VALIDO.getCode(),
+					ApiResponseCode.ERROR_DETALLE_DEFINICION_NO_VALIDO.getDescription(),
+					ApiResponseCode.ERROR_DETALLE_DEFINICION_NO_VALIDO.getHttpStatus());
+		}
+	}
+
 }
