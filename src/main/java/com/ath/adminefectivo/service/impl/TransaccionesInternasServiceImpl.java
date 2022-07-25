@@ -1,5 +1,7 @@
 package com.ath.adminefectivo.service.impl;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import com.ath.adminefectivo.service.ITransaccionesInternasService;
 
 /**
  * Servicios para gestionar las transacciones internas
+ * 
  * @author Bayron Perez
  */
 
@@ -20,13 +23,19 @@ public class TransaccionesInternasServiceImpl implements ITransaccionesInternasS
 
 	@Autowired
 	ITransaccionesInternasRepository transaccionesInternasRepository;
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public List<TransaccionesInternas> getAllTransaccionesInternas() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public TransaccionesInternas getTransaccionesInternasById(String idTransaccionesInternas) {
 		// TODO Auto-generated method stub
@@ -38,13 +47,33 @@ public class TransaccionesInternasServiceImpl implements ITransaccionesInternasS
 	 */
 	@Override
 	public TransaccionesInternas saveTransaccionesInternasById(TransaccionesInternasDTO transaccionesInternasDTO) {
-		return transaccionesInternasRepository.save(TransaccionesInternasDTO.CONVERTER_ENTITY.apply(transaccionesInternasDTO));
+		return transaccionesInternasRepository
+				.save(TransaccionesInternasDTO.CONVERTER_ENTITY.apply(transaccionesInternasDTO));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void deleteTransaccionesInternasById(String idTransaccionesInternas) {
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<TransaccionesInternasDTO> getTransaccionesInternasByFechas(Date fechaInicio, Date fechaFin) {
+		List<TransaccionesInternasDTO> listadoTransaccionesInternasDTO = new ArrayList<>();
+
+		List<TransaccionesInternas> listadoTransaccionesInternas = transaccionesInternasRepository
+				.findByFechaBetween(fechaInicio, fechaFin);
+		listadoTransaccionesInternas.forEach(transaccionInterna -> listadoTransaccionesInternasDTO
+				.add(TransaccionesInternasDTO.CONVERTER_DTO.apply(transaccionInterna))
+			);
+
+		return listadoTransaccionesInternasDTO;
 	}
 
 }

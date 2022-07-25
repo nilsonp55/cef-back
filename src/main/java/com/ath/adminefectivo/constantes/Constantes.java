@@ -171,6 +171,22 @@ public final class Constantes {
 	 * Constante del agrupador de los tipos punto
 	 */
 	public static final String DOMINIO_TIPO_ARCHIVO = "TIPO_ARCHIVO";
+	
+	/**
+	 * Constante del agrupador de los dominios  de las comisiones
+	 */
+	public static final String DOMINIO_COMISIONES = "COMISIONES";
+	
+	/**
+	 * Constante del agrupador de los dominios  de los impuestos
+	 */
+	public static final String DOMINIO_IMPUESTOS = "IMPUESTOS";
+	
+	/**
+	 * Constante del agrupador de los dominios  de los medios de pago
+	 */
+	public static final String DOMINIO_MEDIOS_PAGO = "MEDIOS_PAGO";
+	
 	/**
 	 * Delimintadores de los archivos
 	 */

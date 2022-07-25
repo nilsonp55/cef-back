@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.BancosDTO;
+import com.ath.adminefectivo.dto.PuntosDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
+import com.ath.adminefectivo.entities.Bancos;
 import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.repositories.IBancosRepository;
 import com.ath.adminefectivo.service.IBancosService;
@@ -123,5 +125,18 @@ public class BancosServiceImpl implements IBancosService {
 			estado = false;
 		}
 		return estado;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public BancosDTO validarPuntoBancoEsAval(int codigoPunto) {
+		Bancos banco = bancosRepository.findBancoByCodigoPunto(codigoPunto);
+		if(banco.getEsAVAL()) {
+			return BancosDTO.CONVERTER_DTO.apply(banco);
+		}else {
+			return null;
+		}
 	}
 }

@@ -4,13 +4,16 @@ package com.ath.adminefectivo.delegate.impl;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.delegate.IContabilidadDelegate;
+import com.ath.adminefectivo.dto.TransaccionesInternasDTO;
 import com.ath.adminefectivo.service.IContabilidadService;
 import com.ath.adminefectivo.service.IOperacionesProgramadasService;
+import com.ath.adminefectivo.service.ITransaccionesInternasService;
 
 @Service
 public class ContabilidadDelegateImpl implements IContabilidadDelegate {
@@ -21,6 +24,9 @@ public class ContabilidadDelegateImpl implements IContabilidadDelegate {
 	@Autowired
 	IContabilidadService contabilidadService;
 	
+	@Autowired
+	ITransaccionesInternasService transaccionesInternas;
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -28,7 +34,7 @@ public class ContabilidadDelegateImpl implements IContabilidadDelegate {
 	public String generarContabilidad(String tipoContabilidad) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		String f1 = "2022-05-28";
-		String f2 = "2022-06-05";
+		String f2 = "2022-07-19";
 		Date fechaInicio = null;
 		Date fechaFin = null;
 		try {
@@ -45,6 +51,10 @@ public class ContabilidadDelegateImpl implements IContabilidadDelegate {
 		});
 		if(!operacionesProgramadas.isEmpty()) {
 			int resultado = contabilidadService.generarContabilidad(tipoContabilidad, operacionesProgramadas);
+			List<TransaccionesInternasDTO> listadoTransaccionesInternas = transaccionesInternas.getTransaccionesInternasByFechas(fechaInicio, fechaFin);
+			
+			resultado = contabilidadService.generarMovimientosContables(tipoContabilidad, listadoTransaccionesInternas);
+			
 			if(resultado > 0) {
 				return "MENSAJE EXITOSO";
 			}else {

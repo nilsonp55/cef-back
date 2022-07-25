@@ -150,4 +150,23 @@ public final class Dominios {
 	public static final String CODIGO_PROCESO_LOG_CERTIFICACION = "CARG_CERTIFICACION";
 	public static final String CODIGO_PROCESO_LOG_CONCILIACION = "CONCILIACION";
 	
+	/**
+	 * COMISIONES
+	 */
+	public static final String COMISION_1 = "1";
+	public static final String COMISION_2 = "2";
+	public static final String COMISION_3 = "3";
+	
+	/*
+	 * IMPUESTOS
+	 */
+	public static final String IMPUESTO_IVA = "1";
+	
+	/**
+	 * MEDIOS_PAGO
+	 */
+	public static final String MEDIOS_PAGO_ABONO = "ABONO";
+	public static final String MEDIOS_PAGO_DESCUENTO = "DESCUENTO";
+	
+	
 }

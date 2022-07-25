@@ -103,4 +103,15 @@ public class TransaccionesInternas {
 	@Column(name = "ESTADO")
 	private String estado;
 	
+	@Column(name = "TASA_NEGOCIACION")
+	private String tasaNegociacion;
+	
+	@Column(name = "MEDIO_PAGO", length = 15)
+	private String medioPago;
+	
+	@ManyToOne
+	@JoinColumn(name = "TRANSPORTADORA", nullable = true)
+	private Transportadoras transportadora;
+	
+	
 }

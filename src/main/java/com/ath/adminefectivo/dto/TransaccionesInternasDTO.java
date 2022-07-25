@@ -70,6 +70,12 @@ public class TransaccionesInternasDTO {
 	
 	private String estado;
 	
+	private String tasaNegociacion;
+	
+	private TransportadorasDTO transportadora;
+	
+	private String medioPago;
+	
 	
 	
 	/**
@@ -94,6 +100,8 @@ public class TransaccionesInternasDTO {
         transaccionesInternas.setTipoOperacion(t.getTipoOperacion());
         transaccionesInternas.setTipoProceso(t.getTipoProceso());
         transaccionesInternas.setValor(t.getValor());
+        transaccionesInternas.setTasaNegociacion(t.getTasaNegociacion());
+        transaccionesInternas.setMedioPago(t.getMedioPago());
 
         if(!Objects.isNull(t.getBancoAval())) {
         	transaccionesInternas.setBancoAval(BancosDTO.CONVERTER_ENTITY.apply(t.getBancoAval()));
@@ -115,6 +123,10 @@ public class TransaccionesInternasDTO {
         
         if(!Objects.isNull(t.getIdOperacion())) {
         	transaccionesInternas.setIdOperacion(OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(t.getIdOperacion()));	
+        }
+        
+        if(!Objects.isNull(t.getTransportadora())) {
+        	transaccionesInternas.setTransportadora(TransportadorasDTO.CONVERTER_ENTITY.apply(t.getTransportadora())); 	
         }
         
         
@@ -142,6 +154,8 @@ public class TransaccionesInternasDTO {
         transaccionesInternasDTO.setTipoOperacion(t.getTipoOperacion());
         transaccionesInternasDTO.setTipoProceso(t.getTipoProceso());
         transaccionesInternasDTO.setValor(t.getValor());
+        transaccionesInternasDTO.setTasaNegociacion(t.getTasaNegociacion());
+        transaccionesInternasDTO.setMedioPago(t.getMedioPago());
         
         if(!Objects.isNull(t.getBancoAval())) {
         	transaccionesInternasDTO.setBancoAval(BancosDTO.CONVERTER_DTO.apply(t.getBancoAval()));
@@ -163,6 +177,10 @@ public class TransaccionesInternasDTO {
         
         if(!Objects.isNull(t.getIdOperacion())) {
         	transaccionesInternasDTO.setIdOperacion(OperacionesProgramadasDTO.CONVERTER_DTO.apply(t.getIdOperacion()));	
+        }
+        
+        if(!Objects.isNull(t.getTransportadora())) {
+        	transaccionesInternasDTO.setTransportadora(TransportadorasDTO.CONVERTER_DTO.apply(t.getTransportadora())); 	
         }
         
 		return transaccionesInternasDTO;
