@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.dto.CiudadesDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
-import com.ath.adminefectivo.entities.Ciudades;
 import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.repositories.ICiudadesRepository;
 import com.ath.adminefectivo.service.ICiudadesService;
@@ -60,18 +59,6 @@ public class CiudadServiceImpl implements ICiudadesService{
 					ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getHttpStatus());
 		} else {
 			return ciudadOpt.getCodigoDANE();
-		}
-	}
-
-	@Override
-	public CiudadesDTO getCiudadPorCodigoDane(String codigo) {
-		Ciudades ciudadOpt = ciudadesRepository.findByCodigoDANE(codigo);
-		if (Objects.isNull(ciudadOpt)) {
-			throw new AplicationException(ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getDescription(),
-					ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getHttpStatus());
-		} else {
-			return CiudadesDTO.CONVERTER_DTO.apply(ciudadOpt);
 		}
 	}
 }

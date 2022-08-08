@@ -45,8 +45,7 @@ public interface IFondosRepository extends JpaRepository<Fondos, Integer>, Query
 	Fondos obtenerCodigoFondoTDV(String nombreTransportadora, Integer codigoCompensacion, String codigoCiudad);
 	
 	/**
-	 * Retorna el objeto Fondos con base en la nombreTransportadora, tipoPuntoBnaco, 
-	 * mombreBanco y nombre ciudad
+	 * Retorna el objeto Fondos con base en la nombreTransportadora, tipoPuntoBnaco, mombreBanco y nombre ciudad
 	 * @param nombreTransportadora
 	 * @param tipoPuntoBanco
 	 * @param mombreBanco
@@ -62,20 +61,11 @@ public interface IFondosRepository extends JpaRepository<Fondos, Integer>, Query
 	Fondos obtenerCodigoFondoTDV1(
 			String nombreTransportadora, String tipoPuntoBanco, String nombreBanco, String nombreCiudad);
 
-	/**
-	 * Retorna el objeto Fondos con base en la nombreTransportadora, tipoPuntoBnaco, 
-	 * mombreBanco y codigo ciudad
-	 * @param nombreTransportadora
-	 * @param tipoPuntoBanco
-	 * @param mombreBanco
-	 * @param codigoCiudad
-	 * @return Fondos
-	 * @author cesar.castano
-	 */
 	@Query("SELECT f FROM Fondos f JOIN Puntos p ON "
 			+ "f.codigoPunto = p.codigoPunto "
 			+ "WHERE f.tdv = ?1 and "
-			+ "      f.bancoAVAL = (SELECT codigoPunto FROM Bancos WHERE numeroNit = ?2) and "
-			+ "      p.codigoCiudad = ?3 ")
-	Fondos obtenerCodigoFondoTDV2(String codigoTransportadora, String numeroNit, String codigoCiudad);
+			+ "      f.bancoAVAL = (SELECT codigoPunto FROM Puntos WHERE tipoPunto = ?2 and nombrePunto = ?3) and "
+			+ "      p.codigoCiudad = ?4 ")
+	Fondos obtenerCodigoFondoTDV2(String codigoTransportadora, String tipoPuntoBanco, String nombreBanco,
+			String codigoCiudad);
 }

@@ -50,7 +50,7 @@ public class CarguePreliminarDelegateImpl implements ICarguePreliminarDelegate {
 
 	@Autowired
 	IValidacionArchivoService validacionArchivoService;
-
+	
 	private ValidacionArchivoDTO validacionArchivo;
 
 	/**
@@ -72,12 +72,11 @@ public class CarguePreliminarDelegateImpl implements ICarguePreliminarDelegate {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Boolean eliminarArchivo(Long idArchivo) {
-		var archivoCargadoDTO = archivosCargadosService.eliminarArchivo(idArchivo);
-		if (Objects.nonNull(archivoCargadoDTO.getUrl())) {
-			return filesService.eliminarArchivo(archivoCargadoDTO.getUrl());
-		}
-		return false;
+	public Boolean eliminarArchivo(String nombreArchivo, String idMaestroArchivo) {
+		var maestrosDefinicion = maestroDefinicionArchivoService.consultarDefinicionArchivoById(idMaestroArchivo);
+		String carpeta = parametrosService.valorParametro("RUTA_ARCHIVOS_PENDIENTES");
+		String file = maestrosDefinicion.getUbicacion()+carpeta+nombreArchivo;
+		return filesService.eliminarArchivo(file);
 	}
 
 	/**
@@ -109,11 +108,7 @@ public class CarguePreliminarDelegateImpl implements ICarguePreliminarDelegate {
 	public ValidacionArchivoDTO validarArchivo(String idMaestroDefinicion, String nombreArchivo) {
 
 		this.validacionesAchivoCargado(idMaestroDefinicion, nombreArchivo);
-		if (Objects.equals(this.validacionArchivo.getEstadoValidacion(), Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO)) {
-			archivosCargadosService.persistirDetalleArchivoCargado(validacionArchivo, true);
-		}else {
-			archivosCargadosService.persistirDetalleArchivoCargado(validacionArchivo, false);
-		}
+		
 		return ValidacionArchivoDTO.conversionRespuesta(this.validacionArchivo);
 	}
 
@@ -175,6 +170,7 @@ public class CarguePreliminarDelegateImpl implements ICarguePreliminarDelegate {
 	 */
 	private void validacionesAchivoCargado(String idMaestroDefinicion, String nombreArchivo) {
 		this.validacionArchivo = new ValidacionArchivoDTO();
+		System.out.println("Entro a validacionesAchivoCargado");
 		// Validaciones del archivo
 		var maestroDefinicion = maestroDefinicionArchivoService.consultarDefinicionArchivoById(idMaestroDefinicion);
 		var urlPendinetes = parametrosService.valorParametro(Parametros.RUTA_ARCHIVOS_PENDIENTES);

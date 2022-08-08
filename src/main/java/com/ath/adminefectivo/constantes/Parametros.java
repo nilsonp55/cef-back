@@ -32,4 +32,6 @@ public final class Parametros {
 	 */
 	public static final String CONSULTA_BASE_MOTOR_REGLAS ="SQL_BASE_CONSULTAS_MOTOR";
 
+	public static final String TIPO_CARPETA = "TIPO_CARPETA";
+
 }

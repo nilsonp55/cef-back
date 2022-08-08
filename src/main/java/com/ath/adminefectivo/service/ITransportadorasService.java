@@ -36,14 +36,4 @@ public interface ITransportadorasService {
 	 * @author cesar.castano
 	 */
 	String getcodigoTransportadora(String nombre);
-	
-	/**
-	 * Servicio encargado de consultar la Transportadora por codigo Este
-	 * servicio retorna un exepcion en caso no de existir
-	 * 
-	 * @param codigo 
-	 * @return TransportadorasDTO
-	 * @author duvan.naranjo
-	 */
-	TransportadorasDTO getTransportadoraPorCodigo(String codigo);
 }

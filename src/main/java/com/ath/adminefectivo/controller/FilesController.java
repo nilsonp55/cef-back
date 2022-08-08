@@ -67,8 +67,10 @@ public class FilesController {
 	@GetMapping(FilesEndpoint.DOWNLOAD_FILE_BY_ID)
 	@ApiOperation(value = "Download files ", notes = "")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = SwaggerConstants.RESPONSE_MESSAGE_200) })
-	public ResponseEntity<InputStreamResource> downloadFile(@PathVariable("id") Long idArchivo) {
-		DownloadDTO file = filesDelegate.downloadFile(idArchivo);
+	public ResponseEntity<InputStreamResource> downloadFile(@RequestParam("nombreArchivo") String nombreArchivo, @RequestParam("idMaestroArchivo") String idMaestroArchivo) {
+		System.out.println("Entro al controller de downloadFile");
+		DownloadDTO file = filesDelegate.descargarArchivo(nombreArchivo, idMaestroArchivo);
+		System.out.println("Salio");
 		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, Constantes.PARAMETER_HEADER + file.getName())
 				.body(new InputStreamResource(file.getFile()));
 	}
@@ -120,6 +122,7 @@ public class FilesController {
 	@GetMapping(value = "${endpoints.Archivos.consultar}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<List<ArchivosCargadosDTO>>> consultarArchivos(
 			@RequestParam("idMaestroDefinicion") String idMaestroDefinicion, @RequestParam("estado") String estado) {
+				System.out.println("Entro controller");
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<List<ArchivosCargadosDTO>>(filesDelegate.consultarArchivos(idMaestroDefinicion, estado),
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())

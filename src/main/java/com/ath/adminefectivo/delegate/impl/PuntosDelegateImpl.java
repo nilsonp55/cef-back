@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.constantes.Constantes;
-import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.delegate.IPuntosDelegate;
 import com.ath.adminefectivo.dto.CreatePuntosDTO;
 import com.ath.adminefectivo.dto.PuntosDTO;
@@ -16,7 +15,6 @@ import com.ath.adminefectivo.entities.Fondos;
 import com.ath.adminefectivo.entities.Oficinas;
 import com.ath.adminefectivo.entities.Puntos;
 import com.ath.adminefectivo.entities.SitiosClientes;
-import com.ath.adminefectivo.service.IDominioService;
 import com.ath.adminefectivo.service.IPuntosService;
 import com.querydsl.core.types.Predicate;
 
@@ -25,9 +23,6 @@ public class PuntosDelegateImpl implements IPuntosDelegate{
 
 	@Autowired
 	IPuntosService puntosService;
-	
-	@Autowired
-	IDominioService dominioService;
 
 	
 	/**
@@ -52,9 +47,7 @@ public class PuntosDelegateImpl implements IPuntosDelegate{
 		Puntos puntoResponse = null;
 		
 		//Se genera logica para decidir que tipo de punto se crea
-		if(createPuntosDTO.getTipoPunto().equals(dominioService.valorTextoDominio(
-												Constantes.DOMINIO_TIPOS_PUNTO,
-												Dominios.TIPOS_PUNTO_BANCO))) {
+		if(createPuntosDTO.getTipoPunto().equals(Constantes.PUNTO_BANCO)) {
 			Bancos banco = new Bancos();
 			banco.setCodigoCompensacion(createPuntosDTO.getCodigoCompensacion());
 			banco.setNumeroNit(createPuntosDTO.getNumeroNit());
@@ -64,9 +57,7 @@ public class PuntosDelegateImpl implements IPuntosDelegate{
 			puntoResponse = puntosService.guardarPuntoBanco(punto, banco);
 		}
 		
-		if(createPuntosDTO.getTipoPunto().equals(dominioService.valorTextoDominio(
-												Constantes.DOMINIO_TIPOS_PUNTO,
-												Dominios.TIPOS_PUNTO_CAJERO))) {
+		if(createPuntosDTO.getTipoPunto().equals(Constantes.PUNTO_CAJERO)) {
 			CajerosATM cajero = new CajerosATM();
 			cajero.setCodigoATM(createPuntosDTO.getCodigoATM());
 			cajero.setTarifaRuteo(createPuntosDTO.getTarifaRuteo());
@@ -78,9 +69,7 @@ public class PuntosDelegateImpl implements IPuntosDelegate{
 			puntoResponse = puntosService.guardarPuntoCajeroATM(punto, cajero);
 		}
 		
-		if(createPuntosDTO.getTipoPunto().equals(dominioService.valorTextoDominio(
-											Constantes.DOMINIO_TIPOS_PUNTO,
-											Dominios.TIPOS_PUNTO_CLIENTE))) {
+		if(createPuntosDTO.getTipoPunto().equals(Constantes.PUNTO_SITIO_CLIENTE)) {
 			SitiosClientes sitiosClientes = new SitiosClientes();
 			sitiosClientes.setCodigoCliente(createPuntosDTO.getCodigoCliente());
 			sitiosClientes.setFajado(createPuntosDTO.getFajado());
@@ -88,9 +77,7 @@ public class PuntosDelegateImpl implements IPuntosDelegate{
 			puntoResponse = puntosService.guardarPuntoSitioCliente(punto, sitiosClientes);
 		}
 		
-		if(createPuntosDTO.getTipoPunto().equals(dominioService.valorTextoDominio(
-											Constantes.DOMINIO_TIPOS_PUNTO,
-											Dominios.TIPOS_PUNTO_FONDO))) {
+		if(createPuntosDTO.getTipoPunto().equals(Constantes.PUNTO_FONDO)) {
 			Fondos fondos = new Fondos();
 			fondos.setTdv(createPuntosDTO.getTdv());
 			fondos.setBancoAVAL(createPuntosDTO.getBancoAVAL());
@@ -99,9 +86,7 @@ public class PuntosDelegateImpl implements IPuntosDelegate{
 			puntoResponse = puntosService.guardarPuntoFondo(punto, fondos);
 		}
 			
-		if(createPuntosDTO.getTipoPunto().equals(dominioService.valorTextoDominio(
-											Constantes.DOMINIO_TIPOS_PUNTO,
-											Dominios.TIPOS_PUNTO_OFICINA))) {
+		if(createPuntosDTO.getTipoPunto().equals(Constantes.PUNTO_OFICINA)) {
 			Oficinas oficina = new Oficinas();
 			oficina.setCodigoOficina(createPuntosDTO.getCodigoOficina());
 			Bancos bancoAval = new Bancos();

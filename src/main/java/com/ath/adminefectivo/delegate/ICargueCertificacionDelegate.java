@@ -29,7 +29,7 @@ public interface ICargueCertificacionDelegate {
 	 * @return Boolean
 	 * @author cesar.castano
 	 */
-	Boolean eliminarArchivo(Long idArchivo);
+	Boolean eliminarArchivo(String nombreArchivo, String idMaestroArchivo);
 
 	/**
 	 * Metodo que realiza el cargue y las validaciones del un archivo, consultado
@@ -65,6 +65,6 @@ public interface ICargueCertificacionDelegate {
 	 * @return List<ArchivosCargadosDTO>
 	 * @author cesar.castano
 	 */
-	List<ArchivosCargadosDTO> consultarArchivos(String estado);
+	List<ArchivosCargadosDTO> consultarArchivos(String estado, String agrupador);
 	
 }

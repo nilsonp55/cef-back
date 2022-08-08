@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.ath.adminefectivo.dto.FondosDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.Fondos;
+import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.IFondosRepository;
 import com.ath.adminefectivo.service.IFondosService;
@@ -82,33 +83,17 @@ public class FondosServiceImpl implements IFondosService {
 	public Boolean getCodigoPuntoFondo(Integer codigoPunto) {
 		Boolean estado = true;
 		var fondo = fondosRepository.findByCodigoPunto(codigoPunto);
-		if (Objects.isNull(fondo)) {
+		if (fondo == null) {
 			estado = false;
 		}
 		return estado;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public Fondos getCodigoFondoCertificacion(String codigoTransportadora, String numeroNit, String codigoCiudad) {
+	public Fondos getCodigoFondoCertificacion(String codigoTransportadora, String tipoPuntoBanco, String nombreBanco,
+			String codigoCiudad) {
 
-		return fondosRepository.obtenerCodigoFondoTDV2(codigoTransportadora, numeroNit, codigoCiudad);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Fondos getEntidadFondo(Integer codigoPunto) {
-		var fondo = fondosRepository.findByCodigoPunto(codigoPunto);
-		if (Objects.isNull(fondo)) {
-			throw new NegocioException(ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getDescription(),
-					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getHttpStatus());
-
-		}
-		return fondo;
+		return fondosRepository.obtenerCodigoFondoTDV2(
+				codigoTransportadora, tipoPuntoBanco, nombreBanco, codigoCiudad);
 	}
 }

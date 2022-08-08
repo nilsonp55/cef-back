@@ -25,10 +25,9 @@ public interface IConciliacionServiciosService {
 	
 	/**
 	 * Servicio encargado de generar el numero de servicios concilliados por rango de fechas
-	 * @param fechaConciliacion
-	 * @return Integer
+	 * @param elemento
+	 * @return Boolean
 	 * @author cesar.castano
 	 */
 	Integer numeroOperacionesPorRangoFechas(FechasConciliacionDTO fechaConciliacion);
-	
 }

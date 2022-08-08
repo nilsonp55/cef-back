@@ -9,7 +9,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -23,7 +22,6 @@ import com.ath.adminefectivo.dto.DominioDTO;
 import com.ath.adminefectivo.dto.DownloadDTO;
 import com.ath.adminefectivo.dto.RegistrosCargadosDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
-import com.ath.adminefectivo.entities.RegistrosCargados;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.IRegistrosCargadosRepository;
 import com.ath.adminefectivo.service.IFilesService;
@@ -41,8 +39,7 @@ public class RegistrosCargadosServiceImpl implements IRegistrosCargadosService {
 	 */
 	@Override
 	public List<RegistrosCargadosDTO> consultarRegistrosCargadosPorIdArchivo(Long idArchivo) {
-
-		List<RegistrosCargados> registrosCargados = registrosCargadosRepository.findByIdIdArchivo(idArchivo);
+		var registrosCargados = registrosCargadosRepository.findByIdIdArchivo(idArchivo);
 		List<RegistrosCargadosDTO> listRegistrosArchivoDto = new ArrayList<>();
 		registrosCargados
 				.forEach(entity -> listRegistrosArchivoDto.add(RegistrosCargadosDTO.CONVERTER_DTO.apply(entity)));

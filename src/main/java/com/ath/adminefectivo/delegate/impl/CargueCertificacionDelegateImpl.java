@@ -17,25 +17,22 @@ import com.ath.adminefectivo.constantes.Parametros;
 import com.ath.adminefectivo.delegate.ICargueCertificacionDelegate;
 import com.ath.adminefectivo.dto.ArchivosCargadosDTO;
 import com.ath.adminefectivo.dto.DownloadDTO;
-import com.ath.adminefectivo.dto.LogProcesoDiarioDTO;
 import com.ath.adminefectivo.dto.MaestrosDefinicionArchivoDTO;
 import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoDTO;
-import com.ath.adminefectivo.dto.response.ApiResponseCode;
-import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.service.IArchivosCargadosService;
 import com.ath.adminefectivo.service.IFilesService;
 import com.ath.adminefectivo.service.ILecturaArchivoService;
-import com.ath.adminefectivo.service.ILogProcesoDiarioService;
 import com.ath.adminefectivo.service.IMaestroDefinicionArchivoService;
 import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.IValidacionArchivoService;
 
 /**
  * Delegate responsable del manejo, consulta y persistencia de archivos
+ * 
  * @author cesar.castano
  */
 @Service
-public class CargueCertificacionDelegateImpl implements ICargueCertificacionDelegate{
+public class CargueCertificacionDelegateImpl implements ICargueCertificacionDelegate {
 
 	@Autowired
 	IFilesService filesService;
@@ -54,12 +51,9 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 
 	@Autowired
 	ILecturaArchivoService lecturaArchivoService;
-	
-	@Autowired
-	ILogProcesoDiarioService logProcesoDiarioService;
 
 	private ValidacionArchivoDTO validacionArchivo;
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -79,12 +73,11 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Boolean eliminarArchivo(Long idArchivo) {
-		var archivoCargadoDTO = archivosCargadosService.eliminarArchivo(idArchivo);
-		if (Objects.nonNull(archivoCargadoDTO.getUrl())) {
-			return filesService.eliminarArchivo(archivoCargadoDTO.getUrl());
-		}
-		return false;
+	public Boolean eliminarArchivo(String nombreArchivo, String idMaestroArchivo) {
+		var maestrosDefinicion = maestroDefinicionArchivoService.consultarDefinicionArchivoById(idMaestroArchivo);
+		String carpeta = parametrosService.valorParametro("RUTA_ARCHIVOS_PENDIENTES");
+		String file = maestrosDefinicion.getUbicacion() + carpeta + nombreArchivo;
+		return filesService.eliminarArchivo(file);
 	}
 
 	/**
@@ -92,11 +85,7 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	 */
 	@Override
 	public ValidacionArchivoDTO validarArchivo(String idMaestroDefinicion, String nombreArchivo) {
-		validarLogProcesoDiario();
 		this.validacionesAchivoCargado(idMaestroDefinicion, nombreArchivo);
-		if (Objects.equals(this.validacionArchivo.getEstadoValidacion(), Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO)) {
-			archivosCargadosService.persistirDetalleArchivoCargado(validacionArchivo, true);
-		}
 		return ValidacionArchivoDTO.conversionRespuesta(this.validacionArchivo);
 	}
 
@@ -105,7 +94,6 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	 */
 	@Override
 	public ValidacionArchivoDTO procesarArchivo(String idMaestroDefinicion, String nombreArchivo) {
-		validarLogProcesoDiario();
 		this.validacionesAchivoCargado(idMaestroDefinicion, nombreArchivo);
 		archivosCargadosService.persistirDetalleArchivoCargado(validacionArchivo, false);
 
@@ -126,28 +114,42 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	 */
 	@Override
 	public ValidacionArchivoDTO consultarDetalleArchivo(Long idArchivoCargado) {
-		
+
 		return archivosCargadosService.consultarDetalleArchivo(idArchivoCargado);
-		
+
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<ArchivosCargadosDTO> consultarArchivos(String estado) {
+	public List<ArchivosCargadosDTO> consultarArchivos(String estado, String agrupador) {
 		List<ArchivosCargadosDTO> listArchivosCargados = new ArrayList<>();
 
-		var maestrosDefinicion = maestroDefinicionArchivoService
-				.consultarDefinicionArchivoByAgrupador(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_DEFINITIVO);
+		var maestrosDefinicion = maestroDefinicionArchivoService.consultarDefinicionArchivoByAgrupador(estado, agrupador);
+		System.out.println("maestrosDefinicion: "+maestrosDefinicion);
 		var urlPendinetes = filesService.consultarPathArchivos(estado);
-
-		maestrosDefinicion.forEach(x -> {
-			var url = x.getUbicacion().concat(urlPendinetes);
-			var archivos = filesService.obtenerContenidoCarpeta(url);
-			listArchivosCargados.addAll(
-					organizarDataArchivos(archivos, estado, x.getIdMaestroDefinicionArchivo(), x.getMascaraArch()));
-
+		System.out.println("urlPendinetes: "+urlPendinetes);
+		var maestro = maestrosDefinicion.get(0);
+		System.out.println("maestro: "+maestro);
+		var url = maestro.getUbicacion().concat(urlPendinetes);
+		System.out.println("url: "+url);
+		var archivos = filesService.obtenerContenidoCarpeta(url);
+		System.out.println("archivos: "+archivos);
+		archivos.forEach(x -> {
+			System.out.println("Entro al For Each");
+			String nombreArchivo;
+			nombreArchivo = x.split("_")[0];
+			maestrosDefinicion.forEach(y -> {
+				String nombreMaestro;
+				nombreMaestro = y.getMascaraArch().split("_")[0];
+				System.out.println("nombreMaestro: "+nombreMaestro);
+				if (nombreArchivo.equals(nombreMaestro)) {
+					System.out.println("Entro al If del ForEach");
+					listArchivosCargados.add(
+							organizarDatosArchivo(x, estado, y.getIdMaestroDefinicionArchivo(), y.getMascaraArch()));
+				}
+			});
 		});
 
 		listArchivosCargados.sort(Comparator.comparing(ArchivosCargadosDTO::getFechaArchivo,
@@ -158,6 +160,7 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 
 	/**
 	 * Valida si que el valor del contenido sea mayor al minimo paramtrizado
+	 * 
 	 * @param maestroDefinicion
 	 * @param contenido
 	 * @return
@@ -175,10 +178,11 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 		}
 		return validacionCantidad;
 	}
-	
+
 	/**
 	 * Obtiene la cantidad de registros, verificando si tiene cabecera y control
 	 * final
+	 * 
 	 * @param maestroDefinicion
 	 * @param contenido
 	 * @return
@@ -193,9 +197,10 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 
 		return cantidad;
 	}
-	
+
 	/**
 	 * Metodo encargado de realizar la validaciones de un archivo cargado
+	 * 
 	 * @param idMaestroDefinicion
 	 * @param nombreArchivo
 	 * @return void
@@ -207,10 +212,12 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 		var maestroDefinicion = maestroDefinicionArchivoService.consultarDefinicionArchivoById(idMaestroDefinicion);
 		var urlPendinetes = parametrosService.valorParametro(Parametros.RUTA_ARCHIVOS_PENDIENTES);
 		var url = maestroDefinicion.getUbicacion().concat(urlPendinetes).concat(nombreArchivo);
-		if (!idMaestroDefinicion.equals("ISRPO")) {
+		if (!idMaestroDefinicion.equals("BRINK")) {
 			validacionArchivoService.validarNombreArchivo(maestroDefinicion, nombreArchivo);
 		}
-//		validacionArchivoService.validarNombreArchivo(maestroDefinicion, nombreArchivo);		
+
+		// validacionArchivoService.validarNombreArchivo(maestroDefinicion,
+		// nombreArchivo);
 		var dowloadFile = filesService.downloadFile(DownloadDTO.builder().url(url).build());
 		// Validaciones de arcihvo
 		String delimitador = lecturaArchivoService.obtenerDelimitadorArchivo(maestroDefinicion);
@@ -228,9 +235,22 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 
 	}
 
+	private ArchivosCargadosDTO organizarDatosArchivo(String archivo, String estado,
+			String idModeloArchivo, String mascaraArchivo) {
+		ArchivosCargadosDTO archivosCargadosDTO = new ArchivosCargadosDTO();
+
+		archivosCargadosDTO = ArchivosCargadosDTO.builder().estadoCargue(estado).nombreArchivo(archivo)
+				.idModeloArchivo(idModeloArchivo)
+				.fechaArchivo(validacionArchivoService.obtenerFechaArchivo(archivo, mascaraArchivo)).build();
+
+		return archivosCargadosDTO;
+
+	}
+
 	/**
 	 * Método encargado de organizar la lista de archivos y armar el objeto de
 	 * archivos cargados
+	 * 
 	 * @param archivos
 	 * @return
 	 * @return List<ArchivosCargadosDTO>
@@ -246,24 +266,5 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 		return archivosCargados;
 
 	}
-	
-	/**
-	 * Metodo encargado de validar el log de proceso diario
-	 * @author cesar.castano
-	 */
-	private void validarLogProcesoDiario() {
-		var log = logProcesoDiarioService.obtenerEntidadLogProcesoDiario(
-										Dominios.CODIGO_PROCESO_LOG_CERTIFICACION);
-		if (Objects.isNull(log)) {
-			throw new NegocioException(ApiResponseCode.ERROR_CODIGO_PROCESO_NO_EXISTE.getCode(),
-					ApiResponseCode.ERROR_CODIGO_PROCESO_NO_EXISTE.getDescription(),
-					ApiResponseCode.ERROR_CODIGO_PROCESO_NO_EXISTE.getHttpStatus());
-		}else {
-			if (log.getEstadoProceso().equals(Dominios.ESTADO_PROCESO_DIA_COMPLETO)) {
-				throw new NegocioException(ApiResponseCode.ERROR_PROCESO_YA_CERRADO.getCode(),
-						ApiResponseCode.ERROR_PROCESO_YA_CERRADO.getDescription(),
-						ApiResponseCode.ERROR_PROCESO_YA_CERRADO.getHttpStatus());
-			}
-		}
-	}
+
 }

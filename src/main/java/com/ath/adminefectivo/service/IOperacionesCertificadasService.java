@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.ath.adminefectivo.dto.FechasConciliacionDTO;
 import com.ath.adminefectivo.entities.ArchivosCargados;
-import com.ath.adminefectivo.entities.OperacionesCertificadas;
 
 /**
  * @author cesar.castano
@@ -38,20 +37,4 @@ public interface IOperacionesCertificadasService {
 	 * @author cesar.castano
 	 */
 	Boolean procesarArchivosCertificaciones(List<ArchivosCargados> archivosCargados);
-
-	/**
-	 * Servicio encargado de obtener los registros de OperacionesCertirficadas 
-	 * que estan dentro de la conciliacion
-	 * @return List<OperacionesCertificadas>
-	 * @author cesar.castano
-	 */
-	List<OperacionesCertificadas> obtenerOperacionesCertificaciones();
-	
-	/**
-	 * Servicio encargado de obtener la entidad de OperacionesCertirficadas por Id
-	 * @return OperacionesCertificadas
-	 * @author cesar.castano
-	 */
-	OperacionesCertificadas obtenerEntidadOperacionesCertificacionesporId(Integer idCertificacion);
-	
 }

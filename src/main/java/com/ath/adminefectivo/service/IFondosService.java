@@ -58,29 +58,24 @@ public interface IFondosService {
 	 * servicio lanza un error en caso de que el fondo no exista
 	 * 
 	 * @param codigoTransportadora
-	 * @param numeroNit
+	 * @param tipoPuntoBanco
+	 * @param nombreBanco
 	 * @param codigoCiudad
 	 * @return Fondos
 	 * @author cesar.castano
 	 */
-	Fondos getCodigoFondoCertificacion(String codigoTransportadora, String numeroNit, String codigoCiudad);
+	Fondos getCodigoFondoCertificacion(String codigoTransportadora, String tipoPuntoBanco, String nombreBanco, String codigoCiudad);
 	
 	/**
 	 * Servicio encargado de consultar el codigo Punto. Este
 	 * servicio lanza un error en caso de que el fondo no exista
 	 * 
-	 * @param codigoPunto
+	 * @param codigoTransportadora
+	 * @param nombreBanco
+	 * @param tipoPuntoBanco
+	 * @param codigoCiudad
 	 * @return Fondos
 	 * @author cesar.castano
 	 */
 	Boolean getCodigoPuntoFondo(Integer codigoPunto);
-	
-	/**
-	 * Servicio encargado de consultar el codigo Punto. Este
-	 * servicio lanza un error en caso de que el fondo no exista
-	 * @param codigoPunto
-	 * @return Fondos
-	 * @author cesar.castano
-	 */
-	Fondos getEntidadFondo(Integer codigoPunto);
 }

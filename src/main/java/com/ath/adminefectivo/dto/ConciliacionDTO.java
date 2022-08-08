@@ -4,8 +4,6 @@ import java.util.Date;
 import java.util.function.Function;
 
 import com.ath.adminefectivo.entities.ConciliacionServicios;
-import com.ath.adminefectivo.entities.OperacionesCertificadas;
-import com.ath.adminefectivo.entities.OperacionesProgramadas;
 import com.ath.adminefectivo.utils.UtilsObjects;
 
 import lombok.AllArgsConstructor;
@@ -26,9 +24,9 @@ public class ConciliacionDTO {
 
 	private Integer idConciliacion;
 	
-	private OperacionesProgramadas operaciones;
+	private Integer idOperacion;
 	
-	private OperacionesCertificadas certificaciones;
+	private Integer idCertificacion;
 	
 	private Date fechaConciliacion;
 	
@@ -46,14 +44,7 @@ public class ConciliacionDTO {
 	 */
 	public static final Function<ConciliacionDTO, ConciliacionServicios> CONVERTER_ENTITY = (ConciliacionDTO t) -> {
 		var conciliacionServicios = new ConciliacionServicios();
-		conciliacionServicios.setFechaConciliacion(t.getFechaConciliacion());
-		conciliacionServicios.setFechaModificacion(t.getFechaModificacion());
-		conciliacionServicios.setIdConciliacion(t.getIdConciliacion());
-		conciliacionServicios.setOperacionesCertificadas(t.getCertificaciones());
-		conciliacionServicios.setOperacionesProgramadas(t.getOperaciones());
-		conciliacionServicios.setTipoConciliacion(t.getTipoConciliacion());
-		conciliacionServicios.setUsuarioCreacion(t.getUsuarioCreacion());
-		conciliacionServicios.setUsuarioModificacion(t.getUsuarioModificacion());
+		UtilsObjects.copiarPropiedades(t, conciliacionServicios);
 		return conciliacionServicios;
 	};
 

@@ -2,7 +2,6 @@ package com.ath.adminefectivo.service;
 
 import java.util.List;
 
-import com.ath.adminefectivo.dto.TransaccionesInternasDTO;
 import com.ath.adminefectivo.entities.TransaccionesInternas;
 
 /**
@@ -27,18 +26,15 @@ public interface ITransaccionesInternasService {
 	
 	/**
 	 * Servicio para persistir un transaccionesInternas
-	 * @param transaccionesInternasDTO
-	 * @return TransaccionesInternas
-	 * @author duvan.naranjo
+	 * @param transaccionesInternas
+	 * @return
 	 */
-	TransaccionesInternas saveTransaccionesInternasById(TransaccionesInternasDTO transaccionesInternasDTO);
+	TransaccionesInternas saveTransaccionesInternasById(TransaccionesInternas transaccionesInternas);
 
 	/**
 	 * Servicio para eliminar el transaccionesInternas por su id
 	 * @param idTransaccionesInternas
 	 */
 	void deleteTransaccionesInternasById(String idTransaccionesInternas);
-	
-	
 
 }

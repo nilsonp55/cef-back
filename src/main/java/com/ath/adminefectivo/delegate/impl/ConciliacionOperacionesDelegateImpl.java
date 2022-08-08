@@ -45,7 +45,6 @@ public class ConciliacionOperacionesDelegateImpl implements IConciliacionOperaci
 	public Page<ProgramadasNoConciliadasDTO> getProgramadaNoConcilliada(Predicate predicate, Pageable page) {
 
 		return conciliacionOperacionesService.getProgramadaNoConcilliada(predicate, page);
-
 	}
 
 	/**
@@ -91,15 +90,6 @@ public class ConciliacionOperacionesDelegateImpl implements IConciliacionOperaci
 	public ResumenConciliacionesDTO consultaResumenConciliaciones(FechasConciliacionDTO fechaConciliacion) {
 		
 		return conciliacionOperacionesService.consultaResumenConciliaciones(fechaConciliacion);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Boolean conciliacionAutomatica() {
-		
-		return conciliacionOperacionesService.conciliacionAutomatica();
 	}
 
 }

@@ -46,7 +46,7 @@ public interface IArchivosCargadosService {
 	 * @author CamiloBenavides
 	 */
 	ArchivosCargadosDTO consultarArchivo(Long idArchivo);
-
+	
 	/**
 	 * Metodo encargado de eliminar logicamente un archivo
 	 * 
@@ -54,7 +54,7 @@ public interface IArchivosCargadosService {
 	 * @return ArchivosCargadosDTO
 	 * @author CamiloBenavides
 	 */
-	ArchivosCargadosDTO eliminarArchivo(Long idArchivo);
+	ArchivosCargadosDTO eliminarArchivoCargado(Long idArchivo);
 
 	/**
 	 * Servicio encargado persistir una lista de ArchivosCargados en base de datos
@@ -105,5 +105,15 @@ public interface IArchivosCargadosService {
 	 */
 	void actualizarArchivosCargados(ArchivosCargadosDTO archivosCargadosDTO);
 	
+	/**
+	 * Servicio encargado de consultar los archivos cargados por filtro y con
+	 * paginación
+	 * 
+	 * @param agrupador
+	 * @param page
+	 * @return Page<ArchivosCargadosDTO>
+	 * @author cesar.castano
+	 */
+	Page<ArchivosCargadosDTO> getAllByAgrupador(String agrupador, Pageable page);
 
 }

@@ -80,40 +80,5 @@ public interface IOperacionesProgramadasRepository
 	 * @author cesar.castano
 	 */
 	List<OperacionesProgramadas> findByIdArchivoCargado(Integer idArchivoCargado);
-	
-	/**
-	 * Retorna una lista de operaciones programadas por idArchivoCargado
-	 * @param tipoOperacion
-	 * @param start
-	 * @param end
-	 * @return List<OperacionesProgramadas>
-	 * @author duvan.naranjo
-	 */
-	List<OperacionesProgramadas> findByTipoOperacionAndFechaProgramacionBetween(String tipoOperacion, Date start, Date end);
-
-	/**
-	 * Retorna el objeto OperacionesProgramadas con las operaciones candidatas a conciliacion automatica
-	 * @param estadoConciliacion
-	 * @param idOperacion
-	 * @param idCertificacion
-	 * @return OperacionesProgramadas
-	 * @author cesar.castano
-	 */
-	@Query("SELECT distinct(op) FROM OperacionesProgramadas op JOIN OperacionesCertificadas oc ON "
-			+ "(oc.fechaEjecucion = op.fechaOrigen OR oc.fechaEjecucion = op.fechaDestino) AND "
-			+ "oc.codigoFondoTDV = op.codigoFondoTDV AND oc.tipoOperacion = op.tipoOperacion AND "
-			+ "(oc.valorTotal + oc.valorFaltante - oc.valorSobrante) = op.valorTotal AND "
-			+ "oc.codigoPuntoOrigen = op.codigoPuntoOrigen AND oc.codigoPuntoDestino = op.codigoPuntoDestino AND "
-			+ "oc.estadoConciliacion = op.estadoConciliacion "
-			+ "WHERE op.estadoConciliacion = ?1")
-	List<OperacionesProgramadas> conciliacionAutomatica(String estadoConciliacion);
-
-	/**
-	 * Retorna el objeto OperacionesProgramadas segun el IdServicio
-	 * @param orderId
-	 * @return OperacionesProgramadas
-	 * @author cesar.castano
-	 */
-	OperacionesProgramadas findByIdServicio(String orderId);
 
 }
