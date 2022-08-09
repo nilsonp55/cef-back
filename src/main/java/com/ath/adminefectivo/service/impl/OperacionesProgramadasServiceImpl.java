@@ -258,6 +258,45 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		
 		return null;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public OperacionesProgramadas obtenerEntidadOperacionesProgramadasporId(Integer idOperacion) {
+		OperacionesProgramadas operacionesP = operacionesProgramadasRepository.findById(idOperacion).get();
+		if(Objects.isNull(operacionesP)) {
+			throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getCode(),
+					ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getHttpStatus());
+		}
+		return operacionesP;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<OperacionesProgramadasDTO> getOperacionesProgramadasPorFechas(String tipoContabilidad, Date fechaInicio, Date fechaFin) {
+		List<OperacionesProgramadas> listaOperacionesProgramadas = new ArrayList<>();
+		if(tipoContabilidad.equals("PM")) {
+			listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaProgramacionBetween("CONSIGNACION", fechaInicio,
+					fechaFin));
+			listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaProgramacionBetween("RETIRO", fechaInicio,
+					fechaFin));
+			listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaProgramacionBetween("VENTA", fechaInicio,
+					fechaFin));
+		}
+		
+		
+		List<OperacionesProgramadasDTO> listadoOperacionesProgramadasDTO = new ArrayList<>();
+		if (!listaOperacionesProgramadas.isEmpty()) {
+			listaOperacionesProgramadas.forEach(operacionProgramada -> listadoOperacionesProgramadasDTO
+					.add(OperacionesProgramadasDTO.CONVERTER_DTO.apply(operacionProgramada)));
+		}
+
+		return listadoOperacionesProgramadasDTO;
+	}
 
 
 	/**

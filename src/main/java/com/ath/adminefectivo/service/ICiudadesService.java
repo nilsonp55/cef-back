@@ -36,4 +36,13 @@ public interface ICiudadesService {
 	 * @author cesar.castano
 	 */
 	String getCodigoCiudad(String nombre);
+	
+	/**
+	 * Servicio encargado de consultar la ciudad por un codigo dane de la ciudad
+	 * 
+	 * @param codigo
+	 * @return CiudadesDTO
+	 * @author duvan.naranjo
+	 */
+	CiudadesDTO getCiudadPorCodigoDane(String codigo);
 }

@@ -10,6 +10,6 @@ public interface IDetalleOperacionesProgramadasRepository extends JpaRepository<
 																	QuerydslPredicateExecutor<DetalleOperacionesProgramadas> {
 
 	@Query("SELECT SUM(dop.valorDetalle) FROM DetalleOperacionesProgramadas dop "
-		 + "WHERE dop.idOperacion = ?1")
+		 + "WHERE dop.operacionesProgramadas.idOperacion = ?1")
 	Double valorTotal(Integer idOperacion);
 }

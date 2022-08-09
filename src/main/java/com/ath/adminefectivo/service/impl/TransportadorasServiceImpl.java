@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.dto.TransportadorasDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
+import com.ath.adminefectivo.entities.Transportadoras;
 import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.repositories.ITransportadorasRepository;
 import com.ath.adminefectivo.service.ITransportadorasService;
@@ -60,6 +61,22 @@ public class TransportadorasServiceImpl implements ITransportadorasService {
 					ApiResponseCode.ERROR_TRANSPORTADORAS_NO_ENCONTRADO.getHttpStatus());
 		} else {
 			return transportadora.getCodigo();
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public TransportadorasDTO getTransportadoraPorCodigo(String codigo) {
+		Transportadoras transportadora = transportadorasRepository.findByCodigo(codigo); 
+		if (!Objects.isNull(transportadora)) {
+			return TransportadorasDTO.CONVERTER_DTO.apply(transportadora);
+			
+		} else {
+			throw new AplicationException(ApiResponseCode.ERROR_TRANSPORTADORAS_NO_ENCONTRADO.getCode(),
+					ApiResponseCode.ERROR_TRANSPORTADORAS_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_TRANSPORTADORAS_NO_ENCONTRADO.getHttpStatus());
 		}
 	}
 }

@@ -1,5 +1,6 @@
 package com.ath.adminefectivo.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -78,6 +79,23 @@ public interface IOperacionesProgramadasService {
 	 * @author duvan.naranjo
 	 */
 	List<intradiaPruebaDTO> consultarOperacionesIntradia(Date fechaInicio, Date fechaFin);
+
+	/**
+	 * Servicio encargado de obtener la entidad OperacionesProgramadas para un IdOperacion
+	 * @return OperacionesProgramadas
+	 * @author cesar.castano
+	 */
+	OperacionesProgramadas obtenerEntidadOperacionesProgramadasporId(Integer idOperacion);
+	
+	/**
+	 * Servicio encargado de procesar los archivos cargados a la entidad OperacionesProgramadas
+	 * 
+	 * @param fechaInicio
+	 * @param fechaFin
+	 * @return List<OperacionesProgramadasDTO>
+	 * @author duvan.naranjo
+	 */
+	List<OperacionesProgramadasDTO> getOperacionesProgramadasPorFechas(String tipoContabilidad, Date fechaInicio, Date fechaFin);
 
 
 }

@@ -49,7 +49,7 @@ public class TransaccionesContables {
 	private Date fecha;
 	
 	@Column(name = "CONSECUTIVO_DIA")
-	private int consecutivoDia;
+	private String consecutivoDia;
 	
 	@Column(name = "TIPO_TRANSACCION")
 	private Integer tipoTransaccion;
@@ -71,7 +71,7 @@ public class TransaccionesContables {
 	private String codigoMoneda;
 	
 	@Column(name = "VALOR")
-	private Double valor;
+	private Integer valor;
 	
 	@Column(name = "TIPO_PROCESO")
 	private String tipoProceso;

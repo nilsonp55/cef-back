@@ -112,4 +112,18 @@ public class OperacionesProgramadas {
 	@OneToMany(mappedBy = "operacionesProgramadas")
 	private List<ConciliacionServicios> conciliacionServicios;
 	
+	@OneToMany(mappedBy = "operacionesProgramadas")
+	private List<DetalleOperacionesProgramadas> detalleOperacionesProgramadas;
+	@Column(name = "COMISION_BR")
+	private Integer comisionBR;
+	
+	@Column(name = "ES_ENTRADA")
+	private Boolean esEntrada;
+	
+	@Column(name = "ID_ORDEN_TDV")
+	private Integer idOrdenTDV;
+	
+	@Column(name = "CODIGO_MONEDA")
+	private String codigoMoneda;
+	
 }

@@ -111,4 +111,19 @@ public class FondosServiceImpl implements IFondosService {
 		}
 		return FondosDTO.CONVERTER_DTO.apply(fondo);
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Fondos getEntidadFondo(Integer codigoPunto) {
+		var fondo = fondosRepository.findByCodigoPunto(codigoPunto);
+		if (Objects.isNull(fondo)) {
+			throw new NegocioException(ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getCode(),
+					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getHttpStatus());
+
+		}
+		return fondo;
+	}
 }

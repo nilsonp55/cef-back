@@ -33,4 +33,13 @@ public class CiudadesDTO {
 		UtilsObjects.copiarPropiedades(t, ciudadesDTO);
 		return ciudadesDTO;
 	};
+	
+	/**
+	 * Función encargada de recibir un DTO y retornar un objeto con los mismos datos
+	 */
+	public static final Function<CiudadesDTO, Ciudades> CONVERTER_ENTITY = (CiudadesDTO t) -> {
+		var ciudades = new Ciudades();
+		UtilsObjects.copiarPropiedades(t, ciudades);
+		return ciudades;
+	};
 }
