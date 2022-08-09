@@ -58,16 +58,14 @@ public class TransaccionesContables {
 	@JoinColumn(name = "BANCO_AVAL", nullable = true)
 	private Bancos bancoAval;
 	
-	@ManyToOne
-	@JoinColumn(name = "CODIGO_CENTRO", nullable = true)
-	private TiposCentrosCostos codigoCentro;
+	@Column(name = "CODIGO_CENTRO")
+	private String codigoCentro;
 	
 	@Column(name = "NATURALEZA")
 	private String naturaleza;
 	
-	@ManyToOne
-	@JoinColumn(name = "CUENTA_CONTABLE", nullable = true)
-	private ConfContableEntidades cuentaContable;
+	@Column(name = "CUENTA_CONTABLE", nullable = false)
+	private String cuentaContable;
 	
 	@Column(name = "CODIGO_MONEDA")
 	private String codigoMoneda;
@@ -101,6 +99,10 @@ public class TransaccionesContables {
 	
 	@Column(name = "REFERENCIA2")
 	private String referencia2;
+	
+	@ManyToOne
+	@JoinColumn(name = "ID_TRANSACCIONES_INTERNAS", nullable = true)
+	private TransaccionesInternas idTransaccionesInternas;
 
 	
 }

@@ -27,6 +27,8 @@ import com.ath.adminefectivo.dto.TransaccionesContablesDTO;
 import com.ath.adminefectivo.dto.TransaccionesInternasDTO;
 import com.ath.adminefectivo.dto.TransportadorasDTO;
 import com.ath.adminefectivo.dto.compuestos.ErroresCamposDTO;
+import com.ath.adminefectivo.dto.compuestos.OperacionIntradiaDTO;
+import com.ath.adminefectivo.dto.compuestos.TransaccionInternaIntradiaDTO;
 import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoDTO;
 import com.ath.adminefectivo.dto.compuestos.ValidacionLineasDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
@@ -108,6 +110,20 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 		return consecutivoMovContable;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int generarContabilidadIntradia(String tipoContabilidad, List<OperacionIntradiaDTO> listadoOperacionesProgramadasIntradia, int consecutivoDia) {
+		this.consecutivoDia = consecutivoDia;
+		List<TransaccionesInternasDTO> listadoTransaccionesIntradia = new ArrayList<>();
+		listadoOperacionesProgramadasIntradia.forEach(operacionIntradia ->  {
+			listadoTransaccionesIntradia.addAll(procesarRegistrosContabilidadIntradia(tipoContabilidad, operacionIntradia, consecutivoDia));	
+		});
+		
+		return consecutivoDia;
+	}
+	
 	
 	/**
 	 * 
@@ -116,7 +132,7 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 	 */
 private void procesarTransaccionesInternas(String tipoContabilidad, TransaccionesInternasDTO transaccionInterna) {
 		// TODO Auto-generated method stub
-		
+	 
 	}
 
 /**
@@ -140,6 +156,26 @@ private void procesarTransaccionesInternas(String tipoContabilidad, Transaccione
 		}
 		
 		return 0;
+	}
+	
+	/**
+	 * 
+	 * @param operacionProgramada
+	 * @return
+	 */
+	private List<TransaccionesInternasDTO> procesarRegistrosContabilidadIntradia(String tipoContabilidad, OperacionIntradiaDTO operacionIntradia, int consecutivoDia) {
+		List<TransaccionesInternasDTO> listadoTransaccionesInternas = new ArrayList<>();
+//		if(operacionIntradia.getEntradaSalida().equals(Constantes.VALOR_ENTRADA)) {
+//			listadoTransaccionesInternas.add(generarTransaccionInternaIntradia(tipoContabilidad, 21, operacionIntradia));
+//			listadoTransaccionesInternas.add(generarTransaccionInternaIntradia(tipoContabilidad, 22, operacionIntradia));
+//			listadoTransaccionesInternas.add(generarTransaccionInternaIntradia(tipoContabilidad, 23, operacionIntradia));
+//			
+//		}else if(operacionIntradia.getEntradaSalida().equals(Constantes.VALOR_SALIDA)) {
+//			listadoTransaccionesInternas.add(generarTransaccionInternaIntradia(tipoContabilidad, 11, operacionIntradia));
+//			listadoTransaccionesInternas.add(generarTransaccionInternaIntradia(tipoContabilidad, 12, operacionIntradia));
+//			listadoTransaccionesInternas.add(generarTransaccionInternaIntradia(tipoContabilidad, 13, operacionIntradia));
+//		}
+		return listadoTransaccionesInternas;
 	}
 
 	/**
@@ -278,9 +314,9 @@ private void procesarTransaccionesInternas(String tipoContabilidad, Transaccione
 				esCambio(false).
 				build();
 		
-
+		System.out.println("//////////////////// generarTransaccionInterna "+transaccionInternaDTO);
 		Puntos puntoTDV = puntosService.getPuntoById(codigoPunto);
-		transaccionInternaDTO.setCodigoTdv(PuntosDTO.CONVERTER_DTO.apply(puntoTDV));
+//		transaccionInternaDTO.setCodigoTdv(PuntosDTO.CONVERTER_DTO.apply(puntoTDV));
 		transaccionInternaDTO.setCodigoPunto(PuntosDTO.CONVERTER_DTO.apply(puntoTDV));
 		CiudadesDTO ciudadFondo = ciudadesService.getCiudadPorCodigoDane(puntoTDV.getCodigoCiudad());
 		transaccionInternaDTO.setCiudad(ciudadFondo);	
@@ -288,7 +324,7 @@ private void procesarTransaccionesInternas(String tipoContabilidad, Transaccione
 		FondosDTO fondoDTO = fondosService.getFondoByCodigoPunto(puntoTDV.getCodigoPunto());
 		TransportadorasDTO transportadoraDTO = transportadorasService.getTransportadoraPorCodigo(fondoDTO.getTdv());
 		
-		transaccionInternaDTO.setTransportadora(transportadoraDTO);
+		transaccionInternaDTO.setCodigoTdv(transportadoraDTO);
 		
 		
 		consecutivoDia++;
@@ -319,6 +355,32 @@ private void procesarTransaccionesInternas(String tipoContabilidad, Transaccione
 		return (valor*valorImpuesto)/100;
 	}
 	
-	
+	/**
+	 * 
+	 * @param tipoProceso
+	 * @param tipoTransaccion
+	 * @param operacionProgramada
+	 * @param codigoPunto
+	 * @return TransaccionesInternasDTO
+	 */
+	private TransaccionesInternasDTO generarTransaccionInternaIntradia(String tipoProceso, Integer tipoTransaccion, OperacionIntradiaDTO transaccionIntradia) {
+		consecutivoDia++;
+		TransaccionesInternasDTO transaccionInternaDTO = TransaccionesInternasDTO.builder()
+				.idOperacion(null).idGenerico(null).consecutivoDia(consecutivoDia).
+				codigoMoneda("COP").valor(dominioService.valorNumericoDominio(Constantes.DOMINIO_COMISIONES, Dominios.COMISION_3)).tasaEjeCop(1).tasaNoEje(1).
+				tipoTransaccion(tipoTransaccion).tipoOperacion("VENTA").tipoProceso(tipoProceso).estado("Dominios.GENERADO")
+				.codigoComision(dominioService.valorNumericoDominio(Constantes.DOMINIO_COMISIONES, Dominios.COMISION_3).intValue())
+				.esCambio(false).build();
+		
+		BancosDTO bancoAval = bancosService.findBancoByCodigoPunto(transaccionIntradia.getBancoAVAL());
+		transaccionInternaDTO.setBancoAval(bancoAval);
+
+		PuntosDTO puntoBancoAval = PuntosDTO.CONVERTER_DTO.apply(puntosService.getPuntoById(bancoAval.getCodigoPunto()));
+		transaccionInternaDTO.setCodigoPunto(puntoBancoAval);
+
+		BancosDTO bancoDestino = bancosService.findBancoByCodigoPunto(transaccionIntradia.getCodigoPuntoOrigen());
+		
+		 return TransaccionesInternasDTO.CONVERTER_DTO.apply(transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTO));
+	}
 
 }

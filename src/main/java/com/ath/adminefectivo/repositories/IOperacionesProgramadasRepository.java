@@ -6,7 +6,10 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
+import org.springframework.data.repository.query.Param;
 
+import com.ath.adminefectivo.dto.compuestos.OperacionIntradiaDTO;
+import com.ath.adminefectivo.dto.compuestos.intradiaPruebaDTO;
 import com.ath.adminefectivo.entities.OperacionesProgramadas;
 
 /**
@@ -115,5 +118,68 @@ public interface IOperacionesProgramadasRepository
 	 * @author cesar.castano
 	 */
 	OperacionesProgramadas findByIdServicio(String orderId);
+	
+	/**
+	 * Retorna el id de un bancoAval yla operacion programada perteneciente al banco
+	 * en la fecha recibida para el tipo operacion recibido y tipo de entrada o salida
+	 * 
+	 * @param fechaInicio
+	 * @param fechaFin
+	 * @param entradaSalida
+	 * @param tipoOperacion
+	 * @return OperacionIntradiaDTO
+	 * @author duvan.naranjo
+	 */
+//	@Query("select fo.bancoAVAL, op.codigoPuntoOrigen, op.entradaSalida "
+//			+ "from OperacionesProgramadas op, Fondos fo, Bancos ba "
+//			+ "where fo.codigoPunto = op.codigoFondoTDV "
+//			+ "and ba.codigoPunto = op.codigoPuntoOrigen "
+//			+ "and ba.esAVAL = false "	
+//			+ "and op.tipoOperacion in (:tipoOperacion) "
+//			+ "and op.entradaSalida = :entradaSalida "
+//			+ "and op.fechaProgramacion between  :fechaInicio and :fechaFin "
+//			+ "group by fo.bancoAVAL, op.codigoPuntoOrigen, op.entradaSalida ")
+	@Query("select fo.bancoAVAL "
+			+ "from OperacionesProgramadas op, Fondos fo, Bancos ba "
+			+ "where fo.codigoPunto = op.codigoFondoTDV "
+			+ "and ba.codigoPunto = op.codigoPuntoOrigen "
+			+ "and ba.esAVAL = false "	
+			+ "and op.tipoOperacion in (?4) "
+			+ "and op.entradaSalida = ?3 "
+			+ "and op.fechaProgramacion between  ?1 and ?2 "
+			+ "group by fo.bancoAVAL, op.codigoPuntoOrigen ")
+	List<intradiaPruebaDTO> consultarOperacionesIntradiaEntrada(@Param("fechaInicio") Date fechaInicio, @Param("fechaFin") Date fechaFin, @Param("entradaSalida") String entradaSalida, @Param("tipoOperacion") String tipoOperacion);
+
+	/**
+	 * Retorna el id de un bancoAval yla operacion programada perteneciente al banco
+	 * en la fecha recibida para el tipo operacion recibido y tipo de entrada o salida
+	 * 
+	 * @param fechaInicio
+	 * @param fechaFin
+	 * @param entradaSalida
+	 * @param tipoOperacion
+	 * @return OperacionIntradiaDTO
+	 * @author duvan.naranjo
+	 */
+//	@Query("select fo.bancoAVAL, op.codigoPuntoDestino, op.entradaSalida  "
+//			+ "from OperacionesProgramadas op, Fondos fo, Bancos ba "
+//			+ "where fo.codigoPunto = op.codigoFondoTDV "
+//			+ "and ba.codigoPunto = op.codigoPuntoDestino "
+//			+ "and ba.esAVAL = false "
+//			+ "and op.tipoOperacion in (:tipoOperacion) "
+//			+ "and op.entradaSalida = :entradaSalida "
+//			+ "and op.fechaProgramacion between  :fechaInicio and :fechaFin "
+//			+ "group by fo.bancoAVAL, op.codigoPuntoDestino, op.entradaSalida  ")
+	@Query("select fo.bancoAVAL "
+			+ "from OperacionesProgramadas op, Fondos fo, Bancos ba "
+			+ "where fo.codigoPunto = op.codigoFondoTDV "
+			+ "and ba.codigoPunto = op.codigoPuntoDestino "
+			+ "and ba.esAVAL = false "
+			+ "and op.tipoOperacion in (?4) "
+			+ "and op.entradaSalida = ?3 "
+			+ "and op.fechaProgramacion between  ?1 and ?2 "
+			+ "group by fo.bancoAVAL, op.codigoPuntoOrigen  ")
+	List<intradiaPruebaDTO> consultarOperacionesIntradiaSalida(@Param("fechaInicio") Date fechaInicio, @Param("fechaFin") Date fechaFin, @Param("entradaSalida") String entradaSalida, @Param("tipoOperacion") String tipoOperacion);
+	
 
 }

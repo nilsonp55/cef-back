@@ -47,8 +47,10 @@ public class TransaccionesInternasServiceImpl implements ITransaccionesInternasS
 	 */
 	@Override
 	public TransaccionesInternas saveTransaccionesInternasById(TransaccionesInternasDTO transaccionesInternasDTO) {
+		System.out.println("/////// "+transaccionesInternasDTO);
+		var x = TransaccionesInternasDTO.CONVERTER_ENTITY.apply(transaccionesInternasDTO);
 		return transaccionesInternasRepository
-				.save(TransaccionesInternasDTO.CONVERTER_ENTITY.apply(transaccionesInternasDTO));
+				.save(x);
 	}
 
 	/**

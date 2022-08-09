@@ -111,7 +111,7 @@ public final class Dominios {
 	 * Dominio de agrupamiento de los detalles de archivo
 	 */	
 	public static final String AGRUPADOR_DEFINICION_ARCHIVOS_PRELIMINARES = "PRELIMINAR";
-	public static final String AGRUPADOR_DEFINICION_ARCHIVOS_DEFINITIVO = "DEFINITIVO";
+	public static final String AGRUPADOR_DEFINICION_ARCHIVOS_DEFINITIVO = "DEFIN";
 	public static final String AGRUPADOR_DEFINICION_ARCHIVOS_CERTIFICACION = "CERTIFICACION";
 	
 	/**

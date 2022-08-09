@@ -52,11 +52,11 @@ public class TransaccionesContablesDTO {
 	
 	private BancosDTO bancoAval;
 	
-	private TiposCentrosCostosDTO codigoCentro;
+	private String codigoCentro;
 	
 	private String naturaleza;
 	
-	private ConfContableEntidadesDTO cuentaContable;
+	private String cuentaContable;
 	
 	private String codigoMoneda;
 	
@@ -80,6 +80,7 @@ public class TransaccionesContablesDTO {
 	
 	private String referencia2;
 	
+	private TransaccionesInternasDTO idTransaccionesInternas;
 	
 	
 	/**
@@ -106,17 +107,12 @@ public class TransaccionesContablesDTO {
         transaccionesContables.setDescripcion(t.getDescripcion());
         transaccionesContables.setReferencia1(t.getReferencia1());
         transaccionesContables.setReferencia2(t.getReferencia2());
-        
+        transaccionesContables.setCodigoCentro(t.getCodigoCentro());
+        transaccionesContables.setCuentaContable(t.getCuentaContable());
         
 
         if(!Objects.isNull(t.getBancoAval())) {
         	transaccionesContables.setBancoAval(BancosDTO.CONVERTER_ENTITY.apply(t.getBancoAval()));
-        }
-        if(!Objects.isNull(t.getCodigoCentro())) {
-        	transaccionesContables.setCodigoCentro(TiposCentrosCostosDTO.CONVERTER_ENTITY.apply(t.getCodigoCentro()));	
-        }
-        if(!Objects.isNull(t.getCuentaContable())) {
-        	transaccionesContables.setCuentaContable(ConfContableEntidadesDTO.CONVERTER_ENTITY.apply(t.getCuentaContable()));	
         }
 
         
@@ -147,17 +143,13 @@ public class TransaccionesContablesDTO {
         transaccionesContablesDTO.setDescripcion(t.getDescripcion());
         transaccionesContablesDTO.setReferencia1(t.getReferencia1());
         transaccionesContablesDTO.setReferencia2(t.getReferencia2());
+        transaccionesContablesDTO.setCodigoCentro(t.getCodigoCentro());
+        transaccionesContablesDTO.setCuentaContable(t.getCuentaContable());
         
         
 
         if(!Objects.isNull(t.getBancoAval())) {
         	transaccionesContablesDTO.setBancoAval(BancosDTO.CONVERTER_DTO.apply(t.getBancoAval()));
-        }
-        if(!Objects.isNull(t.getCodigoCentro())) {
-        	transaccionesContablesDTO.setCodigoCentro(TiposCentrosCostosDTO.CONVERTER_DTO.apply(t.getCodigoCentro()));	
-        }
-        if(!Objects.isNull(t.getCuentaContable())) {
-        	transaccionesContablesDTO.setCuentaContable(ConfContableEntidadesDTO.CONVERTER_DTO.apply(t.getCuentaContable()));	
         }
 
         
