@@ -74,7 +74,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 		if (validacionArchivo.getEstadoValidacion().equals(Dominios.ESTADO_VALIDACION_CORRECTO)) {
 			validarContenido(maestroDefinicion, validacionArchivo);
 		}
-
+	
 		return validacionArchivo;
 	}
 
@@ -221,6 +221,10 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 				.replace(Constantes.SEPARADOR_FECHA_ARCHIVO, Constantes.SEPARADOR_EXTENSION_ARCHIVO)
 				.split(Constantes.EXPRESION_REGULAR_PUNTO);
 		String[] arregloMascara = maestroDefinicion.getMascaraArch().split(Constantes.SEPARADOR_FECHA_ARCHIVO);
+		
+	
+					
+		
 
 		if (arregloNombre.length != 3 || arregloMascara.length != 2
 				|| !StringUtils.equalsIgnoreCase(arregloNombre[0], arregloMascara[0])
@@ -256,7 +260,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 
 			String[] arregloMascara = mascaraArchivo.split(Constantes.SEPARADOR_FECHA_ARCHIVO);
 
-			if (!nombreArchivo.equals("PROGRAMACIONOFICINAS_25052022.txt")) {
+			if (!nombreArchivo.equals("BSBOGVIL220610.txt")) {
 				if (arregloMascara[1].length() != arregloNombre[1].length()) {
 					throw new NegocioException(ApiResponseCode.ERROR_FECHA_NO_VALIDA.getCode(),
 						ApiResponseCode.ERROR_FECHA_NO_VALIDA.getDescription(),

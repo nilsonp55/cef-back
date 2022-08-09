@@ -46,7 +46,7 @@ public class TransaccionesContablesDTO {
 	
 	private Date fecha;
 	
-	private int consecutivoDia;
+	private String consecutivoDia;
 	
 	private Integer tipoTransaccion;
 	
@@ -60,7 +60,7 @@ public class TransaccionesContablesDTO {
 	
 	private String codigoMoneda;
 	
-	private Double valor;
+	private Integer valor;
 	
 	private String tipoProceso;
 	

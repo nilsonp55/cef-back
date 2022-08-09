@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.ath.adminefectivo.controller.endpoints.ArchivosCargadosEndpoint;
 import com.ath.adminefectivo.delegate.IArchivosCargadosDelegate;
 import com.ath.adminefectivo.dto.ArchivosCargadosDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
@@ -47,7 +45,6 @@ public class ArchivosCargadosController {
 	 */
 	@GetMapping(value = "${endpoints.ArchivosCargados.consultar}")
 	public ResponseEntity<ApiResponseADE<List<ArchivosCargadosDTO>>> getAll() {
-
 		var consulta = archivosCargadosDelegate.getAll();
 
 		return ResponseEntity.status(HttpStatus.OK)
@@ -90,6 +87,26 @@ public class ArchivosCargadosController {
 		var archivoPersistido = archivosCargadosDelegate.guardarArchivo(archivo);
 		return ResponseEntity.status(HttpStatus.OK).body(
 				new ApiResponseADE<>(archivoPersistido, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
+	}
+
+	/**
+	 * Metodo encargado de consultar los ArchivosCargados del sistema, por filtros y
+	 * paginador
+	 * 
+	 * @param agrupador
+	 * @param page
+	 * @return ResponseEntity<ApiResponseADE<Page<ArchivosCargadosDTO>>>
+	 * @author CamiloBenavides
+	 */
+	@GetMapping(value = "${endpoints.ArchivosCargados.consultarPorAgrupador}")
+	public ResponseEntity<ApiResponseADE<Page<ArchivosCargadosDTO>>> getAllbyAgrupador(
+			@RequestParam("agrupador") String agrupador, Pageable page) {
+
+		Page<ArchivosCargadosDTO> consulta = archivosCargadosDelegate.getAllByAgrupador(agrupador, page);
+
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
 

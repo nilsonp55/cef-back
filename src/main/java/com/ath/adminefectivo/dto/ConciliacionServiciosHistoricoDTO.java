@@ -4,8 +4,6 @@ import java.util.Date;
 import java.util.function.Function;
 
 import com.ath.adminefectivo.entities.ConciliacionServiciosHistorico;
-import com.ath.adminefectivo.entities.OperacionesCertificadas;
-import com.ath.adminefectivo.entities.OperacionesProgramadas;
 import com.ath.adminefectivo.utils.UtilsObjects;
 
 import lombok.AllArgsConstructor;
@@ -26,9 +24,9 @@ public class ConciliacionServiciosHistoricoDTO {
 
 	private Integer idConciliacion;
 
-	private OperacionesProgramadas operaciones;
+	private Integer idOperacion;
 
-	private OperacionesCertificadas certificaciones;
+	private Integer idCertificacion;
 
 	private String estado;
 
@@ -63,17 +61,9 @@ public class ConciliacionServiciosHistoricoDTO {
 	public static final Function<ConciliacionServiciosHistoricoDTO, ConciliacionServiciosHistorico> CONVERTER_ENTITY = (
 			ConciliacionServiciosHistoricoDTO t) -> {
 
-		var conciliacionServiciosHistorico = new ConciliacionServiciosHistorico();
-		conciliacionServiciosHistorico.setEstado(t.getEstado());
-		conciliacionServiciosHistorico.setFechaConciliacion(t.getFechaConciliacion());
-		conciliacionServiciosHistorico.setFechaCreacion(t.getFechaCreacion());
-		conciliacionServiciosHistorico.setFechaModificacion(t.getFechaModificacion());
-		conciliacionServiciosHistorico.setIdConciliacion(t.getIdConciliacion());
-		conciliacionServiciosHistorico.setOperacionesCertificadas(t.getCertificaciones());
-		conciliacionServiciosHistorico.setOperacionesProgramadas(t.getOperaciones());
-		conciliacionServiciosHistorico.setTipoConciliacion(t.getTipoConciliacion());
-		conciliacionServiciosHistorico.setUsuarioCreacion(t.getUsuarioCreacion());
-		conciliacionServiciosHistorico.setUsuarioModificacion(t.getUsuarioModificacion());
+		ConciliacionServiciosHistorico conciliacionServiciosHistorico = new ConciliacionServiciosHistorico();
+		UtilsObjects.copiarPropiedades(t, conciliacionServiciosHistorico);
+
 		return conciliacionServiciosHistorico;
 	};
 }

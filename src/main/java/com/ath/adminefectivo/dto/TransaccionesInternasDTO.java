@@ -30,7 +30,7 @@ public class TransaccionesInternasDTO {
 
 	private Long idTransaccionesInternas;
 	
-	private int consecutivoDia;
+	private String consecutivoDia;
 	
 	private BancosDTO bancoAval;
 	
@@ -44,7 +44,7 @@ public class TransaccionesInternasDTO {
 	
 	private String codigoMoneda;
 	
-	private Double valor;
+	private Integer valor;
 	
 	private Integer tasaNoEje;
 	
@@ -68,7 +68,7 @@ public class TransaccionesInternasDTO {
 	
 	private String tipoProceso;
 	
-	private String estado;
+	private int estado;
 	
 	private String tasaNegociacion;
 	

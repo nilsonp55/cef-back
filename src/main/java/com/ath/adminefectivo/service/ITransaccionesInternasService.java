@@ -28,9 +28,8 @@ public interface ITransaccionesInternasService {
 	
 	/**
 	 * Servicio para persistir un transaccionesInternas
-	 * @param transaccionesInternasDTO
-	 * @return TransaccionesInternas
-	 * @author duvan.naranjo
+	 * @param transaccionesInternas
+	 * @return
 	 */
 	TransaccionesInternas saveTransaccionesInternasById(TransaccionesInternasDTO transaccionesInternasDTO);
 

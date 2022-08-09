@@ -117,7 +117,7 @@ public final class Dominios {
 	/**
 	 * Dominios estados de los procesos del dia
 	 */	
-	public static final String ESTADO_PROCESO_DIA_COMPLETO = "CERRADO";
+	public static final String ESTADO_PROCESO_DIA_COMPLETO = "COMPLETO";
 	public static final String ESTADO_PROCESO_DIA_PROCESO = "PROCESO";
 	
 	/**
@@ -138,17 +138,7 @@ public final class Dominios {
 	 */
 	public static final String TIPO_ARCHIVO_IPPSV = "IPPSV";
 	public static final String TIPO_ARCHIVO_ISTRC = "ISTRC";
-	public static final String TIPO_ARCHIVO_ITVCS = "ITVCS";
-	public static final String TIPO_ARCHIVO_ISRPO = "ISRPO";
-	public static final String TIPO_ARCHIVO_ISRPC = "ISRPC";
 	
-	/**
-	 * Codigo Proceso 
-	 */
-	public static final String CODIGO_PROCESO_LOG_PRELIMINAR = "CARG_PRELIMINAR";
-	public static final String CODIGO_PROCESO_LOG_DEFINITIVO = "CARG_DEFINITIVO";
-	public static final String CODIGO_PROCESO_LOG_CERTIFICACION = "CARG_CERTIFICACION";
-	public static final String CODIGO_PROCESO_LOG_CONCILIACION = "CONCILIACION";
 	
 	/**
 	 * COMISIONES
@@ -167,6 +157,12 @@ public final class Dominios {
 	 */
 	public static final String MEDIOS_PAGO_ABONO = "ABONO";
 	public static final String MEDIOS_PAGO_DESCUENTO = "DESCUENTO";
+	
+	/**
+	 * Dominios estados de Contabilidad
+	 */	
+	public static final int ESTADO_CONTABILIDAD_GENERADO = 1;
+	public static final int ESTADO_CONTABILIDAD_ERROR_CONTABLE = 2;
 	
 	
 }

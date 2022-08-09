@@ -63,13 +63,23 @@ public interface IOperacionesProgramadasService {
 	List<OperacionesProgramadasDTO> generarOperacionesProgramadas(List<ArchivosCargadosDTO> archivos);
 
 	/**
-	 * Servicio encargado de obtener los registros de OperacionesProgramadas
-	 * que estan dentro de la conciliacion
-	 * @return List<OperacionesProgramadas>
+	 * Servicio encargado de procesar los archivos cargados a la entidad OperacionesProgramadas
+	 * @param archivoscargados
+	 * @return Boolean
 	 * @author cesar.castano
 	 */
-	List<OperacionesProgramadas> obtenerOperacionesProgramadas();
-	
+	Boolean procesarArchivos(List<ArchivosCargados> archivosCargados);
+
+	/**
+	 * Servicio encargado de consultar las operaciones programadas intradia  
+	 * 
+	 * @param fechaInicio
+	 * @param fechaFin
+	 * @return List<OperacionIntradiaDTO>
+	 * @author duvan.naranjo
+	 */
+	List<intradiaPruebaDTO> consultarOperacionesIntradia(Date fechaInicio, Date fechaFin);
+
 	/**
 	 * Servicio encargado de obtener la entidad OperacionesProgramadas para un IdOperacion
 	 * @return OperacionesProgramadas
@@ -86,16 +96,6 @@ public interface IOperacionesProgramadasService {
 	 * @author duvan.naranjo
 	 */
 	List<OperacionesProgramadasDTO> getOperacionesProgramadasPorFechas(String tipoContabilidad, Date fechaInicio, Date fechaFin);
-
-	/**
-	 * Servicio encargado de consultar las operaciones programadas intradia  
-	 * 
-	 * @param fechaInicio
-	 * @param fechaFin
-	 * @return List<OperacionIntradiaDTO>
-	 * @author duvan.naranjo
-	 */
-	List<intradiaPruebaDTO> consultarOperacionesIntradia(Date fechaInicio, Date fechaFin);
 
 
 }

@@ -30,7 +30,7 @@ public interface ICarguePreliminarDelegate {
 	 * @return Boolean
 	 * @author CamiloBenavides
 	 */
-	Boolean eliminarArchivo(Long idArchivo);
+	Boolean eliminarArchivo(String nombreArchivo, String idMaestroArchivo);
 
 
 	/**

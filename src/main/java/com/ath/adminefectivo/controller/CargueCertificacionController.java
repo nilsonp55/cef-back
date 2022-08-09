@@ -60,9 +60,9 @@ public class CargueCertificacionController {
 	 * @author cesar.castano
 	 */
 	@DeleteMapping(value = "${endpoints.CargueCertificacion.eliminar}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponseADE<Boolean>> eliminarArchivo(@RequestParam("id") Long idArchivo) {
+	public ResponseEntity<ApiResponseADE<Boolean>> eliminarArchivo(@RequestParam("nombreArchivo") String nombreArchivo, @RequestParam("idModeloArchivo") String idMaestroArchivo) {
 
-		var archivoPersistido = cargueCertificacionDelegate.eliminarArchivo(idArchivo);
+		var archivoPersistido = cargueCertificacionDelegate.eliminarArchivo(nombreArchivo, idMaestroArchivo);
 		return ResponseEntity.status(HttpStatus.OK).body(
 				new ApiResponseADE<>(archivoPersistido, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
@@ -134,10 +134,10 @@ public class CargueCertificacionController {
 	 */
 	@GetMapping(value = "${endpoints.Archivos.consultar}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<List<ArchivosCargadosDTO>>> consultarArchivosCargaCertificacion(
-			@RequestParam("estado") String estado) {
+			@RequestParam("estado") String estado, @RequestParam("idMaestroDefinicion") String agrupador) {
 		
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ApiResponseADE<List<ArchivosCargadosDTO>>(cargueCertificacionDelegate.consultarArchivos(estado),
+				.body(new ApiResponseADE<List<ArchivosCargadosDTO>>(cargueCertificacionDelegate.consultarArchivos(estado, agrupador),
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 								.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}

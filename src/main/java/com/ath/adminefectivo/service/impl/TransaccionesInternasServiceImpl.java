@@ -42,9 +42,6 @@ public class TransaccionesInternasServiceImpl implements ITransaccionesInternasS
 		return null;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public TransaccionesInternas saveTransaccionesInternasById(TransaccionesInternasDTO transaccionesInternasDTO) {
 		System.out.println("/////// "+transaccionesInternasDTO);
@@ -77,5 +74,6 @@ public class TransaccionesInternasServiceImpl implements ITransaccionesInternasS
 
 		return listadoTransaccionesInternasDTO;
 	}
+
 
 }

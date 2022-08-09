@@ -1,13 +1,17 @@
 package com.ath.adminefectivo.service.impl;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -22,14 +26,19 @@ import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.service.IFilesService;
 import com.ath.adminefectivo.service.IParametroService;
+import com.ath.adminefectivo.utils.s3Utils;
 
 @Service
 public class FilesServiceImpl implements IFilesService {
 
 	private static final String TEMPORAL_URL = "C:\\Ath\\Docs";
+	Boolean s3Bucket = true;
 	
 	@Autowired
 	IParametroService parametroService;
+
+	@Autowired
+	private s3Utils s3Util;
 
 	/**
 	 * {@inheritDoc}
@@ -74,12 +83,18 @@ public class FilesServiceImpl implements IFilesService {
 
 	@Override
 	public DownloadDTO downloadFile(DownloadDTO download) {
-
 		String path = download.getUrl();
 		try {
-			File initialFile = new File(path);
-			Resource recurso = new UrlResource(initialFile.toURI());
-			download.setFile(recurso.getInputStream());
+			if(s3Bucket) {
+				System.out.println("Entro al if del S3");
+				final InputStream streamReader = s3Util.downloadFile(path);
+				System.out.println("Descargo archivo");
+				download.setFile(streamReader);
+			}else {
+				File initialFile = new File(TEMPORAL_URL+path);
+				Resource recurso = new UrlResource(initialFile.toURI());
+				download.setFile(recurso.getInputStream());
+			}
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -97,9 +112,13 @@ public class FilesServiceImpl implements IFilesService {
 	@Override
 	public Boolean eliminarArchivo(String url) {
 		try {
-			Files.delete(Path.of(url));
-			return true;
-
+			if(s3Bucket) {
+				s3Util.deleteObjectBucket(url);
+				return true;
+			}else {
+				Files.delete(Path.of(url));
+				return true;
+			}
 		} catch (IOException e) {
 			throw new NegocioException(ApiResponseCode.ERROR_ARCHIVOS_NO_EXISTE_BD.getCode(),
 					ApiResponseCode.ERROR_ARCHIVOS_NO_EXISTE_BD.getDescription(),
@@ -112,14 +131,22 @@ public class FilesServiceImpl implements IFilesService {
 	 */
 	@Override
 	public List<String> obtenerContenidoCarpeta(String url) {
-		File carpeta = new File(url);
-		if (!carpeta.isDirectory()) {
+		System.out.println("Entro ");
+		List<String> contenidoCarpeta;
+		if (s3Bucket) {
+			contenidoCarpeta = s3Util.getObjectsFromPathS3(url);
+		} else {
+			File carpeta = new File(url);
+			contenidoCarpeta = Arrays.asList(carpeta.list());
+		}
+
+		if (Objects.isNull(contenidoCarpeta)) {
 			throw new NegocioException(ApiResponseCode.ERROR_CARPETA_NO_ENCONTRADA.getCode(),
 					ApiResponseCode.ERROR_CARPETA_NO_ENCONTRADA.getDescription(),
 					ApiResponseCode.ERROR_CARPETA_NO_ENCONTRADA.getHttpStatus());
 		}
 
-		return Arrays.asList(carpeta.list());
+		return contenidoCarpeta;
 	}
 
 	/**
@@ -130,9 +157,13 @@ public class FilesServiceImpl implements IFilesService {
 		Path origenPath = FileSystems.getDefault().getPath(urlSource);
 		this.validarPath(urlDestino);
 		Path destinoPath = FileSystems.getDefault().getPath(urlDestino, nombreArchivo);
-
 		try {
-			Files.move(origenPath, destinoPath);
+			if(s3Bucket) {
+				s3Util.moverObjeto(origenPath.toString(), destinoPath.toString());
+			}else {
+				Files.move(origenPath, destinoPath);
+			}
+			
 		} catch (IOException e) {
 			throw new NegocioException(ApiResponseCode.ERROR_MOVER_ARCHIVOS.getCode(),
 					ApiResponseCode.ERROR_MOVER_ARCHIVOS.getDescription(),

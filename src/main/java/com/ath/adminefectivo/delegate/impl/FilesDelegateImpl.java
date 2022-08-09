@@ -94,11 +94,15 @@ public class FilesDelegateImpl implements IFilesDelegate {
 
 	@Override
 	public List<ArchivosCargadosDTO> consultarArchivos(String idMaestroDefinicion, String estado) {
+		System.out.println("Entro al delegate");
 		var maestroDefinicion = maestroDefinicionArchivoService.consultarDefinicionArchivoById(idMaestroDefinicion);
-		var urlPendinetes = filesService.consultarPathArchivos(estado);
-		var url = maestroDefinicion.getUbicacion().concat(urlPendinetes);
-		var archivos = filesService.obtenerContenidoCarpeta(url);
 
+		var urlPendinetes = filesService.consultarPathArchivos(estado);
+		System.out.println("**********"+urlPendinetes);
+		var url = maestroDefinicion.getUbicacion().concat(urlPendinetes);
+		System.out.println("*******************************"+url);
+		var archivos = filesService.obtenerContenidoCarpeta(url);
+		System.out.println("*******************************"+archivos);
 		return organizarDataArchivos(archivos, estado, idMaestroDefinicion, maestroDefinicion.getMascaraArch());
 	}
 
@@ -149,6 +153,7 @@ public class FilesDelegateImpl implements IFilesDelegate {
 	 */
 	private List<ArchivosCargadosDTO> organizarDataArchivos(List<String> archivos, String estado,
 			String idModeloArchivo, String mascaraArchivo) {
+				System.out.println("Entro a Organizar Data Archivos");
 		List<ArchivosCargadosDTO> archivosCargados = new ArrayList<>();
 		archivos.forEach(x -> archivosCargados
 				.add(ArchivosCargadosDTO.builder().estadoCargue(estado).idModeloArchivo(idModeloArchivo)
@@ -156,9 +161,24 @@ public class FilesDelegateImpl implements IFilesDelegate {
 
 		archivosCargados.sort(Comparator.comparing(ArchivosCargadosDTO::getFechaArchivo,
 				Comparator.nullsLast(Comparator.naturalOrder())));
-
+				System.out.println("***********"+archivosCargados);
 		return archivosCargados;
 
+	}
+
+	@Override
+	public DownloadDTO descargarArchivo(String nombreArchivo, String idMaestroArchivo) {
+		DownloadDTO file = null;
+		try {
+			var maestrosDefinicion = maestroDefinicionArchivoService.consultarDefinicionArchivoById(idMaestroArchivo);
+			String carpeta = parametroService.valorParametro("RUTA_ARCHIVOS_PENDIENTES");
+			file = DownloadDTO.builder().name(nombreArchivo).url(maestrosDefinicion.getUbicacion()+carpeta+nombreArchivo).build();
+		} catch (Exception e) {
+			throw new ConflictException(ApiResponseCode.GENERIC_ERROR.getDescription());
+
+		}
+
+		return filesService.downloadFile(file);
 	}
 
 }
