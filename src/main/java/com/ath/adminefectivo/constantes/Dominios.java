@@ -112,6 +112,7 @@ public final class Dominios {
 	 */	
 	public static final String AGRUPADOR_DEFINICION_ARCHIVOS_PRELIMINARES = "PRELIMINAR";
 	public static final String AGRUPADOR_DEFINICION_ARCHIVOS_DEFINITIVO = "DEFIN";
+	public static final String AGRUPADOR_DEFINICION_ARCHIVOS_CERTIFICACION = "CERTIFICACION";
 	
 	/**
 	 * Dominios estados de los procesos del dia
@@ -137,6 +138,25 @@ public final class Dominios {
 	 */
 	public static final String TIPO_ARCHIVO_IPPSV = "IPPSV";
 	public static final String TIPO_ARCHIVO_ISTRC = "ISTRC";
+	
+	
+	/**
+	 * COMISIONES
+	 */
+	public static final String COMISION_1 = "1";
+	public static final String COMISION_2 = "2";
+	public static final String COMISION_3 = "3";
+	
+	/*
+	 * IMPUESTOS
+	 */
+	public static final String IMPUESTO_IVA = "1";
+	
+	/**
+	 * MEDIOS_PAGO
+	 */
+	public static final String MEDIOS_PAGO_ABONO = "ABONO";
+	public static final String MEDIOS_PAGO_DESCUENTO = "DESCUENTO";
 	
 	
 }

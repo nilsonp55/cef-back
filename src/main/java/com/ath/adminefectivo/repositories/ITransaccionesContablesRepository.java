@@ -7,18 +7,19 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
 import com.ath.adminefectivo.entities.OperacionesProgramadas;
+import com.ath.adminefectivo.entities.TransaccionesContables;
 import com.ath.adminefectivo.entities.TransaccionesInternas;
 
-public interface ITransaccionesInternasRepository extends JpaRepository<TransaccionesInternas, Long>, 
-			QuerydslPredicateExecutor<TransaccionesInternas> {
+public interface ITransaccionesContablesRepository extends JpaRepository<TransaccionesContables, Long>, 
+			QuerydslPredicateExecutor<TransaccionesContables> {
 	
 	/**
-	 * Retorna una lista de transacciones internas por fecha
+	 * Retorna una lista de transacciones contables por fecha
 	 * @param start
 	 * @param end
-	 * @return List<TransaccionesInternas>
+	 * @return List<TransaccionesContables>
 	 * @author duvan.naranjo
 	 */
-	List<TransaccionesInternas> findByFechaBetween(Date start, Date end);
+	List<TransaccionesContables> findByFechaBetween(Date start, Date end);
 
 }
