@@ -8,7 +8,9 @@ import org.springframework.data.domain.Page;
 import com.ath.adminefectivo.dto.ArchivosCargadosDTO;
 import com.ath.adminefectivo.dto.FechasConciliacionDTO;
 import com.ath.adminefectivo.dto.OperacionesProgramadasDTO;
+import com.ath.adminefectivo.dto.compuestos.OperacionIntradiaDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionesProgramadasNombresDTO;
+import com.ath.adminefectivo.dto.compuestos.intradiaPruebaDTO;
 import com.ath.adminefectivo.entities.ArchivosCargados;
 import com.ath.adminefectivo.entities.OperacionesProgramadas;
 import com.querydsl.core.types.Predicate;
@@ -84,6 +86,16 @@ public interface IOperacionesProgramadasService {
 	 * @author duvan.naranjo
 	 */
 	List<OperacionesProgramadasDTO> getOperacionesProgramadasPorFechas(String tipoContabilidad, Date fechaInicio, Date fechaFin);
+
+	/**
+	 * Servicio encargado de consultar las operaciones programadas intradia  
+	 * 
+	 * @param fechaInicio
+	 * @param fechaFin
+	 * @return List<OperacionIntradiaDTO>
+	 * @author duvan.naranjo
+	 */
+	List<intradiaPruebaDTO> consultarOperacionesIntradia(Date fechaInicio, Date fechaFin);
 
 
 }

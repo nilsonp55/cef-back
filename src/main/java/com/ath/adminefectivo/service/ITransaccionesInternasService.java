@@ -1,5 +1,6 @@
 package com.ath.adminefectivo.service;
 
+import java.util.Date;
 import java.util.List;
 
 import com.ath.adminefectivo.dto.TransaccionesInternasDTO;
@@ -38,6 +39,18 @@ public interface ITransaccionesInternasService {
 	 * @param idTransaccionesInternas
 	 */
 	void deleteTransaccionesInternasById(String idTransaccionesInternas);
+	
+	
+	/**
+	 * Servicio encargado de obtener las transacciones internas segun el 
+	 * rango de fechas recibido por parametro
+	 * 
+	 * @param fechaInicio
+	 * @param fechaFin
+	 * @return TransaccionesInternas
+	 * @author duvan.naranjo
+	 */
+	List<TransaccionesInternasDTO> getTransaccionesInternasByFechas(Date fechaInicio, Date fechaFin);
 	
 	
 

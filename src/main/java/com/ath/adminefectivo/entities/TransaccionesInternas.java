@@ -84,7 +84,7 @@ public class TransaccionesInternas {
 	
 	@ManyToOne
 	@JoinColumn(name = "CODIGO_TDV", nullable = false)
-	private Puntos codigoTdv;
+	private Transportadoras codigoTdv;
 	
 	@ManyToOne
 	@JoinColumn(name = "CODIGO_PUNTO_BANCO_EXT", nullable = true)
@@ -102,5 +102,14 @@ public class TransaccionesInternas {
 	
 	@Column(name = "ESTADO")
 	private String estado;
+	
+	@Column(name = "TASA_NEGOCIACION")
+	private String tasaNegociacion;
+	
+	@Column(name = "MEDIO_PAGO", length = 15)
+	private String medioPago;
+	
+
+	
 	
 }

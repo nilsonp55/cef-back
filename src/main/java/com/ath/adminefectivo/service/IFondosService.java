@@ -83,4 +83,13 @@ public interface IFondosService {
 	 * @author cesar.castano
 	 */
 	Fondos getEntidadFondo(Integer codigoPunto);
+	
+	/**
+	 * Servicio encargado de consultar el fondo por codigo punto. Este
+	 * servicio lanza un error en caso de que el fondo no exista
+	 * @param codigoPunto
+	 * @return FondosDTO
+	 * @author duvan.naranjo
+	 */
+	FondosDTO getFondoByCodigoPunto(Integer codigoPunto);
 }
