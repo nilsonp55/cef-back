@@ -60,7 +60,7 @@ public class OperacionesProgramadasNombresDTO {
 	private Integer idConciliacion;
 	
 	private String tdv;
-	
+
 	private Integer bancoAVAL;
 	
 	/**

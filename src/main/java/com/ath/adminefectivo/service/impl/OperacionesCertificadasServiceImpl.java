@@ -134,13 +134,15 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 					.consultarDetalleDefinicionArchivoByIdMaestro(elemento.getIdModeloArchivo());
 			if(elemento.getIdModeloArchivo().equals(dominioService.valorTextoDominio(
 													Constantes.DOMINIO_TIPO_ARCHIVO,
-													Dominios.TIPO_ARCHIVO_ITVCS))) {
-				procesarArchivoOtrosFondos(elemento, listadoDetalleArchivo);
-				procesarSobranteFaltante();
-			}else {
+													Dominios.TIPO_ARCHIVO_IBBCS)) || 
+			   elemento.getIdModeloArchivo().equals(dominioService.valorTextoDominio(
+													Constantes.DOMINIO_TIPO_ARCHIVO,
+													Dominios.TIPO_ARCHIVO_IBMCS))) {
 				procesarArchivoBrinks(elemento, listadoDetalleArchivo);
-				procesarSobranteFaltante();
+			}else {
+				procesarArchivoOtrosFondos(elemento, listadoDetalleArchivo);
 			}
+			procesarSobranteFaltante();
 		}
 		return true;
 	}

@@ -30,7 +30,7 @@ public class TransaccionesInternasDTO {
 
 	private Long idTransaccionesInternas;
 	
-	private int consecutivoDia;
+	private String consecutivoDia;
 	
 	private BancosDTO bancoAval;
 	
@@ -44,7 +44,7 @@ public class TransaccionesInternasDTO {
 	
 	private String codigoMoneda;
 	
-	private Double valor;
+	private Integer valor;
 	
 	private Integer tasaNoEje;
 	
@@ -58,7 +58,7 @@ public class TransaccionesInternasDTO {
 	
 	private Integer tipoImpuesto;
 	
-	private PuntosDTO codigoTdv;
+	private TransportadorasDTO codigoTdv;
 	
 	private PuntosDTO codigoPuntoBancoExt;
 	
@@ -68,7 +68,12 @@ public class TransaccionesInternasDTO {
 	
 	private String tipoProceso;
 	
-	private String estado;
+	private int estado;
+	
+	private String tasaNegociacion;
+	
+	private String medioPago;
+	
 	
 	
 	
@@ -94,6 +99,8 @@ public class TransaccionesInternasDTO {
         transaccionesInternas.setTipoOperacion(t.getTipoOperacion());
         transaccionesInternas.setTipoProceso(t.getTipoProceso());
         transaccionesInternas.setValor(t.getValor());
+        transaccionesInternas.setTasaNegociacion(t.getTasaNegociacion());
+        transaccionesInternas.setMedioPago(t.getMedioPago());
 
         if(!Objects.isNull(t.getBancoAval())) {
         	transaccionesInternas.setBancoAval(BancosDTO.CONVERTER_ENTITY.apply(t.getBancoAval()));
@@ -110,12 +117,13 @@ public class TransaccionesInternasDTO {
         }
         
         if(!Objects.isNull(t.getCodigoTdv())) {
-        	transaccionesInternas.setCodigoTdv(PuntosDTO.CONVERTER_ENTITY.apply(t.getCodigoTdv()));	
+        	transaccionesInternas.setCodigoTdv(TransportadorasDTO.CONVERTER_ENTITY.apply(t.getCodigoTdv()));	
         }
         
         if(!Objects.isNull(t.getIdOperacion())) {
         	transaccionesInternas.setIdOperacion(OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(t.getIdOperacion()));	
         }
+        
         
         
         return transaccionesInternas;
@@ -142,6 +150,8 @@ public class TransaccionesInternasDTO {
         transaccionesInternasDTO.setTipoOperacion(t.getTipoOperacion());
         transaccionesInternasDTO.setTipoProceso(t.getTipoProceso());
         transaccionesInternasDTO.setValor(t.getValor());
+        transaccionesInternasDTO.setTasaNegociacion(t.getTasaNegociacion());
+        transaccionesInternasDTO.setMedioPago(t.getMedioPago());
         
         if(!Objects.isNull(t.getBancoAval())) {
         	transaccionesInternasDTO.setBancoAval(BancosDTO.CONVERTER_DTO.apply(t.getBancoAval()));
@@ -158,12 +168,13 @@ public class TransaccionesInternasDTO {
         }
         
         if(!Objects.isNull(t.getCodigoTdv())) {
-        	transaccionesInternasDTO.setCodigoTdv(PuntosDTO.CONVERTER_DTO.apply(t.getCodigoTdv()));	
+        	transaccionesInternasDTO.setCodigoTdv(TransportadorasDTO.CONVERTER_DTO.apply(t.getCodigoTdv()));	
         }
         
         if(!Objects.isNull(t.getIdOperacion())) {
         	transaccionesInternasDTO.setIdOperacion(OperacionesProgramadasDTO.CONVERTER_DTO.apply(t.getIdOperacion()));	
         }
+        
         
 		return transaccionesInternasDTO;
 	};

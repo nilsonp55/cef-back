@@ -4,12 +4,11 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.stereotype.Repository;
 
 import com.ath.adminefectivo.entities.ArchivosCargados;
-import com.ath.adminefectivo.entities.OperacionesProgramadas;
-import com.ath.adminefectivo.entities.Puntos;
 
 /**
  * Repository encargado de manejar la logica de la entidad ArchivosCargados
@@ -19,13 +18,16 @@ import com.ath.adminefectivo.entities.Puntos;
 @Repository
 public interface ArchivosCargadosRepository
 		extends JpaRepository<ArchivosCargados, Long>, QuerydslPredicateExecutor<ArchivosCargados> {
-
+	
 	/**
-	 * Metodo encargado de realizar la consulta de los archivos cargados  y no han sido procesados
+	 * Metodo encargado de realizar la consulta de los archivos cargados por modeloarchivo y 	
+	 * idArchivo
+	 * @param idModeloArchivo
+	 * @param idArchivo
 	 * @return List<ArchivosCargados>
-	 * @author cesar.castano
+	 * @author duvan.naranjo
 	 */
-//	List<ArchivosCargados> findByIdModeloArchivo(String idModeloArchivo);
+	List<ArchivosCargados> findByIdModeloArchivoAndIdArchivo(String idModeloArchivo, Long idArchivo);
 	
 	/**
 	 * Metodo encargado de realizar la consulta de los archivos cargados que fueron cargados 
@@ -58,6 +60,9 @@ public interface ArchivosCargadosRepository
 	 */
 	public List<ArchivosCargados> findByEstadoCargueAndIdModeloArchivo(String estadoCargue, String idModeloArchivo);
 
-	List<ArchivosCargados> findByIdModeloArchivoOrIdModeloArchivo(String tipoArchivoItvcs, String tipoArchivoIstrc);
-
+	@Query("select ac from ArchivosCargados ac "
+            + "where idModeloArchivo IN ("
+            + "select idMaestroDefinicionArchivo from MaestroDefinicionArchivo "
+            + "where agrupador = ?1)") 
+	List<ArchivosCargados> getArchivosByAgrupador(String agrupador);
 }

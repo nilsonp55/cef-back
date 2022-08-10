@@ -22,11 +22,14 @@ public class MaestroDefinicionArchivoServiceImpl implements IMaestroDefinicionAr
 	
 	@Override
 	public MaestrosDefinicionArchivoDTO consultarDefinicionArchivoById(String idMaestroDefinicion) {
+		System.out.println("consultarDefinicionArchivoById");
 		var maestroDefinicion = maestrosDefinicionArchivoRepository.findById(idMaestroDefinicion);
-
+		System.out.println("------->"+maestroDefinicion);
 		if (maestroDefinicion.isPresent()) {
+			System.out.println("Entro al if");
 			return MaestrosDefinicionArchivoDTO.CONVERTER_DTO.apply(maestroDefinicion.get());
 		} else {
+			System.out.println("Entro al else");
 			throw new NegocioException(ApiResponseCode.ERROR_MAESTRO_DEFINICION_NO_VALIDO.getCode(),
 					ApiResponseCode.ERROR_MAESTRO_DEFINICION_NO_VALIDO.getDescription(),
 					ApiResponseCode.ERROR_MAESTRO_DEFINICION_NO_VALIDO.getHttpStatus());
@@ -38,12 +41,15 @@ public class MaestroDefinicionArchivoServiceImpl implements IMaestroDefinicionAr
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<MaestrosDefinicionArchivoDTO> consultarDefinicionArchivoByAgrupador(String agrupador) {
+	public List<MaestrosDefinicionArchivoDTO> consultarDefinicionArchivoByAgrupador(String estado, String agrupador) {
+		System.out.println("estado = "+estado);
+		System.out.println("agrupador = "+agrupador.toString());
+		System.out.println(agrupador);
 		var maestrosDefinicion = maestrosDefinicionArchivoRepository.findByAgrupadorAndEstado(agrupador, Constantes.REGISTRO_ACTIVO);
-
+		System.out.println("Consulta= "+maestrosDefinicion);
 		List<MaestrosDefinicionArchivoDTO> maestrosDefinicionDto = new ArrayList<>();
 		maestrosDefinicion.forEach(entity -> maestrosDefinicionDto.add(MaestrosDefinicionArchivoDTO.CONVERTER_DTO.apply(entity)));
-
+		
 		return maestrosDefinicionDto;
 	}
 

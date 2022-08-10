@@ -1,7 +1,6 @@
 package com.ath.adminefectivo.service.impl;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -29,7 +28,9 @@ import com.ath.adminefectivo.entities.id.FallasRegistroPK;
 import com.ath.adminefectivo.entities.id.RegistrosCargadosPK;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.ArchivosCargadosRepository;
+import com.ath.adminefectivo.repositories.IRegistrosCargadosRepository;
 import com.ath.adminefectivo.service.IArchivosCargadosService;
+import com.ath.adminefectivo.service.IMaestroDefinicionArchivoService;
 import com.querydsl.core.types.Predicate;
 
 @Service
@@ -37,6 +38,12 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 
 	@Autowired
 	ArchivosCargadosRepository archivosCargadosRepository;
+	
+	@Autowired
+	IRegistrosCargadosRepository registrosCargadosRepository;
+
+	@Autowired
+	IMaestroDefinicionArchivoService maestroDefinicionArchivoService;
 
 	/**
 	 * {@inheritDoc}
@@ -44,6 +51,7 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 	@Override
 	public List<ArchivosCargadosDTO> getAll() {
 		var archivos = archivosCargadosRepository.findAll();
+		System.out.println(archivos);
 		List<ArchivosCargadosDTO> listArchivosDto = new ArrayList<>();
 		archivos.forEach(entity -> listArchivosDto.add(ArchivosCargadosDTO.CONVERTER_DTO.apply(entity)));
 
@@ -65,9 +73,19 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 	@Override
 	public Page<ArchivosCargadosDTO> getAll(Predicate predicate, Pageable page) {
 		var archivos = archivosCargadosRepository.findAll(predicate, page);
+		return new PageImpl<>(archivos.getContent().stream().map(ArchivosCargadosDTO.CONVERTER_DTO).toList(),archivos.getPageable(), archivos.getTotalElements());
+	}
 
-		return new PageImpl<>(archivos.getContent().stream().map(ArchivosCargadosDTO.CONVERTER_DTO).toList(),
-				archivos.getPageable(), archivos.getTotalElements());
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Page<ArchivosCargadosDTO> getAllByAgrupador(String agrupador, Pageable page) {
+		
+		List<ArchivosCargados> archivosCargados = archivosCargadosRepository.getArchivosByAgrupador(agrupador);
+		List<ArchivosCargadosDTO> listArchivosDto = new ArrayList<>();
+		archivosCargados.forEach(entity -> listArchivosDto.add(ArchivosCargadosDTO.CONVERTER_DTO.apply(entity)));	
+		return new PageImpl<>(listArchivosDto);
 	}
 
 	/**
@@ -91,7 +109,7 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public ArchivosCargadosDTO eliminarArchivo(Long idArchivo) {
+	public ArchivosCargadosDTO eliminarArchivoCargado(Long idArchivo) {
 
 		var archivo = archivosCargadosRepository.findById(idArchivo);
 
@@ -153,11 +171,8 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 				.numeroRegistros(validacionArchivo.getNumeroRegistros())
 				.fechaArchivo(validacionArchivo.getFechaArchivo()).fechaInicioCargue(new Date()).usuarioCreacion("ATH")
 				.fechaCreacion(new Date()).build();
-
 		var archivoCargadoEntity = archivosCargadosRepository.save(archivosCargados);
 		
-		
-
 		if (Objects.nonNull(validacionArchivo.getDescripcionErrorEstructura())) {
 
 			FallasArchivo fallasArchivo = FallasArchivo.builder().idArchivo(archivoCargadoEntity.getIdArchivo())
@@ -183,11 +198,11 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 	 */
 	@Override
 	public List<ArchivosCargadosDTO> getArchivosCargadosSinProcesar(String idModeloArchivo) {
-
 		List<ArchivosCargadosDTO> resultado = new ArrayList<>();
 
 		List<ArchivosCargados> archivosCargados = archivosCargadosRepository
 				.findByEstadoCargueAndIdModeloArchivo(Constantes.ESTRUCTURA_OK, idModeloArchivo);
+//				.findByEstadoCargue(Constantes.ESTRUCTURA_OK);
 
 		if (!Objects.isNull(archivosCargados)) {
 			archivosCargados.forEach(arch -> {

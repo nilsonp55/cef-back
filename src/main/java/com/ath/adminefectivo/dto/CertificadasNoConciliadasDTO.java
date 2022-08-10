@@ -29,11 +29,23 @@ public class CertificadasNoConciliadasDTO {
 	@JsonProperty("codigoFondoTDV")
 	private Integer codigoFondoTDV;
 	
+	@JsonProperty("codigoBanco")
+	private Integer codigoBanco;
+	
+	@JsonProperty("codigoCiudad")
+	private Integer codigoCiudad;
+	
 	@JsonProperty("codigoPuntoOrigen")
 	private Integer codigoPuntoOrigen;
 	
 	@JsonProperty("codigoPuntoDestino")
 	private Integer codigoPuntoDestino;
+	
+	@JsonProperty("tipoPuntoOrigen")
+	private String tipoPuntoOrigen;
+	
+	@JsonProperty("tipoPuntoDestino")
+	private String tipoPuntoDestino;
 	
 	@JsonProperty("fechaEjecucion")
 	private Date fechaEjecucion;
@@ -75,7 +87,7 @@ public class CertificadasNoConciliadasDTO {
 	private Date fechaModificacion;
 	
 	private String tdv;
-	
+
 	private Integer bancoAVAL;
 	
 	/**

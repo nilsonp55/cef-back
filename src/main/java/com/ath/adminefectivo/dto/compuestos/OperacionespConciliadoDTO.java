@@ -19,19 +19,19 @@ import lombok.NoArgsConstructor;
 public class OperacionespConciliadoDTO {
 
 	private Integer codigoFondoTDV;
-	
+
 	private Integer codigoPuntoOrigen;
-	
+
 	private Integer codigoPuntoDestino;
-	
+
 	private Date fechaOrigen;
-	
+
 	private Date fechaDestino;
-	
+
 	private String tipoOperacion;
-	
+
 	private Double valorTotal;
-	
+
 	private String estadoConciliacion;
 
 }

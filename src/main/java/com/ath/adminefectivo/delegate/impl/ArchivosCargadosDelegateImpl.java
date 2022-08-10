@@ -31,11 +31,10 @@ public class ArchivosCargadosDelegateImpl implements IArchivosCargadosDelegate {
 	 */
 	@Override
 	public List<ArchivosCargadosDTO> getAll() {
+		System.out.println("Entro al Delegate");
 		return archivosCargadosService.getAll();
 	}
 	
-
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -55,18 +54,21 @@ public class ArchivosCargadosDelegateImpl implements IArchivosCargadosDelegate {
 		return archivosCargadosService.getAll(predicate, page);
 	}
 
+	@Override
+	public Page<ArchivosCargadosDTO> getAllByAgrupador(String agrupador, Pageable page) {
+		return archivosCargadosService.getAllByAgrupador(agrupador, page);
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public Boolean eliminarArchivo(Long idArchivo) {
-		var archivoCargadoDTO = archivosCargadosService.eliminarArchivo(idArchivo);
+		var archivoCargadoDTO = archivosCargadosService.eliminarArchivoCargado(idArchivo);
 		if(Objects.nonNull(archivoCargadoDTO.getUrl())) {
 			return filesService.eliminarArchivo(archivoCargadoDTO.getUrl());			
 		}
 		return false;
-		
-
 	}
 
 }

@@ -93,7 +93,7 @@ public class ProgramadasNoConciliadasDTO {
 	private String idServicio;
 	
 	private String tdv;
-	
+
 	private Integer bancoAVAL;
 	
 	/**

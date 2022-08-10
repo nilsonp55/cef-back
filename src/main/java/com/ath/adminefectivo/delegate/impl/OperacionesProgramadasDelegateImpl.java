@@ -30,9 +30,10 @@ public class OperacionesProgramadasDelegateImpl implements IOperacionesProgramad
 	@Autowired
 	IArchivosCargadosService archivosCargadosService;
 	
+
 	@Autowired
 	ILogProcesoDiarioService logProcesoDiarioService;
-	
+
 	@Autowired
 	IDominioService dominioService;
 
@@ -42,20 +43,18 @@ public class OperacionesProgramadasDelegateImpl implements IOperacionesProgramad
 	@Override
 	public String generarOperacionesProgramadas(String idArchivo) {
 
-		List<ArchivosCargadosDTO> listadoArchivosCargados = archivosCargadosService.getArchivosCargadosSinProcesar(
-											idArchivo.toUpperCase().trim());
+		List<ArchivosCargadosDTO> listadoArchivosCargados = archivosCargadosService.getArchivosCargadosSinProcesar(idArchivo.toUpperCase().trim());
 		if (!Objects.isNull(listadoArchivosCargados)) {
-//			validarExistenciaArchivos(listadoArchivosCargados);
 			List<OperacionesProgramadasDTO> operacionesProgramadas = operacionesProgramadasService
 					.generarOperacionesProgramadas(listadoArchivosCargados);
 			if (!operacionesProgramadas.isEmpty()) {
-				cambiarEstadoLogProcesoDiario();
 				return Constantes.MENSAJE_GENERO_OPERACIONES_PROGRAMADAS_CORRECTO;
 			}
 		}
 		return Constantes.MENSAJE_NO_SE_ENCONTRARON_ARCHIVOS_OP;
 	}
 	
+
 	private void validarExistenciaArchivos(List<ArchivosCargadosDTO> listadoArchivosCargados) {
 		var fechaDia = new Date();
 		if (listadoArchivosCargados.size() == 3) {
@@ -64,19 +63,19 @@ public class OperacionesProgramadasDelegateImpl implements IOperacionesProgramad
 					&& new SimpleDateFormat("dd-MM-yyyy").format(listado.getFechaArchivo())
 						.equals(new SimpleDateFormat("dd-MM-yyyy").format(fechaDia))
 					&& listado.getEstadoCargue().equals("OK")).findFirst().orElse(null);
-			
+
 			ArchivosCargadosDTO archivoISRPC = listadoArchivosCargados.stream().filter(
 					listado -> listado.getIdModeloArchivo().toUpperCase().trim().equals(Dominios.TIPO_ARCHIVO_ISRPC)
 					&& new SimpleDateFormat("dd-MM-yyyy").format(listado.getFechaArchivo())
 					.equals(new SimpleDateFormat("dd-MM-yyyy").format(fechaDia))
 					&& listado.getEstadoCargue().equals("OK")).findFirst().orElse(null);
-			
+
 			ArchivosCargadosDTO archivoIPPSV = listadoArchivosCargados.stream().filter(
 					listado -> listado.getIdModeloArchivo().toUpperCase().trim().equals(Dominios.TIPO_ARCHIVO_IPPSV)
 					&& new SimpleDateFormat("dd-MM-yyyy").format(listado.getFechaArchivo())
 					.equals(new SimpleDateFormat("dd-MM-yyyy").format(fechaDia))
 					&& listado.getEstadoCargue().equals("OK")).findFirst().orElse(null);
-			
+
 			if ((Objects.isNull(archivoISRPO)) || (Objects.isNull(archivoISRPC)) || (Objects.isNull(archivoIPPSV))) {
 				throw new NegocioException(ApiResponseCode.ERROR_FALTAN_ARCHIVOS_POR_CARGAR.getCode(),
 						ApiResponseCode.ERROR_FALTAN_ARCHIVOS_POR_CARGAR.getDescription(),

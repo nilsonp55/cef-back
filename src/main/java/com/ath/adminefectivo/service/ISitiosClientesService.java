@@ -18,8 +18,8 @@ public interface ISitiosClientesService {
 	
 	/**
 	 * Metodo que retorna el codigo Punto del Sitio segun el codigo del cliente
-	 * @param codigoPunto
-	 * @return SitiosClientes
+	 * @param codigoCliente
+	 * @return Integer
 	 * @author cesar.castano
 	 */
 	SitiosClientes getCodigoPuntoSitio(Integer codigoPunto);

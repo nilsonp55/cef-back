@@ -61,7 +61,7 @@ public class LogProcesoDiarioImpl implements ILogProcesoDiarioService {
 		return numProcesosTotales == numProcesosDia;
 
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -123,7 +123,7 @@ public class LogProcesoDiarioImpl implements ILogProcesoDiarioService {
 			throw new ConflictException(ApiResponseCode.GENERIC_ERROR.getDescription());
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -137,5 +137,6 @@ public class LogProcesoDiarioImpl implements ILogProcesoDiarioService {
 		}
 		return logProcesoDiario;
 	}
+
 
 }

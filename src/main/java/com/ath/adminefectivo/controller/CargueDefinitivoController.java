@@ -62,9 +62,9 @@ public class CargueDefinitivoController {
 	 * @author CamiloBenavides
 	 */
 	@DeleteMapping(value = "${endpoints.CargueDefinitivo.eliminar}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponseADE<Boolean>> eliminarArchivo(@RequestParam("id") Long idArchivo) {
+	public ResponseEntity<ApiResponseADE<Boolean>> eliminarArchivo(@RequestParam("nombreArchivo") String nombreArchivo, @RequestParam("idModeloArchivo") String idMaestroArchivo) {
 
-		var archivoPersistido = cargueDefinitivoDelegate.eliminarArchivo(idArchivo);
+		var archivoPersistido = cargueDefinitivoDelegate.eliminarArchivo(nombreArchivo, idMaestroArchivo);
 		return ResponseEntity.status(HttpStatus.OK).body(
 				new ApiResponseADE<>(archivoPersistido, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
@@ -139,9 +139,9 @@ public class CargueDefinitivoController {
 	 */
 	@GetMapping(value = "${endpoints.Archivos.consultar}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<List<ArchivosCargadosDTO>>> consultarArchivosCargaDefinitiva(
-			@RequestParam("estado") String estado) {
+			@RequestParam("estado") String estado, @RequestParam("idModeloArchivo") String agrupador) {
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ApiResponseADE<List<ArchivosCargadosDTO>>(cargueDefinitivoDelegate.consultarArchivos(estado),
+				.body(new ApiResponseADE<List<ArchivosCargadosDTO>>(cargueDefinitivoDelegate.consultarArchivos(estado, agrupador),
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 								.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}

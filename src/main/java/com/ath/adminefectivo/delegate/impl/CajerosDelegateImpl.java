@@ -16,9 +16,6 @@ public class CajerosDelegateImpl implements ICajerosDelegate {
 	@Autowired
 	ICajerosService cajerosService;
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public List<CajerosDTO> getCajeros(Predicate predicate) {
 		

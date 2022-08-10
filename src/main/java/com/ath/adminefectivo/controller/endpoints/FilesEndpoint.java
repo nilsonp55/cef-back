@@ -16,7 +16,7 @@ public class FilesEndpoint {
 
 	public static final String SAVE_FILES = "/guardar-archivos";
 	
-	public static final String DOWNLOAD_FILE_BY_ID = "/descargar-id/{id}";
+	public static final String DOWNLOAD_FILE_BY_ID = "/descargar-id";
 	
 	public static final String EXCEPTION_MANAGER = "/exception";
 	

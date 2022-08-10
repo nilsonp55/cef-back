@@ -9,7 +9,16 @@ import com.ath.adminefectivo.dto.ArchivosCargadosDTO;
 import com.ath.adminefectivo.entities.ArchivosCargados;
 import com.querydsl.core.types.Predicate;
 
-public interface IArchivosCargadosDelegate {	
+public interface IArchivosCargadosDelegate {
+	
+	/**
+	 * Delegate responsable de consultar los ArchivosCargados del sistema, por filtros y paginador
+	 * @param agrupador
+	 * @param page
+	 * @return List<ArchivosCargadosDTO>
+	 * @author cesar.castano
+	 */
+	public Page<ArchivosCargadosDTO> getAllByAgrupador(String agrupador, Pageable page);
 	
 	/**
 	 * Delegate encargado de persistir un ArchivoCargado
@@ -43,5 +52,7 @@ public interface IArchivosCargadosDelegate {
 	 * @author CamiloBenavides
 	 */
 	Boolean eliminarArchivo(Long idArchivo);
+
+	
 		
 }

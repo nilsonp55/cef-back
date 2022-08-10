@@ -3,6 +3,7 @@ package com.ath.adminefectivo.service;
 import java.util.List;
 
 import com.ath.adminefectivo.dto.BancosDTO;
+import com.ath.adminefectivo.dto.PuntosDTO;
 import com.querydsl.core.types.Predicate;
 
 public interface IBancosService {
@@ -67,5 +68,15 @@ public interface IBancosService {
 	 * @author cesar.castano
 	 */
 	Boolean getCodigoPunto(Integer codigoPunto);
+	
+	/**
+	 * Servicio encargado de consultar un banco por codigo punto y 
+	 * validar si es un banco aval, en caso de no serlo retorna null
+	 * 
+	 * @param codigoPunto
+	 * @return BancosDTO
+	 * @author duvan.naranjo
+	 */
+	BancosDTO validarPuntoBancoEsAval(int codigoPunto);
 
 }

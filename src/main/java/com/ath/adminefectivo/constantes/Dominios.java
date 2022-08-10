@@ -111,13 +111,13 @@ public final class Dominios {
 	 * Dominio de agrupamiento de los detalles de archivo
 	 */	
 	public static final String AGRUPADOR_DEFINICION_ARCHIVOS_PRELIMINARES = "PRELIMINAR";
-	public static final String AGRUPADOR_DEFINICION_ARCHIVOS_DEFINITIVO = "DEFINITIVO";
+	public static final String AGRUPADOR_DEFINICION_ARCHIVOS_DEFINITIVO = "DEFIN";
 	public static final String AGRUPADOR_DEFINICION_ARCHIVOS_CERTIFICACION = "CERTIFICACION";
 	
 	/**
 	 * Dominios estados de los procesos del dia
 	 */	
-	public static final String ESTADO_PROCESO_DIA_COMPLETO = "CERRADO";
+	public static final String ESTADO_PROCESO_DIA_COMPLETO = "COMPLETO";
 	public static final String ESTADO_PROCESO_DIA_PROCESO = "PROCESO";
 	
 	/**
@@ -141,6 +141,8 @@ public final class Dominios {
 	public static final String TIPO_ARCHIVO_ITVCS = "ITVCS";
 	public static final String TIPO_ARCHIVO_ISRPO = "ISRPO";
 	public static final String TIPO_ARCHIVO_ISRPC = "ISRPC";
+	public static final String TIPO_ARCHIVO_IBBCS = "IBBCS";
+	public static final String TIPO_ARCHIVO_IBMCS = "IBMCS";
 	
 	/**
 	 * Codigo Proceso 
@@ -149,5 +151,31 @@ public final class Dominios {
 	public static final String CODIGO_PROCESO_LOG_DEFINITIVO = "CARG_DEFINITIVO";
 	public static final String CODIGO_PROCESO_LOG_CERTIFICACION = "CARG_CERTIFICACION";
 	public static final String CODIGO_PROCESO_LOG_CONCILIACION = "CONCILIACION";
+	
+	
+	/**
+	 * COMISIONES
+	 */
+	public static final String COMISION_1 = "1";
+	public static final String COMISION_2 = "2";
+	public static final String COMISION_3 = "3";
+	
+	/*
+	 * IMPUESTOS
+	 */
+	public static final String IMPUESTO_IVA = "1";
+	
+	/**
+	 * MEDIOS_PAGO
+	 */
+	public static final String MEDIOS_PAGO_ABONO = "ABONO";
+	public static final String MEDIOS_PAGO_DESCUENTO = "DESCUENTO";
+	
+	/**
+	 * Dominios estados de Contabilidad
+	 */	
+	public static final int ESTADO_CONTABILIDAD_GENERADO = 1;
+	public static final int ESTADO_CONTABILIDAD_ERROR_CONTABLE = 2;
+	
 	
 }
