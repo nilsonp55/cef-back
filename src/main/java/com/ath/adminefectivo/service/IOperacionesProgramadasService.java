@@ -95,7 +95,7 @@ public interface IOperacionesProgramadasService {
 	 * @return List<OperacionIntradiaDTO>
 	 * @author duvan.naranjo
 	 */
-	List<intradiaPruebaDTO> consultarOperacionesIntradia(Date fechaInicio, Date fechaFin);
+	List<OperacionIntradiaDTO> consultarOperacionesIntradia(Date fechaInicio, Date fechaFin);
 
 
 }

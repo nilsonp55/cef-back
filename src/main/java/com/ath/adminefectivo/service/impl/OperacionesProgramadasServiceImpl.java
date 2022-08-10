@@ -290,19 +290,16 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<intradiaPruebaDTO> consultarOperacionesIntradia(Date fechaInicio, Date fechaFin) {
-//		List<OperacionIntradiaDTO> listadoOperacionesIntradia = operacionesProgramadasRepository.consultarOperacionesIntradiaEntrada(fechaInicio, fechaFin, "ENTRADA", "VENTA");
-//		listadoOperacionesIntradia.addAll(operacionesProgramadasRepository.consultarOperacionesIntradiaSalida(fechaInicio, fechaFin, "SALIDA", "VENTA"));				
-//		return listadoOperacionesIntradia;
+	public List<OperacionIntradiaDTO> consultarOperacionesIntradia(Date fechaInicio, Date fechaFin) {
+		List<OperacionIntradiaDTO> listadoOperacionesIntradia = operacionesProgramadasRepository.consultaOperacionesIntradia_Entrada(fechaInicio, fechaFin, "ENTRADA", "VENTA");
+		listadoOperacionesIntradia.addAll(operacionesProgramadasRepository.consultaOperacionesIntradia_Salida(fechaInicio, fechaFin, "SALIDA", "VENTA"));				
 		
-		List<intradiaPruebaDTO> listadoOperacionesIntradia = operacionesProgramadasRepository.consultarOperacionesIntradiaEntrada(fechaInicio, fechaFin, "ENTRADA", "VENTA");
 		listadoOperacionesIntradia.forEach(operacionIntradia ->{
 			System.out.println("////////////// "+ operacionIntradia.toString());
 		});
-		//		listadoOperacionesIntradia.addAll(operacionesProgramadasRepository.consultarOperacionesIntradiaSalida(fechaInicio, fechaFin, "SALIDA", "VENTA"));				
-		System.out.println("///// listadoOperacionesIntradia opC -- "+listadoOperacionesIntradia);;
 		
-		return null;
+		return listadoOperacionesIntradia;
+
 	}
 
 	/**
