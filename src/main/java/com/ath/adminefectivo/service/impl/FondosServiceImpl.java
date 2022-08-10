@@ -83,18 +83,16 @@ public class FondosServiceImpl implements IFondosService {
 	public Boolean getCodigoPuntoFondo(Integer codigoPunto) {
 		Boolean estado = true;
 		var fondo = fondosRepository.findByCodigoPunto(codigoPunto);
-		if (fondo == null) {
+		if (Objects.isNull(fondo)) {
 			estado = false;
 		}
 		return estado;
 	}
 
 	@Override
-	public Fondos getCodigoFondoCertificacion(String codigoTransportadora, String tipoPuntoBanco, String nombreBanco,
-			String codigoCiudad) {
+	public Fondos getCodigoFondoCertificacion(String codigoTransportadora, String numeroNit, String codigoCiudad){
 
-		return fondosRepository.obtenerCodigoFondoTDV2(
-				codigoTransportadora, tipoPuntoBanco, nombreBanco, codigoCiudad);
+		return fondosRepository.obtenerCodigoFondoTDV2(codigoTransportadora, numeroNit, codigoCiudad);
 	}
 	
 	/**

@@ -63,5 +63,16 @@ public class PuntosCodigoTDVServiceImpl implements IPuntosCodigoTdvService {
 			return puntosCodigoTDV.getCodigoPunto();
 		}
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<PuntosCodigoTdvDTO> getPuntosCodigoTdvAll() {
+		List<PuntosCodigoTDV> puntosCodigoTDV = puntosCodigoTDVRepository.findAll();
+		List<PuntosCodigoTdvDTO> listPuntosCodigoTDVDto = new ArrayList<>();
+		puntosCodigoTDV.forEach(entity -> listPuntosCodigoTDVDto.add(PuntosCodigoTdvDTO.CONVERTER_DTO.apply(entity)));
+		return listPuntosCodigoTDVDto;
+	}
 
 }

@@ -84,5 +84,12 @@ public interface IConciliacionOperacionesService {
 	 * @author cesar.castano
 	 */
 	ResumenConciliacionesDTO consultaResumenConciliaciones(FechasConciliacionDTO fechaConciliacion);
+	
+	/**
+	 * Servicio encargado de hacer la conciliacion automatica
+	 * @return Boolean
+	 * @author cesar.castano
+	 */
+	Boolean conciliacionAutomatica();
 
 }

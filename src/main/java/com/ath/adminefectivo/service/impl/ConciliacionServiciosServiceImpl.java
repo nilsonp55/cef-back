@@ -17,6 +17,8 @@ import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.IConciliacionOperacionesRepository;
 import com.ath.adminefectivo.service.IConciliacionServiciosService;
 import com.ath.adminefectivo.service.IDominioService;
+import com.ath.adminefectivo.service.IOperacionesCertificadasService;
+import com.ath.adminefectivo.service.IOperacionesProgramadasService;
 
 @Service
 public class ConciliacionServiciosServiceImpl implements IConciliacionServiciosService {
@@ -27,6 +29,12 @@ public class ConciliacionServiciosServiceImpl implements IConciliacionServiciosS
 	@Autowired
 	IDominioService dominioService;
 
+	@Autowired
+	IOperacionesProgramadasService operacionesProgramadasService;
+
+	@Autowired
+	IOperacionesCertificadasService operacionesCertificadasService;
+	
 	/**
 	 * {@inheritDoc}
 	 */

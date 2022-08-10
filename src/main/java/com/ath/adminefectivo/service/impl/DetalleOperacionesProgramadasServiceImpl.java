@@ -1,6 +1,7 @@
 package com.ath.adminefectivo.service.impl;
 
 import java.util.Date;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,7 +42,7 @@ public class DetalleOperacionesProgramadasServiceImpl implements IDetalleOperaci
 	@Override
 	public Double obtenerValorDetalle(Integer idOpreacion) {
 		Double valorDetalle = detalleOperacionesProgramadasRepository.valorTotal(idOpreacion);
-		if(valorDetalle == null) {
+		if(Objects.isNull(valorDetalle)) {
 			throw new NegocioException(ApiResponseCode.ERROR_DETALLE_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_DETALLE_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getDescription(),
 					ApiResponseCode.ERROR_DETALLE_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getHttpStatus());

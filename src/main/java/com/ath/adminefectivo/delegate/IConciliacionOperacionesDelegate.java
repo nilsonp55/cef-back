@@ -78,5 +78,13 @@ public interface IConciliacionOperacionesDelegate {
 	 * @author cesar.castano
 	 */
 	ResumenConciliacionesDTO consultaResumenConciliaciones(FechasConciliacionDTO fechaConciliacion);
+	
+	/**
+	 * Delegate encargado de hacer la conciliacion automatica de operaciones
+	 * @param fechaConciliacion
+	 * @return Boolean
+	 * @author cesar.castano
+	 */
+	Boolean conciliacionAutomatica();
 
 }

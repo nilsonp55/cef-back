@@ -14,6 +14,8 @@ import com.ath.adminefectivo.entities.ConciliacionServicios;
 import com.ath.adminefectivo.repositories.IConciliacionServiciosHistoricoRepository;
 import com.ath.adminefectivo.service.IConciliacionServiciosHistoricoService;
 import com.ath.adminefectivo.service.IDominioService;
+import com.ath.adminefectivo.service.IOperacionesCertificadasService;
+import com.ath.adminefectivo.service.IOperacionesProgramadasService;
 
 @Service
 public class ConciliacionServiciosHistoricoServiceImpl implements IConciliacionServiciosHistoricoService{
@@ -23,6 +25,12 @@ public class ConciliacionServiciosHistoricoServiceImpl implements IConciliacionS
 	
 	@Autowired
 	IDominioService dominioService;
+	
+	@Autowired
+	IOperacionesProgramadasService operacionesProgramadasService;
+
+	@Autowired
+	IOperacionesCertificadasService operacionesCertificadasService;
 	
 	/**
 	 * {@inheritDoc}
