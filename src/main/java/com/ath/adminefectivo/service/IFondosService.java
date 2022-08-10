@@ -64,7 +64,7 @@ public interface IFondosService {
 	 * @return Fondos
 	 * @author cesar.castano
 	 */
-	Fondos getCodigoFondoCertificacion(String codigoTransportadora, String tipoPuntoBanco, String nombreBanco, String codigoCiudad);
+	public Fondos getCodigoFondoCertificacion(String codigoTransportadora, String numeroNit, String codigoCiudad);
 	
 	/**
 	 * Servicio encargado de consultar el codigo Punto. Este

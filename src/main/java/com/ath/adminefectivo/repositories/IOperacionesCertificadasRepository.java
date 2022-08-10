@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
 import com.ath.adminefectivo.entities.OperacionesCertificadas;
@@ -59,5 +60,51 @@ public interface IOperacionesCertificadasRepository
 	 * @author cesar.castano
 	 */
 	OperacionesCertificadas findByCodigoServicioTdv(String codigoServicio);
+	
+	/**
+	 * Retorna una lista de operaciones certificadas segun el codigo del servicio tdv
+	 * @param codigoServicio
+	 * @return List<OperacionesCertificadas>
+	 * @author cesar.castano
+	 */
+
+	List<OperacionesCertificadas> findByEstadoConciliacion(String estadoConciliacion);
+
+	/**
+	 * Retorna la entidad operaciones certificadas segun el codigo del servicio tdv y codigo propio tdv
+	 * @param codigoServicio
+	 * @return OperacionesCertificadas
+	 * @author cesar.castano
+	 */
+	OperacionesCertificadas 
+	findByCodigoPuntoOrigenAndCodigoServicioTdvAndEntradaSalidaAndFechaEjecucion(Integer codigoPuntoOrigen,
+			String codigoServicio, String entradaSalida, Date fechaEjecucion);
+
+	/**
+	 * Retorna la entidad operaciones certificadas segun el codigo del servicio tdv y codigo propio tdv
+	 * @param codigoServicio
+	 * @return OperacionesCertificadas
+	 * @author cesar.castano
+	 */
+	OperacionesCertificadas 
+	findByCodigoPuntoDestinoAndCodigoServicioTdvAndEntradaSalidaAndFechaEjecucion(Integer codigoPuntoDestino,
+			String codigoServicio, String entradaSalida, Date fechaEjecucion);
+
+	/**
+	 * Retorna el objeto OperacionesCertificadas con las operaciones candidatas a conciliacion automatica
+	 * @param estadoConciliacion
+	 * @param idOperacion
+	 * @param idCertificacion
+	 * @return OperacionesCertificadas
+	 * @author cesar.castano
+	 */
+	@Query("SELECT distinct(oc) FROM OperacionesProgramadas op JOIN OperacionesCertificadas oc ON "
+			+ "(oc.fechaEjecucion = op.fechaOrigen OR oc.fechaEjecucion = op.fechaDestino) AND "
+			+ "oc.codigoFondoTDV = op.codigoFondoTDV AND oc.tipoOperacion = op.tipoOperacion AND "
+			+ "(oc.valorTotal + oc.valorFaltante - oc.valorSobrante) = op.valorTotal AND "
+			+ "oc.codigoPuntoOrigen = op.codigoPuntoOrigen AND oc.codigoPuntoDestino = op.codigoPuntoDestino AND "
+			+ "oc.estadoConciliacion = op.estadoConciliacion "
+			+ "WHERE op.estadoConciliacion = ?1")
+	List<OperacionesCertificadas> conciliacionAutomatica(String estadoConciliacion);
 
 }

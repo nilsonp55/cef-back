@@ -26,4 +26,13 @@ public interface LogProcesoDiarioRepository extends JpaRepository<LogProcesoDiar
 	 */
 	Integer countByFechaFinalizacionAndEstadoProceso(Date fecha,  String estadoProceso);
 	
+	/**
+	 * Retorna la entidad para un codigo de pro ceso
+	 * 
+	 * @param codigoProceso
+	 * @return LogProcesoDiario
+	 * @author cesar.castano
+	 */
+	LogProcesoDiario findByCodigoProceso(String codigoProceso);
+	
 }

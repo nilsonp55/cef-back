@@ -378,7 +378,49 @@ public enum ApiResponseCode {
 
 	ERROR_GUARDANDO_ARCHIVO("E918", "Error guardando archivo", HttpStatus.CONFLICT),
 
-	ERROR_ACCEDIENDO_S3("E919", "Error accediendo al S3", HttpStatus.CONFLICT);
+	ERROR_ACCEDIENDO_S3("E919", "Error accediendo al S3", HttpStatus.CONFLICT), 
+	/**
+	 * Ocurrió un error al consultar el Log Proceso Diario
+	 */
+	ERROR_LOGPROCESODIARIO_NO_ENCONTRADO("E927", "Log Proceso Diario no encontrado", HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * Ocurrió un error al consultar el Log Proceso Diario
+	 */
+	ERROR_LOGPROCESODIARIO_YA_EXISTE("E928", "Log Proceso Diario ya existe", HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * Ocurrió un error al consultar el Log Proceso Diario
+	 */
+	ERROR_CODIGO_PROCESO_NO_EXISTE("E929", "Codigo Proceso no existe en Log Proceso Diario", HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * Ocurrió un error al consultar el Log Proceso Diario
+	 */
+	ERROR_PROCESO_YA_CERRADO("E930", "Error, Proceso Diario Definitivo ya esta CERRADO", HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * Ocurrió un error al consultar el Log Proceso Diario
+	 */
+	ERROR_PROCESO_SIGUE_ABIERTO("E930", "Error, Proceso Diario Definitivo sigue ABIERTO", HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * Ocurrió un error al consultar el Log Proceso Diario
+	 */
+	ERROR_FALTAN_ARCHIVOS_POR_CARGAR("E931", "Error, Faltan archivos de Programacion Definitiva por cargar", HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * Ocurrió un error al consultar el Log Proceso Diario
+	 */
+	ERROR_HAY_ARCHIVOS_FALLIDOS_CARGUE_CERTIFICACION("E932", "Error, Hay archivos fallidos de cargue de certificacion", HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * Ocurrió un error al consultar el Log Proceso Diario
+	 */
+	ERROR_NO_CUMPLE_MINIMO_ARCHIVOS_CARGADOS_CERTIFICACION("E933", "Error, No cumple con el minimo de archivos cargados certificacion", HttpStatus.PRECONDITION_FAILED);
+
+	
+	
 	
 	
 	/**
@@ -420,6 +462,7 @@ public enum ApiResponseCode {
 		this.httpStatus = httpStatus;
 	}
 
+	
 	
 	
 }

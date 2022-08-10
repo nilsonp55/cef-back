@@ -97,5 +97,7 @@ public interface IOperacionesProgramadasService {
 	 */
 	List<OperacionesProgramadasDTO> getOperacionesProgramadasPorFechas(String tipoContabilidad, Date fechaInicio, Date fechaFin);
 
+	List<OperacionesProgramadas> obtenerOperacionesProgramadas();
+
 
 }

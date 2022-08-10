@@ -28,6 +28,16 @@ public final class Constantes {
 	public static final String FALTANTE_BRINKS = "5";
 	public static final Integer NUMERO_INICIA_VALORES_OTROS_FONDOS = 17;
 	public static final Integer NUMERO_INICIA_VALORES_BRINKS = 18;
+	public static final String NOMBRE_ENTRADA = "ENTRADAS";
+	public static final String NOMBRE_SALIDA = "SALIDAS";
+	public static final String SOBRANTE = "SOBRANTE";
+	public static final String FALTANTE = "FALTANTE";
+	public static final Integer INICIA_DENOMINACION_OTROS_FONDOS = 17;
+	public static final Integer INICIA_DENOMINACION_BRINKS = 18;
+	public static final String CLIENTE = "CLI";
+	public static final String SUCURSAL = "SUC";
+	public static final Integer HORA_TIPO_SERVICIO_PROGRAMADA = 18;
+	public static final String NUMERO_MINIMO_ARCHIVOS_PARA_CIERRE = "NUMERO_MINIMO_ARCHIVOS";
 
 
 	/**
@@ -37,6 +47,16 @@ public final class Constantes {
 	public static final String ESTADO_CARGUE_PENDIENTE = "PEND";
 	public static final String ESTADO_CARGUE_ERROR = "ERROR";
 	public static final String ESTADO_CARGUE_VALIDO = "OK";
+	
+
+	/**
+	 * Constantes estado Pedido
+	 */
+
+	public static final String ESTADO_PEDIDO_APRVD = "APRVD";
+	public static final String ESTADO_PEDIDO_DELIV = "DELIV";
+	public static final String ESTADO_PEDIDO_CANCEL = "CANCEL";
+	public static final String ESTADO_PEDIDO_DECLI = "DECLI";
 
 	/**
 	 * Formatos de fecha
@@ -347,6 +367,173 @@ public final class Constantes {
 	 * Constante para indicar el valor ENTRADA
 	 */
 	public static final String VALOR_ENTRADA = "ENTRADA";
+	
+	/**
+	 * PROGRAMACION DEFINITIVA
+	 */
+	/**
+	 * Constante para indicar el valor FECHA ENTREGA en el archivo de OFICINAS (PROG. DEFINTIVA)
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_FECHA_ENTREGA = "FECHAENTREGA";
+
+	/**
+	 * Constante para indicar el valor FECHA APROBACION en el archivo de OFICINAS (PROG. DEFINTIVA)
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_FECHA_APROBACION = "FECHAAPROBACION";
+
+	/**
+	 * Constante para indicar el valor ORDERID en el archivo de OFICINAS (PROG. DEFINTIVA)
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_ORDERID = "ORDERID";
+
+	/**
+	 * Constante para indicar el valor SHIPIN en el archivo de OFICINAS (PROG. DEFINTIVA)
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_SHIPIN = "SHIPIN";
+
+	/**
+	 * Constante para indicar el valor SHIPOUT en el archivo de OFICINAS (PROG. DEFINTIVA)
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_SHIPOUT = "SHIPOUT";
+
+	/**
+	 * Constante para indicar el valor ESTATUS en el archivo de OFICINAS (PROG. DEFINTIVA)
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_ESTATUS = "ESTATUS";
+
+	/**
+	 * Constante para indicar el valor TRANSPORTADORA en el archivo de OFICINAS Y CAJEROS (PROG. DEFINTIVA)
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_TRANSPORTADORA = "TRANSPORTADORA";
+
+	/**
+	 * Constante para indicar el valor CIUDAD en el archivo de OFICINAS (PROG. DEFINTIVA)
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_CIUDAD = "CIUDAD";
+
+	/**
+	 * Constante para indicar el valor REFERENCEID en el archivo de OFICINAS (PROG. DEFINTIVA)
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_REFERENCEDID = "REFERENCEDID";
+
+	/**
+	 * Constante para indicar el valor DENOMINACION en el archivo de OFICINAS (PROG. DEFINTIVA)
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_DENOMINACION = "DENOMINACION";
+
+	/**
+	 * Constante para indicar el valor nombrebanco en el archivo de CAJEROS (PROG. DEFINTIVA)
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_BANCO = "NOMBREBANCO";
+
+	/**
+	 * Constante para indicar el valor referencedid en el archivo de CAJEROS (PROG. DEFINTIVA)
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_REFERENCE = "REFERENCE";
+
+	/**
+	 * Constante para indicar el valor numeroOrden en el archivo de CAJEROS (PROG. DEFINTIVA)
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_NUMEROORDEN = "NUMEROORDEN";
+
+	/**
+	 * Constante para indicar el valor en el archivo de CAJEROS (PROG. DEFINTIVA)
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_VALOR = "SHIPIN";
+
+	/**
+	 * PROGRAMACION CERTIFICACIONES
+	 */
+
+	/**
+	 * Constante para indicar el valor en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_TIPOREGISTRO = "TIPOREGISTRO";
+
+	/**
+	 * Constante para indicar el NITBANCO en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_NITBANCO = "NITBANCO";
+
+	/**
+	 * Constante para indicar el CIUDAD en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_CODIGOCIUDAD = "CODIGOCIUDAD";
+
+	/**
+	 * Constante para indicar el FECHAEMISION en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_FECHAEJECUCION = "FECHAEMISION";
+
+	/**
+	 * Constante para indicar el CODIGOSERVICIO en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_CODIGOSERVICIO = "CODIGOSERVICIOTDV";
+
+	/**
+	 * Constante para indicar el ENTRADASALIDA en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_ENTRADASALIDA = "DESCRIPCIONES";
+
+	/**
+	 * Constante para indicar el CODIGOPUNTO en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_CODIGOPUNTO = "CODIGOPUNTO";
+
+	/**
+	 * Constante para indicar el TIPOSERVICIO en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_TIPOSERVICIOF = "TIPOSERVICIO";
+
+	/**
+	 * Constante para indicar el DESCRIPCIONNOVEDAD en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_DESCRIPCIONNOVEDAD = "DESCRIPCIONNOVEDAD";
+
+	/**
+	 * Constante para indicar el MONTOTOTAL en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_MONTOTOTAL = "MONTOTALNOVEDAD";
+
+	/**
+	 * Constante para indicar el SIGLATDV en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_SIGLATDV = "SIGLATDV";
+
+	/**
+	 * Constante para indicar el SIGLATRANSPORTADORA en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_SIGLATRANSPORTADORA = "SIGLATRANSPORTADORA";
+
+	/**
+	 * Constante para indicar el CODIGOENTIDAD en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_CODIGONITENTIDAD = "CODIGONITENTIDAD";
+
+	/**
+	 * Constante para indicar el CODIGODANE en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_CODIGODANE = "CODIGODANE";
+
+	/**
+	 * Constante para indicar el FECHAEMISION en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_FECHAEMISION = "FECHAEMISION";
+
+	/**
+	 * Constante para indicar el CODIGOSERVICIOTRANS en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_CODIGOSERVTRANS = "CODIGOSERVTRANS";
+
+	/**
+	 * Constante para indicar el ENTRADASALIDA en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_ENTRADAOSALIDA = "DESCRIPCIONENTRADASALIDA";
+
+	/**
+	 * Constante para indicar el MONTOTOTALNOVEDAD en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_MONTOTOTALNOVEDAD = "MONTOTOTALNOVEDAD";
 	
 	//////////////////////////////////////// MENSAJES ///////////////////////////////////////////
 	/**

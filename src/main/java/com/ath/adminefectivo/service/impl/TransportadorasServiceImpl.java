@@ -55,7 +55,7 @@ public class TransportadorasServiceImpl implements ITransportadorasService {
 	@Override
 	public String getcodigoTransportadora(String nombre) {
 		var transportadora = transportadorasRepository.findByNombreTransportadora(nombre);
-		if (transportadora == null) {
+		if (Objects.isNull(transportadora)) {
 			throw new AplicationException(ApiResponseCode.ERROR_TRANSPORTADORAS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_TRANSPORTADORAS_NO_ENCONTRADO.getDescription(),
 					ApiResponseCode.ERROR_TRANSPORTADORAS_NO_ENCONTRADO.getHttpStatus());

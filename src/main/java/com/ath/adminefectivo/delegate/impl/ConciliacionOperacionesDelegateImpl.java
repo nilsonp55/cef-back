@@ -91,5 +91,14 @@ public class ConciliacionOperacionesDelegateImpl implements IConciliacionOperaci
 		
 		return conciliacionOperacionesService.consultaResumenConciliaciones(fechaConciliacion);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Boolean conciliacionAutomatica() {
+
+		return conciliacionOperacionesService.conciliacionAutomatica();
+	}
 
 }

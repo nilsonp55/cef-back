@@ -1,5 +1,6 @@
 package com.ath.adminefectivo.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -15,6 +16,7 @@ import com.ath.adminefectivo.dto.ResumenConciliacionesDTO;
 import com.ath.adminefectivo.dto.UpdateCertificadasFallidasDTO;
 import com.ath.adminefectivo.dto.UpdateProgramadasFallidasDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionesProgramadasNombresDTO;
+import com.ath.adminefectivo.dto.compuestos.OperacionespConciliadoDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
@@ -29,6 +31,7 @@ import com.ath.adminefectivo.repositories.IOperacionesProgramadasRepository;
 import com.ath.adminefectivo.service.IConciliacionOperacionesService;
 import com.ath.adminefectivo.service.IConciliacionServiciosService;
 import com.ath.adminefectivo.service.IDominioService;
+import com.ath.adminefectivo.service.IFondosService;
 import com.ath.adminefectivo.service.IOperacionesCertificadasService;
 import com.ath.adminefectivo.service.IOperacionesProgramadasService;
 import com.querydsl.core.types.Predicate;
@@ -53,6 +56,12 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 
 	@Autowired
 	IConciliacionServiciosService conciliacionServicesService;
+	
+	@Autowired
+	IFondosService fondoService;
+
+	List<OperacionesProgramadas> operacionesp;
+	List<OperacionesCertificadas> operacionesc;
 
 	/**
 	 * {@inheritDoc}
@@ -209,5 +218,119 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 				.numeroOperacionesPorEstadoyFecha(fechaConciliacion, dominioService.valorTextoDominio(
 						Constantes.DOMINIO_ESTADO_CONCILIACION, Dominios.ESTADO_CONCILIACION_NO_CONCILIADO)));
 		return resumenConciliaciones;
+	}
+	
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Boolean conciliacionAutomatica() {
+		operacionesp = operacionesProgramadasService.obtenerOperacionesProgramadas();
+		operacionesc = operacionesCertificadasService.obtenerOperacionesCertificaciones();
+		actualizaOperacionesProgramadas();
+		actualizaOperacionesCertificadas();
+		actualizarConciliacionServicios();
+		return true;
+	}
+
+	/**
+	 * Metod encargado de consultar las operaciones programadas y no conciliadas
+	 * @param operacionesProgramadas
+	 * @return Page<ProgramadasNoConciliadasDTO>
+	 * @author cesar.castano
+	 */
+	private Page<ProgramadasNoConciliadasDTO> consultarProgramasNoConciliadas(
+										List<OperacionesProgramadas> operacionesProgramadas) {
+		List<ProgramadasNoConciliadasDTO> listNoConciliadasDto = new ArrayList<>();
+		operacionesProgramadas.forEach(entity -> {
+						var programadasNoConciliadas = new ProgramadasNoConciliadasDTO();
+						programadasNoConciliadas = ProgramadasNoConciliadasDTO.CONVERTER_DTO.apply(entity);
+						programadasNoConciliadas.setBancoAVAL(fondoService.getEntidadFondo(
+								programadasNoConciliadas.getCodigoFondoTDV()).getBancoAVAL());
+						programadasNoConciliadas.setTdv(fondoService.getEntidadFondo(
+								programadasNoConciliadas.getCodigoFondoTDV()).getTdv());
+						listNoConciliadasDto.add(programadasNoConciliadas);
+						});
+		return new PageImpl<>(listNoConciliadasDto);
+	}
+
+	/**
+	 * Metod encargado de consultar las operaciones certificadas y no conciliadas
+	 * @param operacionesCertificadas
+	 * @return Page<CertificadasNoConciliadasDTO>
+	 * @author cesar.castano
+	 */
+	private Page<CertificadasNoConciliadasDTO> consultarCertificadasNoConciliadas(
+			List<OperacionesCertificadas> operacionesCertificadas) {
+		List<CertificadasNoConciliadasDTO> listNoConciliadasDto = new ArrayList<>();
+		operacionesCertificadas.forEach(entity -> {
+						var certificadasNoConciliadas = new CertificadasNoConciliadasDTO();
+						certificadasNoConciliadas = CertificadasNoConciliadasDTO.CONVERTER_DTO.apply(entity);
+						certificadasNoConciliadas.setBancoAVAL(fondoService.getEntidadFondo(
+								certificadasNoConciliadas.getCodigoFondoTDV()).getBancoAVAL());
+						certificadasNoConciliadas.setTdv(fondoService.getEntidadFondo(
+								certificadasNoConciliadas.getCodigoFondoTDV()).getTdv());
+						listNoConciliadasDto.add(certificadasNoConciliadas);
+						});
+		return new PageImpl<>(listNoConciliadasDto);
+	}
+
+	/**
+	 * Metodo encargado de actualizar la tabla de Conciliacion Servicios
+	 * @author cesar.castano
+	 */
+	private void actualizarConciliacionServicios() {
+		for (var i = 0; i < operacionesp.size(); i++) {
+			var parametros = new ParametrosConciliacionManualDTO();
+			var conciliado = new OperacionespConciliadoDTO();
+			conciliado.setCodigoFondoTDV(operacionesp.get(i).getCodigoFondoTDV());
+			conciliado.setCodigoPuntoDestino(operacionesp.get(i).getCodigoPuntoDestino());
+			conciliado.setCodigoPuntoOrigen(operacionesp.get(i).getCodigoPuntoOrigen());
+			conciliado.setEstadoConciliacion(operacionesp.get(i).getEstadoConciliacion());
+			conciliado.setFechaDestino(operacionesp.get(i).getFechaDestino());
+			conciliado.setFechaOrigen(operacionesp.get(i).getFechaOrigen());
+			conciliado.setTipoOperacion(operacionesp.get(i).getTipoOperacion());
+			conciliado.setValorTotal(operacionesp.get(i).getValorTotal());
+
+			OperacionesCertificadas operaciones = operacionesc.stream().filter(puntoT ->
+			puntoT.getCodigoFondoTDV().equals(conciliado.getCodigoFondoTDV()) &&
+			puntoT.getCodigoPuntoDestino().equals(conciliado.getCodigoPuntoDestino()) && 
+			puntoT.getCodigoPuntoOrigen().equals(conciliado.getCodigoPuntoOrigen()) &&
+			(puntoT.getFechaEjecucion().equals(conciliado.getFechaOrigen()) ||
+			 puntoT.getFechaEjecucion().equals(conciliado.getFechaDestino())) &&
+			puntoT.getValorTotal().equals(conciliado.getValorTotal()) &&
+			puntoT.getEstadoConciliacion().equals(conciliado.getEstadoConciliacion()) &&
+			puntoT.getTipoOperacion().equals(conciliado.getTipoOperacion()))
+					.findFirst().orElse(null);
+
+			parametros.setIdOperacion(operacionesp.get(i).getIdOperacion());
+			parametros.setIdCertificacion(operaciones.getIdCertificacion());
+			conciliacionServicesService.crearRegistroConciliacion(parametros);
+		}
+	}
+
+	/**
+	 * Metodo encargado de actualizar la tabla de Operaciones Programadas
+	 * @author cesar.castano
+	 */
+	private void actualizaOperacionesProgramadas() {
+		for (var i = 0; i < operacionesp.size(); i++) {
+			operacionesProgramadasService.actualizarEstadoEnProgramadas(operacionesp.get(i).getIdOperacion(),
+				dominioService.valorTextoDominio(Constantes.DOMINIO_ESTADO_CONCILIACION,
+						Dominios.ESTADO_CONCILIACION_CONCILIADO));
+		}
+	}
+
+	/**
+	 * Metodo encargado de actualizar la tabla de Operaciones Certificadas
+	 * @author cesar.castano
+	 */
+	private void actualizaOperacionesCertificadas() {
+		for (var i = 0; i < operacionesc.size(); i++) {
+			operacionesCertificadasService.actualizarEstadoEnCertificadas(operacionesc.get(i).getIdCertificacion(), 
+					dominioService.valorTextoDominio(Constantes.DOMINIO_ESTADO_CONCILIACION,
+							Dominios.ESTADO_CONCILIACION_CONCILIADO));
+		}
 	}
 }

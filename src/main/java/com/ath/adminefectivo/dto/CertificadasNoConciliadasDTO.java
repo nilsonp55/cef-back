@@ -86,6 +86,10 @@ public class CertificadasNoConciliadasDTO {
 	@JsonProperty("fechaModificacion")
 	private Date fechaModificacion;
 	
+	private String tdv;
+
+	private Integer bancoAVAL;
+	
 	/**
 	 * Funcion que convierte el archivo DTO ProgramadasNoConciliadasDTO a Entity OperacionesProgramadas
 	 * @author cesar.castano

@@ -2,6 +2,7 @@ package com.ath.adminefectivo.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,7 +37,7 @@ public class OficinasServiceImpl implements IOficinasService {
 	@Override
 	public Integer getCodigoPunto(Integer codigoOficina, Integer codigoBancoAVAL) {
 		var oficinaOpt = oficinasRepository.findByCodigoOficinaAndBancoAval(codigoOficina, codigoBancoAVAL);
-		if (oficinaOpt == null) {
+		if (Objects.isNull(oficinaOpt)) {
 			throw new AplicationException(ApiResponseCode.ERROR_OFICINAS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_OFICINAS_NO_ENCONTRADO.getDescription(),
 					ApiResponseCode.ERROR_OFICINAS_NO_ENCONTRADO.getHttpStatus());
@@ -52,7 +53,7 @@ public class OficinasServiceImpl implements IOficinasService {
 	public Boolean getCodigoPuntoOficina(Integer codigoPunto) {
 		Boolean estado = true;
 		var oficinaOpt = oficinasRepository.findByCodigoPunto(codigoPunto);
-		if (oficinaOpt == null) {
+		if (Objects.isNull(oficinaOpt)) {
 			estado = false;
 		}
 		return estado;
