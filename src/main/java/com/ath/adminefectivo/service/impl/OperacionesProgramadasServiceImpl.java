@@ -294,10 +294,6 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		List<OperacionIntradiaDTO> listadoOperacionesIntradia = operacionesProgramadasRepository.consultaOperacionesIntradia_Entrada(fechaInicio, fechaFin, "ENTRADA", "VENTA");
 		listadoOperacionesIntradia.addAll(operacionesProgramadasRepository.consultaOperacionesIntradia_Salida(fechaInicio, fechaFin, "SALIDA", "VENTA"));				
 		
-		listadoOperacionesIntradia.forEach(operacionIntradia ->{
-			System.out.println("////////////// "+ operacionIntradia.toString());
-		});
-		
 		return listadoOperacionesIntradia;
 
 	}
