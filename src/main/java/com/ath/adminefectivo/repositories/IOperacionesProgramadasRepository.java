@@ -139,16 +139,9 @@ public interface IOperacionesProgramadasRepository
 //			+ "and op.entradaSalida = :entradaSalida "
 //			+ "and op.fechaProgramacion between  :fechaInicio and :fechaFin "
 //			+ "group by fo.bancoAVAL, op.codigoPuntoOrigen, op.entradaSalida ")
-	@Query("select fo.bancoAVAL "
-			+ "from OperacionesProgramadas op, Fondos fo, Bancos ba "
-			+ "where fo.codigoPunto = op.codigoFondoTDV "
-			+ "and ba.codigoPunto = op.codigoPuntoOrigen "
-			+ "and ba.esAVAL = false "	
-			+ "and op.tipoOperacion in (?4) "
-			+ "and op.entradaSalida = ?3 "
-			+ "and op.fechaProgramacion between  ?1 and ?2 "
-			+ "group by fo.bancoAVAL, op.codigoPuntoOrigen ")
-	List<intradiaPruebaDTO> consultarOperacionesIntradiaEntrada(@Param("fechaInicio") Date fechaInicio, @Param("fechaFin") Date fechaFin, @Param("entradaSalida") String entradaSalida, @Param("tipoOperacion") String tipoOperacion);
+	@Query(nativeQuery = true)
+	List<OperacionIntradiaDTO> consultaOperacionesIntradia_Entrada(@Param("fechaInicio") Date fechaInicio, @Param("fechaFin") Date fechaFin, @Param("entradaSalida") String entradaSalida, @Param("tipoOperacion") String tipoOperacion);
+//	List<intradiaPruebaDTO> consultarOperacionesIntradiaEntrada(@Param("fechaInicio") Date fechaInicio, @Param("fechaFin") Date fechaFin, @Param("entradaSalida") String entradaSalida, @Param("tipoOperacion") String tipoOperacion);
 
 	/**
 	 * Retorna el id de un bancoAval yla operacion programada perteneciente al banco
@@ -170,16 +163,10 @@ public interface IOperacionesProgramadasRepository
 //			+ "and op.entradaSalida = :entradaSalida "
 //			+ "and op.fechaProgramacion between  :fechaInicio and :fechaFin "
 //			+ "group by fo.bancoAVAL, op.codigoPuntoDestino, op.entradaSalida  ")
-	@Query("select fo.bancoAVAL "
-			+ "from OperacionesProgramadas op, Fondos fo, Bancos ba "
-			+ "where fo.codigoPunto = op.codigoFondoTDV "
-			+ "and ba.codigoPunto = op.codigoPuntoDestino "
-			+ "and ba.esAVAL = false "
-			+ "and op.tipoOperacion in (?4) "
-			+ "and op.entradaSalida = ?3 "
-			+ "and op.fechaProgramacion between  ?1 and ?2 "
-			+ "group by fo.bancoAVAL, op.codigoPuntoOrigen  ")
-	List<intradiaPruebaDTO> consultarOperacionesIntradiaSalida(@Param("fechaInicio") Date fechaInicio, @Param("fechaFin") Date fechaFin, @Param("entradaSalida") String entradaSalida, @Param("tipoOperacion") String tipoOperacion);
+	@Query(nativeQuery = true)
+	List<OperacionIntradiaDTO> consultaOperacionesIntradia_Salida(@Param("fechaInicio") Date fechaInicio, @Param("fechaFin") Date fechaFin, @Param("entradaSalida") String entradaSalida, @Param("tipoOperacion") String tipoOperacion);
+	
+//	List<intradiaPruebaDTO> consultarOperacionesIntradiaSalida(@Param("fechaInicio") Date fechaInicio, @Param("fechaFin") Date fechaFin, @Param("entradaSalida") String entradaSalida, @Param("tipoOperacion") String tipoOperacion);
 	
 
 }

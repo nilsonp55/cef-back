@@ -57,7 +57,7 @@ public class DominioServiceImpl implements IDominioService {
 	public Double valorNumericoDominio(String dominio, String codigo) {
 		var dominioOpt = dominioRepository.findById(DominioPK.builder().dominio(dominio).codigo(codigo).build());
 
-		if (dominioOpt.isPresent() && Objects.nonNull(dominioOpt.get().getValorTexto())) {
+		if (dominioOpt.isPresent() && Objects.nonNull(dominioOpt.get().getValorNumero())) {
 			return dominioOpt.get().getValorNumero();
 		} else {
 			throw new AplicationException(ApiResponseCode.ERROR_DOMINIO_NOT_FOUND.getCode(),
