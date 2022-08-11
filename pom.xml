@@ -165,12 +165,5 @@
 			</plugin>
 		</plugins>
 	</build>
-	
-	<distributionManagement>
-	<repository>
-		 <id>maven-central</id>
-            <url>https://devops-nexus.ath.net/repository/centralizacion-efectivo-group/</url>
-	</repository>
-	</distributionManagement>
 
 </project>

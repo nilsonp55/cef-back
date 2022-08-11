@@ -7,15 +7,15 @@
   <servers>
       <server>
         <id>maven-central</id>
-        <username>prv_jmazo</username>
-        <password>Cambio2022*A</password>
+        <username>prv_mcaro</username>
+        <password>Ath2022.07</password>
       </server>
   </servers>
 
   <mirrors>
         <mirror>
             <id>maven-central</id>
-            <url>https://devops-nexus.ath.net/repository/centralizacion-efectivo-group/</url>
+            <url>https://devops-nexus.ath.net/repository/maven-central/</url>
             <mirrorOf>maven-central</mirrorOf>
         </mirror>
   </mirrors>
@@ -27,14 +27,14 @@
         <repository>
           <id>maven-central</id>
           <name>maven-central</name>
-          <url>https://devops-nexus.ath.net/repository/centralizacion-efectivo-group/</url>
+          <url>https://devops-nexus.ath.net/repository/maven-central/</url>
         </repository>
     
       </repositories>
       <pluginRepositories>
         <pluginRepository>
             <id>maven-central</id>
-            <url>https://devops-nexus.ath.net/repository/centralizacion-efectivo-group/</url>
+            <url>https://devops-nexus.ath.net/repository/maven-central/</url>
             <releases>
                 <enabled>true</enabled>
             </releases>

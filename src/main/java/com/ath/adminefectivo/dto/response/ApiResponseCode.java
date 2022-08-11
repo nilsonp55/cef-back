@@ -3,6 +3,7 @@ package com.ath.adminefectivo.dto.response;
 import org.springframework.http.HttpStatus;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
  * Clase en donde se centralizan los mensajes de error y mensajes de exito
@@ -373,58 +374,6 @@ public enum ApiResponseCode {
 	 * Error cajero ya existente
 	 */
 	ERROR_CAJERO_EXIST("E917", "Cajero ya existente.  ", HttpStatus.CONFLICT),
-	
-	/**
-	* Ocurrió un error al consultar cuentas puc
-	*/
-	ERROR_CUENTAS_PUC_NO_ENCONTRADO("E919", "Ocurrió un error al consultar la table de cuentas puc.  ", HttpStatus.CONFLICT),
-	
-	/**
-	 * Error puntos ya existentes
-	 */
-	ERROR_CUENTAS_PUC_EXIST("E920", "Punto ya existente.  ", HttpStatus.CONFLICT),
-	
-	/**
-	 * Error puntos ya existentes
-	 */
-	ERROR_CUENTAS_PUC_NO_EXIST("E921", "Punto no existente.  ", HttpStatus.CONFLICT),
-	
-	/**
-	* Ocurrió un error al consultar tipo cuentas
-	*/
-	ERROR_TIPOS_CUENTAS_NO_ENCONTRADO("E922", "Ocurrió un error al consultar la table de cuentas puc.  ", HttpStatus.CONFLICT),
-	
-	/**
-	 * Error tipos cuentas ya existentes
-	 */
-	ERROR_TIPOS_CUENTAS_EXIST("E923", "Tipos Cuentas ya existente.  ", HttpStatus.CONFLICT),
-	
-	/**
-	 * Error tipo cuentas ya existentes
-	 */
-	ERROR_TIPOS_CUENTAS_NO_EXIST("E924", "Tipos cuentas no existente.  ", HttpStatus.CONFLICT),
-	
-	/**
-	* Ocurrió un error al consultar conf contable
-	*/
-	ERROR_CONF_CONTABLE_ENTIDAD_NO_ENCONTRADO("E925", "Ocurrió un error al consultar la table de Conf Contable Entidad.  ", HttpStatus.CONFLICT),
-	
-	/**
-	 * Error conf contable ya existentes
-	 */
-	ERROR_CONF_CONTABLE_ENTIDAD_EXIST("E926", "Conf Contable Entidad ya existente.  ", HttpStatus.CONFLICT),
-	
-	/**
-	 * Error con contable
-	 */
-	ERROR_CONF_CONTABLE_ENTIDAD_NO_EXIST("E927", "Conf Contable Entidad no existente.  ", HttpStatus.CONFLICT),
-	/**
-	 * Código asociado a la respuesta
-	 */
-	/**
-	 * Error ID existentes
-	 */
-	ID_NOT_NULL("E924", "El ID no puede ser nulo.  ", HttpStatus.CONFLICT),
 
 
 	ERROR_GUARDANDO_ARCHIVO("E918", "Error guardando archivo", HttpStatus.CONFLICT),

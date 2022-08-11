@@ -2,8 +2,7 @@ package com.ath.adminefectivo.service;
 
 import java.util.List;
 
-import com.ath.adminefectivo.dto.TiposCuentasDTO;
-import com.querydsl.core.types.Predicate;
+import com.ath.adminefectivo.entities.TiposCuentas;
 
 /**
  * Servicios para gestionar los tipos de cuentas
@@ -16,33 +15,26 @@ public interface ITiposCuentasService {
 	 * Servicio para obtener los tiposCuentas totales
 	 * @return: TiposCuentas
 	 */
-	List<TiposCuentasDTO> getAllTiposCuentas(Predicate predicate);
+	List<TiposCuentas> getAllTiposCuentas();
 	
 	/**
 	 * Servicio para obtner el tiposCuentas por su identificador
 	 * @param idTipoCuentas
 	 * @return
 	 */
-	TiposCuentasDTO getTiposCuentasById(String idTipoCuentas);
+	TiposCuentas getTiposCuentasById(String idTipoCuentas);
 	
 	/**
 	 * Servicio para persistir un tiposCuentas
 	 * @param tiposCuentas
 	 * @return
 	 */
-	TiposCuentasDTO saveTiposCuentas(TiposCuentasDTO tiposCuentasDTO);
-
-	/**
-	 * Servicio para actualizar un tiposCuentas
-	 * @param tiposCuentas
-	 * @return
-	 */
-	TiposCuentasDTO putTiposCuentas(TiposCuentasDTO tiposCuentasDTO);
+	TiposCuentas saveTiposCuentasById(TiposCuentas tiposCuentas);
 
 	/**
 	 * Servicio para eliminar el tiposCuentas por su id
 	 * @param idTipoCuentas
 	 */
-	void deleteTiposCuentasById(TiposCuentasDTO tiposCuentasDTO);
+	void deleteTiposCuentasById(String idTipoCuentas);
 
 }

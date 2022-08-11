@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ConfContableEntidadesDTO {
 
-	private Long consecutivo;
+private Long consecutivo;
 	
 	private Bancos bancoAval;
 	

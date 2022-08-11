@@ -21,21 +21,21 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TiposCuentasDTO {
 
-	private String tipoCuenta;
-
+private String tipoCuenta;
+	
 	private String cuentaAuxiliar;
-
+	
 	private String tipoId;
-
+	
 	private String identificador;
-
+	
 	private String descripcion;
-
+	
 	private String referencia1;
-
+	
 	private String referencia2;
-
-
+	
+	
 	/**
 	 * Funcion que retorna la entidad recibiendo un DTO *
 	 */

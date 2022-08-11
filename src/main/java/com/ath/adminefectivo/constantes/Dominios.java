@@ -106,13 +106,12 @@ public final class Dominios {
 	public static final String ESTADO_VALIDACION_REGISTRO_ERRADO = "ERRADO";
 	public static final String ESTADO_VALIDACION_CORRECTO = "OK";
 	
-	
 	/**
 	 * Dominio de agrupamiento de los detalles de archivo
 	 */	
-	public static final String AGRUPADOR_DEFINICION_ARCHIVOS_PRELIMINARES = "PRELIMINAR";
+	public static final String AGRUPADOR_DEFINICION_ARCHIVOS_CERTIFICACION = "CERTI";
+	public static final String AGRUPADOR_DEFINICION_ARCHIVOS_PRELIMINARES = "IPP";
 	public static final String AGRUPADOR_DEFINICION_ARCHIVOS_DEFINITIVO = "DEFIN";
-	public static final String AGRUPADOR_DEFINICION_ARCHIVOS_CERTIFICACION = "CERTIFICACION";
 	
 	/**
 	 * Dominios estados de los procesos del dia

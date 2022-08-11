@@ -26,16 +26,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NamedQuery(name = "Bancos.findAll", query = "SELECT t FROM Bancos t")
 public class Bancos {
-	
-	@Column(name = "ES_AVAL")
-	private Boolean esAVAL;
-	
-	@Column(name = "CODIGO_COMPENSACION")
-	private Integer codigoCompensacion;
-	
+
 	@Id
 	@Column(name = "CODIGO_PUNTO")
 	private Integer codigoPunto;
+	
+	@Column(name = "CODIGO_COMPENSACION")
+	private Integer codigoCompensacion;
 	
 	@Column(name = "NUMERO_NIT")
 	private String numeroNit;
@@ -43,11 +40,11 @@ public class Bancos {
 	@Column(name = "ABREVIATURA")
 	private String abreviatura;
 	
-	@Column(name = "NOMBRE_BANCO")
-	private String nombreBanco;
+	@Column(name = "ES_AVAL")
+	private Boolean esAVAL;
 	
-	@ManyToOne
-	@JoinColumn(name = "COD_PUNTO")
-	private Puntos puntos;
+	//@ManyToOne
+	//@JoinColumn(name = "COD_PUNTO", nullable = false)
+	//private Puntos puntos;
 	
 }

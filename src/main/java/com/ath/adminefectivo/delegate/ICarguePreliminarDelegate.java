@@ -1,7 +1,10 @@
 package com.ath.adminefectivo.delegate;
 
+import java.util.List;
+
 import org.springframework.web.multipart.MultipartFile;
 
+import com.ath.adminefectivo.dto.ArchivosCargadosDTO;
 import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoDTO;
 
 /**
@@ -62,4 +65,13 @@ public interface ICarguePreliminarDelegate {
 	 */
 	ValidacionArchivoDTO procesarArchivo(String idMaestroDefinicion, String nombreArchivo);
 
+	/**
+	 * Consulta los archivos de carga definitiva almacenados en repositorio, por
+	 * estado del archivo
+	 * 
+	 * @param estado
+	 * @return List<ArchivosCargadosDTO>
+	 * @author CamiloBenavides
+	 */
+	List<ArchivosCargadosDTO> consultarArchivos(String estado, String agrupador);
 }

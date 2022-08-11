@@ -2,8 +2,7 @@ package com.ath.adminefectivo.service;
 
 import java.util.List;
 
-import com.ath.adminefectivo.dto.ConfContableEntidadesDTO;
-import com.querydsl.core.types.Predicate;
+import com.ath.adminefectivo.entities.ConfContableEntidades;
 
 /**
  * Servicios para gestionar los tipos de cuentas
@@ -16,34 +15,26 @@ public interface IConfContableEntidadesService {
 	 * Servicio para obtener los confContableEntidades totales
 	 * @return: ConfContableEntidades
 	 */
-	List<ConfContableEntidadesDTO> getAllConfContableEntidades(Predicate predicate);
+	List<ConfContableEntidades> getAllConfContableEntidades();
 	
 	/**
 	 * Servicio para obtner el confContableEntidades por su identificador
 	 * @param idContableEntidadesService
 	 * @return
 	 */
-	ConfContableEntidadesDTO getConfContableEntidadesById(Long idConfContableEntidades);
+	ConfContableEntidades getConfContableEntidadesById(String idContableEntidadesService);
 	
 	/**
 	 * Servicio para persistir un confContableEntidades
 	 * @param confContableEntidades
 	 * @return
 	 */
-	ConfContableEntidadesDTO saveConfContableEntidades(ConfContableEntidadesDTO confContableEntidadesDTO);
+	ConfContableEntidades saveConfContableEntidadesById(ConfContableEntidades confContableEntidades);
 
-	/**
-	 * Servicio para actualizar un confContableEntidades
-	 * @param confContableEntidades
-	 * @return
-	 */
-	ConfContableEntidadesDTO putConfContableEntidades(ConfContableEntidadesDTO confContableEntidadesDTO);
-
-	
 	/**
 	 * Servicio para eliminar el confContableEntidades por su id
 	 * @param idContableEntidadesService
 	 */
-	void deleteConfContableEntidadesById(Long idContableEntidadesService);
+	void deleteConfContableEntidadesById(String idContableEntidadesService);
 	
 }
