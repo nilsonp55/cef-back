@@ -74,7 +74,7 @@ public interface IOperacionesProgramadasService {
 	 * @author cesar.castano
 	 */
 	List<OperacionesProgramadas> obtenerOperacionesProgramadas();
-
+/**
 	 * Servicio encargado de procesar los archivos cargados a la entidad OperacionesProgramadas
 	 * @param archivoscargados
 	 * @return Boolean
@@ -90,7 +90,7 @@ public interface IOperacionesProgramadasService {
 	 * @return List<OperacionIntradiaDTO>
 	 * @author duvan.naranjo
 	 */
-	List<intradiaPruebaDTO> consultarOperacionesIntradia(Date fechaInicio, Date fechaFin);
+	List<OperacionIntradiaDTO> consultarOperacionesIntradia(Date fechaInicio, Date fechaFin);
 
 	/**
 	 * Servicio encargado de obtener la entidad OperacionesProgramadas para un

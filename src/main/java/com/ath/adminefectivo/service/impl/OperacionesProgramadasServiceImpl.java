@@ -31,6 +31,7 @@ import com.ath.adminefectivo.dto.PuntosDTO;
 import com.ath.adminefectivo.dto.RegistrosCargadosDTO;
 import com.ath.adminefectivo.dto.TransportadorasDTO;
 import com.ath.adminefectivo.dto.compuestos.DetalleOperacionesDTO;
+import com.ath.adminefectivo.dto.compuestos.OperacionIntradiaDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionesProgramadasNombresDTO;
 import com.ath.adminefectivo.dto.compuestos.intradiaPruebaDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
@@ -1770,12 +1771,6 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
 	@Override
 	public Boolean procesarArchivos(List<ArchivosCargados> archivosCargados) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<intradiaPruebaDTO> consultarOperacionesIntradia(Date fechaInicio, Date fechaFin) {
 		// TODO Auto-generated method stub
 		return null;
 	}

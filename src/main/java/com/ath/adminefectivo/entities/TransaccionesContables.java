@@ -39,7 +39,7 @@ public class TransaccionesContables {
 	
 	
 	@ManyToOne
-	@JoinColumn(name = "ID_OPERACION", nullable = false)
+	@JoinColumn(name = "ID_OPERACION", nullable = true)
 	private OperacionesProgramadas idOperacion;
 	
 	@Column(name = "ID_GENERICO")
@@ -64,7 +64,7 @@ public class TransaccionesContables {
 	@Column(name = "NATURALEZA")
 	private String naturaleza;
 	
-	@Column(name = "CUENTA_CONTABLE", nullable = false)
+	@Column(name = "CUENTA_CONTABLE", nullable = true)
 	private String cuentaContable;
 	
 	@Column(name = "CODIGO_MONEDA")

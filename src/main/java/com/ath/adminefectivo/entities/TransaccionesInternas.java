@@ -41,7 +41,7 @@ public class TransaccionesInternas {
 	private String consecutivoDia;
 	
 	@ManyToOne
-	@JoinColumn(name = "BANCO_AVAL", nullable = false)
+	@JoinColumn(name = "BANCO_AVAL", nullable = true)
 	private Bancos bancoAval;
 	
 	@Column(name = "FECHA")
