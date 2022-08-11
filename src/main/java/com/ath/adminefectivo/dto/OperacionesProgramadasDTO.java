@@ -4,8 +4,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
 
-import javax.persistence.Column;
-
 import com.ath.adminefectivo.entities.ConciliacionServicios;
 import com.ath.adminefectivo.entities.DetalleOperacionesProgramadas;
 import com.ath.adminefectivo.entities.OperacionesProgramadas;
@@ -32,7 +30,7 @@ public class OperacionesProgramadasDTO {
 	private Integer codigoFondoTDV;
 	
 	private String entradaSalida;
-	
+
 	private Integer codigoPuntoOrigen;
 	
 	private Integer codigoPuntoDestino;
@@ -63,6 +61,7 @@ public class OperacionesProgramadasDTO {
 	
 	private String tipoServicio;
 		
+	
 	private String usuarioCreacion;
 	
 	private String usuarioModificacion;

@@ -33,11 +33,11 @@ public class ProcesarCertificaciones {
 	 * @author cesar.castano
 	 */
 	@GetMapping(value = "${endpoints.Certificaciones.procesar}")
-	public ResponseEntity<ApiResponseADE<Boolean>> procesarCertificaciones(){
-//			@RequestParam("modeloArchivo") String modeloArchivo) {
+	public ResponseEntity<ApiResponseADE<Boolean>> procesarCertificaciones(
+			@RequestParam("modeloArchivo") String modeloArchivo,
+			@RequestParam("idArchivo") Long idArchivo) {
 
-//		Boolean respuesta = certificacionesDelegate.procesarCertificaciones(modeloArchivo);
-		Boolean respuesta = certificacionesDelegate.procesarCertificaciones();
+		Boolean respuesta = certificacionesDelegate.procesarCertificaciones(modeloArchivo, idArchivo);
 		
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(respuesta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())

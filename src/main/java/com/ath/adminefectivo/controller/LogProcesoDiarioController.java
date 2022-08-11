@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,8 +24,6 @@ import com.ath.adminefectivo.entities.LogProcesoDiario;
 import com.ath.adminefectivo.service.ILogProcesoDiarioService;
 import com.querydsl.core.types.Predicate;
 
-import org.springframework.http.MediaType;
-
 /**
  * Controlador responsable de exponer los metodos referentes a los procesos 
  * diarios en ejecucion
@@ -36,6 +35,7 @@ public class LogProcesoDiarioController {
 
 	@Autowired
 	ILogProcesoDiarioService procesoDiarioService;
+	
 	
 	/**
 	 * Servicio encargado de retornar la consulta de todos los procesos diarios
@@ -67,7 +67,7 @@ public class LogProcesoDiarioController {
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 								.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
-	
+
 	/**
 	 * Servicio encargado de persistir un log proceso diario
 	 * 
@@ -86,7 +86,7 @@ public class LogProcesoDiarioController {
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 								.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
-	
+
 	/**
 	 * Servicio encargado de actualizar un log proceso diario 
 	 * 
@@ -105,8 +105,8 @@ public class LogProcesoDiarioController {
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 								.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
-	
-	
+
+
 	/**
 	 * Servicio encargado de eliminar un log proceso diario por id
 	 * 
@@ -118,7 +118,7 @@ public class LogProcesoDiarioController {
 	public ResponseEntity<ApiResponseADE<Boolean>> eliminarLogProcesoDiario(@PathVariable("id") Long id) {
 
 		var logProcesoDairioEliminado = procesoDiarioService.eliminarLogProcesoDiario(id);
-		
+
 		return ResponseEntity.status(HttpStatus.OK).body(
 				new ApiResponseADE<>(logProcesoDairioEliminado, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));

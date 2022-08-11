@@ -3,7 +3,6 @@ package com.ath.adminefectivo.dto.response;
 import org.springframework.http.HttpStatus;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 
 /**
  * Clase en donde se centralizan los mensajes de error y mensajes de exito
@@ -268,52 +267,13 @@ public enum ApiResponseCode {
 	/**
 	 * Ocurrió un error al consultar la tabla de archivos cargados
 	 */
-	ERROR_ARCHIVOS_CARGADOS_NO_ENCONTRADO("E913", "No hay datos de archivos cargados", HttpStatus.PRECONDITION_FAILED),
+	ERROR_ARCHICOS_CARGADOS_NO_ENCONTRADO("E913", "No hay datos de archivos cargados", HttpStatus.PRECONDITION_FAILED),
 	
 	/**
 	 * Ocurrió un error al consultar el tipo de registro
 	 */
 	ERROR_TIPO_REGISTRO_NO_VALIDO("E926", "Tipo de registro no valido", HttpStatus.PRECONDITION_FAILED),
 	
-	/**
-	 * Ocurrió un error al consultar el Log Proceso Diario
-	 */
-	ERROR_LOGPROCESODIARIO_NO_ENCONTRADO("E927", "Log Proceso Diario no encontrado", HttpStatus.PRECONDITION_FAILED),
-	
-	/**
-	 * Ocurrió un error al consultar el Log Proceso Diario
-	 */
-	ERROR_LOGPROCESODIARIO_YA_EXISTE("E928", "Log Proceso Diario ya existe", HttpStatus.PRECONDITION_FAILED),
-	
-	/**
-	 * Ocurrió un error al consultar el Log Proceso Diario
-	 */
-	ERROR_CODIGO_PROCESO_NO_EXISTE("E929", "Codigo Proceso no existe en Log Proceso Diario", HttpStatus.PRECONDITION_FAILED),
-	
-	/**
-	 * Ocurrió un error al consultar el Log Proceso Diario
-	 */
-	ERROR_PROCESO_YA_CERRADO("E930", "Error, Proceso Diario Definitivo ya esta CERRADO", HttpStatus.PRECONDITION_FAILED),
-	
-	/**
-	 * Ocurrió un error al consultar el Log Proceso Diario
-	 */
-	ERROR_PROCESO_SIGUE_ABIERTO("E930", "Error, Proceso Diario Definitivo sigue ABIERTO", HttpStatus.PRECONDITION_FAILED),
-	
-	/**
-	 * Ocurrió un error al consultar el Log Proceso Diario
-	 */
-	ERROR_FALTAN_ARCHIVOS_POR_CARGAR("E931", "Error, Faltan archivos de Programacion Definitiva por cargar", HttpStatus.PRECONDITION_FAILED),
-	
-	/**
-	 * Ocurrió un error al consultar el Log Proceso Diario
-	 */
-	ERROR_HAY_ARCHIVOS_FALLIDOS_CARGUE_CERTIFICACION("E932", "Error, Hay archivos fallidos de cargue de certificacion", HttpStatus.PRECONDITION_FAILED),
-
-	/**
-	 * Ocurrió un error al consultar el Log Proceso Diario
-	 */
-	ERROR_NO_CUMPLE_MINIMO_ARCHIVOS_CARGADOS_CERTIFICACION("E933", "Error, No cumple con el minimo de archivos cargados certificacion", HttpStatus.PRECONDITION_FAILED),
 	
 	/**
 	 * No se puede realizar el cierre del dia por que no han finalizado todos los
@@ -412,7 +372,106 @@ public enum ApiResponseCode {
 	/**
 	 * Error cajero ya existente
 	 */
-	ERROR_CAJERO_EXIST("E917", "Cajero ya existente.  ", HttpStatus.CONFLICT);
+	ERROR_CAJERO_EXIST("E917", "Cajero ya existente.  ", HttpStatus.CONFLICT),
+	
+	/**
+	* Ocurrió un error al consultar cuentas puc
+	*/
+	ERROR_CUENTAS_PUC_NO_ENCONTRADO("E919", "Ocurrió un error al consultar la table de cuentas puc.  ", HttpStatus.CONFLICT),
+	
+	/**
+	 * Error puntos ya existentes
+	 */
+	ERROR_CUENTAS_PUC_EXIST("E920", "Punto ya existente.  ", HttpStatus.CONFLICT),
+	
+	/**
+	 * Error puntos ya existentes
+	 */
+	ERROR_CUENTAS_PUC_NO_EXIST("E921", "Punto no existente.  ", HttpStatus.CONFLICT),
+	
+	/**
+	* Ocurrió un error al consultar tipo cuentas
+	*/
+	ERROR_TIPOS_CUENTAS_NO_ENCONTRADO("E922", "Ocurrió un error al consultar la table de cuentas puc.  ", HttpStatus.CONFLICT),
+	
+	/**
+	 * Error tipos cuentas ya existentes
+	 */
+	ERROR_TIPOS_CUENTAS_EXIST("E923", "Tipos Cuentas ya existente.  ", HttpStatus.CONFLICT),
+	
+	/**
+	 * Error tipo cuentas ya existentes
+	 */
+	ERROR_TIPOS_CUENTAS_NO_EXIST("E924", "Tipos cuentas no existente.  ", HttpStatus.CONFLICT),
+	
+	/**
+	* Ocurrió un error al consultar conf contable
+	*/
+	ERROR_CONF_CONTABLE_ENTIDAD_NO_ENCONTRADO("E925", "Ocurrió un error al consultar la table de Conf Contable Entidad.  ", HttpStatus.CONFLICT),
+	
+	/**
+	 * Error conf contable ya existentes
+	 */
+	ERROR_CONF_CONTABLE_ENTIDAD_EXIST("E926", "Conf Contable Entidad ya existente.  ", HttpStatus.CONFLICT),
+	
+	/**
+	 * Error con contable
+	 */
+	ERROR_CONF_CONTABLE_ENTIDAD_NO_EXIST("E927", "Conf Contable Entidad no existente.  ", HttpStatus.CONFLICT),
+	/**
+	 * Código asociado a la respuesta
+	 */
+	/**
+	 * Error ID existentes
+	 */
+	ID_NOT_NULL("E924", "El ID no puede ser nulo.  ", HttpStatus.CONFLICT),
+
+
+	ERROR_GUARDANDO_ARCHIVO("E918", "Error guardando archivo", HttpStatus.CONFLICT),
+
+	ERROR_ACCEDIENDO_S3("E919", "Error accediendo al S3", HttpStatus.CONFLICT), 
+	/**
+	 * Ocurrió un error al consultar el Log Proceso Diario
+	 */
+	ERROR_LOGPROCESODIARIO_NO_ENCONTRADO("E927", "Log Proceso Diario no encontrado", HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * Ocurrió un error al consultar el Log Proceso Diario
+	 */
+	ERROR_LOGPROCESODIARIO_YA_EXISTE("E928", "Log Proceso Diario ya existe", HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * Ocurrió un error al consultar el Log Proceso Diario
+	 */
+	ERROR_CODIGO_PROCESO_NO_EXISTE("E929", "Codigo Proceso no existe en Log Proceso Diario", HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * Ocurrió un error al consultar el Log Proceso Diario
+	 */
+	ERROR_PROCESO_YA_CERRADO("E930", "Error, Proceso Diario Definitivo ya esta CERRADO", HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * Ocurrió un error al consultar el Log Proceso Diario
+	 */
+	ERROR_PROCESO_SIGUE_ABIERTO("E930", "Error, Proceso Diario Definitivo sigue ABIERTO", HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * Ocurrió un error al consultar el Log Proceso Diario
+	 */
+	ERROR_FALTAN_ARCHIVOS_POR_CARGAR("E931", "Error, Faltan archivos de Programacion Definitiva por cargar", HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * Ocurrió un error al consultar el Log Proceso Diario
+	 */
+	ERROR_HAY_ARCHIVOS_FALLIDOS_CARGUE_CERTIFICACION("E932", "Error, Hay archivos fallidos de cargue de certificacion", HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * Ocurrió un error al consultar el Log Proceso Diario
+	 */
+	ERROR_NO_CUMPLE_MINIMO_ARCHIVOS_CARGADOS_CERTIFICACION("E933", "Error, No cumple con el minimo de archivos cargados certificacion", HttpStatus.PRECONDITION_FAILED);
+
+	
+	
 	
 	
 	/**
@@ -454,6 +513,7 @@ public enum ApiResponseCode {
 		this.httpStatus = httpStatus;
 	}
 
+	
 	
 	
 }

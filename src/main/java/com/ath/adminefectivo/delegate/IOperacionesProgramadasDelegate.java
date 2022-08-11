@@ -1,5 +1,11 @@
 package com.ath.adminefectivo.delegate;
 
+import java.util.List;
+
+import com.ath.adminefectivo.dto.BancosDTO;
+import com.ath.adminefectivo.dto.OperacionesProgramadasDTO;
+import com.querydsl.core.types.Predicate;
+
 /**
  * Delegate encargado de orquestar la lógica de negocio referente a las operaciones Programadas
  * @author duvan.naranjo

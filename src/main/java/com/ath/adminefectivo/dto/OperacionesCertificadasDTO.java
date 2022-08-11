@@ -22,8 +22,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class OperacionesCertificadasDTO {
 
-	private Integer idCertificacion;
-	
 	private Integer codigoFondoTDV;
 	
 	private Integer codigoPuntoOrigen;
@@ -69,26 +67,8 @@ public class OperacionesCertificadasDTO {
 	public static final Function<OperacionesCertificadasDTO, OperacionesCertificadas> CONVERTER_ENTITY = (OperacionesCertificadasDTO t) -> {
 
 		var operacionesCertificadas = new OperacionesCertificadas();
-		operacionesCertificadas.setCodigoFondoTDV(t.getCodigoFondoTDV());
-		operacionesCertificadas.setCodigoPuntoDestino(t.getCodigoPuntoDestino());
-		operacionesCertificadas.setCodigoPuntoOrigen(t.getCodigoPuntoOrigen());
-		operacionesCertificadas.setCodigoServicioTdv(t.getCodigoServicioTdv());
-		operacionesCertificadas.setConciliable(t.getConciliable());
-		operacionesCertificadas.setEntradaSalida(t.getEntradaSalida());
-		operacionesCertificadas.setEstadoConciliacion(t.getEstadoConciliacion());
-		operacionesCertificadas.setFallidaOficina(t.getFallidaOficina());
-		operacionesCertificadas.setFechaCreacion(t.getFechaCreacion());
-		operacionesCertificadas.setFechaEjecucion(t.getFechaEjecucion());
-		operacionesCertificadas.setFechaModificacion(t.getFechaModificacion());
-		operacionesCertificadas.setIdArchivoCargado(t.getIdArchivoCargado());
-		operacionesCertificadas.setIdCertificacion(t.getIdCertificacion());
-		operacionesCertificadas.setTipoOperacion(t.getTipoOperacion());
-		operacionesCertificadas.setTipoServicio(t.getTipoServicio());
-		operacionesCertificadas.setUsuarioCreacion(t.getUsuarioCreacion());
-		operacionesCertificadas.setUsuarioModificacion(t.getUsuarioModificacion());
-		operacionesCertificadas.setValorFaltante(t.getValorFaltante());
-		operacionesCertificadas.setValorSobrante(t.getValorSobrante());
-		operacionesCertificadas.setValorTotal(t.getValorTotal());
+		UtilsObjects.copiarPropiedades(t, operacionesCertificadas);		
+
 		return operacionesCertificadas;
 	};
 	

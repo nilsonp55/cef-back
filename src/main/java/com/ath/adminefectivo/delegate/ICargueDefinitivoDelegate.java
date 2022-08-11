@@ -33,7 +33,7 @@ public interface ICargueDefinitivoDelegate {
 	 * @return Boolean
 	 * @author CamiloBenavides
 	 */
-	Boolean eliminarArchivo(Long idArchivo);
+	Boolean eliminarArchivo(String nombreArchivo,String idModeloArchivo);
 
 	/**
 	 * Metodo que realiza el cargue y las validaciones del un archivo, consultado
@@ -72,6 +72,6 @@ public interface ICargueDefinitivoDelegate {
 	 * @return List<ArchivosCargadosDTO>
 	 * @author CamiloBenavides
 	 */
-	List<ArchivosCargadosDTO> consultarArchivos(String estado);
+	List<ArchivosCargadosDTO> consultarArchivos(String estado, String agrupador);
 
 }

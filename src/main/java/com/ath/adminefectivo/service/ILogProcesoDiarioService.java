@@ -29,7 +29,7 @@ public interface ILogProcesoDiarioService {
 	 * @author CamiloBenavides
 	 */
 	boolean esDiaCompleto(Date diaCierre);
-
+	
 	/**
 	 * Servicio encargado de consultar log proceso diario por id
 	 * 
@@ -74,4 +74,5 @@ public interface ILogProcesoDiarioService {
 	 * @author cesar.castano
 	 */
 	LogProcesoDiario obtenerEntidadLogProcesoDiario(String codigoProceso);
+
 }

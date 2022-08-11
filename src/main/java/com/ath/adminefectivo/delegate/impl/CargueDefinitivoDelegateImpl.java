@@ -30,6 +30,8 @@ import com.ath.adminefectivo.service.IMaestroDefinicionArchivoService;
 import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.IValidacionArchivoService;
 
+import net.bytebuddy.agent.builder.AgentBuilder.InitializationStrategy.SelfInjection.Split;
+
 /**
  * Delegate responsable del manejo, consulta y persistencia de archivos
  *
@@ -80,12 +82,11 @@ public class CargueDefinitivoDelegateImpl implements ICargueDefinitivoDelegate {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Boolean eliminarArchivo(Long idArchivo) {
-		var archivoCargadoDTO = archivosCargadosService.eliminarArchivo(idArchivo);
-		if (Objects.nonNull(archivoCargadoDTO.getUrl())) {
-			return filesService.eliminarArchivo(archivoCargadoDTO.getUrl());
-		}
-		return false;
+	public Boolean eliminarArchivo(String nombreArchivo, String idMaestroArchivo) {
+		var maestrosDefinicion = maestroDefinicionArchivoService.consultarDefinicionArchivoById(idMaestroArchivo);
+		String carpeta = parametrosService.valorParametro("RUTA_ARCHIVOS_PENDIENTES");
+		String file = maestrosDefinicion.getUbicacion() + carpeta + nombreArchivo;
+		return filesService.eliminarArchivo(file);
 	}
 
 	/**
@@ -94,7 +95,6 @@ public class CargueDefinitivoDelegateImpl implements ICargueDefinitivoDelegate {
 	@Override
 	@Transactional
 	public ValidacionArchivoDTO procesarArchivo(String idMaestroDefinicion, String nombreArchivo) {
-		validarLogProcesoDiario();
 		this.validacionesAchivoCargado(idMaestroDefinicion, nombreArchivo);
 		archivosCargadosService.persistirDetalleArchivoCargado(validacionArchivo, false);
 
@@ -106,6 +106,7 @@ public class CargueDefinitivoDelegateImpl implements ICargueDefinitivoDelegate {
 		this.filesService.moverArchivos(this.validacionArchivo.getUrl(),
 				this.validacionArchivo.getMaestroDefinicion().getUbicacion().concat(urlDestino),
 				this.validacionArchivo.getNombreArchivo());
+
 		return ValidacionArchivoDTO.conversionRespuesta(this.validacionArchivo);
 	}
 
@@ -115,37 +116,51 @@ public class CargueDefinitivoDelegateImpl implements ICargueDefinitivoDelegate {
 	@Override
 	@Transactional
 	public ValidacionArchivoDTO validarArchivo(String idMaestroDefinicion, String nombreArchivo) {
-		validarLogProcesoDiario();
 		this.validacionesAchivoCargado(idMaestroDefinicion, nombreArchivo);
-		if (Objects.equals(this.validacionArchivo.getEstadoValidacion(), Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO)) {
-			archivosCargadosService.persistirDetalleArchivoCargado(validacionArchivo, true);
-		}else {
-			archivosCargadosService.persistirDetalleArchivoCargado(validacionArchivo, false);
-		}
 		return ValidacionArchivoDTO.conversionRespuesta(this.validacionArchivo);
 	}
 
 	@Override
-	public List<ArchivosCargadosDTO> consultarArchivos(String estado) {
-
+	public List<ArchivosCargadosDTO> consultarArchivos(String estado, String agrupador) {
 		List<ArchivosCargadosDTO> listArchivosCargados = new ArrayList<>();
 
 		var maestrosDefinicion = maestroDefinicionArchivoService
-				.consultarDefinicionArchivoByAgrupador(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_DEFINITIVO);
+				.consultarDefinicionArchivoByAgrupador(estado, agrupador);
 		var urlPendinetes = filesService.consultarPathArchivos(estado);
 
-		maestrosDefinicion.forEach(x -> {
-			var url = x.getUbicacion().concat(urlPendinetes);
-			var archivos = filesService.obtenerContenidoCarpeta(url);
-			listArchivosCargados.addAll(
-					organizarDataArchivos(archivos, estado, x.getIdMaestroDefinicionArchivo(), x.getMascaraArch()));
+		var maestro = maestrosDefinicion.get(0);
+		var url = maestro.getUbicacion().concat(urlPendinetes);
+		var archivos = filesService.obtenerContenidoCarpeta(url);
 
+		archivos.forEach(x -> {
+			String nombreArchivo;
+			nombreArchivo = x.split("_")[0];
+			maestrosDefinicion.forEach(y -> {
+				String nombreMaestro;
+				nombreMaestro = y.getMascaraArch().split("_")[0];
+				if (nombreArchivo.equals(nombreMaestro)) {
+					listArchivosCargados.add(
+							organizarDatosArchivo(x, estado, y.getIdMaestroDefinicionArchivo(), y.getMascaraArch()));
+				}
+			});
 		});
 
 		listArchivosCargados.sort(Comparator.comparing(ArchivosCargadosDTO::getFechaArchivo,
 				Comparator.nullsLast(Comparator.naturalOrder())));
 
 		return listArchivosCargados;
+	}
+
+	private ArchivosCargadosDTO organizarDatosArchivo(String archivo, String estado,
+			String idModeloArchivo, String mascaraArchivo) {
+		ArchivosCargadosDTO archivosCargadosDTO = new ArchivosCargadosDTO();
+
+		archivosCargadosDTO = ArchivosCargadosDTO.builder().estadoCargue(estado).nombreArchivo(archivo)
+				.idModeloArchivo(idModeloArchivo)
+				.fechaArchivo(validacionArchivoService.obtenerFechaArchivo(archivo, mascaraArchivo)).build();
+
+		return archivosCargadosDTO;
+
 	}
 
 	/**
@@ -269,5 +284,5 @@ public class CargueDefinitivoDelegateImpl implements ICargueDefinitivoDelegate {
 			}
 		}
 	}
-	
+
 }

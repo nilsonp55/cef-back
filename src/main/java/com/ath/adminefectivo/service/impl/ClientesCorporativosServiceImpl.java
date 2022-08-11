@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.dto.ClientesCorporativosDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
+import com.ath.adminefectivo.entities.ClientesCorporativos;
+import com.ath.adminefectivo.entities.SitiosClientes;
 import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.repositories.IClientesCorporativosRepository;
 import com.ath.adminefectivo.service.IClientesCorporativosService;
@@ -40,8 +42,7 @@ public class ClientesCorporativosServiceImpl implements IClientesCorporativosSer
 	 */
 	@Override
 	public Integer getCodigoCliente(Integer codigoBanco, String nit) {
-		var clientesCorporativos = clientesCorporativosRepository.findByCodigoBancoAvalAndIdentificacion(
-												codigoBanco, nit);
+		var clientesCorporativos = clientesCorporativosRepository.findByCodigoBancoAvalAndIdentificacion(codigoBanco, nit);
 		if (Objects.isNull(clientesCorporativos)) {
 			throw new AplicationException(ApiResponseCode.ERROR_CLIENTES_CORPORATIVOS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_CLIENTES_CORPORATIVOS_NO_ENCONTRADO.getDescription(),
@@ -60,7 +61,7 @@ public class ClientesCorporativosServiceImpl implements IClientesCorporativosSer
 		var sitiosCliente = sitiosClientesService.getCodigoPuntoSitio(codigoPunto);
 		if(!Objects.isNull(sitiosCliente)) {
 			var cliente = clientesCorporativosRepository.findByCodigoCliente(sitiosCliente.getCodigoCliente());
-			if(Objects.isNull(cliente)) {
+			if(cliente == null) {
 				estado = false;
 			}
 		}else {

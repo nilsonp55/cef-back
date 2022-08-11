@@ -59,9 +59,9 @@ public class CarguePreliminarController {
 	 * @author CamiloBenavides
 	 */
 	@DeleteMapping(value = "${endpoints.CarguePreliminar.eliminar}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponseADE<Boolean>> eliminarArchivo(@RequestParam("id") Long idArchivo) {
+	public ResponseEntity<ApiResponseADE<Boolean>> eliminarArchivo(@RequestParam("nombreArchivo") String nombreArchivo, @RequestParam("idMaestroArchivo") String idMaestroArchivo) {
 
-		var archivoPersistido = carguePreliminarDelegate.eliminarArchivo(idArchivo);
+		var archivoPersistido = carguePreliminarDelegate.eliminarArchivo(nombreArchivo, idMaestroArchivo);
 		return ResponseEntity.status(HttpStatus.OK).body(
 				new ApiResponseADE<>(archivoPersistido, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
@@ -79,7 +79,7 @@ public class CarguePreliminarController {
 	public ResponseEntity<ApiResponseADE<ValidacionArchivoDTO>> validarArchivo(
 			@RequestParam("idMaestroDefinicion") String idMaestroDefinicion,
 			@RequestParam("nombreArchivo") String nombreArchivo) {
-
+			
 		var respuesta = carguePreliminarDelegate.validarArchivo(idMaestroDefinicion, nombreArchivo);
 
 		return ResponseEntity.status(HttpStatus.OK)
@@ -118,6 +118,7 @@ public class CarguePreliminarController {
 	@GetMapping(value = "${endpoints.CarguePreliminar.detalle}")
 	public ResponseEntity<ApiResponseADE<ValidacionArchivoDTO>> consultarDetalleArchivo(
 			@RequestParam("idArchivoCargado") Long idArchivoCargado) {
+				System.out.println("Entro al controlador de Cargue prelinminar");
 		var respuesta = carguePreliminarDelegate.consultarDetalleArchivo(idArchivoCargado);
 
 		return ResponseEntity.status(HttpStatus.OK)

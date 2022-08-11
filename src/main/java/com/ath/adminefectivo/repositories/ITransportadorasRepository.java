@@ -20,7 +20,7 @@ public interface ITransportadorasRepository
 	 * @author cesar.castano
 	 */
 	Transportadoras findByNombreTransportadora(String nombreTransportadora);
-
+	
 	/**
 	 * Metodo encargado de realizar la consulta por codigo de la transportadora
 	 * 

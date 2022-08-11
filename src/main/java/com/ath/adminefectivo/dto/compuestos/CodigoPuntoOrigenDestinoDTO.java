@@ -19,8 +19,8 @@ import lombok.NoArgsConstructor;
 public class CodigoPuntoOrigenDestinoDTO {
 
 	private Integer codigoPuntoOrigen;
-	
+
 	private Integer codigoPuntoDestino;
-	
+
 	private OperacionesCertificadas certificadas;
 }

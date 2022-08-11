@@ -11,7 +11,6 @@ import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.ConciliacionServiciosHistoricoDTO;
 import com.ath.adminefectivo.entities.ConciliacionServicios;
-import com.ath.adminefectivo.entities.ConciliacionServiciosHistorico;
 import com.ath.adminefectivo.repositories.IConciliacionServiciosHistoricoRepository;
 import com.ath.adminefectivo.service.IConciliacionServiciosHistoricoService;
 import com.ath.adminefectivo.service.IDominioService;
@@ -29,7 +28,7 @@ public class ConciliacionServiciosHistoricoServiceImpl implements IConciliacionS
 	
 	@Autowired
 	IOperacionesProgramadasService operacionesProgramadasService;
-	
+
 	@Autowired
 	IOperacionesCertificadasService operacionesCertificadasService;
 	
@@ -46,22 +45,16 @@ public class ConciliacionServiciosHistoricoServiceImpl implements IConciliacionS
 			conciliacion.setFechaConciliacion(regConciliado.get().getFechaConciliacion());
 			conciliacion.setFechaCreacion(new java.util.Date());
 			conciliacion.setFechaModificacion(new java.util.Date());
+			conciliacion.setIdCertificacion(regConciliado.get().getIdCertificacion());
 			conciliacion.setIdConciliacion(regConciliado.get().getIdConciliacion());
-			var certificaciones = operacionesCertificadasService.
-									obtenerEntidadOperacionesCertificacionesporId(
-									regConciliado.get().getOperacionesCertificadas().getIdCertificacion());
-			conciliacion.setCertificaciones(certificaciones);
-			var operaciones = operacionesProgramadasService.
-									obtenerEntidadOperacionesProgramadasporId(
-									regConciliado.get().getOperacionesProgramadas().getIdOperacion());
-			conciliacion.setOperaciones(operaciones);
+			conciliacion.setIdOperacion(regConciliado.get().getIdOperacion());
 			conciliacion.setTipoConciliacion(dominioService.valorTextoDominio(
 										Constantes.DOMINIO_TIPOS_CONCILIACION, 
 										Dominios.TIPO_CONCILIACION_MANUAL));
 			conciliacion.setUsuarioCreacion("user1");
 			conciliacion.setUsuarioModificacion("user1");
-			ConciliacionServiciosHistorico entidadConciliacion = ConciliacionServiciosHistoricoDTO.CONVERTER_ENTITY.apply(conciliacion);
-			conciliacionServiciosHistoricoRepository.save(entidadConciliacion);
+			conciliacionServiciosHistoricoRepository
+					.save(ConciliacionServiciosHistoricoDTO.CONVERTER_ENTITY.apply(conciliacion));
 		} catch (Exception e) {
 			e.getMessage();
 		}

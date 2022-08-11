@@ -42,6 +42,16 @@ public interface IFilesDelegate {
 	DownloadDTO downloadFile(Long idArchivo);
 
 	/**
+	 * Metodo encargado de descargar un documento del repositorio
+	 * 
+	 * @param idArchivo
+	 * @return
+	 * @return DownloadDTO
+	 * @author CamiloBenavides
+	 */
+	DownloadDTO descargarArchivo(String nombreArchivo, String idMaestroArchivo);
+
+	/**
 	 * Metodo encargado de persistir en el repositorio como en la base de datos el
 	 * archivo cargado
 	 * 
@@ -61,5 +71,7 @@ public interface IFilesDelegate {
 	 * @author CamiloBenavides
 	 */
 	List<ArchivosCargadosDTO> consultarArchivos(String idMaestroDefinicion, String estado);
+
+
 
 }

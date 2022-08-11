@@ -30,9 +30,9 @@ import lombok.NoArgsConstructor;
 public class TransaccionesInternasDTO {
 
 	private Long idTransaccionesInternas;
-
-	private int consecutivoDia;
-
+	
+	private String consecutivoDia;
+	
 	private BancosDTO bancoAval;
 
 	private Date fecha;
@@ -44,9 +44,9 @@ public class TransaccionesInternasDTO {
 	private Integer tipoTransaccion;
 
 	private String codigoMoneda;
-
-	private Double valor;
-
+	
+	private Integer valor;
+	
 	private Integer tasaNoEje;
 
 	private Integer tasaEjeCop;
@@ -68,9 +68,9 @@ public class TransaccionesInternasDTO {
 	private Boolean esCambio;
 
 	private String tipoProceso;
-
-	private String estado;
-
+	
+	private int estado;
+	
 	private String tasaNegociacion;
 
 	private String medioPago;

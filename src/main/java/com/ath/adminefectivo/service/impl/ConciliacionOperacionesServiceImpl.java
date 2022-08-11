@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -61,7 +59,7 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	
 	@Autowired
 	IFondosService fondoService;
-	
+
 	List<OperacionesProgramadas> operacionesp;
 	List<OperacionesCertificadas> operacionesc;
 
@@ -89,15 +87,14 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	@Override
 	public Page<ProgramadasNoConciliadasDTO> getProgramadaNoConcilliada(Predicate predicate, Pageable page) {
 
-		List<OperacionesProgramadas> archivos = operacionesProgramadasRepository.findByEstadoConciliacion(
-				dominioService.valorTextoDominio(Constantes.DOMINIO_ESTADO_CONCILIACION, 
-												Dominios.ESTADO_CONCILIACION_NO_CONCILIADO));
+		var archivos = operacionesProgramadasRepository.findAll(predicate, page);
 		if (archivos.isEmpty()) {
 			throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getDescription(),
 					ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getHttpStatus());
 		}
-		return consultarProgramasNoConciliadas(archivos);
+		return new PageImpl<>(archivos.getContent().stream().map(ProgramadasNoConciliadasDTO.CONVERTER_DTO).toList(),
+				archivos.getPageable(), archivos.getTotalElements());
 	}
 
 	/**
@@ -106,15 +103,14 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	@Override
 	public Page<CertificadasNoConciliadasDTO> getCertificadaNoConciliada(Predicate predicate, Pageable page) {
 
-		List<OperacionesCertificadas> archivos = operacionesCertificadasRepository.findByEstadoConciliacion(
-				dominioService.valorTextoDominio(Constantes.DOMINIO_ESTADO_CONCILIACION, 
-												Dominios.ESTADO_CONCILIACION_NO_CONCILIADO));
+		var archivos = operacionesCertificadasRepository.findAll(predicate, page);
 		if (archivos.isEmpty()) {
 			throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getDescription(),
 					ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getHttpStatus());
 		}
-		return consultarCertificadasNoConciliadas(archivos);
+		return new PageImpl<>(archivos.getContent().stream().map(CertificadasNoConciliadasDTO.CONVERTER_DTO).toList(),
+				archivos.getPageable(), archivos.getTotalElements());
 	}
 
 	/**
@@ -169,7 +165,6 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	/**
 	 * {@inheritDoc}
 	 */
-	@Transactional
 	@Override
 	public Boolean conciliacionManual(List<ParametrosConciliacionManualDTO> conciliacionManualDTO) {
 
@@ -204,7 +199,8 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 				.numeroOperacionesPorEstadoyFecha(fechaConciliacion, dominioService.valorTextoDominio(
 						Constantes.DOMINIO_ESTADO_CONCILIACION, Dominios.ESTADO_CONCILIACION_NO_CONCILIADO)));
 		resumenConciliaciones.setConciliadas(conciliacionServicesService.
-				numeroOperacionesPorRangoFechas(fechaConciliacion));
+				numeroOperacionesPorRangoFechas(
+				fechaConciliacion));
 		resumenConciliaciones.setConciliacionesCanceladas(operacionesProgramadasService
 				.numeroOperacionesPorEstadoyFecha(fechaConciliacion, dominioService.valorTextoDominio(
 						Constantes.DOMINIO_ESTADO_CONCILIACION, Dominios.ESTADO_CONCILIACION_CANCELADA)));
@@ -224,6 +220,7 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 		return resumenConciliaciones;
 	}
 	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -257,7 +254,7 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 						});
 		return new PageImpl<>(listNoConciliadasDto);
 	}
-	
+
 	/**
 	 * Metod encargado de consultar las operaciones certificadas y no conciliadas
 	 * @param operacionesCertificadas
@@ -278,7 +275,7 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 						});
 		return new PageImpl<>(listNoConciliadasDto);
 	}
-	
+
 	/**
 	 * Metodo encargado de actualizar la tabla de Conciliacion Servicios
 	 * @author cesar.castano
@@ -295,7 +292,7 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 			conciliado.setFechaOrigen(operacionesp.get(i).getFechaOrigen());
 			conciliado.setTipoOperacion(operacionesp.get(i).getTipoOperacion());
 			conciliado.setValorTotal(operacionesp.get(i).getValorTotal());
-			
+
 			OperacionesCertificadas operaciones = operacionesc.stream().filter(puntoT ->
 			puntoT.getCodigoFondoTDV().equals(conciliado.getCodigoFondoTDV()) &&
 			puntoT.getCodigoPuntoDestino().equals(conciliado.getCodigoPuntoDestino()) && 
@@ -306,13 +303,13 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 			puntoT.getEstadoConciliacion().equals(conciliado.getEstadoConciliacion()) &&
 			puntoT.getTipoOperacion().equals(conciliado.getTipoOperacion()))
 					.findFirst().orElse(null);
-			
+
 			parametros.setIdOperacion(operacionesp.get(i).getIdOperacion());
 			parametros.setIdCertificacion(operaciones.getIdCertificacion());
 			conciliacionServicesService.crearRegistroConciliacion(parametros);
 		}
 	}
-	
+
 	/**
 	 * Metodo encargado de actualizar la tabla de Operaciones Programadas
 	 * @author cesar.castano
@@ -324,7 +321,7 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 						Dominios.ESTADO_CONCILIACION_CONCILIADO));
 		}
 	}
-	
+
 	/**
 	 * Metodo encargado de actualizar la tabla de Operaciones Certificadas
 	 * @author cesar.castano

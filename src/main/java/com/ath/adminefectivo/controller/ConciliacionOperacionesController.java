@@ -9,7 +9,6 @@ import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -179,22 +178,6 @@ public class ConciliacionOperacionesController {
 
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
-						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
-	}
-	
-	/**
-	 * Metodo encargado de hacer la conciliacion automatica de operaciones
-	 * @param fecha
-	 * @return Boolean
-	 * @author cesar.castano
-	 */
-	@GetMapping(value = "${endpoints.conciliacion.automatica}")
-	public ResponseEntity<ApiResponseADE<Boolean>> conciliacionAutomatica(){
-
-		Boolean respuesta = conciliacionOperacionesDelegate.conciliacionAutomatica();
-
-		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ApiResponseADE<>(respuesta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
 	

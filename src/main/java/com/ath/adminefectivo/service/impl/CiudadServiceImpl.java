@@ -62,7 +62,7 @@ public class CiudadServiceImpl implements ICiudadesService{
 			return ciudadOpt.getCodigoDANE();
 		}
 	}
-
+	
 	@Override
 	public CiudadesDTO getCiudadPorCodigoDane(String codigo) {
 		Ciudades ciudadOpt = ciudadesRepository.findByCodigoDANE(codigo);

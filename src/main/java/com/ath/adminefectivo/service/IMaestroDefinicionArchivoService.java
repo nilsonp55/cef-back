@@ -27,7 +27,7 @@ public interface IMaestroDefinicionArchivoService {
 	 * @return List<MaestrosDefinicionArchivoDTO>
 	 * @author CamiloBenavides
 	 */
-	List<MaestrosDefinicionArchivoDTO> consultarDefinicionArchivoByAgrupador(String agrupador);
+	List<MaestrosDefinicionArchivoDTO> consultarDefinicionArchivoByAgrupador(String estado, String agrupador);
 
 
 

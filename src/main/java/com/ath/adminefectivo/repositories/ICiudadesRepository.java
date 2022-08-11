@@ -27,7 +27,7 @@ public interface ICiudadesRepository extends JpaRepository<Ciudades, String>, Qu
 	 * @author cesar.castano
 	 */
 	public Ciudades findByNombreCiudad(String nombre);
-
+	
 	/**
 	 * Retorna el objeto Ciudades con base en el codigo enviado
 	 * 

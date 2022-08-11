@@ -38,6 +38,7 @@ public interface IOperacionesCertificadasService {
 	 * @author cesar.castano
 	 */
 	Boolean procesarArchivosCertificaciones(List<ArchivosCargados> archivosCargados);
+	
 
 	/**
 	 * Servicio encargado de obtener los registros de OperacionesCertirficadas 
@@ -46,12 +47,11 @@ public interface IOperacionesCertificadasService {
 	 * @author cesar.castano
 	 */
 	List<OperacionesCertificadas> obtenerOperacionesCertificaciones();
-	
+
 	/**
 	 * Servicio encargado de obtener la entidad de OperacionesCertirficadas por Id
 	 * @return OperacionesCertificadas
 	 * @author cesar.castano
 	 */
 	OperacionesCertificadas obtenerEntidadOperacionesCertificacionesporId(Integer idCertificacion);
-	
 }

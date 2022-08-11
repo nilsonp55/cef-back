@@ -60,14 +60,14 @@ public interface IOperacionesCertificadasRepository
 	 * @author cesar.castano
 	 */
 	OperacionesCertificadas findByCodigoServicioTdv(String codigoServicio);
-
+	
 	/**
 	 * Retorna una lista de operaciones certificadas segun el codigo del servicio tdv
 	 * @param codigoServicio
 	 * @return List<OperacionesCertificadas>
 	 * @author cesar.castano
 	 */
-	
+
 	List<OperacionesCertificadas> findByEstadoConciliacion(String estadoConciliacion);
 
 	/**
@@ -79,7 +79,7 @@ public interface IOperacionesCertificadasRepository
 	OperacionesCertificadas 
 	findByCodigoPuntoOrigenAndCodigoServicioTdvAndEntradaSalidaAndFechaEjecucion(Integer codigoPuntoOrigen,
 			String codigoServicio, String entradaSalida, Date fechaEjecucion);
-	
+
 	/**
 	 * Retorna la entidad operaciones certificadas segun el codigo del servicio tdv y codigo propio tdv
 	 * @param codigoServicio
@@ -106,4 +106,5 @@ public interface IOperacionesCertificadasRepository
 			+ "oc.estadoConciliacion = op.estadoConciliacion "
 			+ "WHERE op.estadoConciliacion = ?1")
 	List<OperacionesCertificadas> conciliacionAutomatica(String estadoConciliacion);
+
 }

@@ -78,7 +78,7 @@ public class OperacionesProgramadas {
 
 	@Column(name = "CODIGO_PUNTO_ORIGEN")
 	private Integer codigoPuntoOrigen;
-
+		
 	@Column(name = "CODIGO_PUNTO_DESTINO")
 	private Integer codigoPuntoDestino;
 
@@ -157,5 +157,5 @@ public class OperacionesProgramadas {
 
 	@Column(name = "CODIGO_MONEDA")
 	private String codigoMoneda;
-
+	
 }

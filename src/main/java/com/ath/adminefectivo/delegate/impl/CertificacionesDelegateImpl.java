@@ -31,7 +31,7 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 	
 	@Autowired
 	ILogProcesoDiarioService logProcesoDiarioService;
-	
+
 	@Autowired
 	IParametroService parametroService;
 	
@@ -39,24 +39,21 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 	 * {@inheritDoc}
 	 */
 	@Override
-//	public Boolean procesarCertificaciones(String modeloArchivo) {
-	public Boolean procesarCertificaciones() {
+	public Boolean procesarCertificaciones(String modeloArchivo, Long idArchivo) {
 		
-		List<ArchivosCargados> archivosCargados = archivosCargadosRepository
-				.findByIdModeloArchivoOrIdModeloArchivo(Dominios.TIPO_ARCHIVO_ITVCS, Dominios.TIPO_ARCHIVO_ISTRC);
+		List<ArchivosCargados> archivosCargados = archivosCargadosRepository.findByIdModeloArchivoAndIdArchivo(
+				modeloArchivo, idArchivo);
 		if(archivosCargados.isEmpty()) {
-				throw new NegocioException(ApiResponseCode.ERROR_ARCHIVOS_CARGADOS_NO_ENCONTRADO.getCode(),
-							ApiResponseCode.ERROR_ARCHIVOS_CARGADOS_NO_ENCONTRADO.getDescription(),
-							ApiResponseCode.ERROR_ARCHIVOS_CARGADOS_NO_ENCONTRADO.getHttpStatus());
+				throw new NegocioException(ApiResponseCode.ERROR_ARCHICOS_CARGADOS_NO_ENCONTRADO.getCode(),
+							ApiResponseCode.ERROR_ARCHICOS_CARGADOS_NO_ENCONTRADO.getDescription(),
+							ApiResponseCode.ERROR_ARCHICOS_CARGADOS_NO_ENCONTRADO.getHttpStatus());
 		}else {
-			validarLogProcesoDiario();
-//			validarExistenciaArchivos(archivosCargados);
 			operacionesCertificadasService.procesarArchivosCertificaciones(archivosCargados);
-			cambiarEstadoLogProcesoDiario();
 			return true;
 		}
 	}
 	
+
 	/**
 	 * Metodo encargado de validar el log de proceso diario
 	 * @author cesar.castano
@@ -76,7 +73,7 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 			}
 		}
 	}
-	
+
 	private void validarExistenciaArchivos(List<ArchivosCargados> archivosCargados) {
 		var fechaDia = new Date();
 		Integer valor = parametroService.valorParametroEntero(Constantes.NUMERO_MINIMO_ARCHIVOS_PARA_CIERRE);
@@ -96,7 +93,7 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 					ApiResponseCode.ERROR_NO_CUMPLE_MINIMO_ARCHIVOS_CARGADOS_CERTIFICACION.getHttpStatus());
 		}
 	}
-	
+
 	/**
 	 * Metodo encargado de cambiar el estado del log de proceso diario
 	 * @author cesar.castano

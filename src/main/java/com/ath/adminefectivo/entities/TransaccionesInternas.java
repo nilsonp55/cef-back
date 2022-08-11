@@ -38,10 +38,10 @@ public class TransaccionesInternas {
 	private Long idTransaccionesInternas;
 	
 	@Column(name = "CONSECUTIVO_DIA")
-	private int consecutivoDia;
+	private String consecutivoDia;
 	
 	@ManyToOne
-	@JoinColumn(name = "BANCO_AVAL", nullable = true)
+	@JoinColumn(name = "BANCO_AVAL", nullable = false)
 	private Bancos bancoAval;
 	
 	@Column(name = "FECHA")
@@ -61,7 +61,7 @@ public class TransaccionesInternas {
 	private String codigoMoneda;
 	
 	@Column(name = "VALOR")
-	private Double valor;
+	private Integer valor;
 	
 	@Column(name = "TASA_MO_EJE")
 	private Integer tasaNoEje;
@@ -101,7 +101,7 @@ public class TransaccionesInternas {
 	private String tipoProceso;
 	
 	@Column(name = "ESTADO")
-	private String estado;
+	private Integer estado;
 	
 	@Column(name = "TASA_NEGOCIACION")
 	private String tasaNegociacion;
