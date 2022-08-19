@@ -41,14 +41,14 @@ public class TransaccionesInternas {
 	private String consecutivoDia;
 	
 	@ManyToOne
-	@JoinColumn(name = "BANCO_AVAL", nullable = false)
+	@JoinColumn(name = "BANCO_AVAL", nullable = true)
 	private Bancos bancoAval;
 	
 	@Column(name = "FECHA")
 	private Date fecha;
 	
 	@ManyToOne
-	@JoinColumn(name = "ID_OPERACION", nullable = false)
+	@JoinColumn(name = "ID_OPERACION", nullable = true)
 	private OperacionesProgramadas idOperacion;
 	
 	@Column(name = "ID_GENERICO")
@@ -83,7 +83,7 @@ public class TransaccionesInternas {
 	private Integer tipoImpuesto;
 	
 	@ManyToOne
-	@JoinColumn(name = "CODIGO_TDV", nullable = false)
+	@JoinColumn(name = "CODIGO_TDV", nullable = true)
 	private Transportadoras codigoTdv;
 	
 	@ManyToOne
@@ -91,7 +91,7 @@ public class TransaccionesInternas {
 	private Puntos codigoPuntoBancoExt;
 	
 	@ManyToOne
-	@JoinColumn(name = "CODIGO_CIUDAD", nullable = false)
+	@JoinColumn(name = "CODIGO_CIUDAD", nullable = true)
 	private Ciudades ciudad;
 
 	@Column(name = "ES_CAMBIO")

@@ -30,6 +30,7 @@ import com.ath.adminefectivo.dto.PuntosDTO;
 import com.ath.adminefectivo.dto.RegistrosCargadosDTO;
 import com.ath.adminefectivo.dto.TransportadorasDTO;
 import com.ath.adminefectivo.dto.compuestos.DetalleOperacionesDTO;
+import com.ath.adminefectivo.dto.compuestos.OperacionIntradiaDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionesProgramadasNombresDTO;
 import com.ath.adminefectivo.dto.compuestos.intradiaPruebaDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
@@ -278,6 +279,18 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 					.add(OperacionesProgramadasDTO.CONVERTER_DTO.apply(operacionProgramada)));
 		}
 		return listadoOperacionesProgramadasDTO;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<OperacionIntradiaDTO> consultarOperacionesIntradia(Date fechaInicio, Date fechaFin) {
+		List<OperacionIntradiaDTO> listadoOperacionesIntradia = operacionesProgramadasRepository.consultaOperacionesIntradia_Entrada(fechaInicio, fechaFin, "ENTRADA", "VENTA");
+		listadoOperacionesIntradia.addAll(operacionesProgramadasRepository.consultaOperacionesIntradia_Salida(fechaInicio, fechaFin, "SALIDA", "VENTA"));				
+		
+		return listadoOperacionesIntradia;
+
 	}
 
 	/**
@@ -1774,12 +1787,6 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
 	@Override
 	public Boolean procesarArchivos(List<ArchivosCargados> archivosCargados) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<intradiaPruebaDTO> consultarOperacionesIntradia(Date fechaInicio, Date fechaFin) {
 		// TODO Auto-generated method stub
 		return null;
 	}
