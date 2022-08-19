@@ -35,6 +35,7 @@ import com.ath.adminefectivo.dto.compuestos.OperacionesProgramadasNombresDTO;
 import com.ath.adminefectivo.dto.compuestos.intradiaPruebaDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.ArchivosCargados;
+import com.ath.adminefectivo.entities.DetalleOperacionesProgramadas;
 import com.ath.adminefectivo.entities.OperacionesProgramadas;
 import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.exception.NegocioException;
@@ -273,11 +274,14 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 			listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaProgramacionBetween("VENTA", fechaInicio,
 					fechaFin));
 		}
+		
+		
 		List<OperacionesProgramadasDTO> listadoOperacionesProgramadasDTO = new ArrayList<>();
 		if (!listaOperacionesProgramadas.isEmpty()) {
 			listaOperacionesProgramadas.forEach(operacionProgramada -> listadoOperacionesProgramadasDTO
 					.add(OperacionesProgramadasDTO.CONVERTER_DTO.apply(operacionProgramada)));
 		}
+
 		return listadoOperacionesProgramadasDTO;
 	}
 	

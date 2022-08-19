@@ -1,6 +1,7 @@
 package com.ath.adminefectivo.dto;
 
 import java.util.Date;
+import java.util.Objects;
 import java.util.function.Function;
 
 import com.ath.adminefectivo.entities.Bancos;
@@ -32,11 +33,11 @@ public class TransaccionesInternasDTO {
 	
 	private String consecutivoDia;
 	
-	private Bancos bancoAval;
+	private BancosDTO bancoAval;
 
 	private Date fecha;
 
-	private OperacionesProgramadas idOperacion;
+	private OperacionesProgramadasDTO idOperacion;
 
 	private Integer idGenerico;
 
@@ -50,7 +51,7 @@ public class TransaccionesInternasDTO {
 
 	private Integer tasaEjeCop;
 
-	private Puntos codigoPunto;
+	private PuntosDTO codigoPunto;
 
 	private String tipoOperacion;
 
@@ -58,17 +59,17 @@ public class TransaccionesInternasDTO {
 
 	private Integer tipoImpuesto;
 
-	private Transportadoras codigoTdv;
+	private TransportadorasDTO codigoTdv;
 
-	private Puntos codigoPuntoBancoExt;
+	private PuntosDTO codigoPuntoBancoExt;
 
-	private Ciudades ciudad;
+	private CiudadesDTO ciudad;
 
 	private Boolean esCambio;
 
 	private String tipoProceso;
 	
-	private Integer estado;
+	private int estado;
 	
 	private String tasaNegociacion;
 
@@ -77,11 +78,8 @@ public class TransaccionesInternasDTO {
 	/**
 	 * Funcion que retorna la entidad recibiendo un DTO *
 	 */
-	public static final Function<TransaccionesInternasDTO, TransaccionesInternas> CONVERTER_ENTITY = (TransaccionesInternasDTO t) -> {
-		TransaccionesInternas transaccionesInternas = new TransaccionesInternas();
-		UtilsObjects.copiarPropiedades(t, transaccionesInternas);
-		return transaccionesInternas;
-	};
+	public static final Function<TransaccionesInternasDTO, TransaccionesInternas> CONVERTER_ENTITY = (
+			TransaccionesInternasDTO t) -> {
 
 		var transaccionesInternas = new TransaccionesInternas();
 
