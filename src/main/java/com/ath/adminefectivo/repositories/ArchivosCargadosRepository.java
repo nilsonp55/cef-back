@@ -71,4 +71,16 @@ public interface ArchivosCargadosRepository
             + "select idMaestroDefinicionArchivo from MaestroDefinicionArchivo "
             + "where agrupador = ?1)") 
 	Page<ArchivosCargados> getArchivosByAgrupador(String agrupador, Pageable page);
+	
+	/**
+	 * Metodo encargado de realizar la consulta de los registros cargados sin procesar de hoy
+	 * @param agrupador
+	 * @return List<ArchivosCargados>
+	 * @author duvan.naranjo
+	 */
+	@Query("select ac from ArchivosCargados ac "
+		 + "where estadoCargue ='OK' and cast(fechaArchivo as date) = cast(current_date as date) and "
+		 + "idModeloArchivo IN (select idMaestroDefinicionArchivo from MaestroDefinicionArchivo "
+		 + "where agrupador = ?1)")
+	List<ArchivosCargados> getRegistrosCargadosSinProcesarDeHoy(String agrupador);
 }

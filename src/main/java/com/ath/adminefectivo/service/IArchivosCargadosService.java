@@ -116,4 +116,12 @@ public interface IArchivosCargadosService {
 	 */
 	Page<ArchivosCargadosDTO> getAllByAgrupador(String agrupador, Pageable page);
 
+	/**
+	 * Metodo encagado de listar los archivos cargados sin procesar de definitiva
+	 * 
+	 * @param archivosCargadosDTO
+	 * @return 
+	 * @author duvan.naranjo
+	 */
+	List<ArchivosCargados> listadoArchivosCargadosSinProcesarDefinitiva(String agrupador);
 }

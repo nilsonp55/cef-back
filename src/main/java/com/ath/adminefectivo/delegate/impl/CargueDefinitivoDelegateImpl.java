@@ -231,7 +231,7 @@ public class CargueDefinitivoDelegateImpl implements ICargueDefinitivoDelegate {
 		// Validaciones de arcihvo
 		String delimitador = lecturaArchivoService.obtenerDelimitadorArchivo(maestroDefinicion);
 		List<String[]> contenido = lecturaArchivoService.leerArchivo(dowloadFile.getFile(), delimitador);
-		Date fechaActual = parametroService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
+		Date fechaActual = parametrosService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
 		var fechaArchivo = validacionArchivoService.validarFechaArchivo(nombreArchivo,
 				maestroDefinicion.getMascaraArch(), fechaActual);
 
