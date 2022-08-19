@@ -3,6 +3,7 @@ package com.ath.adminefectivo.dto;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 
 import com.ath.adminefectivo.dto.compuestos.DetalleOperacionesDTO;
@@ -124,7 +125,7 @@ public class OperacionesProgramadasDTO {
 		operacionesProgramadas.setUsuarioModificacion(t.getUsuarioModificacion());
 		operacionesProgramadas.setValorTotal(t.getValorTotal());
 
-		if(!t.getDetalleOperacionesProgramadasDTO().isEmpty()) {
+		if(!Objects.isNull(t.getDetalleOperacionesProgramadasDTO())) {
 			
 			List<DetalleOperacionesProgramadas> listDetalleOperaciones = new ArrayList<>();
 			

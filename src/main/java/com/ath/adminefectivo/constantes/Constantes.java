@@ -38,6 +38,7 @@ public final class Constantes {
 	public static final String SUCURSAL = "SUC";
 	public static final Integer HORA_TIPO_SERVICIO_PROGRAMADA = 18;
 	public static final String NUMERO_MINIMO_ARCHIVOS_PARA_CIERRE = "NUMERO_MINIMO_ARCHIVOS";
+	public static final String ESTADO_MAESTRO_DEFINICION_ACTIVO = "ACTIVO";
 
 
 	/**

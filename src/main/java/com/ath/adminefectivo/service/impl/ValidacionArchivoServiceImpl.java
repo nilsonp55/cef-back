@@ -98,7 +98,12 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 				if (!erroresCampos.isEmpty()) {
 					lineaDTO.setCampos(erroresCampos);
 					lineaDTO.setEstado(Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO);
-
+					System.out.println("-------->");
+					System.out.println(validacionArchivo.getNumeroErrores());
+					System.out.println(erroresCampos.size());
+					System.out.println("******************");
+					validacionArchivo.setNumeroErrores(validacionArchivo.getNumeroErrores()+(erroresCampos.size()));
+					System.out.println(validacionArchivo.getNumeroErrores());
 				} else {
 					lineaDTO.setEstado(Dominios.ESTADO_VALIDACION_CORRECTO);
 				}
