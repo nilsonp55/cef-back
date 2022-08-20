@@ -53,12 +53,12 @@ public class ContabilidadDelegateImpl implements IContabilidadDelegate {
 		if(!operacionesProgramadas.isEmpty()) {
 			int resultado = contabilidadService.generarContabilidad(tipoContabilidad, operacionesProgramadas);
 			
-//			List<OperacionIntradiaDTO> listadoOperacionesProgramadasIntradia = operacionesProgramadasService.consultarOperacionesIntradia(fechaInicio, fechaFin);	
-//			resultado = contabilidadService.generarContabilidadIntradia(tipoContabilidad, listadoOperacionesProgramadasIntradia, resultado);
+			List<OperacionIntradiaDTO> listadoOperacionesProgramadasIntradia = operacionesProgramadasService.consultarOperacionesIntradia(fechaInicio, fechaFin);	
+			resultado = contabilidadService.generarContabilidadIntradia(tipoContabilidad, listadoOperacionesProgramadasIntradia, resultado);
 			
 //			List<TransaccionesInternasDTO> listadoTransaccionesInternas = transaccionesInternas.getTransaccionesInternasByFechas(fechaInicio, fechaFin);
 			
-			resultado = contabilidadService.generarMovimientosContables(f1, f2, tipoContabilidad, Dominios.ESTADO_CONTABILIDAD_GENERADO,"yyyy-MM-dd" );
+//			resultado = contabilidadService.generarMovimientosContables(tipoContabilidad, listadoTransaccionesInternas);
 		
 			
 			
