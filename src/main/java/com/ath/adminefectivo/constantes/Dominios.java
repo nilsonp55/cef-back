@@ -169,12 +169,13 @@ public final class Dominios {
 	 */
 	public static final String MEDIOS_PAGO_ABONO = "ABONO";
 	public static final String MEDIOS_PAGO_DESCUENTO = "DESCUENTO";
+	public static final String  MEDIOS_PAGO_CARGO_A_CUENTA = "CARGO_A_CUENTA";
+
 	
 	/**
 	 * Dominios estados de Contabilidad
 	 */	
 	public static final int ESTADO_CONTABILIDAD_GENERADO = 1;
 	public static final int ESTADO_CONTABILIDAD_ERROR_CONTABLE = 2;
-	
 	
 }

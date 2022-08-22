@@ -25,9 +25,9 @@ public class OperacionIntradiaDTO implements Serializable {
 
 	private Integer bancoAVAL;
 	
-	private Integer codigoPuntoOrigen;
-//	
-//	private String entradaSalida;
+	private Integer codigoPunto;
+	
+	private String entradaSalida;
 	
 //	private BancosDTO banco;
 //	
