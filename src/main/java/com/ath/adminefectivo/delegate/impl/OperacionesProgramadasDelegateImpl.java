@@ -89,13 +89,15 @@ public class OperacionesProgramadasDelegateImpl implements IOperacionesProgramad
 		List<ArchivosCargados> listadoArchivosCargados = archivosCargadosService
 									.listadoArchivosCargadosSinProcesarDefinitiva(agrupador);
 		if (agrupador.equals(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_PRELIMINARES) &&
-			(listadoArchivosCargados.size() == 0 || listadoArchivosCargados.size() > 1)){
+			(listadoArchivosCargados.size() == 0 || 
+			listadoArchivosCargados.size() > Constantes.NUMERO_ARCHIVOS_CARGADOS_PRELIMINAR)){
 			throw new NegocioException(ApiResponseCode.ERROR_FALTAN_ARCHIVOS_POR_CARGAR.getCode(),
 					ApiResponseCode.ERROR_FALTAN_ARCHIVOS_POR_CARGAR.getDescription(),
 					ApiResponseCode.ERROR_FALTAN_ARCHIVOS_POR_CARGAR.getHttpStatus());
 		}
 		if (agrupador.equals(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_DEFINITIVO) && 
-			(listadoArchivosCargados.size() == 0 || listadoArchivosCargados.size() != 2)) {
+			(listadoArchivosCargados.size() == 0 || 
+			listadoArchivosCargados.size() != Constantes.NUMERO_ARCHIVOS_CARGADOS_DEFINITIVA)) {
 			throw new NegocioException(ApiResponseCode.ERROR_FALTAN_ARCHIVOS_POR_CARGAR.getCode(),
 						ApiResponseCode.ERROR_FALTAN_ARCHIVOS_POR_CARGAR.getDescription(),
 						ApiResponseCode.ERROR_FALTAN_ARCHIVOS_POR_CARGAR.getHttpStatus());
