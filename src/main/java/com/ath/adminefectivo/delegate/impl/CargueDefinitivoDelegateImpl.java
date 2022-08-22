@@ -95,6 +95,7 @@ public class CargueDefinitivoDelegateImpl implements ICargueDefinitivoDelegate {
 	@Override
 	@Transactional
 	public ValidacionArchivoDTO procesarArchivo(String idMaestroDefinicion, String nombreArchivo) {
+		validarLogProcesoDiario();
 		this.validacionesAchivoCargado(idMaestroDefinicion, nombreArchivo);
 		archivosCargadosService.persistirDetalleArchivoCargado(validacionArchivo, false);
 
@@ -116,6 +117,7 @@ public class CargueDefinitivoDelegateImpl implements ICargueDefinitivoDelegate {
 	@Override
 	@Transactional
 	public ValidacionArchivoDTO validarArchivo(String idMaestroDefinicion, String nombreArchivo) {
+		validarLogProcesoDiario();
 		this.validacionesAchivoCargado(idMaestroDefinicion, nombreArchivo);
 		return ValidacionArchivoDTO.conversionRespuesta(this.validacionArchivo);
 	}
