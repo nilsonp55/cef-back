@@ -161,7 +161,6 @@ public class FilesDelegateImpl implements IFilesDelegate {
 
 		archivosCargados.sort(Comparator.comparing(ArchivosCargadosDTO::getFechaArchivo,
 				Comparator.nullsLast(Comparator.naturalOrder())));
-				System.out.println("***********"+archivosCargados);
 		return archivosCargados;
 
 	}

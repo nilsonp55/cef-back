@@ -75,5 +75,12 @@ public class TransaccionesInternasServiceImpl implements ITransaccionesInternasS
 		return listadoTransaccionesInternasDTO;
 	}
 
+	@Override
+	public boolean generarMovimientosContables(String fechaInicio, String fechaFin, String tipoContabilidad,
+			int estadoContabilidadGenerado, String formatoFecha) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 
 }

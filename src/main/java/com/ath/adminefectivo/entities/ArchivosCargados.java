@@ -59,7 +59,6 @@ public class ArchivosCargados {
 	@Column(name = "FECHA_ARCHIVO")
 	private Date fechaArchivo;	
 	
-	
 	@Column(name = "NUMERO_REGISTROS")
 	private Integer numeroRegistros;	
 	

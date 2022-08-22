@@ -98,7 +98,12 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 				if (!erroresCampos.isEmpty()) {
 					lineaDTO.setCampos(erroresCampos);
 					lineaDTO.setEstado(Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO);
-
+					System.out.println("-------->");
+					System.out.println(validacionArchivo.getNumeroErrores());
+					System.out.println(erroresCampos.size());
+					System.out.println("******************");
+					validacionArchivo.setNumeroErrores(validacionArchivo.getNumeroErrores()+(erroresCampos.size()));
+					System.out.println(validacionArchivo.getNumeroErrores());
 				} else {
 					lineaDTO.setEstado(Dominios.ESTADO_VALIDACION_CORRECTO);
 				}
@@ -259,35 +264,25 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 					.split(Constantes.REGEX_PUNTO);
 
 			String[] arregloMascara = mascaraArchivo.split(Constantes.SEPARADOR_FECHA_ARCHIVO);
-
-			if (!nombreArchivo.equals("BSBOGVIL220610.txt")) {
 				if (arregloMascara[1].length() != arregloNombre[1].length()) {
 					throw new NegocioException(ApiResponseCode.ERROR_FECHA_NO_VALIDA.getCode(),
 						ApiResponseCode.ERROR_FECHA_NO_VALIDA.getDescription(),
 						ApiResponseCode.ERROR_FECHA_NO_VALIDA.getHttpStatus());
-				}
 			}
 
-//			fechaArchivo = new SimpleDateFormat(arregloMascara[1]).parse(arregloNombre[1]);
-			fechaArchivo = new Date();
-/*		} catch (ParseException | NullPointerException | ArrayIndexOutOfBoundsException e) {
+			fechaArchivo = new SimpleDateFormat(arregloMascara[1]).parse(arregloNombre[1]);
+//			fechaArchivo = new Date();
+		} catch (ParseException | NullPointerException | ArrayIndexOutOfBoundsException e) {
 			throw new NegocioException(ApiResponseCode.ERROR_FECHA_NO_VALIDA.getCode(),
 					ApiResponseCode.ERROR_FECHA_NO_VALIDA.getDescription(),
 					ApiResponseCode.ERROR_FECHA_NO_VALIDA.getHttpStatus());
-		}*/
-		} catch (NullPointerException | ArrayIndexOutOfBoundsException e) {
-			throw new NegocioException(ApiResponseCode.ERROR_FECHA_NO_VALIDA.getCode(),
-					ApiResponseCode.ERROR_FECHA_NO_VALIDA.getDescription(),
-					ApiResponseCode.ERROR_FECHA_NO_VALIDA.getHttpStatus());
-		}
-			
+		}		
 		if (Objects.nonNull(fechaComparacion) && !DateUtils.isSameDay(fechaComparacion, fechaArchivo)) {
 			throw new NegocioException(ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getCode(),
 					ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getDescription(),
 					ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getHttpStatus());
 
 		}
-
 		return fechaArchivo;
 	}
 

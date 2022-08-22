@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.HttpStatus;
@@ -101,9 +102,12 @@ public class ArchivosCargadosController {
 	 */
 	@GetMapping(value = "${endpoints.ArchivosCargados.consultarPorAgrupador}")
 	public ResponseEntity<ApiResponseADE<Page<ArchivosCargadosDTO>>> getAllbyAgrupador(
-			@RequestParam("agrupador") String agrupador, Pageable page) {
+			@RequestParam("agrupador") String agrupador,
+			@RequestParam("page") int page,
+			@RequestParam("size") int size) {
 
-		Page<ArchivosCargadosDTO> consulta = archivosCargadosDelegate.getAllByAgrupador(agrupador, page);
+		Pageable pr = PageRequest.of(page, size);
+		Page<ArchivosCargadosDTO> consulta = archivosCargadosDelegate.getAllByAgrupador(agrupador, pr);
 
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())

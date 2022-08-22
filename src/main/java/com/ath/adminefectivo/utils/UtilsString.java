@@ -1,6 +1,7 @@
 package com.ath.adminefectivo.utils;
 
 import java.text.ParseException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -201,5 +202,20 @@ public class UtilsString {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * recibe una fecha, le resta un dia y devuelve nueva fecha
+	 * 
+	 * @param fecha
+	 * @param dias
+	 * @return Date
+	 * @author cesar.castano
+	 */
+	public static Date restarDiasAFecha(Date fecha, int dias) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(fecha);
+		calendar.add(Calendar.DAY_OF_YEAR, dias);
+		return calendar.getTime();
 	}
 }

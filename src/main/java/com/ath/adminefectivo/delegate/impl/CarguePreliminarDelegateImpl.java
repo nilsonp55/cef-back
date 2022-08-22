@@ -1,6 +1,8 @@
 package com.ath.adminefectivo.delegate.impl;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -24,6 +26,7 @@ import com.ath.adminefectivo.service.ILecturaArchivoService;
 import com.ath.adminefectivo.service.IMaestroDefinicionArchivoService;
 import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.IValidacionArchivoService;
+import com.ath.adminefectivo.utils.UtilsString;
 
 /**
  * Delegate responsable del manejo, consulta y persistencia de archivos
@@ -108,7 +111,6 @@ public class CarguePreliminarDelegateImpl implements ICarguePreliminarDelegate {
 	public ValidacionArchivoDTO validarArchivo(String idMaestroDefinicion, String nombreArchivo) {
 
 		this.validacionesAchivoCargado(idMaestroDefinicion, nombreArchivo);
-		
 		return ValidacionArchivoDTO.conversionRespuesta(this.validacionArchivo);
 	}
 
@@ -120,6 +122,59 @@ public class CarguePreliminarDelegateImpl implements ICarguePreliminarDelegate {
 		return archivosCargadosService.consultarDetalleArchivo(idArchivoCargado);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<ArchivosCargadosDTO> consultarArchivos(String estado, String agrupador) {
+		List<ArchivosCargadosDTO> listArchivosCargados = new ArrayList<>();
+
+		var maestrosDefinicion = maestroDefinicionArchivoService
+				.consultarDefinicionArchivoByAgrupador(estado, agrupador);
+		var urlPendinetes = filesService.consultarPathArchivos(estado);
+
+		var maestro = maestrosDefinicion.get(0);
+		var url = maestro.getUbicacion().concat(urlPendinetes);
+		var archivos = filesService.obtenerContenidoCarpeta(url);
+
+		archivos.forEach(x -> {
+			String nombreArchivo;
+			nombreArchivo = x.split("_")[0];
+			maestrosDefinicion.forEach(y -> {
+				String nombreMaestro;
+				nombreMaestro = y.getMascaraArch().split("_")[0];
+				if (nombreArchivo.equals(nombreMaestro)) {
+					listArchivosCargados.add(
+							organizarDatosArchivo(x, estado, y.getIdMaestroDefinicionArchivo(), y.getMascaraArch()));
+				}
+			});
+		});
+
+		listArchivosCargados.sort(Comparator.comparing(ArchivosCargadosDTO::getFechaArchivo,
+				Comparator.nullsLast(Comparator.naturalOrder())));
+
+		return listArchivosCargados;
+	}
+
+	private ArchivosCargadosDTO organizarDatosArchivo(String archivo, String estado,
+			String idModeloArchivo, String mascaraArchivo) {
+
+		Date fechaInicio = new Date();
+		if (idModeloArchivo.equals(Dominios.TIPO_ARCHIVO_IPPSV)) {
+			fechaInicio = validacionArchivoService.obtenerFechaArchivo(archivo, mascaraArchivo);
+		} else {
+			fechaInicio = UtilsString.restarDiasAFecha(validacionArchivoService
+					.obtenerFechaArchivo(archivo, mascaraArchivo), -1);
+		}
+		ArchivosCargadosDTO archivosCargadosDTO = new ArchivosCargadosDTO();
+		archivosCargadosDTO = ArchivosCargadosDTO.builder()
+				.estadoCargue(estado)
+				.nombreArchivo(archivo)
+				.idModeloArchivo(idModeloArchivo)
+				.fechaArchivo(fechaInicio).build();
+		return archivosCargadosDTO;
+	}
+	
 	/**
 	 * Valida si que el valor del contenido sea mayor al minimo paramtrizado
 	 * 
@@ -170,7 +225,6 @@ public class CarguePreliminarDelegateImpl implements ICarguePreliminarDelegate {
 	 */
 	private void validacionesAchivoCargado(String idMaestroDefinicion, String nombreArchivo) {
 		this.validacionArchivo = new ValidacionArchivoDTO();
-		System.out.println("Entro a validacionesAchivoCargado");
 		// Validaciones del archivo
 		var maestroDefinicion = maestroDefinicionArchivoService.consultarDefinicionArchivoById(idMaestroDefinicion);
 		var urlPendinetes = parametrosService.valorParametro(Parametros.RUTA_ARCHIVOS_PENDIENTES);
@@ -181,18 +235,20 @@ public class CarguePreliminarDelegateImpl implements ICarguePreliminarDelegate {
 		// Validaciones de arcihvo
 		String delimitador = lecturaArchivoService.obtenerDelimitadorArchivo(maestroDefinicion);
 		List<String[]> contenido = lecturaArchivoService.leerArchivo(dowloadFile.getFile(), delimitador);
+		Date fechaActual = parametrosService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
 		var fechaArchivo = validacionArchivoService.validarFechaArchivo(nombreArchivo,
-				maestroDefinicion.getMascaraArch(), new Date());
+				maestroDefinicion.getMascaraArch(), fechaActual);
 
 		this.validacionArchivo = ValidacionArchivoDTO.builder().nombreArchivo(nombreArchivo)
-				.descripcion(maestroDefinicion.getDescripcionArch()).fechaArchivo(fechaArchivo)
-				.maestroDefinicion(maestroDefinicion).url(url)
+				.descripcion(maestroDefinicion.getDescripcionArch())
+				.fechaArchivo(fechaArchivo)
+				.maestroDefinicion(maestroDefinicion)
+				.url(url)
 				.numeroRegistros(obtenerBumeroRegistros(maestroDefinicion, contenido.size())).build();
 
 		if (this.validarCantidadRegistros(maestroDefinicion, this.validacionArchivo.getNumeroRegistros())) {
 			this.validacionArchivo = validacionArchivoService.validar(maestroDefinicion, contenido, validacionArchivo);
 		}
-
 	}
 
 }

@@ -50,6 +50,9 @@ public interface ITransaccionesInternasService {
 	 * @author duvan.naranjo
 	 */
 	List<TransaccionesInternasDTO> getTransaccionesInternasByFechas(Date fechaInicio, Date fechaFin);
+
+	
+	boolean generarMovimientosContables(String fechaInicio, String fechaFin, String tipoContabilidad, int estadoContabilidadGenerado, String formatoFecha);
 	
 	
 

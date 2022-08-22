@@ -102,12 +102,10 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public int generarMovimientosContables(String tipoContabilidad,
-			List<TransaccionesInternasDTO> listadoTransaccionesInternas) {
-		listadoTransaccionesInternas.forEach(transaccionInterna -> {
-			this.procesarTransaccionesInternas(tipoContabilidad, transaccionInterna);
-		});
-		return consecutivoMovContable;
+	public int generarMovimientosContables(String fechaInicio, String fechaFin, String tipoContabilidad,
+			int estadoContabilidadGenerado, String formatoFecha) {
+		boolean result = transaccionesInternasService.generarMovimientosContables(fechaInicio, fechaFin, tipoContabilidad, estadoContabilidadGenerado, formatoFecha);
+		return 0;
 	}
 
 	/**

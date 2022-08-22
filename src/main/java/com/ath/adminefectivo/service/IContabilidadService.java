@@ -1,5 +1,6 @@
 package com.ath.adminefectivo.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -35,13 +36,15 @@ public interface IContabilidadService {
 	 * Servicio encargado de generar los movimientos contables de la contabilidad basado en las transacciones 
 	 * internas recibidas
 	 * 
-	 * @param tipoProceso
-	 * @param List<TransaccionesInternasDTO>
+	 * @param fechaInicio
+	 * @param fechaFin
+	 * @param tipoContabilidad
+	 * @param estadoContabilidadGenerado
 	 * @return int
 	 * @author duvan.naranjo
 	 */
-	int generarMovimientosContables(String tipoContabilidad,
-			List<TransaccionesInternasDTO> listadoTransaccionesInternas);
+	int generarMovimientosContables(String fechaInicio, String fechaFin, String tipoContabilidad,
+			int estadoContabilidadGenerado, String formatoFecha);
 
 	/**
 	 * Servicio encargado de generar la contabilidad basado en las operaciones 
@@ -55,8 +58,6 @@ public interface IContabilidadService {
 	 */
 	int generarContabilidadIntradia(String tipoContabilidad,
 			List<OperacionIntradiaDTO> listadoOperacionesProgramadasIntradia, int consecutivoDia);
-
-	
 	
 
 }
