@@ -12,10 +12,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.Protocol;
-import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.ListObjectsV2Request;
@@ -25,6 +23,7 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -60,7 +59,6 @@ public class s3Utils {
 	 * @Miller Caro
 	 */
 	public void uploadFile(MultipartFile file, String key_name) {
-
 		try {
 			File mainFile = new File(file.getOriginalFilename());
 			s3.putObject(bucketName, key_name, mainFile);
@@ -126,6 +124,7 @@ public class s3Utils {
 	 * @return
 	 */
 	public InputStream downloadFile(String key) {
+		//conexionS3(bucketName);
 		S3Object object;
 		try {
 			object = s3.getObject(bucketName, key);
@@ -147,6 +146,26 @@ public class s3Utils {
 		}
 		return object.getObjectContent();
 	}
+	
+	/**
+	 * Lista los arcivos del bucket
+	 * 
+	 * @param key
+	 * @return
+	 */
+	public Boolean consultarArchivo(String key) {
+		Boolean salida = true;
+		//conexionS3(bucketName);
+		S3Object object;
+		try {
+			object = s3.getObject(bucketName, key);
+			}
+		catch (Exception e) {
+			salida = false;
+		}
+		return salida;
+	}
+	
 
 	/**
 	 * Metodo encargado de realizar la conexion con AWS s3 antes de realiar cualquier ejecuci�n
