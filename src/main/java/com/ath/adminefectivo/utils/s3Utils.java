@@ -14,6 +14,7 @@ import com.amazonaws.ClientConfiguration;
 import com.amazonaws.Protocol;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
@@ -30,6 +31,9 @@ import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.exception.NegocioException;
+
+import java.util.Properties;
+import java.net.URISyntaxException;
 
 /**
  * Clase para generar funcionalidades con respect al s3 del PP
@@ -91,11 +95,12 @@ public class s3Utils {
 	/**
 	 * Trae una lista los archivos de una carpeta en especifico
 	 * Recibe una ruta donde se encuentra el archivo
-	 * 
+	 * Nota: el metodo de conexionS3(bucketName) solo se debe de llamar cuando son pruebas locales, para despliegues en el Fargate toca comentarla
 	 * @param path
 	 * @return
 	 */
 	public List<String> getObjectsFromPathS3(String path) {
+		//conexionS3(bucketName);
 		ListObjectsV2Request req = new ListObjectsV2Request().withBucketName(bucketName).withPrefix(path)
 				.withDelimiter("/");
 		ListObjectsV2Result listing = s3.listObjectsV2(req);
@@ -147,44 +152,18 @@ public class s3Utils {
 	 * Metodo encargado de realizar la conexion con AWS s3 antes de realiar cualquier ejecuci�n
 	 * Version prueba #1
 	 * @author Bayron Perez
+	 * @throws URISyntaxException
 	 */
-	/*public void conexionS3(String bucketName) {
-
-		AWSCredentials credentials = null;
-		try {
-			credentials = new ProfileCredentialsProvider().getCredentials();
-		} catch (Exception e) {
-			LOGGER.error(e.getMessage(), e);
-			throw new NegocioException(ApiResponseCode.ERROR_ACCEDIENDO_S3.getCode(),
-					ApiResponseCode.ERROR_ACCEDIENDO_S3.getDescription(),
-					ApiResponseCode.ERROR_ACCEDIENDO_S3.getHttpStatus());
-		}
-
-		try {
-			s3 = AmazonS3ClientBuilder.standard()
-				.withCredentials(new AWSStaticCredentialsProvider(credentials))
-				.withRegion("us-east-1")
-				.build();
-		} catch (Exception e) {
-			LOGGER.error(e.getMessage(), e);
-			throw new NegocioException(ApiResponseCode.ERROR_ACCEDIENDO_S3.getCode(),
-					ApiResponseCode.ERROR_ACCEDIENDO_S3.getDescription(),
-					ApiResponseCode.ERROR_ACCEDIENDO_S3.getHttpStatus());
-		}
-		
-		bucketNameFormat = bucketName + UUID.randomUUID();
-	}*/
-
 	public void conexionS3(String bucketName) {
-		AWSCredentials credentials = null;
-		try {
-			credentials = new ProfileCredentialsProvider().getCredentials();
-		} catch (Exception e) {
-			LOGGER.error(e.getMessage(), e);
-			throw new NegocioException(ApiResponseCode.ERROR_ACCEDIENDO_S3.getCode(),
-					ApiResponseCode.ERROR_ACCEDIENDO_S3.getDescription(),
-					ApiResponseCode.ERROR_ACCEDIENDO_S3.getHttpStatus());
-		}
+	try {
+         Properties systemSettings = System.getProperties();
+         
+      } catch (Exception e) {
+         e.printStackTrace();
+         System.out.println(false);
+      }
+	  
+		BasicAWSCredentials credentials = new BasicAWSCredentials("AKIAZPUFXGZ5GEMGWLFZ", "HD1RM1Il0nAJYu2gNr1oYG6MtdBzafSKpf+1TtMM");
 		try {
 			ClientConfiguration config = new ClientConfiguration();
 			config.setProtocol(Protocol.HTTP);
