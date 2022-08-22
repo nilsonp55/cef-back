@@ -89,14 +89,15 @@ public class FilesServiceImpl implements IFilesService {
 		try {
 			if(s3Bucket) {
 				System.out.println("Entro al if del S3");
-				final InputStream streamReader = s3Util.downloadFile(path);
-				download.setFile(streamReader);
+				if (s3Util.consultarArchivo(path)) {
+					final InputStream streamReader = s3Util.downloadFile(path);
+					download.setFile(streamReader);
+				}
 			}else {
 				File initialFile = new File(TEMPORAL_URL+path);
 				Resource recurso = new UrlResource(initialFile.toURI());
 				download.setFile(recurso.getInputStream());
 			}
-
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new NegocioException(ApiResponseCode.ERROR_ARCHIVOS_NO_EXISTE_BD.getCode(),
