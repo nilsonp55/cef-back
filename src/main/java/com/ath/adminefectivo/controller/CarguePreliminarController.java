@@ -1,5 +1,7 @@
 package com.ath.adminefectivo.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ath.adminefectivo.delegate.ICarguePreliminarDelegate;
+import com.ath.adminefectivo.dto.ArchivosCargadosDTO;
 import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
@@ -54,12 +57,15 @@ public class CarguePreliminarController {
 	 * Servicio encargado de eliminar un archivo tanto de manera fisica del
 	 * repositorio, como de manera lógica de la base de datos
 	 * 
-	 * @param idArchivo
+	 * @param nombreArchivo
+	 * @param idMaestroArchivo
 	 * @return ResponseEntity<ApiResponseADE<Boolean>>
 	 * @author CamiloBenavides
 	 */
 	@DeleteMapping(value = "${endpoints.CarguePreliminar.eliminar}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponseADE<Boolean>> eliminarArchivo(@RequestParam("nombreArchivo") String nombreArchivo, @RequestParam("idMaestroArchivo") String idMaestroArchivo) {
+	public ResponseEntity<ApiResponseADE<Boolean>> eliminarArchivo(
+			@RequestParam("nombreArchivo") String nombreArchivo, 
+			@RequestParam("idMaestroArchivo") String idMaestroArchivo) {
 
 		var archivoPersistido = carguePreliminarDelegate.eliminarArchivo(nombreArchivo, idMaestroArchivo);
 		return ResponseEntity.status(HttpStatus.OK).body(
@@ -126,4 +132,24 @@ public class CarguePreliminarController {
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
 
+	/**
+	 * Consulta los archivos de carga preliminar almacenados en repositorio, por
+	 * estado del archivo
+	 * 
+	 * @param estado
+	 * @parm idModeloArchivo
+	 * @return ResponseEntity<ApiResponseADE<List<ArchivosCargadosDTO>>>
+	 * @author CamiloBenavides
+	 */
+	@GetMapping(value = "${endpoints.Archivos.consultar}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ApiResponseADE<List<ArchivosCargadosDTO>>> consultarArchivosCargaPreliminar(
+			@RequestParam("estado") String estado, 
+			@RequestParam("idModeloArchivo") String agrupador) {
+		
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ApiResponseADE<List<ArchivosCargadosDTO>>(
+						carguePreliminarDelegate.consultarArchivos(estado, agrupador),
+						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+								.description(ApiResponseCode.SUCCESS.getDescription()).build()));
+	}
 }

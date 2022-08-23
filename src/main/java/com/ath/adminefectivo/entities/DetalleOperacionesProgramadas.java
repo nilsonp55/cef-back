@@ -18,7 +18,9 @@ import javax.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Entidad encargada de manejar la logica de la tabla DETALLES_OPERACIONES_PROGRAMADAS
@@ -27,7 +29,8 @@ import lombok.NoArgsConstructor;
  */
 @Entity
 @Table(name = "DETALLES_OPERACIONES_PROGRAMADAS")
-@Data
+@Setter
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -66,7 +69,7 @@ public class DetalleOperacionesProgramadas {
 	private Date fechaModificacion;
 	
 	@ManyToOne
-	@JoinColumn(name = "ID_OPERACION", nullable = false)
+	@JoinColumn(name = "ID_OPERACION", insertable = true, updatable = true)
 	private OperacionesProgramadas operacionesProgramadas;
 	
 }

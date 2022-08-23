@@ -58,8 +58,6 @@ public interface IContabilidadService {
 	 */
 	int generarContabilidadIntradia(String tipoContabilidad,
 			List<OperacionIntradiaDTO> listadoOperacionesProgramadasIntradia, int consecutivoDia);
-
-	
 	
 
 }

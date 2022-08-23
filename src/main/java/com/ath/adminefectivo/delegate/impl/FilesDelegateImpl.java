@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -69,8 +70,12 @@ public class FilesDelegateImpl implements IFilesDelegate {
 		return filesService.persistirArchvos(Arrays.asList(files));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Boolean persistirArchvoCargado(MultipartFile file) {
+		
 		var url = filesService.persistirArchvo(file);
 		ArchivosCargadosDTO archivo = ArchivosCargadosDTO.builder().nombreArchivo(file.getOriginalFilename())
 				.fechaInicioCargue(new Date()).estado(Constantes.REGISTRO_ACTIVO).contentType(file.getContentType())
@@ -86,24 +91,26 @@ public class FilesDelegateImpl implements IFilesDelegate {
 	 */
 	@Override
 	public DownloadDTO downloadFile(Long idArchivo) {
+		
 		ArchivosCargadosDTO archivo = archivosCargadosService.consultarArchivo(idArchivo);
-		DownloadDTO file = DownloadDTO.builder().name(archivo.getNombreArchivo()).url(archivo.getUrl()).build();
-
+		DownloadDTO file = DownloadDTO.builder().name(archivo.getNombreArchivo())
+												.url(archivo.getUrl()).build();
 		return filesService.downloadFile(file);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public List<ArchivosCargadosDTO> consultarArchivos(String idMaestroDefinicion, String estado) {
-		System.out.println("Entro al delegate");
-		var maestroDefinicion = maestroDefinicionArchivoService.consultarDefinicionArchivoById(idMaestroDefinicion);
 
+		var maestroDefinicion = maestroDefinicionArchivoService.consultarDefinicionArchivoById(
+				idMaestroDefinicion);
 		var urlPendinetes = filesService.consultarPathArchivos(estado);
-		System.out.println("**********"+urlPendinetes);
 		var url = maestroDefinicion.getUbicacion().concat(urlPendinetes);
-		System.out.println("*******************************"+url);
 		var archivos = filesService.obtenerContenidoCarpeta(url);
-		System.out.println("*******************************"+archivos);
-		return organizarDataArchivos(archivos, estado, idMaestroDefinicion, maestroDefinicion.getMascaraArch());
+		return organizarDataArchivos(archivos, estado, idMaestroDefinicion, 
+				maestroDefinicion.getMascaraArch());
 	}
 
 	/**
@@ -123,8 +130,7 @@ public class FilesDelegateImpl implements IFilesDelegate {
 		} else if (numeroExcepcion == 3) {
 			throw new ConflictException(ApiResponseCode.ERROR_LIMITE_ARCHIVOS.getDescription());
 		} else if (numeroExcepcion == 4) {
-			generalRepository.ejecutarQueryNativa("SELECT * FROM PARAMETRO");
-			
+			generalRepository.ejecutarQueryNativa("SELECT * FROM PARAMETRO");		
 		}else if (numeroExcepcion == 7) {
 			return generalRepository.ejecutarQueryNativa("select case count(1) "
 					+ "when 1 then true "
@@ -134,12 +140,39 @@ public class FilesDelegateImpl implements IFilesDelegate {
 					+ "where tipo_punto = 'BANCO' "
 					+ "and a.codigo_punto = b.codigo_punto "
 					+ "and ( (b.es_aval = true and b.abreviatura = :parameter ) "
-					+ "or a.NOMBRE_PUNTO = :parameter ) ", "NO_EXISTE_JEJE");
-			
+					+ "or a.NOMBRE_PUNTO = :parameter ) ", "NO_EXISTE_JEJE");	
 		}
-		
-
 		return true;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public DownloadDTO descargarArchivo(String nombreArchivo, String idMaestroArchivo) {
+		DownloadDTO file = null;
+		String carpeta = "";
+		try {
+			var maestrosDefinicion = maestroDefinicionArchivoService
+										.consultarDefinicionArchivoById(idMaestroArchivo);
+			carpeta = parametroService.valorParametro("RUTA_ARCHIVOS_PENDIENTES");
+			String ubicacion = maestrosDefinicion.getUbicacion();
+			file = DownloadDTO.builder().name(nombreArchivo).url(ubicacion + carpeta + nombreArchivo).build();
+			file = filesService.downloadFile(file);
+			if (Objects.isNull(file.getFile())){
+				carpeta = parametroService.valorParametro("RUTA_ARCHIVOS_ERRADOS");
+				file = DownloadDTO.builder().name(nombreArchivo).url(ubicacion + carpeta + nombreArchivo).build();
+				file = filesService.downloadFile(file);
+			}
+			if (Objects.isNull(file.getFile())) {
+				carpeta = parametroService.valorParametro("RUTA_ARCHIVOS_PROCESADOS");
+				file = DownloadDTO.builder().name(nombreArchivo).url(ubicacion + carpeta + nombreArchivo).build();
+				file = filesService.downloadFile(file);
+			}
+		} catch (Exception e) {
+			throw new ConflictException(ApiResponseCode.GENERIC_ERROR.getDescription());
+		}
+		return file;
 	}
 
 	/**
@@ -153,7 +186,7 @@ public class FilesDelegateImpl implements IFilesDelegate {
 	 */
 	private List<ArchivosCargadosDTO> organizarDataArchivos(List<String> archivos, String estado,
 			String idModeloArchivo, String mascaraArchivo) {
-				System.out.println("Entro a Organizar Data Archivos");
+
 		List<ArchivosCargadosDTO> archivosCargados = new ArrayList<>();
 		archivos.forEach(x -> archivosCargados
 				.add(ArchivosCargadosDTO.builder().estadoCargue(estado).idModeloArchivo(idModeloArchivo)
@@ -161,24 +194,6 @@ public class FilesDelegateImpl implements IFilesDelegate {
 
 		archivosCargados.sort(Comparator.comparing(ArchivosCargadosDTO::getFechaArchivo,
 				Comparator.nullsLast(Comparator.naturalOrder())));
-				System.out.println("***********"+archivosCargados);
 		return archivosCargados;
-
 	}
-
-	@Override
-	public DownloadDTO descargarArchivo(String nombreArchivo, String idMaestroArchivo) {
-		DownloadDTO file = null;
-		try {
-			var maestrosDefinicion = maestroDefinicionArchivoService.consultarDefinicionArchivoById(idMaestroArchivo);
-			String carpeta = parametroService.valorParametro("RUTA_ARCHIVOS_PENDIENTES");
-			file = DownloadDTO.builder().name(nombreArchivo).url(maestrosDefinicion.getUbicacion()+carpeta+nombreArchivo).build();
-		} catch (Exception e) {
-			throw new ConflictException(ApiResponseCode.GENERIC_ERROR.getDescription());
-
-		}
-
-		return filesService.downloadFile(file);
-	}
-
 }

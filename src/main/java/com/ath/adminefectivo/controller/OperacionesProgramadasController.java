@@ -1,12 +1,9 @@
 package com.ath.adminefectivo.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,9 +33,11 @@ public class OperacionesProgramadasController {
 	 * @return ResponseEntity<ApiResponseADE<List<BancosDTO>>>
 	 * @author duvan.naranjo
 	 */
-	@GetMapping(value = "${endpoints.OperacionesProgramadas.procesar}/{idArchivo}")
-	public ResponseEntity<ApiResponseADE<String>> generarOperacionesProgramadas(@PathVariable("idArchivo") String idArchivo) {
-		var resultadoOperacionProgramadas = operacionesProgramadasDelegate.generarOperacionesProgramadas(idArchivo);
+	@GetMapping(value = "${endpoints.OperacionesProgramadas.procesar}")
+	public ResponseEntity<ApiResponseADE<String>> generarOperacionesProgramadas(
+									@RequestParam("agrupador") String agrupador) {
+		var resultadoOperacionProgramadas = operacionesProgramadasDelegate.generarOperacionesProgramadas(agrupador);
+		
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(resultadoOperacionProgramadas,
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())

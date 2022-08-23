@@ -95,6 +95,7 @@ public class CargueDefinitivoDelegateImpl implements ICargueDefinitivoDelegate {
 	@Override
 	@Transactional
 	public ValidacionArchivoDTO procesarArchivo(String idMaestroDefinicion, String nombreArchivo) {
+		validarLogProcesoDiario();
 		this.validacionesAchivoCargado(idMaestroDefinicion, nombreArchivo);
 		archivosCargadosService.persistirDetalleArchivoCargado(validacionArchivo, false);
 
@@ -116,6 +117,7 @@ public class CargueDefinitivoDelegateImpl implements ICargueDefinitivoDelegate {
 	@Override
 	@Transactional
 	public ValidacionArchivoDTO validarArchivo(String idMaestroDefinicion, String nombreArchivo) {
+		validarLogProcesoDiario();
 		this.validacionesAchivoCargado(idMaestroDefinicion, nombreArchivo);
 		return ValidacionArchivoDTO.conversionRespuesta(this.validacionArchivo);
 	}
@@ -231,8 +233,9 @@ public class CargueDefinitivoDelegateImpl implements ICargueDefinitivoDelegate {
 		// Validaciones de arcihvo
 		String delimitador = lecturaArchivoService.obtenerDelimitadorArchivo(maestroDefinicion);
 		List<String[]> contenido = lecturaArchivoService.leerArchivo(dowloadFile.getFile(), delimitador);
+		Date fechaActual = parametrosService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
 		var fechaArchivo = validacionArchivoService.validarFechaArchivo(nombreArchivo,
-				maestroDefinicion.getMascaraArch(), new Date());
+				maestroDefinicion.getMascaraArch(), fechaActual);
 
 		this.validacionArchivo = ValidacionArchivoDTO.builder().nombreArchivo(nombreArchivo)
 				.descripcion(maestroDefinicion.getDescripcionArch()).fechaArchivo(fechaArchivo)

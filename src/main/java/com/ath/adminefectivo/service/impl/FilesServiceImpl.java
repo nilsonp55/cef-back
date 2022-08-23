@@ -1,10 +1,8 @@
 package com.ath.adminefectivo.service.impl;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -62,6 +60,7 @@ public class FilesServiceImpl implements IFilesService {
 	}
 
 	/**
+	 * {@inheritDoc}
 	 */
 	@Override
 	public String persistirArchvo(MultipartFile file) {
@@ -81,21 +80,24 @@ public class FilesServiceImpl implements IFilesService {
 
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public DownloadDTO downloadFile(DownloadDTO download) {
 		String path = download.getUrl();
 		try {
 			if(s3Bucket) {
 				System.out.println("Entro al if del S3");
-				final InputStream streamReader = s3Util.downloadFile(path);
-				System.out.println("Descargo archivo");
-				download.setFile(streamReader);
+				if (s3Util.consultarArchivo(path)) {
+					final InputStream streamReader = s3Util.downloadFile(path);
+					download.setFile(streamReader);
+				}
 			}else {
 				File initialFile = new File(TEMPORAL_URL+path);
 				Resource recurso = new UrlResource(initialFile.toURI());
 				download.setFile(recurso.getInputStream());
 			}
-
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new NegocioException(ApiResponseCode.ERROR_ARCHIVOS_NO_EXISTE_BD.getCode(),
