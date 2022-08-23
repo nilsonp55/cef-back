@@ -44,10 +44,9 @@ public class TransaccionesInternasServiceImpl implements ITransaccionesInternasS
 
 	@Override
 	public TransaccionesInternas saveTransaccionesInternasById(TransaccionesInternasDTO transaccionesInternasDTO) {
-		System.out.println("/////// "+transaccionesInternasDTO);
+		System.out.println("/////// " + transaccionesInternasDTO);
 		var x = TransaccionesInternasDTO.CONVERTER_ENTITY.apply(transaccionesInternasDTO);
-		return transaccionesInternasRepository
-				.save(x);
+		return transaccionesInternasRepository.save(x);
 	}
 
 	/**
@@ -69,11 +68,20 @@ public class TransaccionesInternasServiceImpl implements ITransaccionesInternasS
 		List<TransaccionesInternas> listadoTransaccionesInternas = transaccionesInternasRepository
 				.findByFechaBetween(fechaInicio, fechaFin);
 		listadoTransaccionesInternas.forEach(transaccionInterna -> listadoTransaccionesInternasDTO
-				.add(TransaccionesInternasDTO.CONVERTER_DTO.apply(transaccionInterna))
-			);
+				.add(TransaccionesInternasDTO.CONVERTER_DTO.apply(transaccionInterna)));
 
 		return listadoTransaccionesInternasDTO;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean generarMovimientosContables(String fechaInicio, String fechaFin, String tipoContabilidad,
+			int estadoContabilidadGenerado, String formatoFecha) {
+		boolean resultado = transaccionesInternasRepository.fnc_transcciones_contables(fechaInicio, fechaFin,
+				tipoContabilidad, estadoContabilidadGenerado, formatoFecha);
+		return resultado;
+	}
 
 }

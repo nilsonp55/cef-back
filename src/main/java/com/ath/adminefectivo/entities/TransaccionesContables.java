@@ -100,6 +100,9 @@ public class TransaccionesContables {
 	@Column(name = "REFERENCIA2")
 	private String referencia2;
 	
+	@Column(name = "CUENTA_AUXILIAR")
+	private String cuentaAuxiliar;
+	
 	@ManyToOne
 	@JoinColumn(name = "ID_TRANSACCIONES_INTERNAS", nullable = true)
 	private TransaccionesInternas idTransaccionesInternas;

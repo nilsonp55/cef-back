@@ -99,6 +99,7 @@ public class TransaccionesInternasDTO {
 		transaccionesInternas.setValor(t.getValor());
 		transaccionesInternas.setTasaNegociacion(t.getTasaNegociacion());
 		transaccionesInternas.setMedioPago(t.getMedioPago());
+		transaccionesInternas.setTipoTransaccion(t.getTipoTransaccion());
 
 		if (!Objects.isNull(t.getBancoAval())) {
 			transaccionesInternas.setBancoAval(BancosDTO.CONVERTER_ENTITY.apply(t.getBancoAval()));
@@ -148,6 +149,7 @@ public class TransaccionesInternasDTO {
 		transaccionesInternasDTO.setValor(t.getValor());
 		transaccionesInternasDTO.setTasaNegociacion(t.getTasaNegociacion());
 		transaccionesInternasDTO.setMedioPago(t.getMedioPago());
+		transaccionesInternasDTO.setTipoTransaccion(t.getTipoTransaccion());
 
 		if (!Objects.isNull(t.getBancoAval())) {
 			transaccionesInternasDTO.setBancoAval(BancosDTO.CONVERTER_DTO.apply(t.getBancoAval()));
