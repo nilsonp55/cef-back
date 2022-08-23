@@ -122,18 +122,18 @@ public class CargueDefinitivoDelegateImpl implements ICargueDefinitivoDelegate {
 		return ValidacionArchivoDTO.conversionRespuesta(this.validacionArchivo);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public List<ArchivosCargadosDTO> consultarArchivos(String estado, String agrupador) {
 		List<ArchivosCargadosDTO> listArchivosCargados = new ArrayList<>();
 
-		var maestrosDefinicion = maestroDefinicionArchivoService
-				.consultarDefinicionArchivoByAgrupador(estado, agrupador);
+		var maestrosDefinicion = maestroDefinicionArchivoService.consultarDefinicionArchivoByAgrupador(estado, agrupador);
 		var urlPendinetes = filesService.consultarPathArchivos(estado);
-
 		var maestro = maestrosDefinicion.get(0);
 		var url = maestro.getUbicacion().concat(urlPendinetes);
 		var archivos = filesService.obtenerContenidoCarpeta(url);
-
 		archivos.forEach(x -> {
 			String nombreArchivo;
 			nombreArchivo = x.split("_")[0];
@@ -146,7 +146,6 @@ public class CargueDefinitivoDelegateImpl implements ICargueDefinitivoDelegate {
 				}
 			});
 		});
-
 		listArchivosCargados.sort(Comparator.comparing(ArchivosCargadosDTO::getFechaArchivo,
 				Comparator.nullsLast(Comparator.naturalOrder())));
 
@@ -236,14 +235,13 @@ public class CargueDefinitivoDelegateImpl implements ICargueDefinitivoDelegate {
 		Date fechaActual = parametrosService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
 		var fechaArchivo = validacionArchivoService.validarFechaArchivo(nombreArchivo,
 				maestroDefinicion.getMascaraArch(), fechaActual);
-
 		this.validacionArchivo = ValidacionArchivoDTO.builder().nombreArchivo(nombreArchivo)
 				.descripcion(maestroDefinicion.getDescripcionArch()).fechaArchivo(fechaArchivo)
 				.maestroDefinicion(maestroDefinicion).url(url)
 				.numeroRegistros(obtenerBumeroRegistros(maestroDefinicion, contenido.size())).build();
-
 		if (this.validarCantidadRegistros(maestroDefinicion, this.validacionArchivo.getNumeroRegistros())) {
-			this.validacionArchivo = validacionArchivoService.validar(maestroDefinicion, contenido, validacionArchivo);
+			this.validacionArchivo = validacionArchivoService.validar(maestroDefinicion, contenido, 
+					validacionArchivo);
 		}
 
 	}

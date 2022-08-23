@@ -66,6 +66,12 @@ public interface ArchivosCargadosRepository
 	 */
 	public List<ArchivosCargados> findByEstadoCargueAndIdModeloArchivo(String estadoCargue, String idModeloArchivo);
 
+	/**
+	 * Metodo encargado de realizar la consulta de los registros cargados sin procesar de hoy
+	 * @param agrupador
+	 * @return Page<ArchivosCargados>
+	 * @author duvan.naranjo
+	 */
 	@Query("select ac from ArchivosCargados ac "
             + "where idModeloArchivo IN ("
             + "select idMaestroDefinicionArchivo from MaestroDefinicionArchivo "
@@ -83,4 +89,16 @@ public interface ArchivosCargadosRepository
 		 + "idModeloArchivo IN (select idMaestroDefinicionArchivo from MaestroDefinicionArchivo "
 		 + "where agrupador = ?1)")
 	List<ArchivosCargados> getRegistrosCargadosSinProcesarDeHoy(String agrupador);
+	
+	/**
+	 * Metodo encargado de realizar la consulta de los registros cargados
+	 * @param agrupador
+	 * @return List<ArchivosCargados>
+	 * @author duvan.naranjo
+	 */
+	@Query("select ac from ArchivosCargados ac "
+			+ "where estadoCargue ='OK' and idModeloArchivo IN ("
+			+ "select idMaestroDefinicionArchivo from MaestroDefinicionArchivo "
+			+ "where agrupador = ?1)")
+	List<ArchivosCargados> obtenerArchivoCargadosPorAgrupador(String agrupador);
 }

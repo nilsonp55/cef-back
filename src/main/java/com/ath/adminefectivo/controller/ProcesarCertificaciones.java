@@ -34,10 +34,9 @@ public class ProcesarCertificaciones {
 	 */
 	@GetMapping(value = "${endpoints.Certificaciones.procesar}")
 	public ResponseEntity<ApiResponseADE<Boolean>> procesarCertificaciones(
-			@RequestParam("modeloArchivo") String modeloArchivo,
-			@RequestParam("idArchivo") Long idArchivo) {
+			@RequestParam("agrupador") String agrupador) {
 
-		Boolean respuesta = certificacionesDelegate.procesarCertificaciones(modeloArchivo, idArchivo);
+		Boolean respuesta = certificacionesDelegate.procesarCertificaciones(agrupador);
 		
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(respuesta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())

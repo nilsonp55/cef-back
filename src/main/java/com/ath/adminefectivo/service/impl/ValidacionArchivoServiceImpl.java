@@ -226,28 +226,18 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 				.replace(Constantes.SEPARADOR_FECHA_ARCHIVO, Constantes.SEPARADOR_EXTENSION_ARCHIVO)
 				.split(Constantes.EXPRESION_REGULAR_PUNTO);
 		String[] arregloMascara = maestroDefinicion.getMascaraArch().split(Constantes.SEPARADOR_FECHA_ARCHIVO);
-		
-	
-					
-		
-
 		if (arregloNombre.length != 3 || arregloMascara.length != 2
 				|| !StringUtils.equalsIgnoreCase(arregloNombre[0], arregloMascara[0])
 				|| arregloMascara[1].length() != arregloNombre[1].length()) {
-
 			throw new NegocioException(ApiResponseCode.ERROR_MASCARA_NO_VALIDA.getCode(),
 					ApiResponseCode.ERROR_MASCARA_NO_VALIDA.getDescription(),
 					ApiResponseCode.ERROR_MASCARA_NO_VALIDA.getHttpStatus());
-
 		}
-
 		if (!StringUtils.equalsIgnoreCase(arregloNombre[2], maestroDefinicion.getExtension())) {
 			throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
 					ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
 					ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
-
 		}
-
 		return true;
 	}
 
@@ -262,16 +252,13 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 			var arregloNombre = nombreArchivo
 					.replace(Constantes.SEPARADOR_FECHA_ARCHIVO, Constantes.SEPARADOR_EXTENSION_ARCHIVO)
 					.split(Constantes.REGEX_PUNTO);
-
 			String[] arregloMascara = mascaraArchivo.split(Constantes.SEPARADOR_FECHA_ARCHIVO);
 				if (arregloMascara[1].length() != arregloNombre[1].length()) {
 					throw new NegocioException(ApiResponseCode.ERROR_FECHA_NO_VALIDA.getCode(),
 						ApiResponseCode.ERROR_FECHA_NO_VALIDA.getDescription(),
 						ApiResponseCode.ERROR_FECHA_NO_VALIDA.getHttpStatus());
 			}
-
 			fechaArchivo = new SimpleDateFormat(arregloMascara[1]).parse(arregloNombre[1]);
-//			fechaArchivo = new Date();
 		} catch (ParseException | NullPointerException | ArrayIndexOutOfBoundsException e) {
 			throw new NegocioException(ApiResponseCode.ERROR_FECHA_NO_VALIDA.getCode(),
 					ApiResponseCode.ERROR_FECHA_NO_VALIDA.getDescription(),

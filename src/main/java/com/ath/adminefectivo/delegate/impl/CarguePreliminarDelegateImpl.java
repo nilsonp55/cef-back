@@ -127,16 +127,14 @@ public class CarguePreliminarDelegateImpl implements ICarguePreliminarDelegate {
 	 */
 	@Override
 	public List<ArchivosCargadosDTO> consultarArchivos(String estado, String agrupador) {
+		
 		List<ArchivosCargadosDTO> listArchivosCargados = new ArrayList<>();
-
 		var maestrosDefinicion = maestroDefinicionArchivoService
 				.consultarDefinicionArchivoByAgrupador(estado, agrupador);
 		var urlPendinetes = filesService.consultarPathArchivos(estado);
-
 		var maestro = maestrosDefinicion.get(0);
 		var url = maestro.getUbicacion().concat(urlPendinetes);
 		var archivos = filesService.obtenerContenidoCarpeta(url);
-
 		archivos.forEach(x -> {
 			String nombreArchivo;
 			nombreArchivo = x.split("_")[0];

@@ -39,20 +39,21 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Boolean procesarCertificaciones(String modeloArchivo, Long idArchivo) {
+	public Boolean procesarCertificaciones(String agrupador) {
 		
-		List<ArchivosCargados> archivosCargados = archivosCargadosRepository.findByIdModeloArchivoAndIdArchivo(
-				modeloArchivo, idArchivo);
+		List<ArchivosCargados> archivosCargados = archivosCargadosRepository.obtenerArchivoCargadosPorAgrupador(agrupador);
 		if(archivosCargados.isEmpty()) {
 				throw new NegocioException(ApiResponseCode.ERROR_ARCHICOS_CARGADOS_NO_ENCONTRADO.getCode(),
 							ApiResponseCode.ERROR_ARCHICOS_CARGADOS_NO_ENCONTRADO.getDescription(),
 							ApiResponseCode.ERROR_ARCHICOS_CARGADOS_NO_ENCONTRADO.getHttpStatus());
 		}else {
+			validarLogProcesoDiario();
+			validarExistenciaArchivos(archivosCargados);
 			operacionesCertificadasService.procesarArchivosCertificaciones(archivosCargados);
+			cambiarEstadoLogProcesoDiario();
 			return true;
 		}
 	}
-	
 
 	/**
 	 * Metodo encargado de validar el log de proceso diario
