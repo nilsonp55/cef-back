@@ -9,7 +9,7 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
 
 import com.ath.adminefectivo.dto.compuestos.OperacionIntradiaDTO;
-import com.ath.adminefectivo.dto.compuestos.intradiaPruebaDTO;
+import com.ath.adminefectivo.dto.compuestos.ContabilidadDTO;
 import com.ath.adminefectivo.entities.OperacionesProgramadas;
 
 /**
