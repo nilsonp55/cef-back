@@ -222,34 +222,104 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 	 */
 	@Override
 	public boolean validarNombreArchivo(MaestrosDefinicionArchivoDTO maestroDefinicion, String nombreArchivo) {
-		String[] arregloNombre = nombreArchivo
-				.replace(Constantes.SEPARADOR_FECHA_ARCHIVO, Constantes.SEPARADOR_EXTENSION_ARCHIVO)
-				.split(Constantes.EXPRESION_REGULAR_PUNTO);
-		String[] arregloMascara = maestroDefinicion.getMascaraArch().split(Constantes.SEPARADOR_FECHA_ARCHIVO);
 		
+		if (maestroDefinicion.getAgrupador().equals("CERTI")) {
+			String[] arregloNombre = nombreArchivo.split(Constantes.EXPRESION_REGULAR_PUNTO);
+			String inicioNombre = arregloNombre[0].substring(0, 2);
+			String fecha;
+			String mascaraFecha;
+			List<String> formatoFecha;
+			if (!StringUtils.equalsIgnoreCase(arregloNombre[1], maestroDefinicion.getExtension())) {
+				throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
+						ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
+						ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
+			}
+
+			switch (inicioNombre) {
+			// fragmento que valida las archivos de certificaciones tipo atlas
+
+				case "AC": {
+					fecha = nombreArchivo.substring(5, 11);
+					mascaraFecha = maestroDefinicion.getMascaraArch().substring(5, 11);
+					formatoFecha = new ArrayList();
+					formatoFecha.add(mascaraFecha);
+					if (!utilsString.isFecha(fecha, formatoFecha)) {
+						throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
+								ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
+								ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
+					}
+				}
 	
-					
-		
-
-		if (arregloNombre.length != 3 || arregloMascara.length != 2
-				|| !StringUtils.equalsIgnoreCase(arregloNombre[0], arregloMascara[0])
-				|| arregloMascara[1].length() != arregloNombre[1].length()) {
-
-			throw new NegocioException(ApiResponseCode.ERROR_MASCARA_NO_VALIDA.getCode(),
-					ApiResponseCode.ERROR_MASCARA_NO_VALIDA.getDescription(),
-					ApiResponseCode.ERROR_MASCARA_NO_VALIDA.getHttpStatus());
-
+				case "BS": {
+					fecha = nombreArchivo.substring(8, 14);
+					mascaraFecha = maestroDefinicion.getMascaraArch().substring(8, 14);
+					formatoFecha = new ArrayList();
+					formatoFecha.add(mascaraFecha);
+					if (!utilsString.isFecha(fecha, formatoFecha)) {
+						throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
+								ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
+								ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
+					}
+				}
+				case "BI": {
+					fecha = nombreArchivo.substring(8, 14);
+					mascaraFecha = maestroDefinicion.getMascaraArch().substring(8, 14);
+					formatoFecha = new ArrayList();
+					formatoFecha.add(mascaraFecha);
+					if (!utilsString.isFecha(fecha, formatoFecha)) {
+						throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
+								ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
+								ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
+					}
+				}
+				case "TH": {
+					fecha = nombreArchivo.substring(14, 22);
+					mascaraFecha = maestroDefinicion.getMascaraArch().substring(14, 22);
+					formatoFecha = new ArrayList();
+					formatoFecha.add(mascaraFecha);
+					if (!utilsString.isFecha(fecha, formatoFecha)) {
+						throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
+								ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
+								ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
+					}
+				}
+				case "SC": {
+					fecha = nombreArchivo.substring(4, 14);
+					mascaraFecha = maestroDefinicion.getMascaraArch().substring(4, 14);
+					formatoFecha = new ArrayList();
+					formatoFecha.add(mascaraFecha);
+					if (!utilsString.isFecha(fecha, formatoFecha)) {
+						throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
+								ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
+								ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
+					}
+				}
+				default: {
+					throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
+							ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
+							ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
+				}
+			}
+			
 		}
 
-		if (!StringUtils.equalsIgnoreCase(arregloNombre[2], maestroDefinicion.getExtension())) {
-			throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
-					ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
-					ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
+		else {
+			String[] arregloNombre = nombreArchivo
+					.replace(Constantes.SEPARADOR_FECHA_ARCHIVO, Constantes.SEPARADOR_EXTENSION_ARCHIVO)
+					.split(Constantes.EXPRESION_REGULAR_PUNTO);
+			String[] arregloMascara = maestroDefinicion.getMascaraArch().split(Constantes.SEPARADOR_FECHA_ARCHIVO);
+			if (!StringUtils.equalsIgnoreCase(arregloNombre[2], maestroDefinicion.getExtension())) {
+				throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
+						ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
+						ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
 
+			}
 		}
 
 		return true;
 	}
+		
+
 
 	/**
 	 * {@inheritDoc}
@@ -257,50 +327,72 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 	@Override
 	public Date validarFechaArchivo(String nombreArchivo, String mascaraArchivo, Date fechaComparacion) {
 
-		Date fechaArchivo;
-		try {
-			var arregloNombre = nombreArchivo
-					.replace(Constantes.SEPARADOR_FECHA_ARCHIVO, Constantes.SEPARADOR_EXTENSION_ARCHIVO)
-					.split(Constantes.REGEX_PUNTO);
-
-			String[] arregloMascara = mascaraArchivo.split(Constantes.SEPARADOR_FECHA_ARCHIVO);
-				if (arregloMascara[1].length() != arregloNombre[1].length()) {
-					throw new NegocioException(ApiResponseCode.ERROR_FECHA_NO_VALIDA.getCode(),
-						ApiResponseCode.ERROR_FECHA_NO_VALIDA.getDescription(),
-						ApiResponseCode.ERROR_FECHA_NO_VALIDA.getHttpStatus());
-			}
-
-			fechaArchivo = new SimpleDateFormat(arregloMascara[1]).parse(arregloNombre[1]);
-//			fechaArchivo = new Date();
-		} catch (ParseException | NullPointerException | ArrayIndexOutOfBoundsException e) {
-			throw new NegocioException(ApiResponseCode.ERROR_FECHA_NO_VALIDA.getCode(),
-					ApiResponseCode.ERROR_FECHA_NO_VALIDA.getDescription(),
-					ApiResponseCode.ERROR_FECHA_NO_VALIDA.getHttpStatus());
-		}		
-		if (Objects.nonNull(fechaComparacion) && !DateUtils.isSameDay(fechaComparacion, fechaArchivo)) {
+		Date fechaArchivo = this.obtenerFechaArchivo(nombreArchivo,mascaraArchivo);
+		
+		if ((!Objects.nonNull(fechaArchivo) {
 			throw new NegocioException(ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getCode(),
 					ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getDescription(),
 					ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getHttpStatus());
-
+		else {
+			if (Objects.nonNull(fechaComparacion) && !DateUtils.isSameDay(fechaComparacion, fechaArchivo)) {
+				throw new NegocioException(ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getCode(),
+					ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getDescription(),
+					ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getHttpStatus());
+			}
 		}
 		return fechaArchivo;
 	}
 
-	/**
+	/**n
 	 * {@inheritDoc}
 	 */
 	@Override
 	public Date obtenerFechaArchivo(String nombreArchivo, String mascaraArchivo) {
 
 		Date fechaArchivo = null;
+		String inicioNombre = mascaraArchivo.substring(0, 2);
 		try {
-			String[] arregloMascara = mascaraArchivo.split(Constantes.SEPARADOR_FECHA_ARCHIVO);
-
-			var arregloNombre = nombreArchivo
-					.replace(Constantes.SEPARADOR_FECHA_ARCHIVO, Constantes.SEPARADOR_EXTENSION_ARCHIVO)
-					.split(Constantes.REGEX_PUNTO);
-			if (arregloMascara[1].length() == arregloNombre[1].length()) {
-				fechaArchivo = new SimpleDateFormat(arregloMascara[1]).parse(arregloNombre[1]);
+			switch (inicioNombre) {
+			
+				case "AC": {
+					fecha = nombreArchivo.substring(5, 11);
+					mascaraFecha = maestroDefinicion.getMascaraArch().substring(5, 11);
+					fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
+				}
+	
+				case "BS": {
+					fecha = nombreArchivo.substring(8, 14);
+					mascaraFecha = maestroDefinicion.getMascaraArch().substring(8, 14);
+					fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
+				}
+				
+				case "BI": {
+					fecha = nombreArchivo.substring(8, 14);
+					mascaraFecha = maestroDefinicion.getMascaraArch().substring(8, 14);
+					fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
+				}
+				
+				case "TH": {
+					fecha = nombreArchivo.substring(14, 22);
+					mascaraFecha = maestroDefinicion.getMascaraArch().substring(14, 22);
+					fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
+				}
+				
+				case "SC": {
+					fecha = nombreArchivo.substring(4, 14);
+					mascaraFecha = maestroDefinicion.getMascaraArch().substring(4, 14);
+					fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
+				}
+				
+				default: {
+					String[] arregloMascara = mascaraArchivo.split(Constantes.SEPARADOR_FECHA_ARCHIVO);
+					var arregloNombre = nombreArchivo
+							.replace(Constantes.SEPARADOR_FECHA_ARCHIVO, Constantes.SEPARADOR_EXTENSION_ARCHIVO)
+							.split(Constantes.REGEX_PUNTO);
+					if (arregloMascara[1].length() == arregloNombre[1].length()) {
+						fechaArchivo = new SimpleDateFormat(arregloMascara[1]).parse(arregloNombre[1]);
+					}
+				}
 			}
 
 		} catch (ParseException | NullPointerException | ArrayIndexOutOfBoundsException e) {
