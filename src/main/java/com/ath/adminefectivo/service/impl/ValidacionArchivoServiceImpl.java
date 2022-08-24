@@ -4,7 +4,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Objects;
 
@@ -240,7 +242,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 
 				case "AC": {
 					fecha = nombreArchivo.substring(5, 11);
-					mascaraFecha = maestroDefinicion.getMascaraArch().substring(5, 11);
+					mascaraFecha = maestroDefinicion.getMascaraArch().substring(8, 14);
 					formatoFecha = new ArrayList();
 					formatoFecha.add(mascaraFecha);
 					if (!UtilsString.isFecha(fecha, formatoFecha)) {
@@ -248,8 +250,8 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 								ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
 								ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
 					}
+					break;
 				}
-	
 				case "BS": {
 					fecha = nombreArchivo.substring(8, 14);
 					mascaraFecha = maestroDefinicion.getMascaraArch().substring(8, 14);
@@ -260,6 +262,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 								ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
 								ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
 					}
+					break;
 				}
 				case "BI": {
 					fecha = nombreArchivo.substring(8, 14);
@@ -271,6 +274,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 								ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
 								ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
 					}
+					break;
 				}
 				case "TH": {
 					fecha = nombreArchivo.substring(14, 22);
@@ -282,6 +286,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 								ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
 								ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
 					}
+					break;
 				}
 				case "SC": {
 					fecha = nombreArchivo.substring(4, 14);
@@ -359,34 +364,34 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 			
 				case "AC": {
 					fecha = nombreArchivo.substring(5, 11);
-					mascaraFecha = mascaraArchivo.substring(5, 11);
+					mascaraFecha = mascaraArchivo.substring(8, 14);
 					fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
+					break;
 				}
-	
 				case "BS": {
 					fecha = nombreArchivo.substring(8, 14);
 					mascaraFecha = mascaraArchivo.substring(8, 14);
 					fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
+					break;
 				}
-				
 				case "BI": {
 					fecha = nombreArchivo.substring(8, 14);
 					mascaraFecha = mascaraArchivo.substring(8, 14);
 					fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
+					break;
 				}
-				
 				case "TH": {
 					fecha = nombreArchivo.substring(14, 22);
 					mascaraFecha = mascaraArchivo.substring(14, 22);
 					fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
+					break;
 				}
-				
 				case "SC": {
 					fecha = nombreArchivo.substring(4, 14);
 					mascaraFecha = mascaraArchivo.substring(4, 14);
 					fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
+					break;
 				}
-				
 				default: {
 					String[] arregloMascara = mascaraArchivo.split(Constantes.SEPARADOR_FECHA_ARCHIVO);
 					var arregloNombre = nombreArchivo
