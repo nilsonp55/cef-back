@@ -79,8 +79,23 @@ public interface ArchivosCargadosRepository
 	 * @author duvan.naranjo
 	 */
 	@Query("select ac from ArchivosCargados ac "
-		 + "where estadoCargue ='OK' and cast(fechaArchivo as date) = cast(current_date as date) and "
+		 + "where estadoCargue = ?3 and cast(fechaArchivo as date) = cast(?2 as date) and "
 		 + "idModeloArchivo IN (select idMaestroDefinicionArchivo from MaestroDefinicionArchivo "
 		 + "where agrupador = ?1)")
-	List<ArchivosCargados> getRegistrosCargadosSinProcesarDeHoy(String agrupador);
+	List<ArchivosCargados> getRegistrosCargadosSinProcesarDeHoy(String agrupador, Date fecha, String estado);
+
+	/**
+	 * Consulta de un archivo cargado en un estado , con un nombre determinado 
+	 * y que pertenece a un idModelo
+	 * @param estadoCargue
+	 * @param nombreArchivo
+	 * @param idModeloArchivo
+	 * @return List<ArchivosCargados>
+	 * @author rparra
+	 */
+	@Query("select ac from ArchivosCargados ac "
+		 + "where estadoCargue = ?1 and nombreArchivo = ?2 and "
+		 + "idModeloArchivo = ?3)")
+	List<ArchivosCargados> getRegistrosCargadosPorNombreyEstado(String estadoCargue, String nombreArchivo, String idModeloArchivo);
+
 }

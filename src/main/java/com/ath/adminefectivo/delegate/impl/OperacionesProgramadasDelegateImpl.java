@@ -41,6 +41,9 @@ public class OperacionesProgramadasDelegateImpl implements IOperacionesProgramad
 	@Autowired
 	IMaestroDefinicionArchivoService maestroDefinicionArchivoService;
 	
+	@Autowired
+	IParametroService parametroService;
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -86,8 +89,16 @@ public class OperacionesProgramadasDelegateImpl implements IOperacionesProgramad
 	}
 	
 	private void validarExistenciayFechaArchivos(String agrupador) {
+		
+		Date fechaArchivo = parametroService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
+		if(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_DEFINITIVO.equals(agrupador)) {
+			//TODO restar días no hábiles en lugar de 1
+			fechaArchivo = UtilsString.restarDiasAFecha(fechaArchivo,-1);
+		}
+		
 		List<ArchivosCargados> listadoArchivosCargados = archivosCargadosService
-									.listadoArchivosCargadosSinProcesarDefinitiva(agrupador);
+							.listadoArchivosCargadosSinProcesarDefinitiva(agrupador, fechaArchivo,
+																Dominios.ESTADO_VALIDACION_CORRECTO);
 		if (agrupador.equals(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_PRELIMINARES) &&
 			(listadoArchivosCargados.size() == 0 || 
 			listadoArchivosCargados.size() > Constantes.NUMERO_ARCHIVOS_CARGADOS_PRELIMINAR)){
