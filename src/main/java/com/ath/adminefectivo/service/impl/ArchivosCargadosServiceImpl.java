@@ -173,7 +173,7 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 			fechaGuardar = UtilsString.restarDiasAFecha(validacionArchivo.getFechaArchivo(), -1);
 		}
 		if (Dominios.ESTADO_VALIDACION_CORRECTO.equals(validacionArchivo.getEstadoValidacion()) ) {
-			this.renombrarArchivoOK(validacionArchivo);
+			this.cambiarEstadoArchivoOK(validacionArchivo);
 		}
 		ArchivosCargados archivosCargados = ArchivosCargados.builder()
 				.estado(Constantes.REGISTRO_ACTIVO)
@@ -363,7 +363,7 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 
 		if (!Objects.isNull(archivosCargados)) {
 			archivosCargados.forEach(arch -> {
-				var archivoEntity = arch.get();
+				var archivoEntity = arch;
 				archivoEntity.setEstadoCargue(Dominios.ESTADO_VALIDACION_REEMPLAZADO);
 				archivosCargadosRepository.save(archivoEntity);
 				

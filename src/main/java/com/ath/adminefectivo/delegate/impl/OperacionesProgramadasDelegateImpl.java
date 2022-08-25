@@ -1,5 +1,6 @@
 package com.ath.adminefectivo.delegate.impl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
+import com.ath.adminefectivo.constantes.Parametros;
 import com.ath.adminefectivo.delegate.IOperacionesProgramadasDelegate;
 import com.ath.adminefectivo.dto.ArchivosCargadosDTO;
 import com.ath.adminefectivo.dto.LogProcesoDiarioDTO;
@@ -21,6 +23,8 @@ import com.ath.adminefectivo.service.IDominioService;
 import com.ath.adminefectivo.service.ILogProcesoDiarioService;
 import com.ath.adminefectivo.service.IMaestroDefinicionArchivoService;
 import com.ath.adminefectivo.service.IOperacionesProgramadasService;
+import com.ath.adminefectivo.service.IParametroService;
+import com.ath.adminefectivo.utils.UtilsString;
 
 @Service
 public class OperacionesProgramadasDelegateImpl implements IOperacionesProgramadasDelegate {
@@ -92,7 +96,7 @@ public class OperacionesProgramadasDelegateImpl implements IOperacionesProgramad
 		
 		Date fechaArchivo = parametroService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
 		if(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_DEFINITIVO.equals(agrupador)) {
-			//TODO restar días no hábiles en lugar de 1
+			//TODO restar dï¿½as no hï¿½biles en lugar de 1
 			fechaArchivo = UtilsString.restarDiasAFecha(fechaArchivo,-1);
 		}
 		
