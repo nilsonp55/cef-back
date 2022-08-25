@@ -227,7 +227,9 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 			
 		String delimitador = lecturaArchivoService.obtenerDelimitadorArchivo(maestroDefinicion);
 		List<String[]> contenido = lecturaArchivoService.leerArchivo(dowloadFile.getFile(), delimitador);
-		
+		Date fechaActual = parametrosService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
+		var fechaArchivo = validacionArchivoService.validarFechaArchivo(nombreArchivo,
+				maestroDefinicion.getMascaraArch(), fechaActual);
 		this.validacionArchivo = ValidacionArchivoDTO.builder().nombreArchivo(nombreArchivo)
 				.descripcion(maestroDefinicion.getDescripcionArch()).fechaArchivo(fechaArchivo)
 				.maestroDefinicion(maestroDefinicion).url(url)

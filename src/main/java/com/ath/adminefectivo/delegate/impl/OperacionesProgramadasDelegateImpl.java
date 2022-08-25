@@ -21,6 +21,7 @@ import com.ath.adminefectivo.service.IDominioService;
 import com.ath.adminefectivo.service.ILogProcesoDiarioService;
 import com.ath.adminefectivo.service.IMaestroDefinicionArchivoService;
 import com.ath.adminefectivo.service.IOperacionesProgramadasService;
+import com.ath.adminefectivo.service.IParametroService;
 
 @Service
 public class OperacionesProgramadasDelegateImpl implements IOperacionesProgramadasDelegate {
@@ -41,12 +42,9 @@ public class OperacionesProgramadasDelegateImpl implements IOperacionesProgramad
 	@Autowired
 	IMaestroDefinicionArchivoService maestroDefinicionArchivoService;
 	
-<<<<<<< HEAD
-=======
 	@Autowired
 	IParametroService parametroService;
-	
->>>>>>> 630dd22c07819645beda0dab45f2315ee0d3011e
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -101,7 +99,7 @@ public class OperacionesProgramadasDelegateImpl implements IOperacionesProgramad
 		
 		Date fechaArchivo = parametroService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
 		if(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_DEFINITIVO.equals(agrupador)) {
-			//TODO restar días no hábiles en lugar de 1
+			//TODO restar dï¿½as no hï¿½biles en lugar de 1
 			fechaArchivo = UtilsString.restarDiasAFecha(fechaArchivo,-1);
 		}
 		
