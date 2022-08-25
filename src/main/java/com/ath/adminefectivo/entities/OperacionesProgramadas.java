@@ -3,6 +3,7 @@ package com.ath.adminefectivo.entities;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,8 +17,9 @@ import javax.persistence.TemporalType;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Entidad encargada de manejar la logica de la tabla OPERACIONES_PROGRAMADAS
@@ -26,7 +28,8 @@ import lombok.NoArgsConstructor;
  */
 @Entity
 @Table(name = "OPERACIONES_PROGRAMADAS")
-@Data
+@Setter
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -112,8 +115,9 @@ public class OperacionesProgramadas {
 	@OneToMany(mappedBy = "operacionesProgramadas")
 	private List<ConciliacionServicios> conciliacionServicios;
 	
-	@OneToMany(mappedBy = "operacionesProgramadas")
+	@OneToMany(mappedBy = "operacionesProgramadas", cascade = CascadeType.ALL)
 	private List<DetalleOperacionesProgramadas> detalleOperacionesProgramadas;
+	
 	@Column(name = "COMISION_BR")
 	private Integer comisionBR;
 	

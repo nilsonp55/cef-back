@@ -16,7 +16,8 @@ public final class Constantes {
 	public static final String FECHA_PATTERN = "dd-MM-yyyy";
 	public static final String FECHA_HORA_PATTERN = "dd-MM-yyyy hh:mm:ss a";
 	public static final String FORMATO_FECHA_ARCHIVOS = "ddMMyyyyhhmmss";
-	public static final String REGISTRO_ACTIVO = "ACTIVO";
+	public static final String ESTADO_MAESTRO_DEFINICION_ACTIVO = "ACTIVO";
+	public static final String REGISTRO_ACTIVO = "ACT";
 	public static final String REGISTRO_INACTIVO = "INA";
 	public static final String SI = "SI";
 	public static final String NO = "NO";
@@ -369,7 +370,7 @@ public final class Constantes {
 	public static final String VALOR_ENTRADA = "ENTRADA";
 	
 	/**
-	 * PROGRAMACION DEFINITIVA
+	 * PROGRAMACION DEFINITIVA OFICINAS
 	 */
 	/**
 	 * Constante para indicar el valor FECHA ENTREGA en el archivo de OFICINAS (PROG. DEFINTIVA)
@@ -421,6 +422,10 @@ public final class Constantes {
 	 */
 	public static final String CAMPO_DETALLE_ARCHIVO_DENOMINACION = "DENOMINACION";
 
+	/**
+	 * PROGRAMACION DEFINITIVA CAJEROS
+	 */
+	/**
 	/**
 	 * Constante para indicar el valor nombrebanco en el archivo de CAJEROS (PROG. DEFINTIVA)
 	 */

@@ -1,7 +1,6 @@
 package com.ath.adminefectivo.service.impl;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -167,7 +166,8 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 	@Transactional
 	public Boolean persistirDetalleArchivoCargado(ValidacionArchivoDTO validacionArchivo, boolean soloErrores) {
 		Date fechaGuardar;
-		if (validacionArchivo.getMaestroDefinicion().getAgrupador().equals(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_PRELIMINARES)) {
+		if (validacionArchivo.getMaestroDefinicion().getAgrupador()
+							.equals(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_PRELIMINARES)) {
 			fechaGuardar = validacionArchivo.getFechaArchivo();
 		}else {
 			fechaGuardar = UtilsString.restarDiasAFecha(validacionArchivo.getFechaArchivo(), -1);
@@ -175,8 +175,7 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 		ArchivosCargados archivosCargados = ArchivosCargados.builder()
 				.estado(Constantes.REGISTRO_ACTIVO)
 				.estadoCargue(validacionArchivo.getEstadoValidacion())
-				.idModeloArchivo(validacionArchivo.getMaestroDefinicion()
-				.getIdMaestroDefinicionArchivo())
+				.idModeloArchivo(validacionArchivo.getMaestroDefinicion().getIdMaestroDefinicionArchivo())
 				.nombreArchivo(validacionArchivo.getNombreArchivo())
 				.numeroErrores(validacionArchivo.getNumeroErrores())
 				.numeroRegistros(validacionArchivo.getNumeroRegistros())
@@ -188,9 +187,12 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 		
 		if (Objects.nonNull(validacionArchivo.getDescripcionErrorEstructura())) {
 
-			FallasArchivo fallasArchivo = FallasArchivo.builder().idArchivo(archivoCargadoEntity.getIdArchivo())
+			FallasArchivo fallasArchivo = FallasArchivo.builder()
+					.idArchivo(archivoCargadoEntity.getIdArchivo())
 					.descripcionError(validacionArchivo.getDescripcionErrorEstructura())
-					.estado(Constantes.REGISTRO_ACTIVO).usuarioCreacion("ATH").fechaCreacion(new Date()).build();
+					.estado(Constantes.REGISTRO_ACTIVO)
+					.usuarioCreacion("ATH")
+					.fechaCreacion(new Date()).build();
 
 			archivosCargados.setFallasArchivos(fallasArchivo);
 		}
@@ -233,6 +235,15 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 	public void actualizarArchivosCargados(ArchivosCargadosDTO archivosCargadosDTO) {
 		archivosCargadosRepository.save(ArchivosCargadosDTO.CONVERTER_ENTITY.apply(archivosCargadosDTO));
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<ArchivosCargados> listadoArchivosCargadosSinProcesarDefinitiva(String agrupador) {
+		return archivosCargadosRepository.getRegistrosCargadosSinProcesarDeHoy(agrupador);
+
+	}
 
 	/**
 	 * Método encargado de organizar y separar las informacion de las lineas
@@ -254,26 +265,33 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 
 			var registrosCargadosPk = RegistrosCargadosPK.builder().consecutivoRegistro(lineas.getNumeroLinea())
 					.idArchivo(idArchivo).build();
-			var registroCargado = RegistrosCargados.builder().estado(Constantes.REGISTRO_ACTIVO)
-					.estadoRegistro(lineas.getEstado()).contenido(lineas.getContenidoTxt())
-					.tipoRegistro(lineas.getTipo()).usuarioCreacion("ATH").fechaCreacion(new Date())
+			var registroCargado = RegistrosCargados.builder()
+					.estado(Constantes.REGISTRO_ACTIVO)
+					.estadoRegistro(lineas.getEstado())
+					.contenido(lineas.getContenidoTxt())
+					.tipoRegistro(lineas.getTipo())
+					.usuarioCreacion("ATH")
+					.fechaCreacion(new Date())
 					.id(registrosCargadosPk).build();
 
 			if (Objects.nonNull(lineas.getCampos()) && !lineas.getCampos().isEmpty()) {
 				List<FallasRegistro> fallasRegistro = new ArrayList<>();
 				lineas.getCampos().forEach(camp -> {
 
-					var fallasRegistroPk = FallasRegistroPK.builder().idArchivo(idArchivo)
+					var fallasRegistroPk = FallasRegistroPK.builder()
+							.idArchivo(idArchivo)
 							.consecutivoRegistro((long) lineas.getNumeroLinea())
 							.numeroCampo((long) camp.getNumeroCampo()).build();
-					fallasRegistro.add(FallasRegistro.builder().contenido(camp.getContenido())
-							.descripcionError(camp.getMensajeErrorTxt()).estado(Constantes.REGISTRO_ACTIVO)
-							.usuarioCreacion("ATH").fechaCreacion(new Date()).id(fallasRegistroPk).build());
+					fallasRegistro.add(FallasRegistro.builder()
+							.contenido(camp.getContenido())
+							.descripcionError(camp.getMensajeErrorTxt())
+							.estado(Constantes.REGISTRO_ACTIVO)
+							.usuarioCreacion("ATH")
+							.fechaCreacion(new Date())
+							.id(fallasRegistroPk).build());
 				});
 				registroCargado.setFallasRegistro(fallasRegistro);
-
 			}
-
 			registrosCargados.add(registroCargado);
 		}
 
