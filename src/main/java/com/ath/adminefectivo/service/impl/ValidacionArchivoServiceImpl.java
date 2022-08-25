@@ -243,7 +243,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 					mascaraFecha = maestroDefinicion.getMascaraArch().substring(5, 11);
 					formatoFecha = new ArrayList();
 					formatoFecha.add(mascaraFecha);
-					if (!utilsString.isFecha(fecha, formatoFecha)) {
+					if (!UtilsString.isFecha(fecha, formatoFecha)) {
 						throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
 								ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
 								ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
@@ -255,7 +255,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 					mascaraFecha = maestroDefinicion.getMascaraArch().substring(8, 14);
 					formatoFecha = new ArrayList();
 					formatoFecha.add(mascaraFecha);
-					if (!utilsString.isFecha(fecha, formatoFecha)) {
+					if (!UtilsString.isFecha(fecha, formatoFecha)) {
 						throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
 								ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
 								ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
@@ -266,7 +266,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 					mascaraFecha = maestroDefinicion.getMascaraArch().substring(8, 14);
 					formatoFecha = new ArrayList();
 					formatoFecha.add(mascaraFecha);
-					if (!utilsString.isFecha(fecha, formatoFecha)) {
+					if (!UtilsString.isFecha(fecha, formatoFecha)) {
 						throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
 								ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
 								ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
@@ -277,7 +277,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 					mascaraFecha = maestroDefinicion.getMascaraArch().substring(14, 22);
 					formatoFecha = new ArrayList();
 					formatoFecha.add(mascaraFecha);
-					if (!utilsString.isFecha(fecha, formatoFecha)) {
+					if (!UtilsString.isFecha(fecha, formatoFecha)) {
 						throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
 								ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
 								ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
@@ -288,7 +288,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 					mascaraFecha = maestroDefinicion.getMascaraArch().substring(4, 14);
 					formatoFecha = new ArrayList();
 					formatoFecha.add(mascaraFecha);
-					if (!utilsString.isFecha(fecha, formatoFecha)) {
+					if (!UtilsString.isFecha(fecha, formatoFecha)) {
 						throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
 								ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
 								ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
@@ -329,10 +329,11 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 
 		Date fechaArchivo = this.obtenerFechaArchivo(nombreArchivo,mascaraArchivo);
 		
-		if ((!Objects.nonNull(fechaArchivo) {
+		if (!Objects.nonNull(fechaArchivo)){
 			throw new NegocioException(ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getCode(),
 					ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getDescription(),
 					ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getHttpStatus());
+		}
 		else {
 			if (Objects.nonNull(fechaComparacion) && !DateUtils.isSameDay(fechaComparacion, fechaArchivo)) {
 				throw new NegocioException(ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getCode(),
@@ -351,36 +352,38 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 
 		Date fechaArchivo = null;
 		String inicioNombre = mascaraArchivo.substring(0, 2);
+		String fecha;
+		String mascaraFecha;
 		try {
 			switch (inicioNombre) {
 			
 				case "AC": {
 					fecha = nombreArchivo.substring(5, 11);
-					mascaraFecha = maestroDefinicion.getMascaraArch().substring(5, 11);
+					mascaraFecha = mascaraArchivo.substring(5, 11);
 					fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
 				}
 	
 				case "BS": {
 					fecha = nombreArchivo.substring(8, 14);
-					mascaraFecha = maestroDefinicion.getMascaraArch().substring(8, 14);
+					mascaraFecha = mascaraArchivo.substring(8, 14);
 					fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
 				}
 				
 				case "BI": {
 					fecha = nombreArchivo.substring(8, 14);
-					mascaraFecha = maestroDefinicion.getMascaraArch().substring(8, 14);
+					mascaraFecha = mascaraArchivo.substring(8, 14);
 					fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
 				}
 				
 				case "TH": {
 					fecha = nombreArchivo.substring(14, 22);
-					mascaraFecha = maestroDefinicion.getMascaraArch().substring(14, 22);
+					mascaraFecha = mascaraArchivo.substring(14, 22);
 					fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
 				}
 				
 				case "SC": {
 					fecha = nombreArchivo.substring(4, 14);
-					mascaraFecha = maestroDefinicion.getMascaraArch().substring(4, 14);
+					mascaraFecha = mascaraArchivo.substring(4, 14);
 					fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
 				}
 				
