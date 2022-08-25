@@ -81,6 +81,8 @@ public class TransaccionesContablesDTO {
 	private String referencia2;
 	
 	private TransaccionesInternasDTO idTransaccionesInternas;
+
+	private String cuentaAuxiliar;
 	
 	
 	/**
@@ -109,6 +111,7 @@ public class TransaccionesContablesDTO {
         transaccionesContables.setReferencia2(t.getReferencia2());
         transaccionesContables.setCodigoCentro(t.getCodigoCentro());
         transaccionesContables.setCuentaContable(t.getCuentaContable());
+        transaccionesContables.setCuentaAuxiliar(t.getCuentaAuxiliar());
         
 
         if(!Objects.isNull(t.getBancoAval())) {
@@ -145,7 +148,7 @@ public class TransaccionesContablesDTO {
         transaccionesContablesDTO.setReferencia2(t.getReferencia2());
         transaccionesContablesDTO.setCodigoCentro(t.getCodigoCentro());
         transaccionesContablesDTO.setCuentaContable(t.getCuentaContable());
-        
+        transaccionesContablesDTO.setCuentaAuxiliar(t.getCuentaAuxiliar());
         
 
         if(!Objects.isNull(t.getBancoAval())) {

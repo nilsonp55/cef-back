@@ -26,6 +26,7 @@ import com.ath.adminefectivo.service.IOperacionesProgramadasService;
 import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.utils.UtilsString;
 
+
 @Service
 public class OperacionesProgramadasDelegateImpl implements IOperacionesProgramadasDelegate {
 
@@ -47,7 +48,7 @@ public class OperacionesProgramadasDelegateImpl implements IOperacionesProgramad
 	
 	@Autowired
 	IParametroService parametroService;
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -93,13 +94,13 @@ public class OperacionesProgramadasDelegateImpl implements IOperacionesProgramad
 	}
 	
 	private void validarExistenciayFechaArchivos(String agrupador) {
-		
+
 		Date fechaArchivo = parametroService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
 		if(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_DEFINITIVO.equals(agrupador)) {
-			//TODO restar d�as no h�biles en lugar de 1
+			//TODO restar días no hábiles en lugar de 1
 			fechaArchivo = UtilsString.restarDiasAFecha(fechaArchivo,-1);
 		}
-		
+
 		List<ArchivosCargados> listadoArchivosCargados = archivosCargadosService
 							.listadoArchivosCargadosSinProcesarDefinitiva(agrupador, fechaArchivo,
 																Dominios.ESTADO_VALIDACION_CORRECTO);

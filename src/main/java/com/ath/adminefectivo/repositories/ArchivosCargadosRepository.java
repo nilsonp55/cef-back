@@ -97,5 +97,4 @@ public interface ArchivosCargadosRepository
 		 + "where estadoCargue = ?1 and nombreArchivo = ?2 and "
 		 + "idModeloArchivo = ?3")
 	List<ArchivosCargados> getRegistrosCargadosPorNombreyEstado(String estadoCargue, String nombreArchivo, String idModeloArchivo);
-
 }

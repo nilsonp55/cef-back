@@ -329,7 +329,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 
 		Date fechaArchivo = this.obtenerFechaArchivo(nombreArchivo,mascaraArchivo);
 		
-		if (!Objects.nonNull(fechaArchivo)) {
+		if (!Objects.nonNull(fechaArchivo)){
 			throw new NegocioException(ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getCode(),
 					ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getDescription(),
 					ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getHttpStatus());

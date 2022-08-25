@@ -458,7 +458,7 @@ public enum ApiResponseCode {
 	/**
 	 * Ocurrió un error al consultar el Log Proceso Diario
 	 */
-	ERROR_FALTAN_ARCHIVOS_POR_CARGAR("E931", "Error, Faltan archivos de Programacion Definitiva por cargar", HttpStatus.PRECONDITION_FAILED),
+	ERROR_FALTAN_ARCHIVOS_POR_CARGAR("E931", "Error, El numero de archivos a cargar no es valido", HttpStatus.PRECONDITION_FAILED),
 
 	/**
 	 * Ocurrió un error al consultar el Log Proceso Diario
@@ -468,8 +468,12 @@ public enum ApiResponseCode {
 	/**
 	 * Ocurrió un error al consultar el Log Proceso Diario
 	 */
-	ERROR_NO_CUMPLE_MINIMO_ARCHIVOS_CARGADOS_CERTIFICACION("E933", "Error, No cumple con el minimo de archivos cargados certificacion", HttpStatus.PRECONDITION_FAILED);
+	ERROR_NO_CUMPLE_MINIMO_ARCHIVOS_CARGADOS_CERTIFICACION("E933", "Error, No cumple con el minimo de archivos cargados certificacion", HttpStatus.PRECONDITION_FAILED),
 
+	/**
+	 * Error no formato de fecha o fecha no valida
+	 */
+	ERROR_FECHA_CONTABILIDAD("E934", "Error, Ocurrio un error en la conversion de la fecha del sistema para el proceso de contabilidad. ", HttpStatus.PRECONDITION_FAILED);
 	
 	
 	
