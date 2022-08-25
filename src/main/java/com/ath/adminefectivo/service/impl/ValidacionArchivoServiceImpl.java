@@ -224,24 +224,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 	 */
 	@Override
 	public boolean validarNombreArchivo(MaestrosDefinicionArchivoDTO maestroDefinicion, String nombreArchivo) {
-<<<<<<< HEAD
-		String[] arregloNombre = nombreArchivo
-				.replace(Constantes.SEPARADOR_FECHA_ARCHIVO, Constantes.SEPARADOR_EXTENSION_ARCHIVO)
-				.split(Constantes.EXPRESION_REGULAR_PUNTO);
-		String[] arregloMascara = maestroDefinicion.getMascaraArch().split(Constantes.SEPARADOR_FECHA_ARCHIVO);
-		if (arregloNombre.length != 3 || arregloMascara.length != 2
-				|| !StringUtils.equalsIgnoreCase(arregloNombre[0], arregloMascara[0])
-				|| arregloMascara[1].length() != arregloNombre[1].length()) {
-			throw new NegocioException(ApiResponseCode.ERROR_MASCARA_NO_VALIDA.getCode(),
-					ApiResponseCode.ERROR_MASCARA_NO_VALIDA.getDescription(),
-					ApiResponseCode.ERROR_MASCARA_NO_VALIDA.getHttpStatus());
-		}
-		if (!StringUtils.equalsIgnoreCase(arregloNombre[2], maestroDefinicion.getExtension())) {
-			throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
-					ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
-					ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
-=======
-		
+
 		if (maestroDefinicion.getAgrupador().equals("CERTI")) {
 			String[] arregloNombre = nombreArchivo.split(Constantes.EXPRESION_REGULAR_PUNTO);
 			String inicioNombre = arregloNombre[0].substring(0, 2);
@@ -270,8 +253,8 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 					break;
 				}
 				case "BS": {
-					fecha = nombreArchivo.substring(8, 14);
-					mascaraFecha = maestroDefinicion.getMascaraArch().substring(8, 14);
+					fecha = nombreArchivo.substring(8, 13);
+					mascaraFecha = maestroDefinicion.getMascaraArch().substring(13, 18);
 					formatoFecha = new ArrayList();
 					formatoFecha.add(mascaraFecha);
 					if (!UtilsString.isFecha(fecha, formatoFecha)) {
@@ -282,8 +265,8 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 					break;
 				}
 				case "BI": {
-					fecha = nombreArchivo.substring(8, 14);
-					mascaraFecha = maestroDefinicion.getMascaraArch().substring(8, 14);
+					fecha = nombreArchivo.substring(8, 13);
+					mascaraFecha = maestroDefinicion.getMascaraArch().substring(13, 18);
 					formatoFecha = new ArrayList();
 					formatoFecha.add(mascaraFecha);
 					if (!UtilsString.isFecha(fecha, formatoFecha)) {
@@ -294,8 +277,8 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 					break;
 				}
 				case "TH": {
-					fecha = nombreArchivo.substring(14, 22);
-					mascaraFecha = maestroDefinicion.getMascaraArch().substring(14, 22);
+					fecha = nombreArchivo.substring(11, 18);
+					mascaraFecha = maestroDefinicion.getMascaraArch().substring(19, 26);
 					formatoFecha = new ArrayList();
 					formatoFecha.add(mascaraFecha);
 					if (!UtilsString.isFecha(fecha, formatoFecha)) {
@@ -306,8 +289,8 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 					break;
 				}
 				case "SC": {
-					fecha = nombreArchivo.substring(4, 14);
-					mascaraFecha = maestroDefinicion.getMascaraArch().substring(4, 14);
+					fecha = nombreArchivo.substring(4, 13);
+					mascaraFecha = maestroDefinicion.getMascaraArch().substring(3, 10);
 					formatoFecha = new ArrayList();
 					formatoFecha.add(mascaraFecha);
 					if (!UtilsString.isFecha(fecha, formatoFecha)) {
@@ -336,7 +319,6 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 						ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
 
 			}
->>>>>>> develop
 		}
 		return true;
 	}
@@ -349,30 +331,10 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 	@Override
 	public Date validarFechaArchivo(String nombreArchivo, String mascaraArchivo, Date fechaComparacion) {
 
-<<<<<<< HEAD
-		Date fechaArchivo;
-		try {
-			var arregloNombre = nombreArchivo
-					.replace(Constantes.SEPARADOR_FECHA_ARCHIVO, Constantes.SEPARADOR_EXTENSION_ARCHIVO)
-					.split(Constantes.REGEX_PUNTO);
-			String[] arregloMascara = mascaraArchivo.split(Constantes.SEPARADOR_FECHA_ARCHIVO);
-				if (arregloMascara[1].length() != arregloNombre[1].length()) {
-					throw new NegocioException(ApiResponseCode.ERROR_FECHA_NO_VALIDA.getCode(),
-						ApiResponseCode.ERROR_FECHA_NO_VALIDA.getDescription(),
-						ApiResponseCode.ERROR_FECHA_NO_VALIDA.getHttpStatus());
-			}
-			fechaArchivo = new SimpleDateFormat(arregloMascara[1]).parse(arregloNombre[1]);
-		} catch (ParseException | NullPointerException | ArrayIndexOutOfBoundsException e) {
-			throw new NegocioException(ApiResponseCode.ERROR_FECHA_NO_VALIDA.getCode(),
-					ApiResponseCode.ERROR_FECHA_NO_VALIDA.getDescription(),
-					ApiResponseCode.ERROR_FECHA_NO_VALIDA.getHttpStatus());
-		}		
-		if (Objects.nonNull(fechaComparacion) && !DateUtils.isSameDay(fechaComparacion, fechaArchivo)) {
-=======
 		Date fechaArchivo = this.obtenerFechaArchivo(nombreArchivo,mascaraArchivo);
 		
 		if (!Objects.nonNull(fechaArchivo)){
->>>>>>> develop
+
 			throw new NegocioException(ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getCode(),
 					ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getDescription(),
 					ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getHttpStatus());
@@ -407,26 +369,26 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 					break;
 				}
 				case "BS": {
-					fecha = nombreArchivo.substring(8, 14);
-					mascaraFecha = mascaraArchivo.substring(8, 14);
+					fecha = nombreArchivo.substring(8, 13);
+					mascaraFecha = mascaraArchivo.substring(13, 18);
 					fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
 					break;
 				}
 				case "BI": {
-					fecha = nombreArchivo.substring(8, 14);
-					mascaraFecha = mascaraArchivo.substring(8, 14);
+					fecha = nombreArchivo.substring(8, 13);
+					mascaraFecha = mascaraArchivo.substring(13, 18);
 					fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
 					break;
 				}
 				case "TH": {
-					fecha = nombreArchivo.substring(14, 22);
-					mascaraFecha = mascaraArchivo.substring(14, 22);
+					fecha = nombreArchivo.substring(11, 18);
+					mascaraFecha = mascaraArchivo.substring(19, 26);
 					fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
 					break;
 				}
 				case "SC": {
-					fecha = nombreArchivo.substring(4, 14);
-					mascaraFecha = mascaraArchivo.substring(4, 14);
+					fecha = nombreArchivo.substring(4, 13);
+					mascaraFecha = mascaraArchivo.substring(3, 10);
 					fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
 					break;
 				}
