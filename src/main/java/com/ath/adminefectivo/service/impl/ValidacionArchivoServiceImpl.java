@@ -4,9 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Objects;
 
@@ -100,12 +98,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 				if (!erroresCampos.isEmpty()) {
 					lineaDTO.setCampos(erroresCampos);
 					lineaDTO.setEstado(Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO);
-					System.out.println("-------->");
-					System.out.println(validacionArchivo.getNumeroErrores());
-					System.out.println(erroresCampos.size());
-					System.out.println("******************");
 					validacionArchivo.setNumeroErrores(validacionArchivo.getNumeroErrores()+(erroresCampos.size()));
-					System.out.println(validacionArchivo.getNumeroErrores());
 				} else {
 					lineaDTO.setEstado(Dominios.ESTADO_VALIDACION_CORRECTO);
 				}
