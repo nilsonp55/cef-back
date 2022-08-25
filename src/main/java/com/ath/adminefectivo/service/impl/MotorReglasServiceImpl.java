@@ -394,8 +394,13 @@ public class MotorReglasServiceImpl implements IMotorReglasService {
 	 */
 	public boolean compilarRegla(ReglasDetalleArchivoDTO reglaVO, String valorCampo) {
 
-		ITipoReglaInterface tipoReglaInterface = tipoReglaFactory.getInstance(reglaVO.getTipoRegla());
-		return tipoReglaInterface.ejecutarRegla(reglaVO, valorCampo);
+		if ( valorCampo != null && !"".equals(valorCampo) ) {
+			ITipoReglaInterface tipoReglaInterface = tipoReglaFactory.getInstance(reglaVO.getTipoRegla());
+			return tipoReglaInterface.ejecutarRegla(reglaVO, valorCampo);
+		}
+		else {
+			return true;
+		}
 	}
 
 }

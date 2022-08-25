@@ -30,6 +30,7 @@ import com.ath.adminefectivo.dto.PuntosDTO;
 import com.ath.adminefectivo.dto.RegistrosCargadosDTO;
 import com.ath.adminefectivo.dto.TransportadorasDTO;
 import com.ath.adminefectivo.dto.compuestos.DetalleOperacionesDTO;
+import com.ath.adminefectivo.dto.compuestos.OperacionIntradiaDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionesProgramadasNombresDTO;
 import com.ath.adminefectivo.dto.compuestos.intradiaPruebaDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
@@ -279,6 +280,18 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		}
 		return listadoOperacionesProgramadasDTO;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<OperacionIntradiaDTO> consultarOperacionesIntradia(Date fechaInicio, Date fechaFin) {
+		List<OperacionIntradiaDTO> listadoOperacionesIntradia = operacionesProgramadasRepository.consultaOperacionesIntradia_Entrada(fechaInicio, fechaFin, "ENTRADA", "VENTA");
+		listadoOperacionesIntradia.addAll(operacionesProgramadasRepository.consultaOperacionesIntradia_Salida(fechaInicio, fechaFin, "SALIDA", "VENTA"));				
+		
+		return listadoOperacionesIntradia;
+
+	}
 
 	/**
 	 * ------------------------------------------------- INICIO METODOS PRIVADOS --------------------------------------------------------------------
@@ -345,12 +358,23 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		} else if (archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IPPSV)
 				&& tipoServicio.toUpperCase().trim().contains(Dominios.TIPO_OPERA_CAMBIO)) {
 			operacionProgramada = this.generarOperacionCambio(contenido, detalleArchivo, archivo);
+		} else if (archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IPPSV)
+				&& tipoServicio.toUpperCase().trim().contains(Dominios.TIPO_OPERA_INTERCAMBIO)) {
+			operacionProgramada = this.generarOperacionIntercambio(contenido, detalleArchivo, archivo);
+		
 		} else if (archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_ISTRC)
 				&& tipoServicio.toUpperCase().trim().contains(Dominios.TIPO_OPERA_INTERCAMBIO)) {
 			operacionProgramada = this.generarOperacionIntercambio(contenido, detalleArchivo, archivo);
 		} else if (archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_ISTRC)
 				&& tipoServicio.toUpperCase().trim().contains(Dominios.TIPO_OPERA_TRASLADO)) {
 			operacionProgramada = this.generarOperacionTraslado(contenido, detalleArchivo, archivo);
+		} else if (archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_ISTRC)
+				&& tipoServicio.toUpperCase().trim().contains(Dominios.TIPO_OPERA_CAMBIO)) {
+			operacionProgramada = this.generarOperacionCambio(contenido, detalleArchivo, archivo);
+		} else if (archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_ISTRC)
+				&& tipoServicio.toUpperCase().trim().contains(Dominios.TIPO_OPERA_VENTA)) {
+			operacionProgramada = this.generarOperacionVenta(contenido, detalleArchivo, archivo);
+			
 		} else if (archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_ISRPO)){
 			operacionProgramada = this.procesarArchivoOficinas(contenido, detalleArchivo, archivo);
 		} else if (archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_ISRPC)) {
@@ -891,7 +915,9 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		operacionesProgramadasDTO.setIdNegociacion(idNegoc);
 		operacionesProgramadasDTO.setTasaNegociacion(tasaNegociacion);
 		operacionesProgramadasDTO.setEstadoOperacion(Dominios.ESTADOS_OPERA_PROGRAMADO);
-		operacionesProgramadasDTO.setEstadoConciliacion(Dominios.ESTADO_CONCILIACION_NO_CONCILIADO);
+		
+		operacionesProgramadasDTO.setEstadoConciliacion(dominioService.valorTextoDominio(
+				Constantes.DOMINIO_ESTADO_CONCILIACION,Dominios.ESTADO_CONCILIACION_NO_CONCILIADO));
 		operacionesProgramadasDTO.setTipoServicio(Dominios.TIPO_SERVICIO_PROGRAMADA);
 		operacionesProgramadasDTO.setUsuarioCreacion("ATH");
 		operacionesProgramadasDTO.setFechaCreacion(new Date());
@@ -1774,12 +1800,6 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
 	@Override
 	public Boolean procesarArchivos(List<ArchivosCargados> archivosCargados) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<intradiaPruebaDTO> consultarOperacionesIntradia(Date fechaInicio, Date fechaFin) {
 		// TODO Auto-generated method stub
 		return null;
 	}

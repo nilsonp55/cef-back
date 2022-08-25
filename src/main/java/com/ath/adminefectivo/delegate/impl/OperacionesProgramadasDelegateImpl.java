@@ -41,6 +41,12 @@ public class OperacionesProgramadasDelegateImpl implements IOperacionesProgramad
 	@Autowired
 	IMaestroDefinicionArchivoService maestroDefinicionArchivoService;
 	
+<<<<<<< HEAD
+=======
+	@Autowired
+	IParametroService parametroService;
+	
+>>>>>>> 630dd22c07819645beda0dab45f2315ee0d3011e
 	/**
 	 * {@inheritDoc}
 	 */
@@ -86,16 +92,37 @@ public class OperacionesProgramadasDelegateImpl implements IOperacionesProgramad
 	}
 	
 	private void validarExistenciayFechaArchivos(String agrupador) {
+<<<<<<< HEAD
 		List<ArchivosCargados> listadoArchivosCargados = archivosCargadosService
 									.listadoArchivosCargadosSinProcesarDefinitiva(agrupador);
 		if (agrupador.equals(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_PRELIMINARES) &&
 			(listadoArchivosCargados.size() == 0 || listadoArchivosCargados.size() > 1)){
+=======
+		
+		Date fechaArchivo = parametroService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
+		if(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_DEFINITIVO.equals(agrupador)) {
+			//TODO restar días no hábiles en lugar de 1
+			fechaArchivo = UtilsString.restarDiasAFecha(fechaArchivo,-1);
+		}
+		
+		List<ArchivosCargados> listadoArchivosCargados = archivosCargadosService
+							.listadoArchivosCargadosSinProcesarDefinitiva(agrupador, fechaArchivo,
+																Dominios.ESTADO_VALIDACION_CORRECTO);
+		if (agrupador.equals(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_PRELIMINARES) &&
+			(listadoArchivosCargados.size() == 0 || 
+			listadoArchivosCargados.size() > Constantes.NUMERO_ARCHIVOS_CARGADOS_PRELIMINAR)){
+>>>>>>> 630dd22c07819645beda0dab45f2315ee0d3011e
 			throw new NegocioException(ApiResponseCode.ERROR_FALTAN_ARCHIVOS_POR_CARGAR.getCode(),
 					ApiResponseCode.ERROR_FALTAN_ARCHIVOS_POR_CARGAR.getDescription(),
 					ApiResponseCode.ERROR_FALTAN_ARCHIVOS_POR_CARGAR.getHttpStatus());
 		}
 		if (agrupador.equals(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_DEFINITIVO) && 
+<<<<<<< HEAD
 			(listadoArchivosCargados.size() == 0 || listadoArchivosCargados.size() != 2)) {
+=======
+			(listadoArchivosCargados.size() == 0 || 
+			listadoArchivosCargados.size() != Constantes.NUMERO_ARCHIVOS_CARGADOS_DEFINITIVA)) {
+>>>>>>> 630dd22c07819645beda0dab45f2315ee0d3011e
 			throw new NegocioException(ApiResponseCode.ERROR_FALTAN_ARCHIVOS_POR_CARGAR.getCode(),
 						ApiResponseCode.ERROR_FALTAN_ARCHIVOS_POR_CARGAR.getDescription(),
 						ApiResponseCode.ERROR_FALTAN_ARCHIVOS_POR_CARGAR.getHttpStatus());

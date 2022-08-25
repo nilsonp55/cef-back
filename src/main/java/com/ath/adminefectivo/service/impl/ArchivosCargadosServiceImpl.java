@@ -172,6 +172,9 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 		}else {
 			fechaGuardar = UtilsString.restarDiasAFecha(validacionArchivo.getFechaArchivo(), -1);
 		}
+		if (Dominios.ESTADO_VALIDACION_CORRECTO.equals(validacionArchivo.getEstadoValidacion()) ) {
+			this.renombrarArchivoOK(validacionArchivo);
+		}
 		ArchivosCargados archivosCargados = ArchivosCargados.builder()
 				.estado(Constantes.REGISTRO_ACTIVO)
 				.estadoCargue(validacionArchivo.getEstadoValidacion())
@@ -215,14 +218,13 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 		List<ArchivosCargadosDTO> resultado = new ArrayList<>();
 
 		List<ArchivosCargados> archivosCargados = archivosCargadosRepository
-				.findByEstadoCargueAndIdModeloArchivo(Constantes.ESTRUCTURA_OK, idModeloArchivo);
-//				.findByEstadoCargue(Constantes.ESTRUCTURA_OK);
+				.findByEstadoCargueAndIdModeloArchivo(Dominios.ESTADO_VALIDACION_CORRECTO, idModeloArchivo);
+
 
 		if (!Objects.isNull(archivosCargados)) {
 			archivosCargados.forEach(arch -> {
 				resultado.add(ArchivosCargadosDTO.CONVERTER_DTO.apply(arch));
 			});
-			System.out.println("ENTRO no nulo " + archivosCargados.size());
 			return resultado;
 		}
 		return null;
@@ -240,8 +242,13 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 	 * {@inheritDoc}
 	 */
 	@Override
+<<<<<<< HEAD
 	public List<ArchivosCargados> listadoArchivosCargadosSinProcesarDefinitiva(String agrupador) {
 		return archivosCargadosRepository.getRegistrosCargadosSinProcesarDeHoy(agrupador);
+=======
+	public List<ArchivosCargados> listadoArchivosCargadosSinProcesarDefinitiva(String agrupador, Date fecha, String estado) {
+		return archivosCargadosRepository.getRegistrosCargadosSinProcesarDeHoy(agrupador, fecha, estado);
+>>>>>>> 630dd22c07819645beda0dab45f2315ee0d3011e
 
 	}
 
@@ -324,7 +331,7 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 	}
 
 	/**
-	 * Método encargado de organizar la data de una lista de fallas de registro y
+	 * Metodo encargado de organizar la data de una lista de fallas de registro y
 	 * retorna un objeto de ErroresCamposDTO
 	 * 
 	 * @param fallasRegistro
@@ -344,6 +351,29 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 		}
 
 		return erroresCamposDTO;
+	}
+	
+	/**
+	 * Revisa si ya existe un archivo en estado OK para la fecha
+	 * Si existe le cambia el estado a REEMPLAZADO
+	 * @param validacionArchivo
+	 * @author RParra
+	 */
+	private void cambiarEstadoArchivoOK (ValidacionArchivoDTO validacionArchivo) {
+		
+		List<ArchivosCargados> archivosCargados = archivosCargadosRepository
+				.getRegistrosCargadosPorNombreyEstado(Dominios.ESTADO_VALIDACION_CORRECTO, 
+						validacionArchivo.getNombreArchivo(),
+						validacionArchivo.getMaestroDefinicion().getIdMaestroDefinicionArchivo());
+
+		if (!Objects.isNull(archivosCargados)) {
+			archivosCargados.forEach(arch -> {
+				var archivoEntity = arch.get();
+				archivoEntity.setEstadoCargue(Dominios.ESTADO_VALIDACION_REEMPLAZADO);
+				archivosCargadosRepository.save(archivoEntity);
+				
+			});	
+		}
 	}
 
 }

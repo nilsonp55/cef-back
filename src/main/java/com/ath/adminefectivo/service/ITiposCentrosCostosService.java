@@ -2,7 +2,8 @@ package com.ath.adminefectivo.service;
 
 import java.util.List;
 
-import com.ath.adminefectivo.entities.TiposCentrosCostos;
+import com.ath.adminefectivo.dto.TiposCentrosCostosDTO;
+import com.querydsl.core.types.Predicate;
 
 /**
  * Servicios para gestionar los TiposCentrosCostosService
@@ -15,26 +16,33 @@ public interface ITiposCentrosCostosService {
 	 * Servicio para obtener los tiposCentrosCostos totales
 	 * @return: TiposCentrosCostos
 	 */
-	List<TiposCentrosCostos> getAllTiposCentrosCostos();
+	List<TiposCentrosCostosDTO> getAllTiposCentrosCostos(Predicate predicate);
 	
 	/**
 	 * Servicio para obtner el tiposCentrosCostos por su identificador
 	 * @param idTiposCentrosCostos
 	 * @return
 	 */
-	TiposCentrosCostos getTiposCentrosCostosById(String idTiposCentrosCostos);
+	TiposCentrosCostosDTO getTiposCentrosCostosById(String idTiposCentrosCostos);
 	
 	/**
 	 * Servicio para persistir un tiposCentrosCostos
 	 * @param tiposCentrosCostos
 	 * @return
 	 */
-	TiposCentrosCostos saveTiposCentrosCostosById(TiposCentrosCostos tiposCentrosCostos);
+	TiposCentrosCostosDTO saveTiposCentrosCostos(TiposCentrosCostosDTO tiposCentrosCostos);
+	
+	/**
+	 * Servicio para actualizar un tiposCentrosCostos
+	 * @param tiposCentrosCostos
+	 * @return
+	 */
+	TiposCentrosCostosDTO putTiposCentrosCostos(TiposCentrosCostosDTO tiposCentrosCostos);
 
 	/**
 	 * Servicio para eliminar el tiposCentrosCostos por su id
 	 * @param idTiposCentrosCostos
 	 */
-	void deleteTiposCentrosCostosById(String idTiposCentrosCostos);
+	void deleteTiposCentrosCostosById(TiposCentrosCostosDTO tiposCentrosCostos);
 	
 }

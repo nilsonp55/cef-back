@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * Entidad encargada de manejar la logica de la tabla CuentasPuc
- * @author cesar.castano
+ * @author bayronPerez
  *
  */
 
@@ -35,8 +35,9 @@ public class CuentasPuc {
 	@Column(name = "ID_CUENTAS_PUC")
 	private Long idCuentasPuc;
 	
-	@Column(name = "CUENTA_CONTABLE")
-	private String cuentaContable;
+	@ManyToOne
+	@JoinColumn(name = "CUENTA_CONTABLE", nullable = false)
+	private ConfContableEntidades cuentaContable;
 	
 	@ManyToOne
 	@JoinColumn(name = "BANCO_AVAL", nullable = false)
@@ -55,4 +56,7 @@ public class CuentasPuc {
 	@ManyToOne
 	@JoinColumn(name = "TIPO_CUENTA", nullable = false)
 	private TiposCuentas tiposCuentas;
+	
+	@Column(name = "ESTADO")
+	private Boolean estado;
 }

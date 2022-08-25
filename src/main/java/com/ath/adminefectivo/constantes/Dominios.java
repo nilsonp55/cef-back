@@ -105,6 +105,7 @@ public final class Dominios {
 	public static final String ESTADO_VALIDACION_ACEPTADO = "ACEPTADO";
 	public static final String ESTADO_VALIDACION_REGISTRO_ERRADO = "ERRADO";
 	public static final String ESTADO_VALIDACION_CORRECTO = "OK";
+	public static final String ESTADO_VALIDACION_REEMPLAZADO = "REEMPLAZADO";
 	
 	/**
 	 * Dominio de agrupamiento de los detalles de archivo
@@ -169,12 +170,13 @@ public final class Dominios {
 	 */
 	public static final String MEDIOS_PAGO_ABONO = "ABONO";
 	public static final String MEDIOS_PAGO_DESCUENTO = "DESCUENTO";
+	public static final String  MEDIOS_PAGO_CARGO_A_CUENTA = "CARGO_A_CUENTA";
+
 	
 	/**
 	 * Dominios estados de Contabilidad
 	 */	
 	public static final int ESTADO_CONTABILIDAD_GENERADO = 1;
 	public static final int ESTADO_CONTABILIDAD_ERROR_CONTABLE = 2;
-	
 	
 }

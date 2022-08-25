@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -64,13 +63,22 @@ public class FilesController {
 								.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
 
+	/**
+	 * Servicio encargado de ejecutar la lectura del archivo
+	 * @param nombreArchivo
+	 * @param idMaestroArchivo
+	 * @return ResponseEntity<InputStreamResource>
+	 * @author CamiloBenavides
+	 */
 	@GetMapping(FilesEndpoint.DOWNLOAD_FILE_BY_ID)
 	@ApiOperation(value = "Download files ", notes = "")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = SwaggerConstants.RESPONSE_MESSAGE_200) })
-	public ResponseEntity<InputStreamResource> downloadFile(@RequestParam("nombreArchivo") String nombreArchivo, @RequestParam("idMaestroArchivo") String idMaestroArchivo) {
-		System.out.println("Entro al controller de downloadFile");
+	public ResponseEntity<InputStreamResource> downloadFile(
+			@RequestParam("nombreArchivo") String nombreArchivo, 
+			@RequestParam("idMaestroArchivo") String idMaestroArchivo) {
+
 		DownloadDTO file = filesDelegate.descargarArchivo(nombreArchivo, idMaestroArchivo);
-		System.out.println("Salio");
+
 		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, Constantes.PARAMETER_HEADER + file.getName())
 				.body(new InputStreamResource(file.getFile()));
 	}

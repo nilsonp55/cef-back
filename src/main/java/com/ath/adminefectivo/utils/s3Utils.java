@@ -1,13 +1,7 @@
 package com.ath.adminefectivo.utils;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -16,26 +10,21 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.AmazonServiceException;
-import com.amazonaws.AmazonClientException;
+import com.amazonaws.ClientConfiguration;
+import com.amazonaws.Protocol;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
-import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.GetObjectRequest;
-import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.ListObjectsV2Request;
 import com.amazonaws.services.s3.model.ListObjectsV2Result;
-import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.S3Object;
-import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
-import com.amazonaws.services.s3.model.PutObjectRequest;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -43,8 +32,12 @@ import org.springframework.stereotype.Service;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.exception.NegocioException;
 
+import java.util.Properties;
+import java.net.URISyntaxException;
+
 /**
  * Clase para generar funcionalidades con respect al s3 del PP
+ * 
  * @author Bayron Perez
  */
 @Service
@@ -55,19 +48,19 @@ public class s3Utils {
 
 	@Autowired
 	private AmazonS3 s3;
-	
-	
+
 	@Value("${aws.s3.bucket}")
 	private String bucketName;
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(s3Utils.class);
-	
+
 	/**
 	 * upload file
+	 * 
 	 * @Miller Caro
 	 */
-	public void uploadFile(MultipartFile file,String key_name) {
-		
+	public void uploadFile(MultipartFile file, String key_name) {
+
 		try {
 			File mainFile = new File(file.getOriginalFilename());
 			s3.putObject(bucketName, key_name, mainFile);
@@ -84,9 +77,10 @@ public class s3Utils {
 		}
 
 	}
-	
+
 	/**
 	 * Lista las keys de todos los objetos del bucket
+	 * 
 	 * @return
 	 */
 	public List<String> getObjectsFromS3() {
@@ -101,31 +95,33 @@ public class s3Utils {
 	/**
 	 * Trae una lista los archivos de una carpeta en especifico
 	 * Recibe una ruta donde se encuentra el archivo
+	 * Nota: el metodo de conexionS3(bucketName) solo se debe de llamar cuando son pruebas locales, para despliegues en el Fargate toca comentarla
 	 * @param path
 	 * @return
 	 */
-	public List<String> getObjectsFromPathS3(String path){
-        ListObjectsV2Request req = new ListObjectsV2Request().withBucketName(bucketName).withPrefix(path)
-                .withDelimiter("/");
-        ListObjectsV2Result listing = s3.listObjectsV2(req);
-        List<S3ObjectSummary> objects = listing.getObjectSummaries();        
-        List<String> list = objects.stream().map(item -> {
-            return item.getKey();
-        }).collect(Collectors.toList());
- 
-        List<String> list2 = new ArrayList<>();
-        String name; 
-        for (int i = 0; i < list.size(); i++) {
-            if (!list.get(i).equals(path.substring(0, path.length()))) {
-                name = list.get(i).replace(path, "");
-                list2.add(name);
-            }
-        }
-        return list2;
-    }
+	public List<String> getObjectsFromPathS3(String path) {
+		//conexionS3(bucketName);
+		ListObjectsV2Request req = new ListObjectsV2Request().withBucketName(bucketName).withPrefix(path)
+				.withDelimiter("/");
+		ListObjectsV2Result listing = s3.listObjectsV2(req);
+		List<S3ObjectSummary> objects = listing.getObjectSummaries();
+		List<String> list = objects.stream().map(item -> {
+			return item.getKey();
+		}).collect(Collectors.toList());
+		List<String> list2 = new ArrayList<>();
+		String name;
+		for (int i = 0; i < list.size(); i++) {
+			if (!list.get(i).equals(path.substring(0, path.length()))) {
+				name = list.get(i).replace(path, "");
+				list2.add(name);
+			}
+		}
+		return list2;
+	}
 
 	/**
 	 * Lista los arcivos del bucket
+	 * 
 	 * @param key
 	 * @return
 	 */
@@ -138,7 +134,7 @@ public class s3Utils {
 			throw new NegocioException(ApiResponseCode.ERROR_LECTURA_CARGUE_ARCHIVO.getCode(),
 					ApiResponseCode.ERROR_LECTURA_CARGUE_ARCHIVO.getDescription(),
 					ApiResponseCode.ERROR_LECTURA_CARGUE_ARCHIVO.getHttpStatus());
-		} catch (Exception  e) {
+		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);
 			throw new NegocioException(ApiResponseCode.ERROR_ARCHIVOS_NO_EXISTE_BD.getCode(),
 					ApiResponseCode.ERROR_ARCHIVOS_NO_EXISTE_BD.getDescription(),
@@ -152,48 +148,48 @@ public class s3Utils {
 		return object.getObjectContent();
 	}
 
-
-	
 	/**
 	 * Metodo encargado de realizar la conexion con AWS s3 antes de realiar cualquier ejecuci�n
 	 * Version prueba #1
 	 * @author Bayron Perez
+	 * @throws URISyntaxException
 	 */
 	public void conexionS3(String bucketName) {
-
-		AWSCredentials credentials = null;
+	try {
+         Properties systemSettings = System.getProperties();
+         
+      } catch (Exception e) {
+         e.printStackTrace();
+         System.out.println(false);
+      }
+	  
+		BasicAWSCredentials credentials = new BasicAWSCredentials("AKIAZPUFXGZ5GEMGWLFZ", "HD1RM1Il0nAJYu2gNr1oYG6MtdBzafSKpf+1TtMM");
 		try {
-			credentials = new ProfileCredentialsProvider().getCredentials();
-		} catch (Exception e) {
-			LOGGER.error(e.getMessage(), e);
-			throw new NegocioException(ApiResponseCode.ERROR_ACCEDIENDO_S3.getCode(),
-					ApiResponseCode.ERROR_ACCEDIENDO_S3.getDescription(),
-					ApiResponseCode.ERROR_ACCEDIENDO_S3.getHttpStatus());
-		}
-
-		try {
+			ClientConfiguration config = new ClientConfiguration();
+			config.setProtocol(Protocol.HTTP);
+			config.setProxyHost("10.140.1.52");
+			config.setProxyPort(8002);
 			s3 = AmazonS3ClientBuilder.standard()
-				.withCredentials(new AWSStaticCredentialsProvider(credentials))
-				.withRegion("us-east-1")
-				.build();
+					.withClientConfiguration(config).withRegion("us-east-1")
+					.withCredentials(new AWSStaticCredentialsProvider(credentials)).build();
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);
 			throw new NegocioException(ApiResponseCode.ERROR_ACCEDIENDO_S3.getCode(),
 					ApiResponseCode.ERROR_ACCEDIENDO_S3.getDescription(),
 					ApiResponseCode.ERROR_ACCEDIENDO_S3.getHttpStatus());
 		}
-		
 		bucketNameFormat = bucketName + UUID.randomUUID();
 	}
 
 	/**
 	 * Metodo para mover un objeto de un bucket S3
+	 * 
 	 * @param origenBucket
 	 * @param destinationBucket
 	 * @param keyOrigin
 	 * @param keyDestination
 	 */
-	public void moverObjeto(String keyOrigin,String keyDestination) {
+	public void moverObjeto(String keyOrigin, String keyDestination) {
 		try {
 			s3.copyObject(bucketName, keyOrigin, bucketName, keyDestination);
 			deleteObjectBucket(keyOrigin);
@@ -208,6 +204,7 @@ public class s3Utils {
 
 	/**
 	 * Metodo que elimina un objeto de un bucket
+	 * 
 	 * @param objectKey
 	 */
 	public void deleteObjectBucket(String objectKey) {
@@ -221,5 +218,4 @@ public class s3Utils {
 		}
 	}
 
-	
 }
