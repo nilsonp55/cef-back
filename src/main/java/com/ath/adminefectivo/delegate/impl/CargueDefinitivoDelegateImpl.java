@@ -237,9 +237,12 @@ public class CargueDefinitivoDelegateImpl implements ICargueDefinitivoDelegate {
 		var fechaArchivo = validacionArchivoService.validarFechaArchivo(nombreArchivo,
 				maestroDefinicion.getMascaraArch(), fechaActual);
 
-		this.validacionArchivo = ValidacionArchivoDTO.builder().nombreArchivo(nombreArchivo)
-				.descripcion(maestroDefinicion.getDescripcionArch()).fechaArchivo(fechaArchivo)
-				.maestroDefinicion(maestroDefinicion).url(url)
+		this.validacionArchivo = ValidacionArchivoDTO.builder()
+				.nombreArchivo(nombreArchivo)
+				.descripcion(maestroDefinicion.getDescripcionArch())
+				.fechaArchivo(fechaArchivo)
+				.maestroDefinicion(maestroDefinicion)
+				.url(url)
 				.numeroRegistros(obtenerBumeroRegistros(maestroDefinicion, contenido.size())).build();
 
 		if (this.validarCantidadRegistros(maestroDefinicion, this.validacionArchivo.getNumeroRegistros())) {

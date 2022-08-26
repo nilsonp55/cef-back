@@ -61,8 +61,10 @@ public class FallasRegistro {
 	private Date fechaModificacion;	
 	
 	@ManyToOne
-	@JoinColumn( name = "CONSECUTIVO_REGISTRO", columnDefinition = "consecutivoRegistro", insertable = false, updatable = false)	
-	@JoinColumn( name = "ID_ARCHIVO", columnDefinition = "idArchivo", insertable = false, updatable = false)
+	@JoinColumn( name = "CONSECUTIVO_REGISTRO", columnDefinition = "consecutivoRegistro", 
+												insertable = false, updatable = false)	
+	@JoinColumn( name = "ID_ARCHIVO", columnDefinition = "idArchivo", insertable = false, 
+												updatable = false)
 	private RegistrosCargados registrosCargados;
 
 }

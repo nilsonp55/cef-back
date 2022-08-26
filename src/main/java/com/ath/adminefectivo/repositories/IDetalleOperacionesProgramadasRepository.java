@@ -1,5 +1,7 @@
 package com.ath.adminefectivo.repositories;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
@@ -12,4 +14,6 @@ public interface IDetalleOperacionesProgramadasRepository extends JpaRepository<
 	@Query("SELECT SUM(dop.valorDetalle) FROM DetalleOperacionesProgramadas dop "
 		 + "WHERE dop.operacionesProgramadas.idOperacion = ?1")
 	Double valorTotal(Integer idOperacion);
+
+//	List<DetalleOperacionesProgramadas> findByidOperacion(Integer idOperacion);
 }
