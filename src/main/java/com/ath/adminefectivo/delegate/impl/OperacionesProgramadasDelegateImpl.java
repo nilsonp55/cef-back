@@ -20,12 +20,11 @@ import com.ath.adminefectivo.entities.ArchivosCargados;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.service.IArchivosCargadosService;
 import com.ath.adminefectivo.service.IDominioService;
+import com.ath.adminefectivo.service.IFestivosNacionalesService;
 import com.ath.adminefectivo.service.ILogProcesoDiarioService;
 import com.ath.adminefectivo.service.IMaestroDefinicionArchivoService;
 import com.ath.adminefectivo.service.IOperacionesProgramadasService;
 import com.ath.adminefectivo.service.IParametroService;
-import com.ath.adminefectivo.utils.UtilsString;
-
 
 @Service
 public class OperacionesProgramadasDelegateImpl implements IOperacionesProgramadasDelegate {
@@ -49,6 +48,8 @@ public class OperacionesProgramadasDelegateImpl implements IOperacionesProgramad
 	@Autowired
 	IParametroService parametroService;
 
+	@Autowired
+	IFestivosNacionalesService festivosNacionalesService;
 	/**
 	 * {@inheritDoc}
 	 */
@@ -97,8 +98,7 @@ public class OperacionesProgramadasDelegateImpl implements IOperacionesProgramad
 
 		Date fechaArchivo = parametroService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
 		if(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_DEFINITIVO.equals(agrupador)) {
-			//TODO restar días no hábiles en lugar de 1
-			fechaArchivo = UtilsString.restarDiasAFecha(fechaArchivo,-1);
+			fechaArchivo = festivosNacionalesService.consultarAnteriorHabil(fechaArchivo);
 		}
 
 		List<ArchivosCargados> listadoArchivosCargados = archivosCargadosService
