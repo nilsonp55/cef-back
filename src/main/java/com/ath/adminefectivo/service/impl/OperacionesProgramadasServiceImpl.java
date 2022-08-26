@@ -417,7 +417,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		OperacionesProgramadasDTO operacionesProgramadasDTO = null;
 		PuntosDTO puntoFondoOrigen = this.consultarPuntoPorDetalle(contenido, detalleArchivo,
 				Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN);
-		PuntosDTO puntoBancoDestino = this.consultarPuntoPorDetalle(contenido, detalleArchivo,
+		PuntosDTO puntoBancoDestino = this.consultarPuntoBanRepPorDetalle(contenido, detalleArchivo,
 				Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO);
 
 		if (!puntoFondoOrigen.getTipoPunto().toUpperCase().trim().equals(Constantes.PUNTO_FONDO)) {
@@ -460,7 +460,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
 		PuntosDTO puntoFondoDestino = this.consultarPuntoPorDetalle(contenido, detalleArchivo,
 				Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO);
-		PuntosDTO puntoBancoOrigen = this.consultarPuntoPorDetalle(contenido, detalleArchivo,
+		PuntosDTO puntoBancoOrigen = this.consultarPuntoBanRepPorDetalle(contenido, detalleArchivo,
 				Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN);
 
 		if (!esCambio && !puntoBancoOrigen.getTipoPunto().toUpperCase().trim().equals(Constantes.PUNTO_BANC_REP)) {
@@ -967,6 +967,28 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	}
 
 	/**
+	 * Metodo encargado de realizar la consulta de un punto BanRep por detalle y nombre
+	 * campo
+	 * 
+	 * @param contenido
+	 * @param detalle
+	 * @return PuntosDTO
+	 * @author rparra
+	 */
+	private PuntosDTO consultarPuntoBanRepPorDetalle(String[] contenido, List<DetallesDefinicionArchivoDTO> detallesArchivo,
+			String nombreCampo) {
+
+		DetallesDefinicionArchivoDTO detalle = detallesArchivo.stream()
+				.filter(deta -> deta.getNombreCampo().toUpperCase().equals(nombreCampo)).findFirst().orElse(null);
+		if (!Objects.isNull(detalle)) {
+			String puntoBanRepTDV = contenido[detalle.getId().getNumeroCampo() - 1].trim();
+			puntoBanRepTDV = puntoBanRepTDV.substring(1, puntoBanRepTDV.lastIndexOf('-') );
+			return puntosService.getPuntoByNombrePunto(puntoBanRepTDV);
+		}
+		return null;
+	}
+
+	/**																					
 	 * Metodo encargado de consultar un banco por medio del detalle de un archivo y
 	 * su ciudad
 	 * 
