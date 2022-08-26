@@ -69,9 +69,9 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	@Override
 	public Page<OperacionesProgramadasNombresDTO> getOperacionesConciliadas(Predicate predicate, Pageable page) {
 
-		List<OperacionesProgramadas> operacionesProgramadas = operacionesProgramadasRepository.
+		Page<OperacionesProgramadas> operacionesProgramadas = operacionesProgramadasRepository.
 				findByEstadoConciliacion(dominioService.valorTextoDominio(
-						Constantes.DOMINIO_ESTADO_CONCILIACION, Dominios.ESTADO_CONCILIACION_CONCILIADO));
+						Constantes.DOMINIO_ESTADO_CONCILIACION, Dominios.ESTADO_CONCILIACION_CONCILIADO), page);
 		if (operacionesProgramadas.isEmpty()) {
 			throw new NegocioException(ApiResponseCode.ERROR_CONCILIADOS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_CONCILIADOS_NO_ENCONTRADO.getDescription(),
@@ -87,14 +87,15 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	@Override
 	public Page<ProgramadasNoConciliadasDTO> getProgramadaNoConcilliada(Predicate predicate, Pageable page) {
 
-		var archivos = operacionesProgramadasRepository.findAll(predicate, page);
+		Page<OperacionesProgramadas> archivos = operacionesProgramadasRepository.findByEstadoConciliacion(
+				dominioService.valorTextoDominio(Constantes.DOMINIO_ESTADO_CONCILIACION, 
+												Dominios.ESTADO_CONCILIACION_NO_CONCILIADO), page);
 		if (archivos.isEmpty()) {
 			throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getDescription(),
 					ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getHttpStatus());
 		}
-		return new PageImpl<>(archivos.getContent().stream().map(ProgramadasNoConciliadasDTO.CONVERTER_DTO).toList(),
-				archivos.getPageable(), archivos.getTotalElements());
+		return consultarProgramasNoConciliadas(archivos);
 	}
 
 	/**
@@ -103,14 +104,15 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	@Override
 	public Page<CertificadasNoConciliadasDTO> getCertificadaNoConciliada(Predicate predicate, Pageable page) {
 
-		var archivos = operacionesCertificadasRepository.findAll(predicate, page);
+		Page<OperacionesCertificadas> archivos = operacionesCertificadasRepository.findByEstadoConciliacion(
+				dominioService.valorTextoDominio(Constantes.DOMINIO_ESTADO_CONCILIACION, 
+												Dominios.ESTADO_CONCILIACION_NO_CONCILIADO), page);
 		if (archivos.isEmpty()) {
 			throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getDescription(),
 					ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getHttpStatus());
 		}
-		return new PageImpl<>(archivos.getContent().stream().map(CertificadasNoConciliadasDTO.CONVERTER_DTO).toList(),
-				archivos.getPageable(), archivos.getTotalElements());
+		return consultarCertificadasNoConciliadas(archivos);
 	}
 
 	/**
@@ -241,7 +243,7 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	 * @author cesar.castano
 	 */
 	private Page<ProgramadasNoConciliadasDTO> consultarProgramasNoConciliadas(
-										List<OperacionesProgramadas> operacionesProgramadas) {
+										Page<OperacionesProgramadas> operacionesProgramadas) {
 		List<ProgramadasNoConciliadasDTO> listNoConciliadasDto = new ArrayList<>();
 		operacionesProgramadas.forEach(entity -> {
 						var programadasNoConciliadas = new ProgramadasNoConciliadasDTO();
@@ -262,7 +264,7 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	 * @author cesar.castano
 	 */
 	private Page<CertificadasNoConciliadasDTO> consultarCertificadasNoConciliadas(
-			List<OperacionesCertificadas> operacionesCertificadas) {
+			Page<OperacionesCertificadas> operacionesCertificadas) {
 		List<CertificadasNoConciliadasDTO> listNoConciliadasDto = new ArrayList<>();
 		operacionesCertificadas.forEach(entity -> {
 						var certificadasNoConciliadas = new CertificadasNoConciliadasDTO();

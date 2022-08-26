@@ -155,7 +155,7 @@ public class s3Utils {
 	 */
 	public Boolean consultarArchivo(String key) {
 		Boolean salida = true;
-		//conexionS3(bucketName);
+		conexionS3(bucketName);
 		S3Object object;
 		try {
 			object = s3.getObject(bucketName, key);
