@@ -61,7 +61,7 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 	 */
 	private void validarLogProcesoDiario() {
 		var log = logProcesoDiarioService.obtenerEntidadLogProcesoDiario(
-										Dominios.CODIGO_PROCESO_LOG_DEFINITIVO);
+										Dominios.CODIGO_PROCESO_LOG_CERTIFICACION);
 		if (Objects.isNull(log)) {
 			throw new NegocioException(ApiResponseCode.ERROR_CODIGO_PROCESO_NO_EXISTE.getCode(),
 					ApiResponseCode.ERROR_CODIGO_PROCESO_NO_EXISTE.getDescription(),
