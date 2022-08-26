@@ -40,4 +40,6 @@ public interface IFestivosNacionalesService {
 	 */
 	Date consultarSiguienteHabil(Date fechaReferencia);
 
+	Date consultarAnteriorHabil(Date fechaArchivo);
+
 }
