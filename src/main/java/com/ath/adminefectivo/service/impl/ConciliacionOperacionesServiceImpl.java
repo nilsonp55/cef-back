@@ -38,6 +38,7 @@ import com.ath.adminefectivo.service.IDominioService;
 import com.ath.adminefectivo.service.IFondosService;
 import com.ath.adminefectivo.service.IOperacionesCertificadasService;
 import com.ath.adminefectivo.service.IOperacionesProgramadasService;
+import com.ath.adminefectivo.service.IPuntosService;
 import com.ath.adminefectivo.service.ITransportadorasService;
 import com.querydsl.core.types.Predicate;
 
@@ -67,6 +68,9 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	
 	@Autowired
 	IBancosService bancosService;
+	
+	@Autowired
+	IPuntosService puntosService;
 	
 	@Autowired
 	ITransportadorasService transportadorasService;
@@ -259,9 +263,12 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 		operacionesProgramadas.forEach(entity -> {
 						var programadasNoConciliadas = new ProgramadasNoConciliadasDTO();
 						programadasNoConciliadas = ProgramadasNoConciliadasDTO.CONVERTER_DTO.apply(entity);
-						String Abreviatura = bancosService.getAbreviatura(fondoService.getEntidadFondo(
-								programadasNoConciliadas.getCodigoFondoTDV()).getBancoAVAL());
-						programadasNoConciliadas.setBancoAVAL(Abreviatura);
+						String banco = puntosService.getNombrePunto(dominioService.valorTextoDominio(
+					  												Constantes.DOMINIO_TIPOS_PUNTO, 
+					  												Dominios.TIPOS_PUNTO_BANCO),
+							  			fondoService.getEntidadFondo(
+										programadasNoConciliadas.getCodigoFondoTDV()).getBancoAVAL());
+						programadasNoConciliadas.setBancoAVAL(banco);
 						String transportadora = transportadorasService.getNombreTransportadora(
 							fondoService.getEntidadFondo(programadasNoConciliadas.getCodigoFondoTDV()).getTdv());
 						programadasNoConciliadas.setTdv(transportadora);
@@ -282,9 +289,12 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 		operacionesCertificadas.forEach(entity -> {
 						var certificadasNoConciliadas = new CertificadasNoConciliadasDTO();
 						certificadasNoConciliadas = CertificadasNoConciliadasDTO.CONVERTER_DTO.apply(entity);
-						String Abreviatura = bancosService.getAbreviatura(fondoService.getEntidadFondo(
-								certificadasNoConciliadas.getCodigoFondoTDV()).getBancoAVAL());
-						certificadasNoConciliadas.setBancoAVAL(Abreviatura);
+						String banco = puntosService.getNombrePunto(dominioService.valorTextoDominio(
+																	Constantes.DOMINIO_TIPOS_PUNTO, 
+																	Dominios.TIPOS_PUNTO_BANCO),
+										fondoService.getEntidadFondo(
+										certificadasNoConciliadas.getCodigoFondoTDV()).getBancoAVAL());
+						certificadasNoConciliadas.setBancoAVAL(banco);
 						String transportadora = transportadorasService.getNombreTransportadora(
 								fondoService.getEntidadFondo(certificadasNoConciliadas.getCodigoFondoTDV()).getTdv());
 						certificadasNoConciliadas.setTdv(transportadora);
