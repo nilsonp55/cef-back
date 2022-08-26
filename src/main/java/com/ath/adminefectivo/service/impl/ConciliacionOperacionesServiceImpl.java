@@ -20,20 +20,25 @@ import com.ath.adminefectivo.dto.compuestos.OperacionespConciliadoDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
+import com.ath.adminefectivo.dto.BancosDTO;
 import com.ath.adminefectivo.dto.CertificadasNoConciliadasDTO;
 import com.ath.adminefectivo.dto.ParametrosConciliacionManualDTO;
 import com.ath.adminefectivo.dto.FechasConciliacionDTO;
+import com.ath.adminefectivo.entities.Bancos;
+import com.ath.adminefectivo.entities.Fondos;
 import com.ath.adminefectivo.entities.OperacionesCertificadas;
 import com.ath.adminefectivo.entities.OperacionesProgramadas;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.IOperacionesCertificadasRepository;
 import com.ath.adminefectivo.repositories.IOperacionesProgramadasRepository;
+import com.ath.adminefectivo.service.IBancosService;
 import com.ath.adminefectivo.service.IConciliacionOperacionesService;
 import com.ath.adminefectivo.service.IConciliacionServiciosService;
 import com.ath.adminefectivo.service.IDominioService;
 import com.ath.adminefectivo.service.IFondosService;
 import com.ath.adminefectivo.service.IOperacionesCertificadasService;
 import com.ath.adminefectivo.service.IOperacionesProgramadasService;
+import com.ath.adminefectivo.service.ITransportadorasService;
 import com.querydsl.core.types.Predicate;
 
 @Service
@@ -59,6 +64,12 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	
 	@Autowired
 	IFondosService fondoService;
+	
+	@Autowired
+	IBancosService bancosService;
+	
+	@Autowired
+	ITransportadorasService transportadorasService;
 
 	List<OperacionesProgramadas> operacionesp;
 	List<OperacionesCertificadas> operacionesc;
@@ -248,10 +259,12 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 		operacionesProgramadas.forEach(entity -> {
 						var programadasNoConciliadas = new ProgramadasNoConciliadasDTO();
 						programadasNoConciliadas = ProgramadasNoConciliadasDTO.CONVERTER_DTO.apply(entity);
-						programadasNoConciliadas.setBancoAVAL(fondoService.getEntidadFondo(
+						String Abreviatura = bancosService.getAbreviatura(fondoService.getEntidadFondo(
 								programadasNoConciliadas.getCodigoFondoTDV()).getBancoAVAL());
-						programadasNoConciliadas.setTdv(fondoService.getEntidadFondo(
-								programadasNoConciliadas.getCodigoFondoTDV()).getTdv());
+						programadasNoConciliadas.setBancoAVAL(Abreviatura);
+						String transportadora = transportadorasService.getNombreTransportadora(
+							fondoService.getEntidadFondo(programadasNoConciliadas.getCodigoFondoTDV()).getTdv());
+						programadasNoConciliadas.setTdv(transportadora);
 						listNoConciliadasDto.add(programadasNoConciliadas);
 						});
 		return new PageImpl<>(listNoConciliadasDto);
@@ -269,10 +282,12 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 		operacionesCertificadas.forEach(entity -> {
 						var certificadasNoConciliadas = new CertificadasNoConciliadasDTO();
 						certificadasNoConciliadas = CertificadasNoConciliadasDTO.CONVERTER_DTO.apply(entity);
-						certificadasNoConciliadas.setBancoAVAL(fondoService.getEntidadFondo(
+						String Abreviatura = bancosService.getAbreviatura(fondoService.getEntidadFondo(
 								certificadasNoConciliadas.getCodigoFondoTDV()).getBancoAVAL());
-						certificadasNoConciliadas.setTdv(fondoService.getEntidadFondo(
-								certificadasNoConciliadas.getCodigoFondoTDV()).getTdv());
+						certificadasNoConciliadas.setBancoAVAL(Abreviatura);
+						String transportadora = transportadorasService.getNombreTransportadora(
+								fondoService.getEntidadFondo(certificadasNoConciliadas.getCodigoFondoTDV()).getTdv());
+						certificadasNoConciliadas.setTdv(transportadora);
 						listNoConciliadasDto.add(certificadasNoConciliadas);
 						});
 		return new PageImpl<>(listNoConciliadasDto);
