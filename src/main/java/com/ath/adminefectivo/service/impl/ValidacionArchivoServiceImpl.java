@@ -68,7 +68,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 	@Override
 	public ValidacionArchivoDTO validar(MaestrosDefinicionArchivoDTO maestroDefinicion, List<String[]> contenido,
 			ValidacionArchivoDTO validacionArchivo) {
-
+		validacionArchivo.setEstadoValidacion(Dominios.ESTADO_VALIDACION_CORRECTO);
 		List<ValidacionLineasDTO> respuesta = cargueDataInicial(maestroDefinicion, contenido);
 		validacionArchivo = validarEstructura(maestroDefinicion, contenido, validacionArchivo, respuesta);
 		if (validacionArchivo.getEstadoValidacion().equals(Dominios.ESTADO_VALIDACION_CORRECTO)) {
@@ -99,6 +99,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 					lineaDTO.setCampos(erroresCampos);
 					lineaDTO.setEstado(Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO);
 					validacionArchivo.setNumeroErrores(validacionArchivo.getNumeroErrores()+(erroresCampos.size()));
+					validacionArchivo.setEstadoValidacion(Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO);
 				} else {
 					lineaDTO.setEstado(Dominios.ESTADO_VALIDACION_CORRECTO);
 				}

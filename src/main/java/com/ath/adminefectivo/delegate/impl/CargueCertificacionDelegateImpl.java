@@ -93,9 +93,6 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	public ValidacionArchivoDTO validarArchivo(String idMaestroDefinicion, String nombreArchivo) {
 		validarLogProcesoDiario();
 		this.validacionesAchivoCargado(idMaestroDefinicion, nombreArchivo);
-		if (Objects.equals(this.validacionArchivo.getEstadoValidacion(), Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO)) {
-			archivosCargadosService.persistirDetalleArchivoCargado(validacionArchivo, true);
-		}
 		return ValidacionArchivoDTO.conversionRespuesta(this.validacionArchivo);
 	}
 

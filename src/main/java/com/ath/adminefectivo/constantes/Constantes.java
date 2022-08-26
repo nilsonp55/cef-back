@@ -21,8 +21,8 @@ public final class Constantes {
 	public static final String REGISTRO_INACTIVO = "INA";
 	public static final String SI = "SI";
 	public static final String NO = "NO";
-	public static final String ENTRADA = "I";
-	public static final String SALIDA = "O";
+	public static final String ENTRADA = "1";
+	public static final String SALIDA = "2";
 	public static final String SOBRANTE_OTROS_FONDOS = "3";
 	public static final String FALTANTE_OTROS_FONDOS = "4";
 	public static final String SOBRANTE_BRINKS = "4";
@@ -41,6 +41,7 @@ public final class Constantes {
 	public static final String NUMERO_MINIMO_ARCHIVOS_PARA_CIERRE = "NUMERO_MINIMO_ARCHIVOS";
 	public static final Integer NUMERO_ARCHIVOS_CARGADOS_PRELIMINAR = 1;
 	public static final Integer NUMERO_ARCHIVOS_CARGADOS_DEFINITIVA = 2;
+	public static final String FECHA_DIA_PROCESO = "FECHA_DIA_PROCESO";
 
 
 	/**
@@ -455,7 +456,7 @@ public final class Constantes {
 	/**
 	 * Constante para indicar el valor en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
 	 */
-	public static final String CAMPO_DETALLE_ARCHIVO_TIPOREGISTRO = "TIPOREGISTRO";
+	public static final String CAMPO_DETALLE_ARCHIVO_TIPOREGISTRO = "TPOREGISTRO";
 
 	/**
 	 * Constante para indicar el NITBANCO en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
@@ -480,7 +481,7 @@ public final class Constantes {
 	/**
 	 * Constante para indicar el ENTRADASALIDA en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
 	 */
-	public static final String CAMPO_DETALLE_ARCHIVO_ENTRADASALIDA = "DESCRIPCIONES";
+	public static final String CAMPO_DETALLE_ARCHIVO_ENTRADASALIDA = "ENTRADASALIDA";
 
 	/**
 	 * Constante para indicar el CODIGOPUNTO en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
@@ -500,7 +501,7 @@ public final class Constantes {
 	/**
 	 * Constante para indicar el MONTOTOTAL en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
 	 */
-	public static final String CAMPO_DETALLE_ARCHIVO_MONTOTOTAL = "MONTOTALNOVEDAD";
+	public static final String CAMPO_DETALLE_ARCHIVO_MONTOTOTAL = "MONTOTOTAL";
 
 	/**
 	 * Constante para indicar el SIGLATDV en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
@@ -530,12 +531,12 @@ public final class Constantes {
 	/**
 	 * Constante para indicar el CODIGOSERVICIOTRANS en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
 	 */
-	public static final String CAMPO_DETALLE_ARCHIVO_CODIGOSERVTRANS = "CODIGOSERVTRANS";
+	public static final String CAMPO_DETALLE_ARCHIVO_CODIGOSERVTRANS = "DESCRIPCIONES";
 
 	/**
 	 * Constante para indicar el ENTRADASALIDA en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
 	 */
-	public static final String CAMPO_DETALLE_ARCHIVO_ENTRADAOSALIDA = "DESCRIPCIONENTRADASALIDA";
+	public static final String CAMPO_DETALLE_ARCHIVO_ENTRADAOSALIDA = "DESCRIPCIONES";
 
 	/**
 	 * Constante para indicar el MONTOTOTALNOVEDAD en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
