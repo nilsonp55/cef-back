@@ -235,6 +235,7 @@ public class CargueDefinitivoDelegateImpl implements ICargueDefinitivoDelegate {
 		Date fechaActual = parametrosService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
 		var fechaArchivo = validacionArchivoService.validarFechaArchivo(nombreArchivo,
 				maestroDefinicion.getMascaraArch(), fechaActual);
+
 		this.validacionArchivo = ValidacionArchivoDTO.builder().nombreArchivo(nombreArchivo)
 				.descripcion(maestroDefinicion.getDescripcionArch()).fechaArchivo(fechaArchivo)
 				.maestroDefinicion(maestroDefinicion).url(url)
