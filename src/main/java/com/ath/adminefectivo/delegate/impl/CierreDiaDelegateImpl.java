@@ -35,18 +35,11 @@ public class CierreDiaDelegateImpl implements ICierreDiaDelegate {
 	public Date cerrarDia() {
 		Date fechaActual = parametroService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
 
-		if (logProcesoDiarioService.esDiaCompleto(fechaActual)) {
 			Date nuevaFecha = festivosNacionalesService.consultarSiguienteHabil(fechaActual);
 			DateFormat dateFormat = new SimpleDateFormat(Constantes.FECHA_PATTERN_DD_MM_YYYY_WITH_SLASH);
 			String nuevaFechaString = dateFormat.format(nuevaFecha);
 			parametroService.actualizarValorParametro(Parametros.FECHA_DIA_ACTUAL_PROCESO, nuevaFechaString);
 			return nuevaFecha;
-
-		} else {
-			throw new NegocioException(ApiResponseCode.ERROR_PROCESOS_NO_COMPLETADOS.getCode(),
-					ApiResponseCode.ERROR_PROCESOS_NO_COMPLETADOS.getDescription(),
-					ApiResponseCode.ERROR_PROCESOS_NO_COMPLETADOS.getHttpStatus());
-		}
 
 	}
 

@@ -1,5 +1,6 @@
 package com.ath.adminefectivo.delegate.impl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
+import com.ath.adminefectivo.constantes.Parametros;
 import com.ath.adminefectivo.delegate.IOperacionesProgramadasDelegate;
 import com.ath.adminefectivo.dto.ArchivosCargadosDTO;
 import com.ath.adminefectivo.dto.LogProcesoDiarioDTO;
@@ -18,9 +20,11 @@ import com.ath.adminefectivo.entities.ArchivosCargados;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.service.IArchivosCargadosService;
 import com.ath.adminefectivo.service.IDominioService;
+import com.ath.adminefectivo.service.IFestivosNacionalesService;
 import com.ath.adminefectivo.service.ILogProcesoDiarioService;
 import com.ath.adminefectivo.service.IMaestroDefinicionArchivoService;
 import com.ath.adminefectivo.service.IOperacionesProgramadasService;
+import com.ath.adminefectivo.service.IParametroService;
 
 @Service
 public class OperacionesProgramadasDelegateImpl implements IOperacionesProgramadasDelegate {
@@ -41,6 +45,11 @@ public class OperacionesProgramadasDelegateImpl implements IOperacionesProgramad
 	@Autowired
 	IMaestroDefinicionArchivoService maestroDefinicionArchivoService;
 	
+	@Autowired
+	IParametroService parametroService;
+
+	@Autowired
+	IFestivosNacionalesService festivosNacionalesService;
 	/**
 	 * {@inheritDoc}
 	 */
@@ -86,8 +95,15 @@ public class OperacionesProgramadasDelegateImpl implements IOperacionesProgramad
 	}
 	
 	private void validarExistenciayFechaArchivos(String agrupador) {
+
+		Date fechaArchivo = parametroService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
+		if(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_DEFINITIVO.equals(agrupador)) {
+			fechaArchivo = festivosNacionalesService.consultarAnteriorHabil(fechaArchivo);
+		}
+
 		List<ArchivosCargados> listadoArchivosCargados = archivosCargadosService
-									.listadoArchivosCargadosSinProcesarDefinitiva(agrupador);
+							.listadoArchivosCargadosSinProcesarDefinitiva(agrupador, fechaArchivo,
+																Dominios.ESTADO_VALIDACION_CORRECTO);
 		if (agrupador.equals(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_PRELIMINARES) &&
 			(listadoArchivosCargados.size() == 0 || 
 			listadoArchivosCargados.size() > Constantes.NUMERO_ARCHIVOS_CARGADOS_PRELIMINAR)){

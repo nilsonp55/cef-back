@@ -1,6 +1,5 @@
 package com.ath.adminefectivo.delegate.impl;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -39,20 +38,23 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Boolean procesarCertificaciones(String modeloArchivo, Long idArchivo) {
+	public Boolean procesarCertificaciones(String agrupador) {
 		
-		List<ArchivosCargados> archivosCargados = archivosCargadosRepository.findByIdModeloArchivoAndIdArchivo(
-				modeloArchivo, idArchivo);
+		Date fechaProceso = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
+		List<ArchivosCargados> archivosCargados = archivosCargadosRepository
+				.getRegistrosCargadosSinProcesarDeHoy(agrupador, fechaProceso, Constantes.ESTADO_CARGUE_VALIDO);
 		if(archivosCargados.isEmpty()) {
 				throw new NegocioException(ApiResponseCode.ERROR_ARCHICOS_CARGADOS_NO_ENCONTRADO.getCode(),
 							ApiResponseCode.ERROR_ARCHICOS_CARGADOS_NO_ENCONTRADO.getDescription(),
 							ApiResponseCode.ERROR_ARCHICOS_CARGADOS_NO_ENCONTRADO.getHttpStatus());
 		}else {
+			validarLogProcesoDiario();
+			validarExistenciaArchivos(archivosCargados);
 			operacionesCertificadasService.procesarArchivosCertificaciones(archivosCargados);
+			cambiarEstadoLogProcesoDiario();
 			return true;
 		}
 	}
-	
 
 	/**
 	 * Metodo encargado de validar el log de proceso diario
@@ -60,7 +62,7 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 	 */
 	private void validarLogProcesoDiario() {
 		var log = logProcesoDiarioService.obtenerEntidadLogProcesoDiario(
-										Dominios.CODIGO_PROCESO_LOG_DEFINITIVO);
+										Dominios.CODIGO_PROCESO_LOG_CERTIFICACION);
 		if (Objects.isNull(log)) {
 			throw new NegocioException(ApiResponseCode.ERROR_CODIGO_PROCESO_NO_EXISTE.getCode(),
 					ApiResponseCode.ERROR_CODIGO_PROCESO_NO_EXISTE.getDescription(),
@@ -75,19 +77,9 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 	}
 
 	private void validarExistenciaArchivos(List<ArchivosCargados> archivosCargados) {
-		var fechaDia = new Date();
+
 		Integer valor = parametroService.valorParametroEntero(Constantes.NUMERO_MINIMO_ARCHIVOS_PARA_CIERRE);
-		if (archivosCargados.size() >= valor) {
-			ArchivosCargados archivos = archivosCargados.stream().filter(
-					listado -> !listado.getEstadoCargue().equals("OK")
-					&& new SimpleDateFormat("dd-MM-yyyy").format(listado.getFechaArchivo())
-					.equals(new SimpleDateFormat("dd-MM-yyyy").format(fechaDia))).findFirst().orElse(null);			
-			if (Objects.nonNull(archivos)) {
-				throw new NegocioException(ApiResponseCode.ERROR_HAY_ARCHIVOS_FALLIDOS_CARGUE_CERTIFICACION.getCode(),
-						ApiResponseCode.ERROR_HAY_ARCHIVOS_FALLIDOS_CARGUE_CERTIFICACION.getDescription(),
-						ApiResponseCode.ERROR_HAY_ARCHIVOS_FALLIDOS_CARGUE_CERTIFICACION.getHttpStatus());
-			}
-		}else {
+		if (archivosCargados.size() < valor) {
 			throw new NegocioException(ApiResponseCode.ERROR_NO_CUMPLE_MINIMO_ARCHIVOS_CARGADOS_CERTIFICACION.getCode(),
 					ApiResponseCode.ERROR_NO_CUMPLE_MINIMO_ARCHIVOS_CARGADOS_CERTIFICACION.getDescription(),
 					ApiResponseCode.ERROR_NO_CUMPLE_MINIMO_ARCHIVOS_CARGADOS_CERTIFICACION.getHttpStatus());

@@ -68,5 +68,29 @@ public class FestivosNacionalesServiceImpl implements IFestivosNacionalesService
 				ApiResponseCode.ERROR_CALCULO_DIA_HABIL.getHttpStatus());
 
 	}
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Date consultarAnteriorHabil(Date fechaReferencia) {
+		
+		var dominios =	dominioService.consultaListValoresNumPorDominio(Dominios.DOMINIO_DIAS_NO_HABILES);		
+		List<Integer> finDeSemana = dominios.stream().map(Double::intValue).toList();
+		Calendar calendar = DateUtils.toCalendar(fechaReferencia);
 
+		for (int i = 0; i < Constantes.NUMERO_MAXIMO_CICLOS;) {
+
+			calendar.add(Calendar.DATE, - 1);
+			int day = calendar.get(Calendar.DAY_OF_WEEK);
+
+			if (!finDeSemana.contains(day) && !this.esFestivo(calendar.getTime())) {
+				return calendar.getTime();
+			}
+		}
+
+		throw new AplicationException(ApiResponseCode.ERROR_CALCULO_DIA_HABIL.getCode(),
+				ApiResponseCode.ERROR_CALCULO_DIA_HABIL.getDescription(),
+				ApiResponseCode.ERROR_CALCULO_DIA_HABIL.getHttpStatus());
+
+	}
 }

@@ -3,6 +3,8 @@ package com.ath.adminefectivo.repositories;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
@@ -68,7 +70,7 @@ public interface IOperacionesCertificadasRepository
 	 * @author cesar.castano
 	 */
 
-	List<OperacionesCertificadas> findByEstadoConciliacion(String estadoConciliacion);
+	Page<OperacionesCertificadas> findByEstadoConciliacion(String estadoConciliacion, Pageable page);
 
 	/**
 	 * Retorna la entidad operaciones certificadas segun el codigo del servicio tdv y codigo propio tdv

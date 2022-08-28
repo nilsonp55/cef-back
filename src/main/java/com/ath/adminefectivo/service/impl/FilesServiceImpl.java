@@ -133,7 +133,7 @@ public class FilesServiceImpl implements IFilesService {
 	 */
 	@Override
 	public List<String> obtenerContenidoCarpeta(String url) {
-		System.out.println("Entro ");
+
 		List<String> contenidoCarpeta;
 		if (s3Bucket) {
 			contenidoCarpeta = s3Util.getObjectsFromPathS3(url);

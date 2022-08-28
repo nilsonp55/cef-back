@@ -93,9 +93,6 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	public ValidacionArchivoDTO validarArchivo(String idMaestroDefinicion, String nombreArchivo) {
 		validarLogProcesoDiario();
 		this.validacionesAchivoCargado(idMaestroDefinicion, nombreArchivo);
-		if (Objects.equals(this.validacionArchivo.getEstadoValidacion(), Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO)) {
-			archivosCargadosService.persistirDetalleArchivoCargado(validacionArchivo, true);
-		}
 		return ValidacionArchivoDTO.conversionRespuesta(this.validacionArchivo);
 	}
 
@@ -104,6 +101,7 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	 */
 	@Override
 	public ValidacionArchivoDTO procesarArchivo(String idMaestroDefinicion, String nombreArchivo) {
+		validarLogProcesoDiario();
 		this.validacionesAchivoCargado(idMaestroDefinicion, nombreArchivo);
 		archivosCargadosService.persistirDetalleArchivoCargado(validacionArchivo, false);
 
@@ -137,31 +135,22 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 		List<ArchivosCargadosDTO> listArchivosCargados = new ArrayList<>();
 
 		var maestrosDefinicion = maestroDefinicionArchivoService.consultarDefinicionArchivoByAgrupador(estado, agrupador);
-		System.out.println("maestrosDefinicion: "+maestrosDefinicion);
 		var urlPendinetes = filesService.consultarPathArchivos(estado);
-		System.out.println("urlPendinetes: "+urlPendinetes);
 		var maestro = maestrosDefinicion.get(0);
-		System.out.println("maestro: "+maestro);
 		var url = maestro.getUbicacion().concat(urlPendinetes);
-		System.out.println("url: "+url);
 		var archivos = filesService.obtenerContenidoCarpeta(url);
-		System.out.println("archivos: "+archivos);
 		archivos.forEach(x -> {
-			System.out.println("Entro al For Each");
 			String nombreArchivo;
 			nombreArchivo = x.split("_")[0];
 			maestrosDefinicion.forEach(y -> {
 				String nombreMaestro;
 				nombreMaestro = y.getMascaraArch().split("_")[0];
-				System.out.println("nombreMaestro: "+nombreMaestro);
 				if (nombreArchivo.equals(nombreMaestro)) {
-					System.out.println("Entro al If del ForEach");
 					listArchivosCargados.add(
 							organizarDatosArchivo(x, estado, y.getIdMaestroDefinicionArchivo(), y.getMascaraArch()));
 				}
 			});
 		});
-
 		listArchivosCargados.sort(Comparator.comparing(ArchivosCargadosDTO::getFechaArchivo,
 				Comparator.nullsLast(Comparator.naturalOrder())));
 
@@ -224,13 +213,13 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 		var url = maestroDefinicion.getUbicacion().concat(urlPendinetes).concat(nombreArchivo);
 		validacionArchivoService.validarNombreArchivo(maestroDefinicion, nombreArchivo);
 		var dowloadFile = filesService.downloadFile(DownloadDTO.builder().url(url).build());
-			
+		
+		// Validaciones de arcihvo	
 		String delimitador = lecturaArchivoService.obtenerDelimitadorArchivo(maestroDefinicion);
 		List<String[]> contenido = lecturaArchivoService.leerArchivo(dowloadFile.getFile(), delimitador);
 		Date fechaActual = parametrosService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
 		var fechaArchivo = validacionArchivoService.validarFechaArchivo(nombreArchivo,
 				maestroDefinicion.getMascaraArch(), fechaActual);
-		
 		this.validacionArchivo = ValidacionArchivoDTO.builder().nombreArchivo(nombreArchivo)
 				.descripcion(maestroDefinicion.getDescripcionArch()).fechaArchivo(fechaArchivo)
 				.maestroDefinicion(maestroDefinicion).url(url)

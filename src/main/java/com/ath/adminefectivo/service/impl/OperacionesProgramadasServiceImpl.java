@@ -32,10 +32,8 @@ import com.ath.adminefectivo.dto.TransportadorasDTO;
 import com.ath.adminefectivo.dto.compuestos.DetalleOperacionesDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionIntradiaDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionesProgramadasNombresDTO;
-import com.ath.adminefectivo.dto.compuestos.ContabilidadDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.ArchivosCargados;
-import com.ath.adminefectivo.entities.DetalleOperacionesProgramadas;
 import com.ath.adminefectivo.entities.OperacionesProgramadas;
 import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.exception.NegocioException;
@@ -160,7 +158,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	 */
 	@Override
 	public Page<OperacionesProgramadasNombresDTO> getNombresProgramadasConciliadas(
-			List<OperacionesProgramadas> operacionesProgramadasList, Predicate predicate) {
+			Page<OperacionesProgramadas> operacionesProgramadasList, Predicate predicate) {
 
 		List<OperacionesProgramadasNombresDTO> listOperacionesProgramas = new ArrayList<>();
 		this.getListados(predicate);
@@ -274,14 +272,11 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 			listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaProgramacionBetween("VENTA", fechaInicio,
 					fechaFin));
 		}
-		
-		
 		List<OperacionesProgramadasDTO> listadoOperacionesProgramadasDTO = new ArrayList<>();
 		if (!listaOperacionesProgramadas.isEmpty()) {
 			listaOperacionesProgramadas.forEach(operacionProgramada -> listadoOperacionesProgramadasDTO
 					.add(OperacionesProgramadasDTO.CONVERTER_DTO.apply(operacionProgramada)));
 		}
-
 		return listadoOperacionesProgramadasDTO;
 	}
 	
@@ -362,12 +357,23 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		} else if (archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IPPSV)
 				&& tipoServicio.toUpperCase().trim().contains(Dominios.TIPO_OPERA_CAMBIO)) {
 			operacionProgramada = this.generarOperacionCambio(contenido, detalleArchivo, archivo);
+		} else if (archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IPPSV)
+				&& tipoServicio.toUpperCase().trim().contains(Dominios.TIPO_OPERA_INTERCAMBIO)) {
+			operacionProgramada = this.generarOperacionIntercambio(contenido, detalleArchivo, archivo);
+		
 		} else if (archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_ISTRC)
 				&& tipoServicio.toUpperCase().trim().contains(Dominios.TIPO_OPERA_INTERCAMBIO)) {
 			operacionProgramada = this.generarOperacionIntercambio(contenido, detalleArchivo, archivo);
 		} else if (archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_ISTRC)
 				&& tipoServicio.toUpperCase().trim().contains(Dominios.TIPO_OPERA_TRASLADO)) {
 			operacionProgramada = this.generarOperacionTraslado(contenido, detalleArchivo, archivo);
+		} else if (archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_ISTRC)
+				&& tipoServicio.toUpperCase().trim().contains(Dominios.TIPO_OPERA_CAMBIO)) {
+			operacionProgramada = this.generarOperacionCambio(contenido, detalleArchivo, archivo);
+		} else if (archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_ISTRC)
+				&& tipoServicio.toUpperCase().trim().contains(Dominios.TIPO_OPERA_VENTA)) {
+			operacionProgramada = this.generarOperacionVenta(contenido, detalleArchivo, archivo);
+			
 		} else if (archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_ISRPO)){
 			operacionProgramada = this.procesarArchivoOficinas(contenido, detalleArchivo, archivo);
 		} else if (archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_ISRPC)) {
@@ -410,7 +416,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		OperacionesProgramadasDTO operacionesProgramadasDTO = null;
 		PuntosDTO puntoFondoOrigen = this.consultarPuntoPorDetalle(contenido, detalleArchivo,
 				Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN);
-		PuntosDTO puntoBancoDestino = this.consultarPuntoPorDetalle(contenido, detalleArchivo,
+		PuntosDTO puntoBancoDestino = this.consultarPuntoBanRepPorDetalle(contenido, detalleArchivo,
 				Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO);
 
 		if (!puntoFondoOrigen.getTipoPunto().toUpperCase().trim().equals(Constantes.PUNTO_FONDO)) {
@@ -453,7 +459,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
 		PuntosDTO puntoFondoDestino = this.consultarPuntoPorDetalle(contenido, detalleArchivo,
 				Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO);
-		PuntosDTO puntoBancoOrigen = this.consultarPuntoPorDetalle(contenido, detalleArchivo,
+		PuntosDTO puntoBancoOrigen = this.consultarPuntoBanRepPorDetalle(contenido, detalleArchivo,
 				Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN);
 
 		if (!esCambio && !puntoBancoOrigen.getTipoPunto().toUpperCase().trim().equals(Constantes.PUNTO_BANC_REP)) {
@@ -908,7 +914,9 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		operacionesProgramadasDTO.setIdNegociacion(idNegoc);
 		operacionesProgramadasDTO.setTasaNegociacion(tasaNegociacion);
 		operacionesProgramadasDTO.setEstadoOperacion(Dominios.ESTADOS_OPERA_PROGRAMADO);
-		operacionesProgramadasDTO.setEstadoConciliacion(Dominios.ESTADO_CONCILIACION_NO_CONCILIADO);
+		
+		operacionesProgramadasDTO.setEstadoConciliacion(dominioService.valorTextoDominio(
+				Constantes.DOMINIO_ESTADO_CONCILIACION,Dominios.ESTADO_CONCILIACION_NO_CONCILIADO));
 		operacionesProgramadasDTO.setTipoServicio(Dominios.TIPO_SERVICIO_PROGRAMADA);
 		operacionesProgramadasDTO.setUsuarioCreacion("ATH");
 		operacionesProgramadasDTO.setFechaCreacion(new Date());
@@ -958,6 +966,28 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	}
 
 	/**
+	 * Metodo encargado de realizar la consulta de un punto BanRep por detalle y nombre
+	 * campo
+	 * 
+	 * @param contenido
+	 * @param detalle
+	 * @return PuntosDTO
+	 * @author rparra
+	 */
+	private PuntosDTO consultarPuntoBanRepPorDetalle(String[] contenido, List<DetallesDefinicionArchivoDTO> detallesArchivo,
+			String nombreCampo) {
+
+		DetallesDefinicionArchivoDTO detalle = detallesArchivo.stream()
+				.filter(deta -> deta.getNombreCampo().toUpperCase().equals(nombreCampo)).findFirst().orElse(null);
+		if (!Objects.isNull(detalle)) {
+			String puntoBanRepTDV = contenido[detalle.getId().getNumeroCampo() - 1].trim();
+			puntoBanRepTDV = puntoBanRepTDV.substring(1, puntoBanRepTDV.lastIndexOf('-') );
+			return puntosService.getPuntoByNombrePunto(puntoBanRepTDV);
+		}
+		return null;
+	}
+
+	/**																					
 	 * Metodo encargado de consultar un banco por medio del detalle de un archivo y
 	 * su ciudad
 	 * 

@@ -42,7 +42,7 @@ public interface IOperacionesProgramadasService {
 	 * @author cesar.castano
 	 */
 	Page<OperacionesProgramadasNombresDTO> getNombresProgramadasConciliadas(
-			List<OperacionesProgramadas> operacionesProgramadasList, Predicate predicate);
+			Page<OperacionesProgramadas> operacionesProgramadasList, Predicate predicate);
 
 	/**
 	 * Servicio encargado de generar el numero de operaciones programadas no

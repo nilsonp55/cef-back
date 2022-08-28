@@ -105,6 +105,7 @@ public final class Dominios {
 	public static final String ESTADO_VALIDACION_ACEPTADO = "ACEPTADO";
 	public static final String ESTADO_VALIDACION_REGISTRO_ERRADO = "ERRADO";
 	public static final String ESTADO_VALIDACION_CORRECTO = "OK";
+	public static final String ESTADO_VALIDACION_REEMPLAZADO = "REEMPLAZADO";
 	
 	/**
 	 * Dominio de agrupamiento de los detalles de archivo
@@ -142,6 +143,8 @@ public final class Dominios {
 	public static final String TIPO_ARCHIVO_ISRPC = "ISRPC";
 	public static final String TIPO_ARCHIVO_IBBCS = "IBBCS";
 	public static final String TIPO_ARCHIVO_IBMCS = "IBMCS";
+	public static final String TIPO_ARCHIVO_IATCS = "IATCS";
+	public static final String TIPO_ARCHIVO_IPRCS = "IPRCS";
 	
 	/**
 	 * Codigo Proceso 

@@ -9,6 +9,6 @@ public interface ICertificacionesDelegate {
 	 * @return Boolean
 	 * @author cesar.castano
 	 */
-	Boolean procesarCertificaciones(String modeloArchivo, Long idArchivo);
+	Boolean procesarCertificaciones(String agrupador);
 
 }

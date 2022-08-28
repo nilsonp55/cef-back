@@ -134,7 +134,8 @@ public class CargueCertificacionController {
 	 */
 	@GetMapping(value = "${endpoints.Archivos.consultar}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<List<ArchivosCargadosDTO>>> consultarArchivosCargaCertificacion(
-			@RequestParam("estado") String estado, @RequestParam("idMaestroDefinicion") String agrupador) {
+					@RequestParam("estado") String estado, 
+					@RequestParam("idMaestroDefinicion") String agrupador) {
 		
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<List<ArchivosCargadosDTO>>(cargueCertificacionDelegate.consultarArchivos(estado, agrupador),

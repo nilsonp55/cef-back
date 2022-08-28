@@ -132,12 +132,8 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 		for (ArchivosCargados elemento : archivosCargados) {
 			List<DetallesDefinicionArchivoDTO> listadoDetalleArchivo = detalleDefinicionArchivoService
 					.consultarDetalleDefinicionArchivoByIdMaestro(elemento.getIdModeloArchivo());
-			if(elemento.getIdModeloArchivo().equals(dominioService.valorTextoDominio(
-													Constantes.DOMINIO_TIPO_ARCHIVO,
-													Dominios.TIPO_ARCHIVO_IBBCS)) || 
-			   elemento.getIdModeloArchivo().equals(dominioService.valorTextoDominio(
-													Constantes.DOMINIO_TIPO_ARCHIVO,
-													Dominios.TIPO_ARCHIVO_IBMCS))) {
+			if(elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IBBCS) || 
+			   elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IBMCS)) {
 				procesarArchivoBrinks(elemento, listadoDetalleArchivo);
 			}else {
 				procesarArchivoOtrosFondos(elemento, listadoDetalleArchivo);
@@ -315,9 +311,9 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 
 		CodigoPuntoOrigenDestinoDTO codigoPuntoOrigenDestino;
 		Integer longitud = 0;
-		if (elemento.getIdModeloArchivo().equals(dominioService.valorTextoDominio(
-												Constantes.DOMINIO_TIPO_ARCHIVO,
-												Dominios.TIPO_ARCHIVO_ITVCS))) {
+		if ((elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_ITVCS)) ||
+			(elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IATCS)) ||
+			(elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IPRCS))) {
 			
 			codigoPuntoOrigenDestino = obtenerCodigoPuntoOrigenDestino(
 							entradaSalida, registro.getCodigoPunto(), 
@@ -347,32 +343,37 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 			operaciones.setFechaModificacion(new Date());
 			operaciones.setIdArchivoCargado(elemento.getIdArchivo());
 			operaciones.setTipoOperacion(asignarTipoOperacion(entradaSalida, codigoPropio, registro.getTdv()));
-/*			operaciones.setTipoServicio(dominioService.valorTextoDominio(
-										Constantes.DOMINIO_TIPO_SERVICIO, tipoServicio));*/
-			operaciones.setTipoServicio("PROGRAMADA");
+			operaciones.setTipoServicio(dominioService.valorTextoDominio(
+										Constantes.DOMINIO_TIPO_SERVICIO, tipoServicio));
 			operaciones.setUsuarioCreacion("user1");
 			operaciones.setUsuarioModificacion("user1");
 			operaciones.setValorFaltante(0.0);
 			operaciones.setValorSobrante(0.0);
-			if(elemento.getIdModeloArchivo().equals(dominioService.valorTextoDominio(
-										Constantes.DOMINIO_TIPO_ARCHIVO, 
-										Dominios.TIPO_ARCHIVO_ITVCS))) {
+			if ((elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_ITVCS)) ||
+					(elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IATCS)) ||
+					(elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IPRCS))) {
 				operaciones.setValorTotal(asignarValorTotal(
 												fila, Constantes.INICIA_DENOMINACION_OTROS_FONDOS, longitud));
 			}else {
 				operaciones.setValorTotal(asignarValorTotal(
 												fila, Constantes.INICIA_DENOMINACION_BRINKS, longitud));
 			}
-			operacionesCertificadasRepository.save(OperacionesCertificadasDTO.CONVERTER_ENTITY.apply(operaciones));
+			if (!operaciones.getValorTotal().equals(0.0)) {
+				operacionesCertificadasRepository.save(OperacionesCertificadasDTO.CONVERTER_ENTITY.apply(operaciones));
+			}
+			
 		}else {
-			if(elemento.getIdModeloArchivo().equals(dominioService.valorTextoDominio(
-										Constantes.DOMINIO_TIPO_ARCHIVO, 
-										Dominios.TIPO_ARCHIVO_ITVCS))) {
+			if ((elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_ITVCS)) ||
+					(elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IATCS)) ||
+					(elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IPRCS))) {
 				certificadas.setValorTotal(certificadas.getValorTotal() + asignarValorTotal(
 												fila, Constantes.INICIA_DENOMINACION_OTROS_FONDOS, longitud));
 			}else {
 				certificadas.setValorTotal(certificadas.getValorTotal() + asignarValorTotal(
 												fila, Constantes.INICIA_DENOMINACION_BRINKS, longitud));
+			}
+			if (!certificadas.getValorTotal().equals(0.0)) {
+				operacionesCertificadasRepository.save(certificadas);
 			}
 			operacionesCertificadasRepository.save(certificadas);
 		}
@@ -420,11 +421,11 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	 */
 	private String asignarEntradaSalida(String entSal) {
 		var entradaSalida = "";
-		if (entSal.equals(Constantes.NOMBRE_ENTRADA)) {
-			entradaSalida = Constantes.ENTRADA;
+		if (entSal.equals(Constantes.ENTRADA)) {
+			entradaSalida = Constantes.NOMBRE_ENTRADA;
 		}
-		if (entSal.equals(Constantes.NOMBRE_SALIDA)) {
-			entradaSalida = Constantes.SALIDA;
+		if (entSal.equals(Constantes.SALIDA)) {
+			entradaSalida = Constantes.NOMBRE_SALIDA;
 		}
 		return entradaSalida;
 	}
@@ -477,13 +478,13 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 		Integer codigoPunto = 0;
 		var tipoOperacion = "";
 		codigoPunto = puntosCodigoTdvService.getCodigoPunto(codigoPropio, tdv);
-		if (asignarEntradaSalida(entradaSalida).equals(Constantes.SALIDA)) {
+		if (asignarEntradaSalida(entradaSalida).equals(Constantes.NOMBRE_SALIDA)) {
 			tipoOperacion = procesarProvisiones(codigoPunto);
 			if (tipoOperacion.isEmpty()) {
 				tipoOperacion = procesarConsignaciones(codigoPunto);
 			}
 		}else {
-			if (asignarEntradaSalida(entradaSalida).equals(Constantes.ENTRADA)) {
+			if (asignarEntradaSalida(entradaSalida).equals(Constantes.NOMBRE_ENTRADA)) {
 				tipoOperacion = procesarRecolleciones(codigoPunto);
 				if (tipoOperacion.isEmpty()) {
 					tipoOperacion = procesarRetiros(codigoPunto);

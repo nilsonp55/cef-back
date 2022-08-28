@@ -1,5 +1,6 @@
 package com.ath.adminefectivo.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -123,5 +124,7 @@ public interface IArchivosCargadosService {
 	 * @return 
 	 * @author duvan.naranjo
 	 */
-	List<ArchivosCargados> listadoArchivosCargadosSinProcesarDefinitiva(String agrupador);
+//	List<ArchivosCargados> listadoArchivosCargadosSinProcesarDefinitiva(String agrupador);
+	List<ArchivosCargados> listadoArchivosCargadosSinProcesarDefinitiva(String agrupador,
+			Date fecha, String estado);
 }

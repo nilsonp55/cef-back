@@ -458,7 +458,7 @@ public enum ApiResponseCode {
 	/**
 	 * Ocurrió un error al consultar el Log Proceso Diario
 	 */
-	ERROR_FALTAN_ARCHIVOS_POR_CARGAR("E931", "Error, Faltan archivos de Programacion Definitiva por cargar", HttpStatus.PRECONDITION_FAILED),
+	ERROR_FALTAN_ARCHIVOS_POR_CARGAR("E931", "Error, El numero de archivos a cargar no es valido", HttpStatus.PRECONDITION_FAILED),
 
 	/**
 	 * Ocurrió un error al consultar el Log Proceso Diario
