@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ath.adminefectivo.dto.RespuestaContableDTO;
 import com.ath.adminefectivo.dto.TransaccionesContablesDTO;
 import com.ath.adminefectivo.dto.TransaccionesInternasDTO;
 import com.ath.adminefectivo.entities.TransaccionesContables;
@@ -80,4 +81,61 @@ public class TransaccionesContablesServiceImpl implements ITransaccionesContable
 		return listadoTransaccionesContablesDTO;
 	}
 
+	@Override
+	public String findBytipoProceso(String str) {
+		String tipoProceso = transaccionesContablesRepository.findBytipoProceso(str);
+		return tipoProceso;
+	}
+	
+	@Override
+	public List<RespuestaContableDTO> getCierreContable(Date fecha, String tipoContabilidad, String numeroBancos,
+			String codBanco) {
+		List<TransaccionesContablesDTO> listadoTransaccionesCierreDTO = new ArrayList<>();
+		
+		List<RespuestaContableDTO> listadoTransaccionContables = null;
+			if(numeroBancos.equals("TODOS")) {
+				listadoTransaccionContables = transaccionesContablesRepository
+						.cierreContableAllBancos(fecha,tipoContabilidad);
+			}else if(numeroBancos.equals("UNO"))
+			{
+				listadoTransaccionContables = transaccionesContablesRepository
+						.cierreContablebyBanco(fecha,tipoContabilidad,codBanco);
+			}
+
+		return listadoTransaccionContables;
+	}
+	
+	@Override
+	public List<TransaccionesContablesDTO> getTransaccionesContablesByNaturaleza(String Naturaleza) {
+		List<TransaccionesContablesDTO> listadoTransaccionesContablesDTO = new ArrayList<>();
+
+		List<TransaccionesContables> listadoTipoTransaccion = transaccionesContablesRepository
+				.findByNaturaleza(Naturaleza);
+		listadoTipoTransaccion.forEach(transaccionContable -> listadoTransaccionesContablesDTO
+				.add(TransaccionesContablesDTO.CONVERTER_DTO.apply(transaccionContable))
+			);
+
+		return listadoTransaccionesContablesDTO;
+		
+	}
+	
+	public List<RespuestaContableDTO> existErroresContablesByBanco (Date fecha,String tipoContabilidad,String codBanco) {
+		//aqui va el repository
+		List<RespuestaContableDTO>  dato = transaccionesContablesRepository.erroresContablesbybanco(fecha, tipoContabilidad, codBanco);
+		return dato;
+	}
+	
+	public List<RespuestaContableDTO> existErroresContablesAllBanco (Date fecha,String tipoContabilidad) {
+		//aqui va el repository
+		List<RespuestaContableDTO> dato = transaccionesContablesRepository.erroresContablesAllbanco(fecha, tipoContabilidad);
+
+		return dato;
+		
+	}
+	
+	public String estadovalidacionContable(String estado) {
+		String estadoCierre = transaccionesContablesRepository.estadovalidacionContable(estado);
+		return estadoCierre;
+	}
+	
 }
