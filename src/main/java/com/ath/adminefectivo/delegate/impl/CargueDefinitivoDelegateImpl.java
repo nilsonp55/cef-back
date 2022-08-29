@@ -246,26 +246,6 @@ public class CargueDefinitivoDelegateImpl implements ICargueDefinitivoDelegate {
 		}
 
 	}
-
-	/**
-	 * Método encargado de organizar la lista de archivos y armar el objeto de
-	 * archivos cargados
-	 * 
-	 * @param archivos
-	 * @return
-	 * @return List<ArchivosCargadosDTO>
-	 * @author CamiloBenavides
-	 */
-	private List<ArchivosCargadosDTO> organizarDataArchivos(List<String> archivos, String estado,
-			String idModeloArchivo, String mascaraArchivo) {
-		List<ArchivosCargadosDTO> archivosCargados = new ArrayList<>();
-		archivos.forEach(fecha -> archivosCargados.add(
-				ArchivosCargadosDTO.builder().estadoCargue(estado).nombreArchivo(fecha).idModeloArchivo(idModeloArchivo)
-						.fechaArchivo(validacionArchivoService.obtenerFechaArchivo(fecha, mascaraArchivo)).build()));
-
-		return archivosCargados;
-
-	}
 	
 	/**
 	 * Metodo encargado de validar el log de proceso diario
