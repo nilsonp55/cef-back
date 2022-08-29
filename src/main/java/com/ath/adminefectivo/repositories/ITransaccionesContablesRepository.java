@@ -41,7 +41,10 @@ public interface ITransaccionesContablesRepository extends JpaRepository<Transac
 	 * @return List<TransaccionesContables>
 	 * @author Miller.Caro
 	 */
-	@Query(value = "SELECT * FROM Transacciones_contables tc cuentas_puc cp transacciones_internas ti ON"
+	@Query(value ="SELECT tc.idOperacion,tc.ID_GENERICO,tc.FECHA,tc.CONSECUTIVO_DIA,tc.TIPO_TRANSACCION,tc.BANCO_AVAL,tc.CODIGO_CENTRO,tc.NATURALEZA,tc.CUENTA_CONTABLE,"
+			+ "tc.CODIGO_MONEDA,tc.VALOR,tc.tc.TIPO_PROCESO,tc.NUMERO_COMPROBANTE,tc.TIPO_IDENTIFICACION,tc.ID_TERCERO,tc.NOMBRE_TERCERO,tc.IDENTIFICADOR,"
+			+ "tc.DESCRIPCION,tc.REFERENCIA1,tc.REFERENCIA2"
+			+ "FROM Transacciones_contables tc cuentas_puc cp transacciones_internas ti ON"
 			+ "(tc.CUENTA_CONTABLE = cp.CUENTA_CONTABLE) AND "
 			+ "(tc.naturaleza in('C','D')) AND"
 			+ "(cp.tipo_cuenta<>'TRAINT') AND"
@@ -56,7 +59,10 @@ public interface ITransaccionesContablesRepository extends JpaRepository<Transac
 	 * @return List<TransaccionesContables>
 	 * @author Miller.Caro
 	 */
-	@Query(value ="SELECT * FROM Transacciones_contables tc cuentas_puc cp transacciones_internas ti ON"
+	@Query(value ="SELECT tc.idOperacion,tc.ID_GENERICO,tc.FECHA,tc.CONSECUTIVO_DIA,tc.TIPO_TRANSACCION,tc.BANCO_AVAL,tc.CODIGO_CENTRO,tc.NATURALEZA,tc.CUENTA_CONTABLE,"
+			+ "tc.CODIGO_MONEDA,tc.VALOR,tc.tc.TIPO_PROCESO,tc.NUMERO_COMPROBANTE,tc.TIPO_IDENTIFICACION,tc.ID_TERCERO,tc.NOMBRE_TERCERO,tc.IDENTIFICADOR,"
+			+ "tc.DESCRIPCION,tc.REFERENCIA1,tc.REFERENCIA2"
+			+ "FROM Transacciones_contables tc cuentas_puc cp transacciones_internas ti ON"
 			+ "(tc.CUENTA_CONTABLE = cp.CUENTA_CONTABLE) AND "
 			+ "(tc.id_transaccion_interna = ti.id_transaccion_interna) AND "
 			+ "(cp.tipo_cuenta<>'TRAINT') AND"
