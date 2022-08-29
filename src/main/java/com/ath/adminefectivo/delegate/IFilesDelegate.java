@@ -50,6 +50,16 @@ public interface IFilesDelegate {
 	 * @author CamiloBenavides
 	 */
 	DownloadDTO descargarArchivo(String nombreArchivo, String idMaestroArchivo);
+	
+	/**
+	 * Metodo encargado de descargar un archivo procesado del repositorio
+	 * 
+	 * @param idArchivo
+	 * @return
+	 * @return DownloadDTO
+	 * @author RParra
+	 */
+	DownloadDTO descargarArchivoProcesado(Long idArchivo);
 
 	/**
 	 * Metodo encargado de persistir en el repositorio como en la base de datos el

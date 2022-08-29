@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ath.adminefectivo.constantes.Constantes;
+import com.ath.adminefectivo.constantes.Parametros;
 import com.ath.adminefectivo.delegate.IFilesDelegate;
 import com.ath.adminefectivo.dto.ArchivosCargadosDTO;
 import com.ath.adminefectivo.dto.DownloadDTO;
@@ -152,26 +153,41 @@ public class FilesDelegateImpl implements IFilesDelegate {
 	public DownloadDTO descargarArchivo(String nombreArchivo, String idMaestroArchivo) {
 		DownloadDTO file = null;
 		String carpeta = "";
-		try {
-			var maestrosDefinicion = maestroDefinicionArchivoService
-										.consultarDefinicionArchivoById(idMaestroArchivo);
-			carpeta = parametroService.valorParametro("RUTA_ARCHIVOS_PENDIENTES");
+
+		var maestrosDefinicion = maestroDefinicionArchivoService.consultarDefinicionArchivoById(idMaestroArchivo);
+		carpeta = parametroService.valorParametro(Parametros.RUTA_ARCHIVOS_PENDIENTES);
+		String ubicacion = maestrosDefinicion.getUbicacion();
+		file = DownloadDTO.builder().name(nombreArchivo).url(ubicacion + carpeta + nombreArchivo).build();
+		file = filesService.downloadFile(file);
+		
+		return file;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public DownloadDTO descargarArchivoProcesado( Long idArchivo) {
+		
+		DownloadDTO file = null;
+		String carpeta = "";
+		String nombreArchivo ="";
+
+		var archivosCargados = archivosCargadosService.consultarArchivo(idArchivo);
+		if (!Objects.isNull(archivosCargados)) {
+			nombreArchivo = archivosCargados.getNombreArchivo().concat(idArchivo.toString());
+			var maestrosDefinicion = maestroDefinicionArchivoService.consultarDefinicionArchivoById(archivosCargados.getIdMaestroArchivo());
 			String ubicacion = maestrosDefinicion.getUbicacion();
+			if (Constantes.ESTADO_CARGUE_ERROR.equals(archivosCargados.getEstadoCargue() )) {
+				carpeta = parametroService.valorParametro(Parametros.RUTA_ARCHIVOS_ERRADOS);
+			}
+			else {
+				carpeta = parametroService.valorParametro(Parametros.RUTA_ARCHIVOS_PROCESADOS);
+			}	
 			file = DownloadDTO.builder().name(nombreArchivo).url(ubicacion + carpeta + nombreArchivo).build();
 			file = filesService.downloadFile(file);
-			if (Objects.isNull(file.getFile())){
-				carpeta = parametroService.valorParametro("RUTA_ARCHIVOS_ERRADOS");
-				file = DownloadDTO.builder().name(nombreArchivo).url(ubicacion + carpeta + nombreArchivo).build();
-				file = filesService.downloadFile(file);
-			}
-			if (Objects.isNull(file.getFile())) {
-				carpeta = parametroService.valorParametro("RUTA_ARCHIVOS_PROCESADOS");
-				file = DownloadDTO.builder().name(nombreArchivo).url(ubicacion + carpeta + nombreArchivo).build();
-				file = filesService.downloadFile(file);
-			}
-		} catch (Exception e) {
-			throw new ConflictException(ApiResponseCode.GENERIC_ERROR.getDescription());
 		}
+
 		return file;
 	}
 

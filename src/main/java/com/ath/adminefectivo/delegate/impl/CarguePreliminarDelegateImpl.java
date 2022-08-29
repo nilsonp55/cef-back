@@ -89,7 +89,7 @@ public class CarguePreliminarDelegateImpl implements ICarguePreliminarDelegate {
 	@Transactional
 	public ValidacionArchivoDTO procesarArchivo(String idMaestroDefinicion, String nombreArchivo) {
 		this.validacionesAchivoCargado(idMaestroDefinicion, nombreArchivo);
-		archivosCargadosService.persistirDetalleArchivoCargado(validacionArchivo, false);
+		Long idArchivo = archivosCargadosService.persistirDetalleArchivoCargado(validacionArchivo, false);
 
 		String urlDestino = (Objects.equals(this.validacionArchivo.getEstadoValidacion(),
 				Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO))
@@ -98,7 +98,7 @@ public class CarguePreliminarDelegateImpl implements ICarguePreliminarDelegate {
 
 		this.filesService.moverArchivos(this.validacionArchivo.getUrl(),
 				this.validacionArchivo.getMaestroDefinicion().getUbicacion().concat(urlDestino),
-				this.validacionArchivo.getNombreArchivo());
+				this.validacionArchivo.getNombreArchivo(),idArchivo.toString());
 
 		return ValidacionArchivoDTO.conversionRespuesta(this.validacionArchivo);
 	}

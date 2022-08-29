@@ -66,11 +66,12 @@ public interface IFilesService {
 	 * @param urlSource
 	 * @param urlDestino
 	 * @param nombreArchivo
+	 * @param postfijo
 	 * @return
 	 * @return boolean
 	 * @author CamiloBenavides
 	 */
-	boolean moverArchivos(String urlSource, String urlDestino, String nombreArchivo);
+	boolean moverArchivos(String urlSource, String urlDestino, String nombreArchivo, String postfijo);
 	
 	/**
 	 * Retorna el parametro del los documentos almacenados por estado

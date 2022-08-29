@@ -81,10 +81,10 @@ public interface IArchivosCargadosService {
 	 * la data del proceso de validación
 	 * 
 	 * @param validacionArchivo
-	 * @return Boolean
+	 * @return Long
 	 * @author CamiloBenavides
 	 */
-	Boolean persistirDetalleArchivoCargado(ValidacionArchivoDTO validacionArchivo,  boolean soloErrores);
+	Long persistirDetalleArchivoCargado(ValidacionArchivoDTO validacionArchivo,  boolean soloErrores);
 	
 	/**
 	 * Metodo encagado de obtener los archivos cargados actuales que no se han

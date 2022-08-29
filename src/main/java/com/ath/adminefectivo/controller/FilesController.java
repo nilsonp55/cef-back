@@ -74,10 +74,9 @@ public class FilesController {
 	@ApiOperation(value = "Download files ", notes = "")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = SwaggerConstants.RESPONSE_MESSAGE_200) })
 	public ResponseEntity<InputStreamResource> downloadFile(
-			@RequestParam("nombreArchivo") String nombreArchivo, 
-			@RequestParam("idMaestroArchivo") String idMaestroArchivo) {
+			@RequestParam("idArchivo") Long idArchivo  {
 
-		DownloadDTO file = filesDelegate.descargarArchivo(nombreArchivo, idMaestroArchivo);
+		DownloadDTO file = filesDelegate.descargarArchivo(idArchivo);
 
 		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, Constantes.PARAMETER_HEADER + file.getName())
 				.body(new InputStreamResource(file.getFile()));
