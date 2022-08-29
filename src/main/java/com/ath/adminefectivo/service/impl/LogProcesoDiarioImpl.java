@@ -52,6 +52,20 @@ public class LogProcesoDiarioImpl implements ILogProcesoDiarioService {
 	 * {@inheritDoc}
 	 */
 	@Override
+	public List<LogProcesoDiarioDTO> getLogsProcesosDiariosByFechaProceso(Date fechaProceso) {
+		var logProcesoDiarios = logProcesoDiarioRepository.findByFechaCreacion(fechaProceso);
+		
+		List<LogProcesoDiarioDTO> listLogProcesoDiarioDto = new ArrayList<>();
+		logProcesoDiarios.forEach(entity -> {
+			listLogProcesoDiarioDto.add(LogProcesoDiarioDTO.CONVERTER_DTO.apply(entity));
+		});
+		return listLogProcesoDiarioDto;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public boolean esDiaCompleto(Date diaCierre) {
 		int numProcesosTotales = parametroService.valorParametroEntero(Parametros.NUMERO_PROCESOS_TOTALES_DIA);
 

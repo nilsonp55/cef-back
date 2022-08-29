@@ -117,8 +117,9 @@ public final class Dominios {
 	/**
 	 * Dominios estados de los procesos del dia
 	 */	
-	public static final String ESTADO_PROCESO_DIA_COMPLETO = "COMPLETO";
+	public static final String ESTADO_PROCESO_DIA_COMPLETO = "CERRADO"; //Deve ser COMPLETADO
 	public static final String ESTADO_PROCESO_DIA_PROCESO = "PROCESO";
+	public static final String ESTADO_PROCESO_DIA_PENDIENTE = "PENDIENTE";
 	
 	/**
 	 * Dominios dias no habiles
