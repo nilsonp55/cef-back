@@ -124,7 +124,16 @@ public interface IArchivosCargadosService {
 	 * @return 
 	 * @author duvan.naranjo
 	 */
-//	List<ArchivosCargados> listadoArchivosCargadosSinProcesarDefinitiva(String agrupador);
+
 	List<ArchivosCargados> listadoArchivosCargadosSinProcesarDefinitiva(String agrupador,
 			Date fecha, String estado);
+	
+	/**
+	 * Metodo encagado de actualizar el archivo
+	 * 
+	 * @param archivosCargadosDTO
+	 * @return 
+	 * @author duvan.naranjo
+	 */
+	void actualizarArchivosCargados(ArchivosCargados archivosCargados);
 }

@@ -246,6 +246,15 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 		return archivosCargadosRepository.getRegistrosCargadosSinProcesarDeHoy(agrupador, fecha, estado);
 
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void actualizarArchivosCargados(ArchivosCargados archivosCargados) {
+		archivosCargadosRepository.save(archivosCargados);
+		
+	}
 
 	/**
 	 * Método encargado de organizar y separar las informacion de las lineas

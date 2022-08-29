@@ -511,17 +511,17 @@ public final class Constantes {
 	/**
 	 * Constante para indicar el SIGLATRANSPORTADORA en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
 	 */
-	public static final String CAMPO_DETALLE_ARCHIVO_SIGLATRANSPORTADORA = "SIGLATRANSPORTADORA";
+	public static final String CAMPO_DETALLE_ARCHIVO_SIGLATRANSPORTADORA = "SIGLATDV";
 
 	/**
 	 * Constante para indicar el CODIGOENTIDAD en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
 	 */
-	public static final String CAMPO_DETALLE_ARCHIVO_CODIGONITENTIDAD = "CODIGONITENTIDAD";
+	public static final String CAMPO_DETALLE_ARCHIVO_CODIGONITENTIDAD = "NITBANCO";
 
 	/**
 	 * Constante para indicar el CODIGODANE en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
 	 */
-	public static final String CAMPO_DETALLE_ARCHIVO_CODIGODANE = "CODIGODANE";
+	public static final String CAMPO_DETALLE_ARCHIVO_CODIGODANE = "CODIGOCIUDAD";
 
 	/**
 	 * Constante para indicar el FECHAEMISION en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
@@ -531,12 +531,12 @@ public final class Constantes {
 	/**
 	 * Constante para indicar el CODIGOSERVICIOTRANS en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
 	 */
-	public static final String CAMPO_DETALLE_ARCHIVO_CODIGOSERVTRANS = "DESCRIPCIONES";
+	public static final String CAMPO_DETALLE_ARCHIVO_CODIGOSERVTRANS = "CODIGOSERVICIO";
 
 	/**
 	 * Constante para indicar el ENTRADASALIDA en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
 	 */
-	public static final String CAMPO_DETALLE_ARCHIVO_ENTRADAOSALIDA = "DESCRIPCIONES";
+	public static final String CAMPO_DETALLE_ARCHIVO_ENTRADAOSALIDA = "ENTRADASALIDA";
 
 	/**
 	 * Constante para indicar el MONTOTOTALNOVEDAD en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)

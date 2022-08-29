@@ -246,7 +246,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 					break;
 				}
 				case "BS": {
-					fecha = nombreArchivo.substring(8, 13);
+					fecha = nombreArchivo.substring(8, 14);
 					mascaraFecha = maestroDefinicion.getMascaraArch().substring(13, 19);
 					formatoFecha = new ArrayList();
 					formatoFecha.add(mascaraFecha);
@@ -258,7 +258,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 					break;
 				}
 				case "BI": {
-					fecha = nombreArchivo.substring(8, 13);
+					fecha = nombreArchivo.substring(8, 14);
 					mascaraFecha = maestroDefinicion.getMascaraArch().substring(13, 19);
 					formatoFecha = new ArrayList();
 					formatoFecha.add(mascaraFecha);
@@ -361,13 +361,13 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 					break;
 				}
 				case "BS": {
-					fecha = nombreArchivo.substring(8, 13);
+					fecha = nombreArchivo.substring(8, 14);
 					mascaraFecha = mascaraArchivo.substring(13, 19);
 					fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
 					break;
 				}
 				case "BI": {
-					fecha = nombreArchivo.substring(8, 13);
+					fecha = nombreArchivo.substring(8, 14);
 					mascaraFecha = mascaraArchivo.substring(13, 19);
 					fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
 					break;
