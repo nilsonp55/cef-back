@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,15 +44,18 @@ public class GenerarArchivoController {
 	  public ResponseEntity<InputStreamResource> GenerarContabilidadCierre(
 			@RequestParam(value = "fecha") Date fecha,
 			@RequestParam(value = "tipoContabilidad") String tipoContabilidad,
-			@RequestParam(value = "codBanco") String codBanco
+			@RequestParam(value = "codBanco") int codBanco
 			) {
 		ByteArrayInputStream archivo =generarArchivoDelegate.generarArchivo(fecha, tipoContabilidad, codBanco);
+ 		 HttpHeaders headers = new HttpHeaders();
+ 		 headers.add("Content-Disposition", "attachment; filename=cierreContable.xls");
+ 		 
  		 
 		// return ResponseEntity.status(HttpStatus.OK)
 			//		.body(new ApiResponseADE<>(archivo, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 				//			.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 		 
-		 return ResponseEntity.ok().body(new InputStreamResource(archivo));
+		 return ResponseEntity.ok().headers(headers).body(new InputStreamResource(archivo));
 		 
 	}
 }

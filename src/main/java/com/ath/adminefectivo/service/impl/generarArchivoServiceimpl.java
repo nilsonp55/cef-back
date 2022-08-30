@@ -18,20 +18,25 @@ import com.ath.adminefectivo.dto.RespuestaContableDTO;
 import com.ath.adminefectivo.dto.TransaccionesContablesDTO;
 import com.ath.adminefectivo.entities.TransaccionesContables;
 import com.ath.adminefectivo.repositories.impl.GenerarArchivoRepository;
+import com.ath.adminefectivo.service.ICierreContabilidadService;
+import com.ath.adminefectivo.service.ITransaccionesContablesService;
 import com.ath.adminefectivo.service.IgenerarArchivoService;
+import com.ath.adminefectivo.utils.UtilsObjects;
 
 @Service
 public class generarArchivoServiceimpl implements IgenerarArchivoService{
 
 @Autowired
 GenerarArchivoRepository generarArchivoRepository;
+
+@Autowired
+ITransaccionesContablesService transaccionesContablesService;
 	
 @Override
-public ByteArrayInputStream generarArchivo(Date fecha, String tipoContabilidad,String codBanco) {
+public ByteArrayInputStream generarArchivo(Date fecha, String tipoContabilidad,int codBanco) {
 	
 	//List<RespuestaContableDTO> listaContable;
-	List<TransaccionesContablesDTO> listaContable;
-	listaContable = generarArchivoRepository.generarArchivo(fecha, tipoContabilidad, codBanco);
+	List<RespuestaContableDTO> listaContable = transaccionesContablesService.getCierreContable(fecha,tipoContabilidad,codBanco);
 	
 	
 	//AQUI ARMAR EL ARCHIVO EXCEL
@@ -42,44 +47,28 @@ public ByteArrayInputStream generarArchivo(Date fecha, String tipoContabilidad,S
 	
 	//TransaccionesContables  RegContable = new TransaccionesContables();
 	  //TransaccionesContablesDTO lista;
-	int initRow = 1;
+	int initRow = 0;
+	RespuestaContableDTO dtoContable;
+	for (int i = 0; i < listaContable.size(); i++) {
 		
-		RespuestaContableDTO dtoContable = new RespuestaContableDTO();
+		row = sheet.createRow(i);
+		dtoContable = listaContable.get(i);
 		
-		listaContable.forEach(item-> {
-	    	dtoContable.setBancoAval(item.getBancoAval().getAbreviatura());
-	    	dtoContable.setNaturalezaContable(item.getNaturaleza()=="D" ? 40: 50);
-	    	dtoContable.setCuentaMayor(item.getCuentaContable());
-	    	dtoContable.setSubAuxiliar(item.getCuentaAuxiliar());
-	    	dtoContable.setTipoIdentificacion(item.getTipoIdentificacion());
-	    	dtoContable.setValorMoneda(item.getValor());
-	    	dtoContable.setValorPesos(item.getValor());
-	    	//TODO revisar logica de cuando va este valor dtoContable.setCentroCosto(item.getCodigoCentro());
-	    	dtoContable.setCentroBeneficio(item.getCodigoCentro());
-	    	dtoContable.setIdentificador(item.getIdentificador());
-	    	dtoContable.setDescripcionTransaccion(item.getDescripcion());
-	    	dtoContable.setTerceroGL(item.getIdTercero());
-	    	dtoContable.setNombreTerceroGL(item.getNombreTercero());
-	    	dtoContable.setClaveReferencia1(item.getReferencia1());
-	    	dtoContable.setClaveReferencia2(item.getReferencia2());	    		
-	});
-		
-		row = sheet.createRow(initRow);
 		row.createCell(0).setCellValue(dtoContable.getBancoAval());
 		row.createCell(1).setCellValue(dtoContable.getNaturalezaContable());
 		row.createCell(2).setCellValue(dtoContable.getCuentaMayor());
 		row.createCell(3).setCellValue(dtoContable.getSubAuxiliar());
 		row.createCell(4).setCellValue(dtoContable.getTipoIdentificacion());
-		row.createCell(5).setCellValue(dtoContable.getValorMoneda());
-		row.createCell(6).setCellValue(dtoContable.getValorPesos());
-		row.createCell(7).setCellValue(dtoContable.getCentroBeneficio());
-		row.createCell(8).setCellValue(dtoContable.getIdentificador());
-		row.createCell(9).setCellValue(dtoContable.getDescripcionTransaccion());
-		row.createCell(10).setCellValue(dtoContable.getTerceroGL());
-		row.createCell(11).setCellValue(dtoContable.getNombreTerceroGL());
-		row.createCell(11).setCellValue(dtoContable.getClaveReferencia1());
-		row.createCell(11).setCellValue(dtoContable.getClaveReferencia2());
-		initRow++;
+		row.createCell(5).setCellValue(dtoContable.getValor());
+		row.createCell(6).setCellValue(dtoContable.getCentroBeneficio());
+		row.createCell(7).setCellValue(dtoContable.getIdentificador());
+		row.createCell(8).setCellValue(dtoContable.getDescripcionTransaccion());
+		row.createCell(9).setCellValue(dtoContable.getTerceroGL() == null ? 0 : dtoContable.getTerceroGL());
+		row.createCell(10).setCellValue(dtoContable.getNombreTerceroGL() == null ? "" : dtoContable.getNombreTerceroGL());
+		row.createCell(11).setCellValue(dtoContable.getClaveReferencia1() == null ? "" : dtoContable.getClaveReferencia1());
+		row.createCell(12).setCellValue(dtoContable.getClaveReferencia2() == null ? "" : dtoContable.getClaveReferencia2());
+	}
+		
 			
 		try {
 			workbook.write(stream);
@@ -94,5 +83,6 @@ public ByteArrayInputStream generarArchivo(Date fecha, String tipoContabilidad,S
 	
 	
 }
+
 }
 

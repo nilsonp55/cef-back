@@ -17,6 +17,6 @@ public interface ICierreContabilidadDelegate {
 	 * @return String
 	 * @author miller.caro
 	 */
-	List<RespuestaContableDTO> cerrarContabilidad(java.util.Date fechaSistema,String tipoContabilidad,String numeroBancos,String codBanco,String fase);
+	List<RespuestaContableDTO> cerrarContabilidad(java.util.Date fechaSistema,String tipoContabilidad,int codBanco,String fase);
 	
 }

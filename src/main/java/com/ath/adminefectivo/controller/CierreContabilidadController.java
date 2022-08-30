@@ -60,13 +60,13 @@ public class CierreContabilidadController {
 	public ResponseEntity<ApiResponseADE<List<RespuestaContableDTO>>> GenerarContabilidadCierre(
 			@RequestParam(value = "fechaSistema") Date fechaSistema,
 			@RequestParam(value = "tipoContabilidad") String tipoContabilidad,
-			@RequestParam(value = "numeroBancos") String numeroBancos,
-			@RequestParam(value = "codBanco") String codBanco,
+			@RequestParam(value = "codBanco") int codBanco,
 			@RequestParam(value = "fase") String fase		
 			) 
 	
 	{
-		List<RespuestaContableDTO> consultas = CierreContabilidadDelegate.cerrarContabilidad(fechaSistema, tipoContabilidad, numeroBancos, codBanco, fase);
+		System.out.println("ENTRO 69 controller");
+		List<RespuestaContableDTO> consultas = CierreContabilidadDelegate.cerrarContabilidad(fechaSistema, tipoContabilidad, codBanco, fase);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consultas, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));

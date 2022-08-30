@@ -13,6 +13,7 @@ import com.ath.adminefectivo.dto.LogProcesoDiarioDTO;
 import com.ath.adminefectivo.dto.TransaccionesContablesDTO;
 import com.ath.adminefectivo.entities.LogProcesoDiario;
 import com.ath.adminefectivo.service.IParametroService;
+import com.ath.adminefectivo.service.ITransaccionesContablesService;
 import com.ath.adminefectivo.service.impl.LogProcesoDiarioImpl;
 import com.ath.adminefectivo.service.impl.TransaccionesContablesServiceImpl;
 
@@ -25,46 +26,31 @@ public class AutorizacionContableDelegate implements IAutorizacionContable{
 	@Autowired
 	IParametroService parametroService;
 	
+	@Autowired
+	ITransaccionesContablesService transaccionesContablesService;
+	
 	@Override
 	public LogProcesoDiarioDTO autorizacionContable(Date fecha, String tipoContabilidad, String estado) {
 		
+		LogProcesoDiarioDTO result = null;
 		//obteniendo la fecha del sistema
 		Date fechaActual = parametroService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);	
-
+		String contabilidadProceso = "";
+		if(tipoContabilidad.equals("PM")) {
+			contabilidadProceso = "CONTABILIDAD_PM";
+		}else if(tipoContabilidad.equals("AM")) {
+			contabilidadProceso = "CONTABILIDAD_AM";
+		}
 		
-		//validacion del estado log procesos diarios
-				LogProcesoDiario estadoAutorizacionPM = logProceso.obtenerEntidadLogProcesoDiario("CONTABILIDAD_PM");
-				LogProcesoDiario estadoAutorizacionAM = logProceso.obtenerEntidadLogProcesoDiario("CONTABILIDAD_AM");
-				LogProcesoDiarioDTO result = null; 
-				TransaccionesContablesServiceImpl validacionContable = new TransaccionesContablesServiceImpl();
-				
-				if(estado.equals("autorizacion1")) {
-					
-					String validacionCierre = validacionContable.estadovalidacionContable(estado);
-					
-						//llamar al metodo de ejecutar el cierre para un banco. 
-						//validar que el cierre contable este en el estado cerrado. crear metodo validar cierre contable
-						if(estadoAutorizacionPM.getEstadoProceso().equals("POR_AUTORIZAR")) {
+		if(estado.equals("autorizacion1")) {
+			Integer validacionCierre = transaccionesContablesService.estadovalidacionContable(3);
+			LogProcesoDiario estadoAutorizacion = logProceso.obtenerEntidadLogProcesoDiario(contabilidadProceso);
+			if(estadoAutorizacion.getEstadoProceso().equals("POR_AUTORIZAR") && validacionCierre == null){
+				estadoAutorizacion.setEstadoProceso("AUTORIZADO");
+				result = logProceso.actualizarLogProcesoDiario(LogProcesoDiarioDTO.CONVERTER_DTO.apply(estadoAutorizacion));
+			}					
 							
-							if(validacionCierre.isEmpty()) {
-								LogProcesoDiarioDTO x = null;
-								x.setEstadoProceso("AUTORIZADO");
-								result = logProceso.actualizarLogProcesoDiario(x);
-							}
-							
-							
-						}						
-						if(estadoAutorizacionAM.getEstadoProceso().equals("POR_AUTORIZAR")) {
-							
-							if(validacionCierre.isEmpty()) {
-								LogProcesoDiarioDTO x = null;
-								x.setEstadoProceso("AUTORIZADO");
-								result = logProceso.actualizarLogProcesoDiario(x);
-							}
-							
-							
-						}
-				}
+		}						
  
 		return result;
 	}

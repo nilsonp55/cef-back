@@ -26,7 +26,7 @@ public class CuentasPucDTO {
 
 	private Long idCuentasPuc;
 	
-	private ConfContableEntidadesDTO cuentaContable;
+	private String cuentaContable;
 	
 	private BancosDTO bancoAval;
 	
@@ -50,9 +50,7 @@ public class CuentasPucDTO {
 		CuentasPuc cuentasPuc = new CuentasPuc();
 		cuentasPuc.setIdCuentasPuc(t.getIdCuentasPuc());	
 		
-		ConfContableEntidades confContableEntidad = new ConfContableEntidades();
-		confContableEntidad.setConsecutivo(t.getCuentaContable().getConsecutivo()); 
-		cuentasPuc.setCuentaContable(confContableEntidad);
+		cuentasPuc.setCuentaContable(t.getCuentaContable());
 		
 		Bancos bancos = new Bancos();
 		bancos.setCodigoPunto(t.getBancoAval().getCodigoPunto());
@@ -81,9 +79,7 @@ public class CuentasPucDTO {
 		CuentasPucDTO cuentasPuc = new CuentasPucDTO();
 		cuentasPuc.setIdCuentasPuc(t.getIdCuentasPuc());	
 		
-		ConfContableEntidadesDTO confContableEntidad = new ConfContableEntidadesDTO();
-		confContableEntidad.setConsecutivo(t.getCuentaContable().getConsecutivo()); 
-		cuentasPuc.setCuentaContable(confContableEntidad);
+		cuentasPuc.setCuentaContable(t.getCuentaContable());
 		
 		BancosDTO bancos = new BancosDTO();
 		bancos.setCodigoPunto(t.getBancoAval().getCodigoPunto());

@@ -13,9 +13,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RespuestaContableDTO {
 	
-	private String bancoAval;
+	private int bancoAval;
 	
-	private int naturalezaContable;
+	private String naturalezaContable;
 	
 	private String cuentaMayor;
 	
@@ -23,15 +23,9 @@ public class RespuestaContableDTO {
 	
 	private String tipoIdentificacion;
 	
-	private float tipoCambioMonedaDolar;
+	private String codigoMoneda;
 	
-	private float tipoCambioMonedaPeso;
-	
-	private float valorMoneda;
-	
-	private float valorPesos;
-	
-	private float valorUsd;
+	private Integer valor;
 	
 	private String centroCosto;
 	

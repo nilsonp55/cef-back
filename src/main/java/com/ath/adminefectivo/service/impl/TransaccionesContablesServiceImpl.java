@@ -88,18 +88,19 @@ public class TransaccionesContablesServiceImpl implements ITransaccionesContable
 	}
 	
 	@Override
-	public List<RespuestaContableDTO> getCierreContable(Date fecha, String tipoContabilidad, String numeroBancos,
-			String codBanco) {
+	public List<RespuestaContableDTO> getCierreContable(Date fecha, String tipoContabilidad,
+			int codBanco) {
 		List<TransaccionesContablesDTO> listadoTransaccionesCierreDTO = new ArrayList<>();
-		
+		System.out.println("ENTRO 94");
 		List<RespuestaContableDTO> listadoTransaccionContables = null;
-			if(numeroBancos.equals("TODOS")) {
+			if(codBanco == 0) {
 				listadoTransaccionContables = transaccionesContablesRepository
-						.cierreContableAllBancos(fecha,tipoContabilidad);
-			}else if(numeroBancos.equals("UNO"))
+						.cierreContableAllBancos(fecha,tipoContabilidad, 1);
+			}else if(codBanco > 0)
 			{
+				System.out.println("ENTRO 101");
 				listadoTransaccionContables = transaccionesContablesRepository
-						.cierreContablebyBanco(fecha,tipoContabilidad,codBanco);
+						.cierreContablebyBanco(fecha,tipoContabilidad,codBanco,1 );
 			}
 
 		return listadoTransaccionContables;
@@ -119,22 +120,24 @@ public class TransaccionesContablesServiceImpl implements ITransaccionesContable
 		
 	}
 	
-	public List<RespuestaContableDTO> existErroresContablesByBanco (Date fecha,String tipoContabilidad,String codBanco) {
+	public List<RespuestaContableDTO> existErroresContablesByBanco (Date fecha,String tipoContabilidad,int codBanco) {
 		//aqui va el repository
-		List<RespuestaContableDTO>  dato = transaccionesContablesRepository.erroresContablesbybanco(fecha, tipoContabilidad, codBanco);
+		System.out.println("ENTRO existErroresContablesByBanco transacciones contables 125");
+		List<RespuestaContableDTO>  dato = transaccionesContablesRepository.cierreContablebyBanco(fecha, tipoContabilidad, codBanco, 3);
 		return dato;
 	}
 	
 	public List<RespuestaContableDTO> existErroresContablesAllBanco (Date fecha,String tipoContabilidad) {
 		//aqui va el repository
-		List<RespuestaContableDTO> dato = transaccionesContablesRepository.erroresContablesAllbanco(fecha, tipoContabilidad);
+		List<RespuestaContableDTO> dato = transaccionesContablesRepository.cierreContableAllBancos(fecha, tipoContabilidad, 3);
 
 		return dato;
 		
 	}
 	
-	public String estadovalidacionContable(String estado) {
-		String estadoCierre = transaccionesContablesRepository.estadovalidacionContable(estado);
+	@Override
+	public Integer estadovalidacionContable(int estado) {
+		Integer estadoCierre = transaccionesContablesRepository.estadovalidacionContable(estado);
 		return estadoCierre;
 	}
 	

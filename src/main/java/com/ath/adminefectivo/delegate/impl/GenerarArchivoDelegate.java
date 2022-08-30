@@ -44,15 +44,16 @@ public class GenerarArchivoDelegate implements IGenerarArchivoDelegate {
 	TransaccionesContablesServiceImpl transaccionesContablesService; 
 
 	@Override
-	public ByteArrayInputStream generarArchivo(Date fecha, String tipoContabilidad, String codBanco) {
+	public ByteArrayInputStream generarArchivo(Date fecha, String tipoContabilidad, int codBanco) {
 		//RespuestaContableDTO registros = new RespuestaContableDTO();
 		ByteArrayInputStream registros = null;
 		//fecha actual
 		//Date fechaActual = parametroService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
 		//valida el tipoContabilidad
-		String tipoC = transaccionesContablesService.findBytipoProceso(tipoContabilidad);
-		if(!Objects.isNull(tipoC)) {
-			registros = generarArchivoService.generarArchivo(fecha, tipoC, codBanco);
+	
+		
+		if(tipoContabilidad.equals("AM") || tipoContabilidad.equals("PM")) {
+			registros = generarArchivoService.generarArchivo(fecha, tipoContabilidad, codBanco);
 		}
 		
 		return registros;

@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
+import org.springframework.data.repository.query.Param;
 
 import com.ath.adminefectivo.dto.RespuestaContableDTO;
 import com.ath.adminefectivo.dto.TransaccionesContablesDTO;
@@ -41,16 +42,20 @@ public interface ITransaccionesContablesRepository extends JpaRepository<Transac
 	 * @return List<TransaccionesContables>
 	 * @author Miller.Caro
 	 */
-	@Query(value ="SELECT tc.idOperacion,tc.ID_GENERICO,tc.FECHA,tc.CONSECUTIVO_DIA,tc.TIPO_TRANSACCION,tc.BANCO_AVAL,tc.CODIGO_CENTRO,tc.NATURALEZA,tc.CUENTA_CONTABLE,"
-			+ "tc.CODIGO_MONEDA,tc.VALOR,tc.tc.TIPO_PROCESO,tc.NUMERO_COMPROBANTE,tc.TIPO_IDENTIFICACION,tc.ID_TERCERO,tc.NOMBRE_TERCERO,tc.IDENTIFICADOR,"
-			+ "tc.DESCRIPCION,tc.REFERENCIA1,tc.REFERENCIA2"
-			+ "FROM Transacciones_contables tc cuentas_puc cp transacciones_internas ti ON"
-			+ "(tc.CUENTA_CONTABLE = cp.CUENTA_CONTABLE) AND "
-			+ "(tc.naturaleza in('C','D')) AND"
-			+ "(cp.tipo_cuenta<>'TRAINT') AND"
-			+ "(tc.id_transaccion_interna = ti.id_transaccion_interna) AND "
-			+ "WHERE (tc.fecha = ?1 AND TI.tipo_proceso = ?2 AND tc.banco_aval = ?3)",nativeQuery=true)
-	List<RespuestaContableDTO> cierreContablebyBanco(Date fecha,String tipoContabilidad,String codBanco);
+//	@Query(value ="SELECT tc.banco_aval, tc.naturaleza, tc.cuenta_contable, tc.cuenta_auxiliar, tc.tipo_identificacion, "
+//			+ " tc.codigo_moneda, tc.valor, tc.codigo_centro, null as codigo_beneficio, null as ordenCo, null as areaFuncional, "
+//			+ " tc.identificador, tc.descripcion, tc.id_tercero, tc.nombre_tercero, null as fechaConversion, tc.referencia1, tc.referencia2 "
+//			+ "FROM transacciones_contables tc, cuentas_puc cp, transacciones_internas ti "
+//			+ "WHERE tc.cuenta_contable = cp.CUENTA_CONTABLE AND "
+//			+ " tc.naturaleza in('C','D') AND "
+//			+ " cp.tipo_cuenta<>'TRAINT' AND "
+//			+ " tc.id_transacciones_internas = ti.id_transacciones_internas AND "
+//			+ " ti.estado = ?4 AND "
+//			+ " tc.fecha = ?1 AND "
+//			+ " ti.tipo_proceso = ?2 AND "
+//			+ " tc.banco_aval = ?3 ",nativeQuery=true)
+	@Query(nativeQuery = true)
+	List<RespuestaContableDTO> cierreContablebyBanco(@Param("fecha")Date fecha, @Param("tipoContabilidad") String tipoContabilidad, @Param("codBanco") int codBanco, @Param("estado") int estado);
 	
 	/**
 	 * Retorna una lista de transacciones contables por fecha,tipocontabilidad, y todos banco
@@ -59,16 +64,18 @@ public interface ITransaccionesContablesRepository extends JpaRepository<Transac
 	 * @return List<TransaccionesContables>
 	 * @author Miller.Caro
 	 */
-	@Query(value ="SELECT tc.idOperacion,tc.ID_GENERICO,tc.FECHA,tc.CONSECUTIVO_DIA,tc.TIPO_TRANSACCION,tc.BANCO_AVAL,tc.CODIGO_CENTRO,tc.NATURALEZA,tc.CUENTA_CONTABLE,"
-			+ "tc.CODIGO_MONEDA,tc.VALOR,tc.tc.TIPO_PROCESO,tc.NUMERO_COMPROBANTE,tc.TIPO_IDENTIFICACION,tc.ID_TERCERO,tc.NOMBRE_TERCERO,tc.IDENTIFICADOR,"
-			+ "tc.DESCRIPCION,tc.REFERENCIA1,tc.REFERENCIA2"
-			+ "FROM Transacciones_contables tc cuentas_puc cp transacciones_internas ti ON"
-			+ "(tc.CUENTA_CONTABLE = cp.CUENTA_CONTABLE) AND "
-			+ "(tc.id_transaccion_interna = ti.id_transaccion_interna) AND "
-			+ "(cp.tipo_cuenta<>'TRAINT') AND"
-			+ "(tc.naturaleza in('C','D')) AND"
-			+ "WHERE (tc.fecha = ?1 AND TI.tipo_proceso = ?2) ",nativeQuery=true)
-	List<RespuestaContableDTO> cierreContableAllBancos(Date fecha,String tipoContabilidad);
+//	@Query(value ="SELECT tc.id_operacion,tc.id_generico,tc.fecha, tc.consecutivo_dia, tc.tipo_transaccion, tc.banco_aval, "
+//			+ "	tc.codigo_centro, tc.naturaleza, tc.cuenta_contable, tc.codigo_moneda, tc.valor, tc.tipo_proceso, "
+//			+ "	tc.numero_comprobante, tc.tipo_identificacion, tc.id_tercero, tc.nombre_tercero, tc.identificador, "
+//			+ "	tc.descripcion, tc.referencia1,tc.referencia2 "
+//			+ "FROM transacciones_contables tc, cuentas_puc cp, transacciones_internas ti WHERE "
+//			+ "tc.CUENTA_CONTABLE = cp.CUENTA_CONTABLE AND "
+//			+ "tc.id_transacciones_internas = ti.id_transacciones_internas AND "
+//			+ "cp.tipo_cuenta<>'TRAINT' AND "
+//			+ "tc.naturaleza in('C','D') AND "
+//			+ "tc.fecha = ?1 AND ti.tipo_proceso = ?2 ",nativeQuery=true)
+	@Query(nativeQuery = true)
+	List<RespuestaContableDTO> cierreContableAllBancos(Date fecha,String tipoContabilidad, int estado);
 	
 	/**
 	 * Retorna una lista de errorescontables banco por el estado en transacciones internas
@@ -77,17 +84,18 @@ public interface ITransaccionesContablesRepository extends JpaRepository<Transac
 	 * @return List<TransaccionesContables>
 	 * @author Miller.Caro
 	 */
-	@Query(value ="SELECT tc.idOperacion,tc.ID_GENERICO,tc.FECHA,tc.CONSECUTIVO_DIA,tc.TIPO_TRANSACCION,tc.BANCO_AVAL,tc.CODIGO_CENTRO,tc.NATURALEZA,tc.CUENTA_CONTABLE,"
-			+ "tc.CODIGO_MONEDA,tc.VALOR,tc.tc.TIPO_PROCESO,tc.NUMERO_COMPROBANTE,tc.TIPO_IDENTIFICACION,tc.ID_TERCERO,tc.NOMBRE_TERCERO,tc.IDENTIFICADOR,"
-			+ "tc.DESCRIPCION,tc.REFERENCIA1,tc.REFERENCIA2"
-			+ "FROM Transacciones_contables tc cuentas_puc cp transacciones_internas ti ON"
-			+ "(tc.CUENTA_CONTABLE = cp.CUENTA_CONTABLE) AND "
-			+ "(tc.naturaleza in('C','D')) AND"
-			+ "(cp.tipo_cuenta<>'TRAINT') AND"
-			+ "(ti.estado = 'ERROR') AND"
-			+ "(tc.id_transaccion_interna = ti.id_transaccion_interna) AND "
-			+ "WHERE (tc.fecha = ?1 AND TI.tipo_proceso = ?2 AND tc.banco_aval = ?3)",nativeQuery=true)
-	List<RespuestaContableDTO> erroresContablesbybanco(Date fecha,String tipoContabilidad,String codBanco);
+	@Query(value ="SELECT tc.id_operacion,tc.id_generico,tc.fecha, tc.consecutivo_dia, tc.tipo_transaccion, tc.banco_aval, "
+			+ "	tc.codigo_centro, tc.naturaleza, tc.cuenta_contable, tc.codigo_moneda, tc.valor, tc.tipo_proceso, "
+			+ "	tc.numero_comprobante, tc.tipo_identificacion, tc.id_tercero, tc.nombre_tercero, tc.identificador, "
+			+ "	tc.descripcion, tc.referencia1,tc.referencia2 "
+			+ "	FROM transacciones_contables tc, cuentas_puc cp, transacciones_internas ti where "
+			+ " tc.CUENTA_CONTABLE = cp.CUENTA_CONTABLE AND "
+			+ " tc.naturaleza in('C','D') AND "
+			+ " cp.tipo_cuenta<>'TRAINT' AND "
+			+ " ti.estado = 2 AND "
+			+ " tc.id_transacciones_internas = ti.id_transacciones_internas AND "
+			+ " tc.fecha = ?1 AND ti.tipo_proceso = ?2 AND tc.banco_aval = ?3 ",nativeQuery=true)
+	List<RespuestaContableDTO> erroresContablesbybancoddd(Date fecha,String tipoContabilidad,int codBanco);
 	
 	/**
 	 * Retorna una lista de errorescontables por bancos por el estado en transacciones internas
@@ -96,16 +104,17 @@ public interface ITransaccionesContablesRepository extends JpaRepository<Transac
 	 * @return List<TransaccionesContables>
 	 * @author Miller.Caro
 	 * */
-	@Query(value ="SELECT tc.idOperacion,tc.ID_GENERICO,tc.FECHA,tc.CONSECUTIVO_DIA,tc.TIPO_TRANSACCION,tc.BANCO_AVAL,tc.CODIGO_CENTRO,tc.NATURALEZA,tc.CUENTA_CONTABLE,"
-			+ "tc.CODIGO_MONEDA,tc.VALOR,tc.tc.TIPO_PROCESO,tc.NUMERO_COMPROBANTE,tc.TIPO_IDENTIFICACION,tc.ID_TERCERO,tc.NOMBRE_TERCERO,tc.IDENTIFICADOR,"
-			+ "tc.DESCRIPCION,tc.REFERENCIA1,tc.REFERENCIA2"
-			+ "FROM Transacciones_contables tc cuentas_puc cp transacciones_internas ti ON"
-			+ "(tc.CUENTA_CONTABLE = cp.CUENTA_CONTABLE) AND "
-			+ "(tc.naturaleza in('C','D')) AND"
-			+ "(cp.tipo_cuenta<>'TRAINT') AND"
-			+ "(ti.estado = 'ERROR') AND"
-			+ "(tc.id_transaccion_interna = ti.id_transaccion_interna) AND "
-			+ "WHERE (tc.fecha = ?1 AND TI.tipo_proceso = ?2)",nativeQuery=true)
+	@Query(value ="SELECT tc.id_operacion,tc.id_generico,tc.fecha, tc.consecutivo_dia, tc.tipo_transaccion, tc.banco_aval, "
+			+ "tc.codigo_centro, tc.naturaleza, tc.cuenta_contable, tc.codigo_moneda, tc.valor, tc.tipo_proceso, "
+			+ "tc.numero_comprobante, tc.tipo_identificacion, tc.id_tercero, tc.nombre_tercero, tc.identificador, "
+			+ "tc.descripcion, tc.referencia1,tc.referencia2 "
+			+ "FROM Transacciones_contables tc, cuentas_puc cp, transacciones_internas ti WHERE "
+			+ " tc.CUENTA_CONTABLE = cp.CUENTA_CONTABLE AND "
+			+ " tc.naturaleza in('C','D') AND "
+			+ " cp.tipo_cuenta<>'TRAINT' AND "
+			+ " ti.estado = 3 AND "
+			+ " tc.id_transacciones_internas = ti.id_transacciones_internas) AND "
+			+ " tc.fecha = ?1 AND ti.tipo_proceso = ?2)",nativeQuery=true)
 	List<RespuestaContableDTO> erroresContablesAllbanco(Date fecha,String tipoContabilidad);
 	
 	/**
@@ -123,13 +132,12 @@ public interface ITransaccionesContablesRepository extends JpaRepository<Transac
 	 * @return String estado 
 	 * @author Miller.Caro
 	 * */
-	@Query(value ="SELECT ti.estado"
-			+ "FROM Transacciones_contables tc cuentas_puc cp transacciones_internas ti ON"
-			+ "(tc.CUENTA_CONTABLE = cp.CUENTA_CONTABLE) AND "
-			+ "(tc.naturaleza in('C','D')) AND"
-			+ "(cp.tipo_cuenta<>'TRAINT') AND"
-			+ "(ti.estado = 'ERROR') AND"
-			+ "(tc.id_transaccion_interna = ti.id_transaccion_interna) AND "
-			+ "WHERE (ti.estado = ?1)",nativeQuery=true)
-	String estadovalidacionContable(String estado);
+	@Query(value ="SELECT distinct case when  ti.estado = null then 0 else ti.estado end as estado"
+			+ " FROM transacciones_contables tc, cuentas_puc cp, transacciones_internas ti where "
+			+ " tc.CUENTA_CONTABLE = cp.CUENTA_CONTABLE AND "
+			+ " tc.naturaleza in('C','D') AND "
+			+ " cp.tipo_cuenta<>'TRAINT' AND "
+			+ " tc.id_transacciones_internas = ti.id_transacciones_internas AND "
+			+ " ti.estado = ?1 ",nativeQuery=true)
+	Integer estadovalidacionContable(int estado);
 }

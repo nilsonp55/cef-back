@@ -14,5 +14,5 @@ import com.ath.adminefectivo.dto.RespuestaContableDTO;
  */
 public interface IgenerarArchivoService {
 
-	ByteArrayInputStream generarArchivo(Date fecha,String tipoContabilidad,String codBanco );
+	ByteArrayInputStream generarArchivo(Date fecha,String tipoContabilidad,int codBanco );
 }

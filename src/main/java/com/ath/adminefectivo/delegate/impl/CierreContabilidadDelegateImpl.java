@@ -43,34 +43,39 @@ public class CierreContabilidadDelegateImpl implements ICierreContabilidadDelega
 	CierreContabilidadServiceImpl cierreContabilidadService;
 
 	@Override
-	public List<RespuestaContableDTO> cerrarContabilidad(Date fechaSistema, String tipoContabilidad,
-			String numeroBancos, String codBanco, String fase) {
-
+	public List<RespuestaContableDTO> cerrarContabilidad(Date fechaSistema, String tipoContabilidad, int codBanco, String fase) {
+		System.out.println("ENTRO 48 DELEGATE");
 		List<RespuestaContableDTO> respuesta = null;
 
 			List<RespuestaContableDTO> registros = null;
 
 			if(fase.equals("INICIAL")) {
 				//VALIDACION QUE LA CARGA PELIMINAR ESTE CERRADA SI ES PM
-				
+				System.out.println("ENTRO 55 DELEGATE");
 				// SERVICIO DE VALIDACION TIPOCONTABILIDAD
 				LogProcesoDiario tipoContable = cierreContabilidadService.validacionTipoContabilidad(tipoContabilidad);
 				
+				System.out.println("ENTRO DELEGATE 59 "+tipoContable);
 				//tipoContable.getEstadoProceso();
-
-				if(tipoContable.equals("CERRADO")) {
-
+				System.out.println("ENTRO DELEGATE 59 "+tipoContable.getEstadoProceso());
+				if(tipoContable.getEstadoProceso().equals("CERRADO")) {
+					System.out.println("ENTRO 55 DELEGATE 62 cerrado");
 					//VALIDACION ERRORES CONTABLES POR BANCO: 
-					if("UNO".equals(numeroBancos)) {
+					if(codBanco > 0) {
+						System.out.println("ENTRO 65 DELEGATE");
 						registros = transaccionesContablesService.existErroresContablesByBanco(fechaSistema, tipoContabilidad, codBanco);
+						System.out.println("ENTRO 67 DELEGATE "+ registros);
 					}
-					else if("TODOS".equals(numeroBancos)){
+					else if(codBanco == 0 ){
 						//VALIDACION ERROES CONTABLES POR BANCOS
 						registros = transaccionesContablesService.existErroresContablesAllBanco(fechaSistema, tipoContabilidad);
 						
 					}
-					if(Objects.isNull(registros)) {
-						respuesta = transaccionesContablesService.getCierreContable(fechaSistema,tipoContabilidad,numeroBancos,codBanco);
+					System.out.println("ENTRO 74 DELEGATE registros -- "+ registros);
+					if(registros.isEmpty()) {
+						System.out.println("ENTRO 76 DELEGATE");
+						respuesta = transaccionesContablesService.getCierreContable(fechaSistema,tipoContabilidad,codBanco);
+						System.out.println("ENTRO 78 DELEGATE "+respuesta);
 					}
 					else {
 						//personalizar los errores contables

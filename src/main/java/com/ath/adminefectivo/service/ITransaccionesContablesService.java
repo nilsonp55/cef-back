@@ -75,7 +75,7 @@ public interface ITransaccionesContablesService {
 	 * @return List<TransaccionesContablesDTO>
 	 * @author Miller.Caro
 	 */
-	List<RespuestaContableDTO> getCierreContable(Date fecha,String tipoContabilidad,String numeroBancos,String codBanco);
+	List<RespuestaContableDTO> getCierreContable(Date fecha,String tipoContabilidad,int codBanco);
 
 	/**
 	 * Servicio encargado de obtener las transacciones por proceso
@@ -85,5 +85,14 @@ public interface ITransaccionesContablesService {
 	 * @author Miller.Caro
 	 */
 	String findBytipoProceso(String str);
+
+	
+	/**
+	 * 
+	 * @param estado
+	 * @return
+	 * @author Miller.caro
+	 */
+	Integer estadovalidacionContable(int estado);
 
 }

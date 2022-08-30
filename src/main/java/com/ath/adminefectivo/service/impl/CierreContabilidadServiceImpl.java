@@ -19,10 +19,13 @@ public class CierreContabilidadServiceImpl implements ICierreContabilidadService
 		LogProcesoDiario cierrePre;
 		//String cierrePre;
 		if(tipoContabilidad.equals("PM")) {
+			System.out.println("validacionTipoContabilidad linea 22 ");
 			//aqui se valida que la carga preliminar este cerrada
 			//TODO agregar a la siguiente busqueda la fecha
 			cierrePre = logProceso.obtenerEntidadLogProcesoDiario("CARG_PRELIMINAR");
 			cierrePre.getEstadoProceso();
+			System.out.println("validacionTipoContabilidad linea 27 "+cierrePre.getEstadoProceso());
+			System.out.println("validacionTipoContabilidad linea 28 "+cierrePre.getEstadoProceso().compareTo("CERRADO"));
 			if(cierrePre.getEstadoProceso().compareTo("CERRADO")!=0) {
 				throw new NegocioException(ApiResponseCode.ERROR_ESTADO_CARGA_PRELIMINAR.getCode(),
                         ApiResponseCode.ERROR_ESTADO_CARGA_PRELIMINAR.getDescription(),

@@ -35,9 +35,8 @@ public class CuentasPuc {
 	@Column(name = "ID_CUENTAS_PUC")
 	private Long idCuentasPuc;
 	
-	@ManyToOne
-	@JoinColumn(name = "CUENTA_CONTABLE", nullable = false)
-	private ConfContableEntidades cuentaContable;
+	@Column(name = "CUENTA_CONTABLE")
+	private String cuentaContable;
 	
 	@ManyToOne
 	@JoinColumn(name = "BANCO_AVAL", nullable = false)
