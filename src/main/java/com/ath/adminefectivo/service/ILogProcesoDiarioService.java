@@ -22,6 +22,13 @@ public interface ILogProcesoDiarioService {
 	List<LogProcesoDiarioDTO> getLogsProcesosDierios(Predicate predicate);
 	
 	/**
+	 * Servicio encargado de traer todos los procesos diarios
+	 * @param predicate
+	 * @return
+	 */
+	List<LogProcesoDiarioDTO> getLogsProcesosDiariosByFechaProceso(Date fechaProceso);
+	
+	/**
 	 * Servicio encargado de consultar si se completaron todos los procesos del día
 	 * 
 	 * @param diaCierre

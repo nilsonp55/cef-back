@@ -1,6 +1,7 @@
 package com.ath.adminefectivo.repositories;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
@@ -34,5 +35,14 @@ public interface LogProcesoDiarioRepository extends JpaRepository<LogProcesoDiar
 	 * @author cesar.castano
 	 */
 	LogProcesoDiario findByCodigoProceso(String codigoProceso);
+	
+	/**
+	 * Retorna lista de logsProcesoDiario por fecha
+	 * 
+	 * @param fechaProceso
+	 * @return LogProcesoDiarios
+	 * @author bayronperez
+	 */
+	List<LogProcesoDiario> findByFechaCreacion(Date fecha);
 	
 }
