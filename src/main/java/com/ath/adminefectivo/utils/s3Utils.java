@@ -229,6 +229,7 @@ public class s3Utils {
 	 */
 	public void deleteObjectBucket(String objectKey) {
 		try {
+			//conexionS3(bucketName);
 			s3.deleteObject(bucketName, objectKey);
 		} catch (AmazonServiceException e) {
 			LOGGER.error(e.getMessage(), e);
