@@ -167,7 +167,7 @@ public class FilesDelegateImpl implements IFilesDelegate {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public DownloadDTO descargarArchivoProcesado( Long idArchivo) {
+	public DownloadDTO descargarArchivoProcesado(Long idArchivo) {
 		
 		DownloadDTO file = null;
 		String carpeta = "";
@@ -175,8 +175,10 @@ public class FilesDelegateImpl implements IFilesDelegate {
 
 		var archivosCargados = archivosCargadosService.consultarArchivo(idArchivo);
 		if (!Objects.isNull(archivosCargados)) {
-			nombreArchivo = archivosCargados.getNombreArchivo().concat(idArchivo.toString());
-			var maestrosDefinicion = maestroDefinicionArchivoService.consultarDefinicionArchivoById(archivosCargados.getIdMaestroArchivo());
+			String[] arregloNombre = archivosCargados.getNombreArchivo().split(Constantes.EXPRESION_REGULAR_PUNTO);
+			nombreArchivo = arregloNombre[0].concat("-" + idArchivo.toString());
+			var maestrosDefinicion = maestroDefinicionArchivoService.consultarDefinicionArchivoById(
+										archivosCargados.getIdModeloArchivo());
 			String ubicacion = maestrosDefinicion.getUbicacion();
 			if (Constantes.ESTADO_CARGUE_ERROR.equals(archivosCargados.getEstadoCargue() )) {
 				carpeta = parametroService.valorParametro(Parametros.RUTA_ARCHIVOS_ERRADOS);
@@ -184,7 +186,8 @@ public class FilesDelegateImpl implements IFilesDelegate {
 			else {
 				carpeta = parametroService.valorParametro(Parametros.RUTA_ARCHIVOS_PROCESADOS);
 			}	
-			file = DownloadDTO.builder().name(nombreArchivo).url(ubicacion + carpeta + nombreArchivo).build();
+			file = DownloadDTO.builder().name(nombreArchivo)
+										.url(ubicacion + carpeta + nombreArchivo + "." + arregloNombre[1]).build();
 			file = filesService.downloadFile(file);
 		}
 

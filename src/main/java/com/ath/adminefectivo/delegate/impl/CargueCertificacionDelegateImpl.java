@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -100,6 +102,7 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	 * {@inheritDoc}
 	 */
 	@Override
+	@Transactional
 	public ValidacionArchivoDTO procesarArchivo(String idMaestroDefinicion, String nombreArchivo) {
 		validarLogProcesoDiario();
 		this.validacionesAchivoCargado(idMaestroDefinicion, nombreArchivo);

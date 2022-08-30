@@ -82,6 +82,4 @@ public interface IFilesDelegate {
 	 */
 	List<ArchivosCargadosDTO> consultarArchivos(String idMaestroDefinicion, String estado);
 
-
-
 }

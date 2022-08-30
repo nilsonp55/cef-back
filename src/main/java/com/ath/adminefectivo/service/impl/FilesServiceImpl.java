@@ -157,7 +157,9 @@ public class FilesServiceImpl implements IFilesService {
 	public boolean moverArchivos(String urlSource, String urlDestino, String nombreArchivo, String postfijo) {
 		Path origenPath = FileSystems.getDefault().getPath(urlSource);
 		this.validarPath(urlDestino);
-		Path destinoPath = FileSystems.getDefault().getPath(urlDestino, nombreArchivo.concat("-").concat(postfijo) );
+		String[] arregloNombre = nombreArchivo.split(Constantes.EXPRESION_REGULAR_PUNTO);
+		nombreArchivo = arregloNombre[0].concat("-" + postfijo);
+		Path destinoPath = FileSystems.getDefault().getPath(urlDestino, nombreArchivo.concat("." + arregloNombre[1]));
 		try {
 			if(s3Bucket) {
 				s3Util.moverObjeto(origenPath.toString(), destinoPath.toString());

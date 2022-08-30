@@ -49,7 +49,7 @@ public final class Constantes {
 	 */
 
 	public static final String ESTADO_CARGUE_PENDIENTE = "PEND";
-	public static final String ESTADO_CARGUE_ERROR = "ERROR";
+	public static final String ESTADO_CARGUE_ERROR = "ERRADO";
 	public static final String ESTADO_CARGUE_VALIDO = "OK";
 	
 
