@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ath.adminefectivo.dto.RespuestaContableDTO;
 import com.ath.adminefectivo.dto.TransaccionesContablesDTO;
 import com.ath.adminefectivo.dto.TransaccionesInternasDTO;
 import com.ath.adminefectivo.entities.TransaccionesContables;
@@ -80,4 +81,64 @@ public class TransaccionesContablesServiceImpl implements ITransaccionesContable
 		return listadoTransaccionesContablesDTO;
 	}
 
+	@Override
+	public String findBytipoProceso(String str) {
+		String tipoProceso = transaccionesContablesRepository.findBytipoProceso(str);
+		return tipoProceso;
+	}
+	
+	@Override
+	public List<RespuestaContableDTO> getCierreContable(Date fecha, String tipoContabilidad,
+			int codBanco) {
+		List<TransaccionesContablesDTO> listadoTransaccionesCierreDTO = new ArrayList<>();
+		System.out.println("ENTRO 94");
+		List<RespuestaContableDTO> listadoTransaccionContables = null;
+			if(codBanco == 0) {
+				listadoTransaccionContables = transaccionesContablesRepository
+						.cierreContableAllBancos(fecha,tipoContabilidad, 1);
+			}else if(codBanco > 0)
+			{
+				System.out.println("ENTRO 101");
+				listadoTransaccionContables = transaccionesContablesRepository
+						.cierreContablebyBanco(fecha,tipoContabilidad,codBanco,1 );
+			}
+
+		return listadoTransaccionContables;
+	}
+	
+	@Override
+	public List<TransaccionesContablesDTO> getTransaccionesContablesByNaturaleza(String Naturaleza) {
+		List<TransaccionesContablesDTO> listadoTransaccionesContablesDTO = new ArrayList<>();
+
+		List<TransaccionesContables> listadoTipoTransaccion = transaccionesContablesRepository
+				.findByNaturaleza(Naturaleza);
+		listadoTipoTransaccion.forEach(transaccionContable -> listadoTransaccionesContablesDTO
+				.add(TransaccionesContablesDTO.CONVERTER_DTO.apply(transaccionContable))
+			);
+
+		return listadoTransaccionesContablesDTO;
+		
+	}
+	
+	public List<RespuestaContableDTO> existErroresContablesByBanco (Date fecha,String tipoContabilidad,int codBanco) {
+		//aqui va el repository
+		System.out.println("ENTRO existErroresContablesByBanco transacciones contables 125");
+		List<RespuestaContableDTO>  dato = transaccionesContablesRepository.cierreContablebyBanco(fecha, tipoContabilidad, codBanco, 3);
+		return dato;
+	}
+	
+	public List<RespuestaContableDTO> existErroresContablesAllBanco (Date fecha,String tipoContabilidad) {
+		//aqui va el repository
+		List<RespuestaContableDTO> dato = transaccionesContablesRepository.cierreContableAllBancos(fecha, tipoContabilidad, 3);
+
+		return dato;
+		
+	}
+	
+	@Override
+	public Integer estadovalidacionContable(int estado) {
+		Integer estadoCierre = transaccionesContablesRepository.estadovalidacionContable(estado);
+		return estadoCierre;
+	}
+	
 }

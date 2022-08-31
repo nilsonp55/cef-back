@@ -7,12 +7,8 @@
   <servers>
       <server>
         <id>maven-central</id>
-        <username>prv_jmazo</username>
-<<<<<<< HEAD
-        <password>Evelin2022*A</password>
-=======
-        <password>Cambio2022*A</password>
->>>>>>> 630dd22c07819645beda0dab45f2315ee0d3011e
+        <username>prv_dnaranjo</username>
+        <password>DUv@9515...</password>
       </server>
   </servers>
 

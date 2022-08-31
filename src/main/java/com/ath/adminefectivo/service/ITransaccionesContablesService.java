@@ -3,6 +3,7 @@ package com.ath.adminefectivo.service;
 import java.util.Date;
 import java.util.List;
 
+import com.ath.adminefectivo.dto.RespuestaContableDTO;
 import com.ath.adminefectivo.dto.TransaccionesContablesDTO;
 import com.ath.adminefectivo.dto.TransaccionesInternasDTO;
 import com.ath.adminefectivo.entities.TransaccionesContables;
@@ -55,6 +56,43 @@ public interface ITransaccionesContablesService {
 	 */
 	List<TransaccionesContablesDTO> getTransaccionesContablesByFechas(Date fechaInicio, Date fechaFin);
 	
+
+	/**
+	 * Servicio encargado de obtener las transacciones internas debito y credito
+	 * 
+	 * @param fechaInicio
+	 * @param fechaFin
+	 * @return List<TransaccionesContablesDTO>
+	 * @author Miller.Caro
+	 */
+	List<TransaccionesContablesDTO> getTransaccionesContablesByNaturaleza(String Naturaleza);
 	
+	/**
+	 * Servicio encargado de obtener las transacciones internas debito y credito
+	 * 
+	 * @param fechaInicio
+	 * @param fechaFin
+	 * @return List<TransaccionesContablesDTO>
+	 * @author Miller.Caro
+	 */
+	List<RespuestaContableDTO> getCierreContable(Date fecha,String tipoContabilidad,int codBanco);
+
+	/**
+	 * Servicio encargado de obtener las transacciones por proceso
+	 * 
+	 * @param str
+	 * @return List<TransaccionesContablesDTO>
+	 * @author Miller.Caro
+	 */
+	String findBytipoProceso(String str);
+
+	
+	/**
+	 * 
+	 * @param estado
+	 * @return
+	 * @author Miller.caro
+	 */
+	Integer estadovalidacionContable(int estado);
 
 }
