@@ -485,11 +485,27 @@ public enum ApiResponseCode {
 	/**
 	 * Error no formato de fecha o fecha no valida
 	 */
-	ERROR_FECHA_CONTABILIDAD("E934", "Error, Ocurrio un error en la conversion de la fecha del sistema para el proceso de contabilidad. ", HttpStatus.PRECONDITION_FAILED);
+	ERROR_FECHA_CONTABILIDAD("E934", "Error, Ocurrio un error en la conversion de la fecha del sistema para el proceso de contabilidad. ", HttpStatus.PRECONDITION_FAILED),
 	
+	/**
+	 * Ocurrió un error al consultar el estado de carga Conciliacion
+	 */
+	ERROR_TIPO_CONTABLES("E936", "Error, EXISTEN ERRORES CONTABLES", HttpStatus.PRECONDITION_FAILED),
 	
+	/**
+	 * Ocurrió un error al consultar el estado de carga Preliminar
+	 */
+	ERROR_ESTADO_CARGA_PRELIMINAR("E940", "Error, ESTADO PRELIMINAR DEBE ESTAR CERRADO PARA EL CIERRE CONTABLE", HttpStatus.PRECONDITION_FAILED),
+
+	/**
+	 * Ocurrió un error al consultar el estado de carga Conciliacion
+	 */
+	ERROR_ESTADO_CARGA_CONCILIACION("E942", "Error, ESTADO CONCILIACION DEBE ESTAR CERRADO PARA EL CIERRE CONTABLE", HttpStatus.PRECONDITION_FAILED),
 	
-	
+	/**
+	 * Ocurrió un error al consultar el estado de carga Conciliacion
+	 */
+	ERROR_TIPO_CONTABILIDAD("E944", "Error, TIPO DE CONTABILIDAD DEBE SER AM O PM", HttpStatus.PRECONDITION_FAILED);
 	/**
 	 * Código asociado a la respuesta
 	 */
