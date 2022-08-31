@@ -88,7 +88,6 @@ public class FilesServiceImpl implements IFilesService {
 		String path = download.getUrl();
 		try {
 			if(s3Bucket) {
-				System.out.println("Entro al if del S3");
 				if (s3Util.consultarArchivo(path)) {
 					final InputStream streamReader = s3Util.downloadFile(path);
 					download.setFile(streamReader);
@@ -155,10 +154,12 @@ public class FilesServiceImpl implements IFilesService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean moverArchivos(String urlSource, String urlDestino, String nombreArchivo) {
+	public boolean moverArchivos(String urlSource, String urlDestino, String nombreArchivo, String postfijo) {
 		Path origenPath = FileSystems.getDefault().getPath(urlSource);
 		this.validarPath(urlDestino);
-		Path destinoPath = FileSystems.getDefault().getPath(urlDestino, nombreArchivo);
+		String[] arregloNombre = nombreArchivo.split(Constantes.EXPRESION_REGULAR_PUNTO);
+		nombreArchivo = arregloNombre[0].concat("-" + postfijo);
+		Path destinoPath = FileSystems.getDefault().getPath(urlDestino, nombreArchivo.concat("." + arregloNombre[1]));
 		try {
 			if(s3Bucket) {
 				s3Util.moverObjeto(origenPath.toString(), destinoPath.toString());

@@ -81,10 +81,10 @@ public interface IArchivosCargadosService {
 	 * la data del proceso de validación
 	 * 
 	 * @param validacionArchivo
-	 * @return Boolean
+	 * @return Long
 	 * @author CamiloBenavides
 	 */
-	Boolean persistirDetalleArchivoCargado(ValidacionArchivoDTO validacionArchivo,  boolean soloErrores);
+	Long persistirDetalleArchivoCargado(ValidacionArchivoDTO validacionArchivo,  boolean soloErrores);
 	
 	/**
 	 * Metodo encagado de obtener los archivos cargados actuales que no se han
@@ -124,7 +124,16 @@ public interface IArchivosCargadosService {
 	 * @return 
 	 * @author duvan.naranjo
 	 */
-//	List<ArchivosCargados> listadoArchivosCargadosSinProcesarDefinitiva(String agrupador);
+
 	List<ArchivosCargados> listadoArchivosCargadosSinProcesarDefinitiva(String agrupador,
 			Date fecha, String estado);
+	
+	/**
+	 * Metodo encagado de actualizar el archivo
+	 * 
+	 * @param archivosCargadosDTO
+	 * @return 
+	 * @author duvan.naranjo
+	 */
+	void actualizarArchivosCargados(ArchivosCargados archivosCargados);
 }

@@ -328,11 +328,23 @@ public enum ApiResponseCode {
 	 */
 	ERROR_PARAMETRO_NO_FECHA("E906", "El valor del parámetro no corresponde a una fecha válida. ",
 			HttpStatus.BAD_REQUEST),
+	
 	/**
 	 * Error cuando no existe el valor de un domino tipo texto
 	 */
 	ERROR_DOMINIO_EXIST("E907", "Ya existe un dominio con el valor consultado.  ", HttpStatus.BAD_REQUEST),
 
+	/**
+	 * El parametro no contiene un entero valido
+	 */
+	ERROR_ARMAR_PARAMETROS_LIQUIDA("E935", "Existe un error en la ejecucion del SP armar_parametros_liquida. ",
+			HttpStatus.BAD_REQUEST),
+	
+	/**
+	 * El parametro no contiene un entero valido
+	 */
+	ERROR_LIQUIDACION_COSTOS("E936", "Existe un error en la ejecucion del SP liquidar_costos. ",
+			HttpStatus.BAD_REQUEST),
 
 	/**
 	 * Error cuando no existe el valor de una regla

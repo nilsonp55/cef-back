@@ -164,14 +164,10 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 	 */
 	@Override
 	@Transactional
-	public Boolean persistirDetalleArchivoCargado(ValidacionArchivoDTO validacionArchivo, boolean soloErrores) {
+	public Long persistirDetalleArchivoCargado(ValidacionArchivoDTO validacionArchivo, boolean soloErrores) {
 		Date fechaGuardar;
-		if (validacionArchivo.getMaestroDefinicion().getAgrupador()
-							.equals(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_PRELIMINARES)) {
-			fechaGuardar = validacionArchivo.getFechaArchivo();
-		}else {
-			fechaGuardar = UtilsString.restarDiasAFecha(validacionArchivo.getFechaArchivo(), -1);
-		}
+		fechaGuardar = validacionArchivo.getFechaArchivo();
+
 		if (Dominios.ESTADO_VALIDACION_CORRECTO.equals(validacionArchivo.getEstadoValidacion()) ) {
 			this.cambiarEstadoArchivoOK(validacionArchivo);
 		}
@@ -207,7 +203,7 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 					validacionArchivo.getValidacionLineas(), archivoCargadoEntity.getIdArchivo(), soloErrores));
 		}
 
-		return true;
+		return archivoCargadoEntity.getIdArchivo();
 	}
 
 	/**
@@ -245,6 +241,15 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 	public List<ArchivosCargados> listadoArchivosCargadosSinProcesarDefinitiva(String agrupador, Date fecha, String estado) {
 		return archivosCargadosRepository.getRegistrosCargadosSinProcesarDeHoy(agrupador, fecha, estado);
 
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void actualizarArchivosCargados(ArchivosCargados archivosCargados) {
+		archivosCargadosRepository.save(archivosCargados);
+		
 	}
 
 	/**

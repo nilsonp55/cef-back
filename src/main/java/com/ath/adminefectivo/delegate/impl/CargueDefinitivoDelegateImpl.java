@@ -97,7 +97,7 @@ public class CargueDefinitivoDelegateImpl implements ICargueDefinitivoDelegate {
 	public ValidacionArchivoDTO procesarArchivo(String idMaestroDefinicion, String nombreArchivo) {
 		validarLogProcesoDiario();
 		this.validacionesAchivoCargado(idMaestroDefinicion, nombreArchivo);
-		archivosCargadosService.persistirDetalleArchivoCargado(validacionArchivo, false);
+		Long idArchivo = archivosCargadosService.persistirDetalleArchivoCargado(validacionArchivo, false);
 
 		String urlDestino = (Objects.equals(this.validacionArchivo.getEstadoValidacion(),
 				Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO))
@@ -106,7 +106,7 @@ public class CargueDefinitivoDelegateImpl implements ICargueDefinitivoDelegate {
 
 		this.filesService.moverArchivos(this.validacionArchivo.getUrl(),
 				this.validacionArchivo.getMaestroDefinicion().getUbicacion().concat(urlDestino),
-				this.validacionArchivo.getNombreArchivo());
+				this.validacionArchivo.getNombreArchivo(),idArchivo.toString());
 
 		return ValidacionArchivoDTO.conversionRespuesta(this.validacionArchivo);
 	}
@@ -244,26 +244,6 @@ public class CargueDefinitivoDelegateImpl implements ICargueDefinitivoDelegate {
 			this.validacionArchivo = validacionArchivoService.validar(maestroDefinicion, contenido, 
 					validacionArchivo);
 		}
-
-	}
-
-	/**
-	 * Método encargado de organizar la lista de archivos y armar el objeto de
-	 * archivos cargados
-	 * 
-	 * @param archivos
-	 * @return
-	 * @return List<ArchivosCargadosDTO>
-	 * @author CamiloBenavides
-	 */
-	private List<ArchivosCargadosDTO> organizarDataArchivos(List<String> archivos, String estado,
-			String idModeloArchivo, String mascaraArchivo) {
-		List<ArchivosCargadosDTO> archivosCargados = new ArrayList<>();
-		archivos.forEach(fecha -> archivosCargados.add(
-				ArchivosCargadosDTO.builder().estadoCargue(estado).nombreArchivo(fecha).idModeloArchivo(idModeloArchivo)
-						.fechaArchivo(validacionArchivoService.obtenerFechaArchivo(fecha, mascaraArchivo)).build()));
-
-		return archivosCargados;
 
 	}
 	

@@ -28,6 +28,7 @@ import com.ath.adminefectivo.entities.Fondos;
 import com.ath.adminefectivo.entities.OperacionesCertificadas;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.IOperacionesCertificadasRepository;
+import com.ath.adminefectivo.service.IArchivosCargadosService;
 import com.ath.adminefectivo.service.IBancosService;
 import com.ath.adminefectivo.service.ICajerosService;
 import com.ath.adminefectivo.service.IClientesCorporativosService;
@@ -75,6 +76,9 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	
 	@Autowired
 	IDetalleDefinicionArchivoService detalleDefinicionArchivoService;
+	
+	@Autowired
+	IArchivosCargadosService archivosCargadosService;
 	
 	private List<SobrantesFaltantesDTO> listaAjustesValor = new ArrayList<>();
 	private OperacionesCertificadas certificadas;
@@ -139,7 +143,11 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 				procesarArchivoOtrosFondos(elemento, listadoDetalleArchivo);
 			}
 			procesarSobranteFaltante();
+			elemento.setEstadoCargue(Dominios.ESTADO_VALIDACION_ACEPTADO);
+			archivosCargadosService.actualizarArchivosCargados(elemento);
 		}
+
+
 		return true;
 	}
 	

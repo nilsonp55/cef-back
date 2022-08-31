@@ -62,7 +62,7 @@ public class FilesController {
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 								.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
-
+	
 	/**
 	 * Servicio encargado de ejecutar la lectura del archivo
 	 * @param nombreArchivo
@@ -78,6 +78,24 @@ public class FilesController {
 			@RequestParam("idMaestroArchivo") String idMaestroArchivo) {
 
 		DownloadDTO file = filesDelegate.descargarArchivo(nombreArchivo, idMaestroArchivo);
+
+		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, Constantes.PARAMETER_HEADER + file.getName())
+				.body(new InputStreamResource(file.getFile()));
+	}
+
+	/**
+	 * Servicio encargado de ejecutar la lectura del archivo
+	 * @param idArchivo
+	 * @return ResponseEntity<InputStreamResource>
+	 * @author rparra
+	 */
+	@GetMapping("/descargar-idArchivo")
+	@ApiOperation(value = "Download files ", notes = "")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = SwaggerConstants.RESPONSE_MESSAGE_200) })
+	public ResponseEntity<InputStreamResource> downloadFileId(
+			@RequestParam("idArchivo") Long idArchivo)  {
+
+		DownloadDTO file = filesDelegate.descargarArchivoProcesado(idArchivo);
 
 		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, Constantes.PARAMETER_HEADER + file.getName())
 				.body(new InputStreamResource(file.getFile()));
