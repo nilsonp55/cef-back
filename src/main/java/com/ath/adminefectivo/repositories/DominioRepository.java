@@ -23,5 +23,7 @@ public interface DominioRepository extends JpaRepository<Dominio, DominioPK>, Qu
 	 * @author CamiloBenavides
 	 */
 	public List<Dominio> findByDominioPKDominio(String dominio);
+	
+//	public List<Dominio> findByDominio(String dominio);
 
 }

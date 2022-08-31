@@ -24,6 +24,7 @@ import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.service.IArchivosCargadosService;
+import com.ath.adminefectivo.service.IFestivosNacionalesService;
 import com.ath.adminefectivo.service.IFilesService;
 import com.ath.adminefectivo.service.ILecturaArchivoService;
 import com.ath.adminefectivo.service.ILogProcesoDiarioService;
@@ -59,6 +60,9 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	
 	@Autowired
 	ILogProcesoDiarioService logProcesoDiarioService;
+	
+	@Autowired
+	IFestivosNacionalesService festivosNacionalesService;
 
 	private ValidacionArchivoDTO validacionArchivo;
 
@@ -238,9 +242,10 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 			String idModeloArchivo, String mascaraArchivo) {
 		ArchivosCargadosDTO archivosCargadosDTO = new ArchivosCargadosDTO();
 
-		archivosCargadosDTO = ArchivosCargadosDTO.builder().estadoCargue(estado).nombreArchivo(archivo)
-				.idModeloArchivo(idModeloArchivo)
-				.fechaArchivo(validacionArchivoService.obtenerFechaArchivo(archivo, mascaraArchivo)).build();
+		Date fechaDatos = validacionArchivoService.obtenerFechaArchivo(archivo, mascaraArchivo);
+        fechaDatos = festivosNacionalesService.consultarAnteriorHabil(fechaDatos);
+        archivosCargadosDTO = ArchivosCargadosDTO.builder().estadoCargue(estado).nombreArchivo(archivo)
+                .idModeloArchivo(idModeloArchivo).fechaArchivo(fechaDatos).build();
 
 		return archivosCargadosDTO;
 

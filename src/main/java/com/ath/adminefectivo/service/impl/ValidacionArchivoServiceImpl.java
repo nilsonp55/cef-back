@@ -54,9 +54,6 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 
 	@Autowired
 	IMotorReglasService motorReglasService;
-	
-	@Autowired
-	IFestivosNacionalesService festivosNacionalesService;
 
 	private List<DetallesDefinicionArchivoDTO> listaDetalleDefinicion;
 
@@ -394,9 +391,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 							.replace(Constantes.SEPARADOR_FECHA_ARCHIVO, Constantes.SEPARADOR_EXTENSION_ARCHIVO)
 							.split(Constantes.REGEX_PUNTO);
 					if (arregloMascara[1].length() == arregloNombre[1].length()) {
-//						fechaArchivo = new SimpleDateFormat(arregloMascara[1]).parse(arregloNombre[1]);
-						fechaArchivo = festivosNacionalesService.consultarAnteriorHabil(
-								new SimpleDateFormat(arregloMascara[1]).parse(arregloNombre[1]));
+						fechaArchivo = new SimpleDateFormat(arregloMascara[1]).parse(arregloNombre[1]);
 					}
 				}
 			}
