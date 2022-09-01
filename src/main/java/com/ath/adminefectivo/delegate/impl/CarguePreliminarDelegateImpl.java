@@ -157,19 +157,14 @@ public class CarguePreliminarDelegateImpl implements ICarguePreliminarDelegate {
 	private ArchivosCargadosDTO organizarDatosArchivo(String archivo, String estado,
 			String idModeloArchivo, String mascaraArchivo) {
 
-		Date fechaInicio = new Date();
-		if (idModeloArchivo.equals(Dominios.TIPO_ARCHIVO_IPPSV)) {
-			fechaInicio = validacionArchivoService.obtenerFechaArchivo(archivo, mascaraArchivo);
-		} else {
-			fechaInicio = UtilsString.restarDiasAFecha(validacionArchivoService
-					.obtenerFechaArchivo(archivo, mascaraArchivo), -1);
-		}
 		ArchivosCargadosDTO archivosCargadosDTO = new ArchivosCargadosDTO();
+		
 		archivosCargadosDTO = ArchivosCargadosDTO.builder()
 				.estadoCargue(estado)
 				.nombreArchivo(archivo)
 				.idModeloArchivo(idModeloArchivo)
-				.fechaArchivo(fechaInicio).build();
+				.fechaArchivo(validacionArchivoService.obtenerFechaArchivo(archivo, mascaraArchivo)).build();
+		
 		return archivosCargadosDTO;
 	}
 	
