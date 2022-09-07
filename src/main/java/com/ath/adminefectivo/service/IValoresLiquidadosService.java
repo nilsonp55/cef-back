@@ -1,6 +1,6 @@
 package com.ath.adminefectivo.service;
 
-import com.ath.adminefectivo.entities.ParametrosLiquidacionCosto;
+import com.ath.adminefectivo.dto.compuestos.costosCharterDTO;
 
 public interface IValoresLiquidadosService {
 
@@ -10,5 +10,5 @@ public interface IValoresLiquidadosService {
 	 * @return ValoresLiquidados
 	 * @author prv_ccastano
 	 */
-	void ActualizaCostosFletesCharter(ParametrosLiquidacionCosto parametros);
+	Boolean ActualizaCostosFletesCharter(costosCharterDTO costosCharter);
 }

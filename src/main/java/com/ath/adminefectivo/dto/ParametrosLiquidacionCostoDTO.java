@@ -50,6 +50,8 @@ public class ParametrosLiquidacionCostoDTO {
 	
 	private Integer numeroParadas;
 	
+	private Integer puntoDestino;
+	
 	private Integer puntoOrigen;
 	
 	private Integer residuoBilletes;
@@ -74,6 +76,14 @@ public class ParametrosLiquidacionCostoDTO {
 	private List<DetallesLiquidacionCosto> detallesLiquidacionCosto;
 	
 	private ValoresLiquidados valoresLiquidados;
+	
+	private String nombreBanco;
+	
+	private String nombreTdv;
+	
+	private String nombrePuntoOrigen;
+	
+	private String nombrePuntoDestino;
 	
 	/**
 	 * Funcion que convierte el archivo ParametrosLiquidacionCostoDTO a Entity ParametrosLiquidacionCosto

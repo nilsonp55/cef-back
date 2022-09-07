@@ -53,8 +53,7 @@ public class LecturaArchivoServiceImpl implements ILecturaArchivoService {
 
 	@Override
 	public List<String[]> leerArchivo(InputStream archivo, String delimitador) {
-		System.out.println("archivo: "+archivo);
-		System.out.println("delimitador: "+delimitador);
+
 		CSVParser parser = new CSVParserBuilder().withSeparator(delimitador.charAt(0)).withIgnoreQuotations(true).build();
 		
 		try (CSVReader csvReader = new CSVReaderBuilder(new InputStreamReader(archivo)).withCSVParser(parser).build()) {

@@ -70,6 +70,9 @@ public class ParametrosLiquidacionCosto {
 	@Column(name = "NUMERO_PARADAS")
 	private Integer numeroParadas;
 	
+	@Column(name = "PUNTO_DESTINO")
+	private Integer puntoDestino;
+	
 	@Column(name = "PUNTO_ORIGEN")
 	private Integer puntoOrigen;
 	

@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.ath.adminefectivo.dto.ParametrosLiquidacionCostoDTO;
+import com.ath.adminefectivo.dto.compuestos.costosCharterDTO;
 
 public interface ICostosFleteCharterService {
 
@@ -23,5 +24,5 @@ public interface ICostosFleteCharterService {
 	 * @return Boolean
 	 * @author prv_ccastano
 	 */
-	Boolean GrabarCostosFleteCharter(Date fechaInicial, Date fechaFinal);
+	Boolean GrabarCostosFleteCharter(List<costosCharterDTO> costosCharter);
 }

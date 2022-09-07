@@ -8,12 +8,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ath.adminefectivo.delegate.ICostosFleteCharterDelegate;
 import com.ath.adminefectivo.dto.ParametrosLiquidacionCostoDTO;
+import com.ath.adminefectivo.dto.compuestos.costosCharterDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
@@ -56,14 +58,13 @@ public class CostosFleteCharterController {
 	 * @return ResponseEntity<ApiResponseADE<Boolean>>
 	 * @author cesar.castano
 	 */
-	@GetMapping(value = "${endpoints.CostosFleteCharter.grabar}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "${endpoints.CostosFleteCharter.grabar}", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<Boolean>> grabarCostosFleteCharter(
-					@RequestParam("fechaInicial") Date fechaInicial, 
-					@RequestParam("fechaFinal") Date fechaFinal) {
+			@RequestBody(required = true) List<costosCharterDTO> costosCharter) {
 		
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<Boolean>(
-						costosFleteCharterDelegate.grabarCostosFleteCharter(fechaInicial, fechaFinal),
+						costosFleteCharterDelegate.grabarCostosFleteCharter(costosCharter),
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 								.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}

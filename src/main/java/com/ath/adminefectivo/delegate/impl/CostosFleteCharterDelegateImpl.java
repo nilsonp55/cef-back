@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.delegate.ICostosFleteCharterDelegate;
 import com.ath.adminefectivo.dto.ParametrosLiquidacionCostoDTO;
+import com.ath.adminefectivo.dto.compuestos.costosCharterDTO;
 import com.ath.adminefectivo.service.ICostosFleteCharterService;
 
 @Service
@@ -29,9 +30,9 @@ public class CostosFleteCharterDelegateImpl implements ICostosFleteCharterDelega
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Boolean grabarCostosFleteCharter(Date fechaInicial, Date fechaFinal) {
+	public Boolean grabarCostosFleteCharter(List<costosCharterDTO> costosCharter) {
 
-		return ICostosFleteCharterService.GrabarCostosFleteCharter(fechaInicial, fechaFinal);
+		return ICostosFleteCharterService.GrabarCostosFleteCharter(costosCharter);
 	}
 
 }

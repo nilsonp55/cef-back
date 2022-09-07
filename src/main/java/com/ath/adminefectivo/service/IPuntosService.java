@@ -134,4 +134,13 @@ public interface IPuntosService {
 	 */
 	Boolean getEntidadPuntoBanrep(String tipoPunto, Integer codigoPunto);
 	
+	/**
+	 * Servicio encargado de consultar el objeto Puntos 
+	 * 
+	 * @param codigo_banco_aval
+	 * @return Puntos
+	 * @author cesar.castano
+	 */
+	Puntos getEntidadPunto(Integer codigo_banco_aval);
+	
 }

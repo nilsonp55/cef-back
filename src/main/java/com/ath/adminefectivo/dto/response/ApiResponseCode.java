@@ -277,7 +277,7 @@ public enum ApiResponseCode {
 	/**
 	 * Ocurrió un error al consultar la table de conciliados
 	 */
-	ERROR_VALORES_LIQUIDADOS_NO_ENCONTRADO("E937", "Ocurrió un error, no hay datos de valores liquidacion",
+	ERROR_VALORES_LIQUIDADOS_NO_ENCONTRADO("E937", "Ocurrió un error, no hay datos de valores liquidados",
 			HttpStatus.PRECONDITION_FAILED),
 	
 	/**
