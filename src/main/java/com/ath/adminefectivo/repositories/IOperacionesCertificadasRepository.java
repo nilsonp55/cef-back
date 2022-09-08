@@ -61,7 +61,7 @@ public interface IOperacionesCertificadasRepository
 	 * @return List<OperacionesCertificadas>
 	 * @author cesar.castano
 	 */
-	OperacionesCertificadas findByCodigoServicioTdv(String codigoServicio);
+	List<OperacionesCertificadas> findByCodigoServicioTdv(String codigoServicio);
 	
 	/**
 	 * Retorna una lista de operaciones certificadas segun el codigo del servicio tdv

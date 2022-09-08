@@ -1,9 +1,11 @@
 package com.ath.adminefectivo.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
 import com.ath.adminefectivo.entities.Puntos;
+import com.ath.adminefectivo.entities.PuntosCodigoTDV;
 
 /**
  * Repository encargado de manejar la logica de la entidad Puntos
@@ -51,4 +53,16 @@ public interface IPuntosRepository extends JpaRepository<Puntos, Integer>, Query
 	 */
 	public Puntos findByTipoPuntoAndNombrePunto(String tipoPunto, String nombrePunto);
 
+	/**
+	 * Retorna el objeto Puntos
+	 * @param codigo_aval
+	 * @return Puntos
+	 * @author prv_ccastano
+	 */
+	@Query("select p from Puntos p "
+	+ "		inner join SitiosClientes s on p.codigoPunto = s.codigoPunto "
+	+ "		inner join ClientesCorporativos c on c.codigoCliente = s.codigoCliente and "
+	+ "     c.identificacion = '9999999999' "
+	+ "		where p.tipoPunto ='CLIENTE' and c.codigoBancoAval = ?1")
+	public Puntos obtenerCodigoPunto(Integer codigo_aval);
 }

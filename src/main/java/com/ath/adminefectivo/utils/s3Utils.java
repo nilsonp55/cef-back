@@ -98,7 +98,7 @@ public class s3Utils {
 	 * @return
 	 */
 	public List<String> getObjectsFromPathS3(String path) {
-		//conexionS3(bucketName);
+		conexionS3(bucketName);
 		ListObjectsV2Request req = new ListObjectsV2Request().withBucketName(bucketName).withPrefix(path)
 				.withDelimiter("/");
 		ListObjectsV2Result listing = s3.listObjectsV2(req);
@@ -124,7 +124,7 @@ public class s3Utils {
 	 * @return
 	 */
 	public InputStream downloadFile(String key) {
-		//conexionS3(bucketName);
+		conexionS3(bucketName);
 		S3Object object;
 		try {
 			object = s3.getObject(bucketName, key);
@@ -155,7 +155,7 @@ public class s3Utils {
 	 */
 	public Boolean consultarArchivo(String key) {
 		Boolean salida = true;
-		//conexionS3(bucketName);
+		conexionS3(bucketName);
 		S3Object object;
 		try {
 			object = s3.getObject(bucketName, key);
@@ -210,7 +210,7 @@ public class s3Utils {
 	 */
 	public void moverObjeto(String keyOrigin, String keyDestination) {
 		try {
-			//conexionS3(bucketName);
+			conexionS3(bucketName);
 			s3.copyObject(bucketName, keyOrigin, bucketName, keyDestination);
 			deleteObjectBucket(keyOrigin);
 		} catch (AmazonServiceException e) {
@@ -229,7 +229,7 @@ public class s3Utils {
 	 */
 	public void deleteObjectBucket(String objectKey) {
 		try {
-			//conexionS3(bucketName);
+			conexionS3(bucketName);
 			s3.deleteObject(bucketName, objectKey);
 		} catch (AmazonServiceException e) {
 			LOGGER.error(e.getMessage(), e);

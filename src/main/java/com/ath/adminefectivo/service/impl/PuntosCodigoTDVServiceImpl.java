@@ -13,6 +13,7 @@ import com.ath.adminefectivo.entities.PuntosCodigoTDV;
 import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.repositories.IPuntosCodigoTDVRepository;
 import com.ath.adminefectivo.service.IPuntosCodigoTdvService;
+import com.ath.adminefectivo.service.IPuntosService;
 import com.querydsl.core.types.Predicate;
 
 @Service
@@ -20,6 +21,9 @@ public class PuntosCodigoTDVServiceImpl implements IPuntosCodigoTdvService {
 
 	@Autowired
 	IPuntosCodigoTDVRepository puntosCodigoTDVRepository;
+	
+	@Autowired
+	IPuntosService puntosService;
 	
 	/**
 	 * {@inheritDoc}
@@ -40,9 +44,9 @@ public class PuntosCodigoTDVServiceImpl implements IPuntosCodigoTdvService {
 	public PuntosCodigoTDV getEntidadPuntoCodigoTDV(String codigo) {
 		var puntosCodigoTDV = puntosCodigoTDVRepository.findByCodigoTDV(codigo);
 		if (Objects.isNull(puntosCodigoTDV)) {
-			throw new AplicationException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription(),
-					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
+			throw new AplicationException(ApiResponseCode.ERROR_PUNTOS_CODIGO_NO_ENCONTRADO.getCode(),
+					ApiResponseCode.ERROR_PUNTOS_CODIGO_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_PUNTOS_CODIGO_NO_ENCONTRADO.getHttpStatus());
 		} else {
 			return puntosCodigoTDV;
 		}
@@ -52,13 +56,11 @@ public class PuntosCodigoTDVServiceImpl implements IPuntosCodigoTdvService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Integer getCodigoPunto(String codigoPuntoTdv, String codigoTdv) {
+	public Integer getCodigoPunto(String codigoPuntoTdv, String codigoTdv, Integer banco_aval) {
 		var puntosCodigoTDV = puntosCodigoTDVRepository.findByCodigoPropioTDVAndCodigoTDV(
 				codigoPuntoTdv, codigoTdv);
 		if (Objects.isNull(puntosCodigoTDV)) {
-			throw new AplicationException(ApiResponseCode.ERROR_PUNTOS_CODIGO_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_PUNTOS_CODIGO_NO_ENCONTRADO.getDescription(),
-					ApiResponseCode.ERROR_PUNTOS_CODIGO_NO_ENCONTRADO.getHttpStatus());
+			return puntosService.getEntidadPunto(banco_aval).getCodigoPunto();
 		} else {
 			return puntosCodigoTDV.getCodigoPunto();
 		}
