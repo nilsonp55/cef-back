@@ -274,6 +274,11 @@ public enum ApiResponseCode {
 	 */
 	ERROR_TIPO_REGISTRO_NO_VALIDO("E926", "Tipo de registro no valido", HttpStatus.PRECONDITION_FAILED),
 	
+	/**
+	 * Ocurrió un error al consultar la table de conciliados
+	 */
+	ERROR_VALORES_LIQUIDADOS_NO_ENCONTRADO("E937", "Ocurrió un error, no hay datos de valores liquidados",
+			HttpStatus.PRECONDITION_FAILED),
 	
 	/**
 	 * No se puede realizar el cierre del dia por que no han finalizado todos los
