@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.dto.ProgramadasNoConciliadasDTO;
@@ -21,7 +20,6 @@ import com.ath.adminefectivo.dto.compuestos.OperacionespConciliadoDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
-import com.ath.adminefectivo.dto.ArchivosCargadosDTO;
 import com.ath.adminefectivo.dto.CertificadasNoConciliadasDTO;
 import com.ath.adminefectivo.dto.ParametrosConciliacionManualDTO;
 import com.ath.adminefectivo.dto.FechasConciliacionDTO;
@@ -101,9 +99,7 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	@Override
 	public Page<ProgramadasNoConciliadasDTO> getProgramadaNoConcilliada(Predicate predicate, Pageable page) {
 
-		Page<OperacionesProgramadas> archivos = operacionesProgramadasRepository.findByEstadoConciliacion(
-				dominioService.valorTextoDominio(Constantes.DOMINIO_ESTADO_CONCILIACION, 
-												Dominios.ESTADO_CONCILIACION_NO_CONCILIADO), page);
+		Page<OperacionesProgramadas> archivos = operacionesProgramadasRepository.findAll(predicate, page);
 		if (archivos.isEmpty()) {
 			throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getDescription(),
