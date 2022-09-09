@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.HttpStatus;
@@ -55,11 +54,10 @@ public class ConciliacionOperacionesController {
 	 */
 	@GetMapping(value = "${endpoints.conciliacion.consultar-conciliadas}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<Page<OperacionesProgramadasNombresDTO>>> getConciliadas(
-			@QuerydslPredicate(root = OperacionesProgramadas.class) Predicate predicate, int page, int size) {
+			@QuerydslPredicate(root = OperacionesProgramadas.class) Predicate predicate, Pageable page) {
 
-		Pageable pr = PageRequest.of(page, size);
 		Page<OperacionesProgramadasNombresDTO> consulta = conciliacionOperacionesDelegate.getOperacionesConciliadas(
-				predicate, pr);
+				predicate, page);
 
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
@@ -75,10 +73,9 @@ public class ConciliacionOperacionesController {
 	 */
 	@GetMapping(value = "${endpoints.conciliacion.consultar-programadas-no-conciliadas}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<Page<ProgramadasNoConciliadasDTO>>> getProgramadaNoConcilliada(
-			@QuerydslPredicate(root = OperacionesProgramadas.class) Predicate predicate, int page, int size) {
+			@QuerydslPredicate(root = OperacionesProgramadas.class) Predicate predicate, Pageable page) {
 		
-		Pageable pr = PageRequest.of(page, size);
-		var consulta = conciliacionOperacionesDelegate.getProgramadaNoConcilliada(predicate, pr);
+		var consulta = conciliacionOperacionesDelegate.getProgramadaNoConcilliada(predicate, page);
 
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
