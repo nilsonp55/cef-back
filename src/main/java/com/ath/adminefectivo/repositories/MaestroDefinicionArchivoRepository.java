@@ -3,6 +3,7 @@ package com.ath.adminefectivo.repositories;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
 import com.ath.adminefectivo.entities.MaestroDefinicionArchivo;
@@ -26,5 +27,9 @@ public interface MaestroDefinicionArchivoRepository
 	 * @author CamiloBenavides
 	 */
 	public List<MaestroDefinicionArchivo> findByAgrupadorAndEstado(String agrupador, String estado);
+	
+	@Query("SELECT mda FROM MaestroDefinicionArchivo mda "
+		 + "WHERE substring(mda.mascaraArch, 1, 2) = ?1")
+	public MaestroDefinicionArchivo findByMascaraArchLike(String inicialMascara);
 
 }

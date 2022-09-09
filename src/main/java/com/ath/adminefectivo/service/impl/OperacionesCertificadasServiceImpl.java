@@ -296,10 +296,11 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 										Constantes.CAMPO_DETALLE_ARCHIVO_SIGLATDV);
 		String nit = determinarCampo(fila, detalleArchivo, tipoRegistro,
 										Constantes.CAMPO_DETALLE_ARCHIVO_NITBANCO);
+		String nitbanco = nit.substring(0, 9);
 		String ciudad = determinarCampo(fila, detalleArchivo, tipoRegistro,
 										Constantes.CAMPO_DETALLE_ARCHIVO_CODIGOCIUDAD);
 		String ciudad2 = ciudad.valueOf(Integer.parseInt(ciudad.trim()));
-		Fondos fondo = asignarFondo(tdv, nit, ciudad2);
+		Fondos fondo = asignarFondo(tdv, nitbanco, ciudad2);
 		registro.setTdv(fondo.getTdv());
 		registro.setCodigoPunto(fondo.getCodigoPunto());
 		Date fecha = determinarFechaEjecucion(fila, detalleArchivo, tipoRegistro,
@@ -436,6 +437,9 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 			entradaSalida = Constantes.NOMBRE_ENTRADA;
 		}
 		if (entSal.equals(Constantes.SALIDA)) {
+			entradaSalida = Constantes.NOMBRE_SALIDA;
+		}
+		if (entSal.equals(Constantes.SALIDA_BRINKS)) {
 			entradaSalida = Constantes.NOMBRE_SALIDA;
 		}
 		return entradaSalida;
@@ -651,11 +655,13 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	 */
 	private void procesarSobranteFaltanteNoBrinks() {
 		for (var i=0;i<listaAjustesValor.size();i++) {
-			if (listaAjustesValor.get(i).getTipoAjuste().equals(Constantes.SOBRANTE_OTROS_FONDOS)){
+			if (listaAjustesValor.get(i).getTipoAjuste().equals(Constantes.SOBRANTE_OTROS_FONDOS) ||
+				listaAjustesValor.get(i).getTipoAjuste().equals(Constantes.SOBRANTE_TVS)){
 				actualizarValorSobrante(listaAjustesValor.get(i).getCodigoServicio(),
 										listaAjustesValor.get(i).getValor());
 			}else {
-				if (listaAjustesValor.get(i).getTipoAjuste().equals(Constantes.FALTANTE_OTROS_FONDOS)){
+				if (listaAjustesValor.get(i).getTipoAjuste().equals(Constantes.FALTANTE_OTROS_FONDOS) ||
+					listaAjustesValor.get(i).getTipoAjuste().equals(Constantes.FALTANTE_TVS)	){
 				actualizarValorFaltante(listaAjustesValor.get(i).getCodigoServicio(),
 										listaAjustesValor.get(i).getValor());
 				}
@@ -727,10 +733,11 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 											Constantes.CAMPO_DETALLE_ARCHIVO_SIGLATRANSPORTADORA);
 				String nit = determinarCampo(fila, detalleArchivo, Integer.parseInt(tipoRegistro),
 											Constantes.CAMPO_DETALLE_ARCHIVO_CODIGONITENTIDAD);
+				String nitbanco = nit.substring(0, 9);
 				String ciudad = determinarCampo(fila, detalleArchivo, Integer.parseInt(tipoRegistro),
 											Constantes.CAMPO_DETALLE_ARCHIVO_CODIGODANE);
 				String ciudad1 = String.valueOf(Integer.parseInt(ciudad.trim()));
-				Fondos fondo = asignarFondo(tdv, nit, ciudad1);
+				Fondos fondo = asignarFondo(tdv, nitbanco, ciudad1);
 				registro.setTdv(fondo.getTdv());
 				registro.setCodigoPunto(fondo.getCodigoPunto());
 				Date fecha = determinarFechaEjecucion(fila, detalleArchivo, Integer.parseInt(tipoRegistro),

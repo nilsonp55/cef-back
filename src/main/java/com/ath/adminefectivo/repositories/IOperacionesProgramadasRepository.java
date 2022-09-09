@@ -11,8 +11,8 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
 
 import com.ath.adminefectivo.dto.compuestos.OperacionIntradiaDTO;
-import com.ath.adminefectivo.dto.compuestos.ContabilidadDTO;
 import com.ath.adminefectivo.entities.OperacionesProgramadas;
+import com.jayway.jsonpath.Predicate;
 
 /**
  * Repository encargado de manejar la logica de la entidad
@@ -23,6 +23,15 @@ import com.ath.adminefectivo.entities.OperacionesProgramadas;
 public interface IOperacionesProgramadasRepository
 		extends JpaRepository<OperacionesProgramadas, Integer>, QuerydslPredicateExecutor<OperacionesProgramadas> {
 
+	/**
+	 * Retorna una lista de operaciones programadas segun el estado de conciliacion
+	 * 
+	 * @param estadoConciliacion
+	 * @return List<OperacionesProgramadas>
+	 * @author cesar.castano
+	 */
+	public Page<OperacionesProgramadas> findAll(Predicate predicate, Pageable page);
+	
 	/**
 	 * Retorna una lista de operaciones programadas segun el estado de conciliacion
 	 * 

@@ -23,10 +23,13 @@ public final class Constantes {
 	public static final String NO = "NO";
 	public static final String ENTRADA = "1";
 	public static final String SALIDA = "2";
+	public static final String SALIDA_BRINKS = "0";
 	public static final String SOBRANTE_OTROS_FONDOS = "1";
 	public static final String FALTANTE_OTROS_FONDOS = "2";
 	public static final String SOBRANTE_BRINKS = "4";
 	public static final String FALTANTE_BRINKS = "5";
+	public static final String SOBRANTE_TVS = "3";
+	public static final String FALTANTE_TVS = "4";
 	public static final Integer NUMERO_INICIA_VALORES_OTROS_FONDOS = 17;
 	public static final Integer NUMERO_INICIA_VALORES_BRINKS = 18;
 	public static final String NOMBRE_ENTRADA = "ENTRADAS";

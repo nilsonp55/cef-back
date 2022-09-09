@@ -99,9 +99,7 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	@Override
 	public Page<ProgramadasNoConciliadasDTO> getProgramadaNoConcilliada(Predicate predicate, Pageable page) {
 
-		Page<OperacionesProgramadas> archivos = operacionesProgramadasRepository.findByEstadoConciliacion(
-				dominioService.valorTextoDominio(Constantes.DOMINIO_ESTADO_CONCILIACION, 
-												Dominios.ESTADO_CONCILIACION_NO_CONCILIADO), page);
+		Page<OperacionesProgramadas> archivos = operacionesProgramadasRepository.findAll(predicate, page);
 		if (archivos.isEmpty()) {
 			throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getDescription(),
@@ -272,6 +270,7 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 						listNoConciliadasDto.add(programadasNoConciliadas);
 						});
 		return new PageImpl<>(listNoConciliadasDto);
+	
 	}
 
 	/**

@@ -74,7 +74,7 @@ public class ConciliacionOperacionesController {
 	@GetMapping(value = "${endpoints.conciliacion.consultar-programadas-no-conciliadas}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<Page<ProgramadasNoConciliadasDTO>>> getProgramadaNoConcilliada(
 			@QuerydslPredicate(root = OperacionesProgramadas.class) Predicate predicate, Pageable page) {
-
+		
 		var consulta = conciliacionOperacionesDelegate.getProgramadaNoConcilliada(predicate, page);
 
 		return ResponseEntity.status(HttpStatus.OK)

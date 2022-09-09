@@ -67,10 +67,10 @@ public class CostosFletesCharterServiceImpl implements ICostosFleteCharterServic
 	 */
 	@Override
 	public Boolean GrabarCostosFleteCharter(List<costosCharterDTO> costosCharter) {
+		
 		for (costosCharterDTO costos : costosCharter) {
 			
 			valoresLiquidadosService.ActualizaCostosFletesCharter(costos);
-			
 		}
 		return true;
 	}
