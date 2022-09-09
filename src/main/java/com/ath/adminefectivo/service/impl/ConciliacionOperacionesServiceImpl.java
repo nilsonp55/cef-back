@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.dto.ProgramadasNoConciliadasDTO;
@@ -20,6 +21,7 @@ import com.ath.adminefectivo.dto.compuestos.OperacionespConciliadoDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
+import com.ath.adminefectivo.dto.ArchivosCargadosDTO;
 import com.ath.adminefectivo.dto.CertificadasNoConciliadasDTO;
 import com.ath.adminefectivo.dto.ParametrosConciliacionManualDTO;
 import com.ath.adminefectivo.dto.FechasConciliacionDTO;
@@ -272,6 +274,7 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 						listNoConciliadasDto.add(programadasNoConciliadas);
 						});
 		return new PageImpl<>(listNoConciliadasDto);
+	
 	}
 
 	/**
