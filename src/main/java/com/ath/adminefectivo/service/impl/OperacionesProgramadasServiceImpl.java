@@ -9,11 +9,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.constantes.Constantes;
@@ -158,40 +160,35 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	 */
 	@Override
 	public Page<OperacionesProgramadasNombresDTO> getNombresProgramadasConciliadas(
-			Page<OperacionesProgramadas> operacionesProgramadasList, Predicate predicate) {
+			Page<OperacionesProgramadas> operacionesProgramadasList, Predicate predicate, Pageable page) {
 
-		List<OperacionesProgramadasNombresDTO> listOperacionesProgramas = new ArrayList<>();
 		this.getListados(predicate);
 		for (OperacionesProgramadas programadas : operacionesProgramadasList) {
-			var operacionesProgramadas = new OperacionesProgramadasNombresDTO();
+
 			// Obtiene nombres de transportadora y Banco dueño del fondo
-			operacionesProgramadas
-					.setNombreTransportadora(this.getNombreTransportadora(programadas.getCodigoFondoTDV()));
-			operacionesProgramadas.setNombreBanco(this.getNombreBanco(programadas.getCodigoFondoTDV()));
+			programadas.setNombreTransportadora(this.getNombreTransportadora(programadas.getCodigoFondoTDV()));
+			programadas.setNombreBanco(this.getNombreBanco(programadas.getCodigoFondoTDV()));
 			// Obtiene nombres de tipo origen y nombre ciudad origen
-			operacionesProgramadas.setNombrePuntoOrigen(this.getNombrePunto(programadas.getCodigoPuntoOrigen()));
-			operacionesProgramadas.setNombreCiudadOrigen(this.getNombreCiudad(programadas.getCodigoPuntoOrigen()));
+			programadas.setNombrePuntoOrigen(this.getNombrePunto(programadas.getCodigoPuntoOrigen()));
+			programadas.setNombreCiudadOrigen(this.getNombreCiudad(programadas.getCodigoPuntoOrigen()));
 			// Obtiene nombres de tipo destino y nombre ciudad destino
-			operacionesProgramadas.setNombrePuntoDestino(this.getNombrePunto(programadas.getCodigoPuntoDestino()));
-			operacionesProgramadas.setNombreCiudadDestino(this.getNombreCiudad(programadas.getCodigoPuntoDestino()));
-			// Datos sin nombres
-			operacionesProgramadas.setTipoOperacion(programadas.getTipoOperacion());
-			operacionesProgramadas.setValorTotal(programadas.getValorTotal());
-			operacionesProgramadas.setFechaEjecucion(programadas.getFechaOrigen());
-			operacionesProgramadas.setEstadoConciliacion(programadas.getEstadoConciliacion());
+			programadas.setNombrePuntoDestino(this.getNombrePunto(programadas.getCodigoPuntoDestino()));
+			programadas.setNombreCiudadDestino(this.getNombreCiudad(programadas.getCodigoPuntoDestino()));
+			programadas.setFechaEjecucion(programadas.getFechaOrigen());
 			// Obtiene datos de la tabla de Conciliacion Servicios
-			operacionesProgramadas
-						.setTipoConciliacion(programadas.getConciliacionServicios().get(0).getTipoConciliacion());
-			operacionesProgramadas
-						.setIdConciliacion(programadas.getConciliacionServicios().get(0).getIdConciliacion());
-			// Datos Complementarios
-			operacionesProgramadas.setBancoAVAL(fondosService.getEntidadFondo(
-					programadas.getCodigoFondoTDV()).getBancoAVAL());
-			operacionesProgramadas.setTdv(fondosService.getEntidadFondo(
-					programadas.getCodigoFondoTDV()).getTdv());
-			listOperacionesProgramas.add(operacionesProgramadas);
+			programadas.setTipoConciliacion(programadas.getConciliacionServicios().get(0).getTipoConciliacion());
+			programadas.setIdConciliacion(programadas.getConciliacionServicios().get(0).getIdConciliacion());
+			programadas.setTdv(programadas.getNombreTransportadora());
+			programadas.setBancoAVAL(puntosService.getNombrePunto(dominioService.valorTextoDominio(
+									Constantes.DOMINIO_TIPOS_PUNTO, 
+									Dominios.TIPOS_PUNTO_BANCO),
+									fondosService.getEntidadFondo(
+									programadas.getCodigoFondoTDV()).getBancoAVAL()));
 		}
-		return new PageImpl<>(listOperacionesProgramas);
+		return new PageImpl<>(operacionesProgramadasList.getContent().stream()
+                .map(OperacionesProgramadasNombresDTO.CONVERTER_DTO)
+                .collect(Collectors.<OperacionesProgramadasNombresDTO>toList()), page,
+                operacionesProgramadasList.getTotalElements());	
 	}
 
 	/**
