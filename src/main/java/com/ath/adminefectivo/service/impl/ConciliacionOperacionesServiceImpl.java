@@ -117,9 +117,7 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	@Override
 	public Page<CertificadasNoConciliadasDTO> getCertificadaNoConciliada(Predicate predicate, Pageable page) {
 
-		Page<OperacionesCertificadas> archivos = operacionesCertificadasRepository.findByEstadoConciliacion(
-				dominioService.valorTextoDominio(Constantes.DOMINIO_ESTADO_CONCILIACION, 
-												Dominios.ESTADO_CONCILIACION_NO_CONCILIADO), page);
+		Page<OperacionesCertificadas> archivos = operacionesCertificadasRepository.findAll(predicate, page);
 		if (archivos.isEmpty()) {
 			throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getDescription(),
