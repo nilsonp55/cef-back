@@ -75,13 +75,14 @@ public class ConciliacionOperacionesController {
 	public ResponseEntity<ApiResponseADE<Page<ProgramadasNoConciliadasDTO>>> getProgramadaNoConcilliada(
 			@QuerydslPredicate(root = OperacionesProgramadas.class) Predicate predicate, Pageable page) {
 		
-		var consulta = conciliacionOperacionesDelegate.getProgramadaNoConcilliada(predicate, page);
+		Page<ProgramadasNoConciliadasDTO> consulta = conciliacionOperacionesDelegate.getProgramadaNoConcilliada(predicate, page);
 
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
-
+	
+	
 	/**
 	 * Metodo encargado de consultar los Operaciones Certificadas no conciliadas
 	 * @param predicate

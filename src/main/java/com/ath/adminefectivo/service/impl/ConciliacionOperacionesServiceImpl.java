@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,6 +21,7 @@ import com.ath.adminefectivo.dto.compuestos.OperacionespConciliadoDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
+import com.ath.adminefectivo.dto.ArchivosCargadosDTO;
 import com.ath.adminefectivo.dto.CertificadasNoConciliadasDTO;
 import com.ath.adminefectivo.dto.ParametrosConciliacionManualDTO;
 import com.ath.adminefectivo.dto.FechasConciliacionDTO;
@@ -89,7 +91,8 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 					ApiResponseCode.ERROR_CONCILIADOS_NO_ENCONTRADO.getDescription(),
 					ApiResponseCode.ERROR_CONCILIADOS_NO_ENCONTRADO.getHttpStatus());
 		} else {
-			return operacionesProgramadasService.getNombresProgramadasConciliadas(operacionesProgramadas, predicate);
+			return operacionesProgramadasService.getNombresProgramadasConciliadas(
+					operacionesProgramadas, predicate, page);
 		}
 	}
 
@@ -105,7 +108,7 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 					ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getDescription(),
 					ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getHttpStatus());
 		}
-		return consultarProgramasNoConciliadas(archivos);
+		return consultarProgramasNoConciliadas(archivos, page);
 	}
 
 	/**
@@ -122,7 +125,7 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 					ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getDescription(),
 					ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getHttpStatus());
 		}
-		return consultarCertificadasNoConciliadas(archivos);
+		return consultarCertificadasNoConciliadas(archivos, page);
 	}
 
 	/**
@@ -253,24 +256,25 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	 * @author cesar.castano
 	 */
 	private Page<ProgramadasNoConciliadasDTO> consultarProgramasNoConciliadas(
-										Page<OperacionesProgramadas> operacionesProgramadas) {
-		List<ProgramadasNoConciliadasDTO> listNoConciliadasDto = new ArrayList<>();
+										Page<OperacionesProgramadas> operacionesProgramadas, Pageable page) {
+
 		operacionesProgramadas.forEach(entity -> {
-						var programadasNoConciliadas = new ProgramadasNoConciliadasDTO();
-						programadasNoConciliadas = ProgramadasNoConciliadasDTO.CONVERTER_DTO.apply(entity);
+						var programadasNoConciliadasDTO = new ProgramadasNoConciliadasDTO();
+						programadasNoConciliadasDTO = ProgramadasNoConciliadasDTO.CONVERTER_DTO.apply(entity);
 						String banco = puntosService.getNombrePunto(dominioService.valorTextoDominio(
 					  												Constantes.DOMINIO_TIPOS_PUNTO, 
 					  												Dominios.TIPOS_PUNTO_BANCO),
 							  			fondoService.getEntidadFondo(
-										programadasNoConciliadas.getCodigoFondoTDV()).getBancoAVAL());
-						programadasNoConciliadas.setBancoAVAL(banco);
+							  					programadasNoConciliadasDTO.getCodigoFondoTDV()).getBancoAVAL());
+						entity.setBancoAVAL(banco);
 						String transportadora = transportadorasService.getNombreTransportadora(
-							fondoService.getEntidadFondo(programadasNoConciliadas.getCodigoFondoTDV()).getTdv());
-						programadasNoConciliadas.setTdv(transportadora);
-						listNoConciliadasDto.add(programadasNoConciliadas);
-						});
-		return new PageImpl<>(listNoConciliadasDto);
+							fondoService.getEntidadFondo(programadasNoConciliadasDTO.getCodigoFondoTDV()).getTdv());
+						entity.setTdv(transportadora);
+						});		
 	
+		return new PageImpl<>(operacionesProgramadas.getContent().stream()
+                .map(ProgramadasNoConciliadasDTO.CONVERTER_DTO).collect(Collectors.<ProgramadasNoConciliadasDTO>toList()), page,
+                operacionesProgramadas.getTotalElements());	
 	}
 
 	/**
@@ -280,8 +284,8 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	 * @author cesar.castano
 	 */
 	private Page<CertificadasNoConciliadasDTO> consultarCertificadasNoConciliadas(
-			Page<OperacionesCertificadas> operacionesCertificadas) {
-		List<CertificadasNoConciliadasDTO> listNoConciliadasDto = new ArrayList<>();
+			Page<OperacionesCertificadas> operacionesCertificadas, Pageable page) {
+
 		operacionesCertificadas.forEach(entity -> {
 						var certificadasNoConciliadas = new CertificadasNoConciliadasDTO();
 						certificadasNoConciliadas = CertificadasNoConciliadasDTO.CONVERTER_DTO.apply(entity);
@@ -290,13 +294,14 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 																	Dominios.TIPOS_PUNTO_BANCO),
 										fondoService.getEntidadFondo(
 										certificadasNoConciliadas.getCodigoFondoTDV()).getBancoAVAL());
-						certificadasNoConciliadas.setBancoAVAL(banco);
+						entity.setBancoAVAL(banco);
 						String transportadora = transportadorasService.getNombreTransportadora(
 								fondoService.getEntidadFondo(certificadasNoConciliadas.getCodigoFondoTDV()).getTdv());
-						certificadasNoConciliadas.setTdv(transportadora);
-						listNoConciliadasDto.add(certificadasNoConciliadas);
+						entity.setTdv(transportadora);
 						});
-		return new PageImpl<>(listNoConciliadasDto);
+		return new PageImpl<>(operacionesCertificadas.getContent().stream()
+                .map(CertificadasNoConciliadasDTO.CONVERTER_DTO).collect(Collectors.<CertificadasNoConciliadasDTO>toList()), page,
+                operacionesCertificadas.getTotalElements());	
 	}
 
 	/**

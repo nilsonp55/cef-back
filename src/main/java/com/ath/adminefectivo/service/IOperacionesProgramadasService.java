@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.ath.adminefectivo.dto.ArchivosCargadosDTO;
 import com.ath.adminefectivo.dto.FechasConciliacionDTO;
@@ -42,7 +43,7 @@ public interface IOperacionesProgramadasService {
 	 * @author cesar.castano
 	 */
 	Page<OperacionesProgramadasNombresDTO> getNombresProgramadasConciliadas(
-			Page<OperacionesProgramadas> operacionesProgramadasList, Predicate predicate);
+			Page<OperacionesProgramadas> operacionesProgramadasList, Predicate predicate, Pageable page);
 
 	/**
 	 * Servicio encargado de generar el numero de operaciones programadas no
