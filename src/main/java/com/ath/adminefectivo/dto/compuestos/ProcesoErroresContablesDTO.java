@@ -4,8 +4,8 @@ import java.util.List;
 
 import com.ath.adminefectivo.dto.CiudadesDTO;
 import com.ath.adminefectivo.dto.ErroresContablesDTO;
-import com.ath.adminefectivo.dto.RespuestaContableDTO;
 import com.ath.adminefectivo.dto.TransaccionesContablesDTO;
+import com.ath.adminefectivo.dto.TransaccionesInternasDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +13,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * DTO encargado de retornar al front de contabilidad la informacion
+ * DTO encargado de contener el resultado del proceso de procesar errores contables
  * 
  * @author prv_dnaranjo
  *
@@ -22,17 +22,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ContabilidadDTO {
+public class ProcesoErroresContablesDTO {
+		
+	private List<ResultadoErroresContablesDTO> ErroresContablesActuales;
 	
-	private String mensaje;
-	
-	private ConteoContabilidadDTO conteoContabilidadDTO;
-	
-	private List<TransaccionesContablesDTO> transaccionesContablesDTO;
-	
-	private List<ErroresContablesDTO> erroresContablesDTO;
-	
-	private List<RespuestaContableDTO> respuestasContablesDTO;
+	private List<TransaccionesInternasDTO> transaccionesInternas;
 	
 
 }

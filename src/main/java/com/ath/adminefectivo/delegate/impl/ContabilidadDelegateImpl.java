@@ -18,12 +18,16 @@ import com.ath.adminefectivo.delegate.IContabilidadDelegate;
 import com.ath.adminefectivo.dto.OperacionesProgramadasDTO;
 import com.ath.adminefectivo.dto.TransaccionesInternasDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionIntradiaDTO;
+import com.ath.adminefectivo.dto.compuestos.ProcesoErroresContablesDTO;
+import com.ath.adminefectivo.dto.compuestos.ResultadoErroresContablesDTO;
 import com.ath.adminefectivo.dto.compuestos.ContabilidadDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.service.IContabilidadService;
 import com.ath.adminefectivo.service.IDominioService;
+import com.ath.adminefectivo.service.IErroresContablesService;
+import com.ath.adminefectivo.service.IFestivosNacionalesService;
 import com.ath.adminefectivo.service.IOperacionesProgramadasService;
 import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.ITransaccionesInternasService;
@@ -46,11 +50,17 @@ public class ContabilidadDelegateImpl implements IContabilidadDelegate {
 	@Autowired
 	IDominioService dominioService;
 	
+	@Autowired
+	IFestivosNacionalesService festivosNacionalesService;
+	
+	@Autowired
+	IErroresContablesService erroresContablesService;
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String generarContabilidad(String tipoContabilidad) {
+	public ContabilidadDTO generarContabilidad(String tipoContabilidad) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		String f1 = "2022-05-28";
 		String f2 = "2022-07-19";
@@ -64,28 +74,93 @@ public class ContabilidadDelegateImpl implements IContabilidadDelegate {
 			e.printStackTrace(); 
 		}
 		
-		Date fechaProceso = this.obtenerFechaProceso(tipoContabilidad);
+		Date fechaProcesoFin = this.obtenerFechaProceso(tipoContabilidad);
+		Date fechaProcesoInicial = this.obtenerFechaProcesoInicial(fechaProcesoFin);
 		
-		var operacionesProgramadas = operacionesProgramadasService.getOperacionesProgramadasPorFechas(tipoContabilidad, fechaInicio,fechaFin);
+		System.out.println("fechaProcesoInicial "+fechaProcesoInicial);
+		System.out.println("fechaProcesoFin "+fechaProcesoFin);
+		
+		var operacionesProgramadas = operacionesProgramadasService.getOperacionesProgramadasPorFechas(tipoContabilidad, fechaProcesoInicial,fechaProcesoFin);
+		System.out.println("operacionesProgramadas "+operacionesProgramadas.size());
 		if(!operacionesProgramadas.isEmpty()) {
 			int resultado = contabilidadService.generarContabilidad(tipoContabilidad, operacionesProgramadas);
 			
 			List<OperacionIntradiaDTO> listadoOperacionesProgramadasIntradia = operacionesProgramadasService.consultarOperacionesIntradia(fechaInicio, fechaFin);	
 			resultado = contabilidadService.generarContabilidadIntradia(tipoContabilidad, listadoOperacionesProgramadasIntradia, resultado);
 			
-			resultado = contabilidadService.generarMovimientosContables(f1, f2, tipoContabilidad, Dominios.ESTADO_CONTABILIDAD_GENERADO,"yyyy-MM-dd" );
-			
-			
+			resultado = contabilidadService.generarMovimientosContables(fechaProcesoInicial, fechaProcesoFin, tipoContabilidad, Dominios.ESTADO_CONTABILIDAD_GENERADO);
+	
 			
 			if(resultado > 0) {
-				return "MENSAJE EXITOSO";
+				return contabilidadService.generarRespuestaContabilidad(fechaProcesoInicial, fechaProcesoFin, tipoContabilidad, "MENSAJE EXITOSO");
 			}else {
-				return "NO SE ENCONTRARON OPERACIONES POR PROCESAR";
+				return contabilidadService.generarRespuestaContabilidad(fechaProcesoInicial, fechaProcesoFin, tipoContabilidad, "NO SE ENCONTRARON OPERACIONES POR PROCESAR PARA LA FECHA");
 			}
 		}
-		return "NO SE ENCONTRARON OPERACIONES POR PROCESAR";
+		return contabilidadService.generarRespuestaContabilidad(fechaProcesoInicial, fechaProcesoFin, tipoContabilidad, "NO SE ENCONTRARON OPERACIONES POR PROCESAR PARA LA FECHA");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<ResultadoErroresContablesDTO> consultarErroresContables() {
+		
+		return erroresContablesService.consultarErroresContables();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public ProcesoErroresContablesDTO procesarErroresContables() {
+		List<OperacionesProgramadasDTO> listadoOperacionesProgramadasPM = operacionesProgramadasService.obtenerOperacionesProgramadasConErroresContables("PM");
+		System.out.println("listadoOperacionesProgramadasPM   "+listadoOperacionesProgramadasPM.size());
+		List<OperacionesProgramadasDTO> listadoOperacionesProgramadasAM = operacionesProgramadasService.obtenerOperacionesProgramadasConErroresContables("AM");
+
+		int resultado = contabilidadService.generarContabilidad("PM", listadoOperacionesProgramadasPM);
+		resultado = contabilidadService.generarContabilidad("AM", listadoOperacionesProgramadasAM);
+		
+		Date fechaInicio = this.obtenerFecha2000();
+		Date fechaFin = this.obtenerFechaProceso("PM");
+		
+		List<OperacionIntradiaDTO> listadoOperacionesProgramadasIntradia = operacionesProgramadasService.consultarOperacionesIntradia(fechaInicio, fechaFin);	
+		resultado = contabilidadService.generarContabilidadIntradia("PM", listadoOperacionesProgramadasIntradia, resultado);
+		resultado = contabilidadService.generarContabilidadIntradia("AM", listadoOperacionesProgramadasIntradia, resultado);
+		
+		resultado = contabilidadService.generarMovimientosContables(fechaInicio, fechaFin, "PM", Dominios.ESTADO_CONTABILIDAD_GENERADO);
+		resultado = contabilidadService.generarMovimientosContables(fechaInicio, fechaFin, "AM", Dominios.ESTADO_CONTABILIDAD_GENERADO);
+		
+		ProcesoErroresContablesDTO respuesta = new ProcesoErroresContablesDTO();
+		respuesta.setTransaccionesInternas(this.generarRespuestaProcesoContables());
+		respuesta.setErroresContablesActuales(this.consultarErroresContables());
+
+		return respuesta;
 	}
 
+	private List<TransaccionesInternasDTO> generarRespuestaProcesoContables() {
+		return contabilidadService.generarRespuestaProcesoContables();
+	}
+
+	/**
+	 * Metodo encargado de realizar el llamado al servicio para saber que dia 
+	 * fue el ultimo dia habil.
+	 * 
+	 * @param fechaProcesoFin
+	 * @return Date
+	 */
+	private Date obtenerFechaProcesoInicial(Date fechaProcesoFin) {
+		return festivosNacionalesService.consultarAnteriorHabil(fechaProcesoFin);
+	}
+
+	/**
+	 * Metodo encargado de obtener la fecha del sistema actual
+	 * para aplicarlo al proceso de contabilidad con sus respectivas
+	 * validaciones
+	 * 
+	 * @param tipoContabilidad
+	 * @return Date
+	 */
 	private Date obtenerFechaProceso(String tipoContabilidad) {
 		String valorFecha = parametroService.valorParametro(Parametros.FECHA_DIA_ACTUAL_PROCESO);
 		String formatoFecha = dominioService.valorTextoDominio(Constantes.DOMINIO_FORMATO_FECHA, Dominios.FORMATO_FECHA_F1);
@@ -98,16 +173,41 @@ public class ContabilidadDelegateImpl implements IContabilidadDelegate {
 					ApiResponseCode.ERROR_FECHA_CONTABILIDAD.getDescription(),
 					ApiResponseCode.ERROR_FECHA_CONTABILIDAD.getHttpStatus());
 		}
-		if(!Objects.isNull(fechaSistema) && tipoContabilidad.equals("PM")) {
+		if(!Objects.isNull(fechaSistema)) {
 			return fechaSistema;
-		}else if(!Objects.isNull(fechaSistema) && tipoContabilidad.equals("AM")) {
-			Calendar c = Calendar.getInstance();
-			c.setTime(fechaSistema);
-			c.add(Calendar.DATE, -1);
-			return c.getTime();
 		}
 		return null;
 	}
+	
+	/**
+	 * Metodo encargado de obtener la fecha del sistema actual
+	 * para aplicarlo al proceso de contabilidad con sus respectivas
+	 * validaciones
+	 * 
+	 * @param tipoContabilidad
+	 * @return Date
+	 */
+	private Date obtenerFecha2000() {
+		String valorFecha = "01/01/2000";
+		String formatoFecha = dominioService.valorTextoDominio(Constantes.DOMINIO_FORMATO_FECHA, Dominios.FORMATO_FECHA_F1);
+		SimpleDateFormat sdf = new SimpleDateFormat(formatoFecha);
+		Date fechaSistema = null;
+		try {
+			fechaSistema = sdf.parse(valorFecha);
+		} catch (ParseException e) {
+			throw new AplicationException(ApiResponseCode.ERROR_FECHA_CONTABILIDAD.getCode(),
+					ApiResponseCode.ERROR_FECHA_CONTABILIDAD.getDescription(),
+					ApiResponseCode.ERROR_FECHA_CONTABILIDAD.getHttpStatus());
+		}
+		if(!Objects.isNull(fechaSistema)) {
+			return fechaSistema;
+		}
+		return null;
+	}
+
+
+
+
 
 
 }

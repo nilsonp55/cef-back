@@ -113,4 +113,14 @@ public interface IOperacionesProgramadasService {
 	List<OperacionesProgramadasDTO> getOperacionesProgramadasPorFechas(String tipoContabilidad, Date fechaInicio,
 			Date fechaFin);
 
+	/**
+	 * Metodo encargado de obtener un listado de operaciones programadas las cuales se encuentran actualmente en estado 
+	 * de error contable
+	 * 
+	 * @param tipoContabilidad
+	 * @return List<OperacionesProgramadasDTO>
+	 * @author duvan.naranjo
+	 */
+	List<OperacionesProgramadasDTO> obtenerOperacionesProgramadasConErroresContables(String tipoContabilidad);
+
 }

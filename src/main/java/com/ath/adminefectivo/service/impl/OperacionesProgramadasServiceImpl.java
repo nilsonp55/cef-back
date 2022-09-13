@@ -291,6 +291,20 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		return listadoOperacionesIntradia;
 
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<OperacionesProgramadasDTO> obtenerOperacionesProgramadasConErroresContables(String tipoContabilidad) {
+		List<OperacionesProgramadas> listadoOperacionesProgramadas = operacionesProgramadasRepository.obtenerConErroresContables(tipoContabilidad);
+		List<OperacionesProgramadasDTO> listadoOperacionesProgramadasDTO = new ArrayList<>();
+		
+		listadoOperacionesProgramadas.forEach(operacion ->{
+			listadoOperacionesProgramadasDTO.add(OperacionesProgramadasDTO.CONVERTER_DTO.apply(operacion));
+		});;
+		return listadoOperacionesProgramadasDTO;
+	}
 
 	/**
 	 * ------------------------------------------------- INICIO METODOS PRIVADOS --------------------------------------------------------------------
@@ -1824,5 +1838,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+
 
 }

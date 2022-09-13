@@ -167,6 +167,16 @@ public interface IOperacionesProgramadasRepository
 //			+ "group by fo.bancoAVAL, op.codigoPuntoDestino, op.entradaSalida  ")
 	@Query(nativeQuery = true)
 	List<OperacionIntradiaDTO> consultaOperacionesIntradia_Salida(@Param("fechaInicio") Date fechaInicio, @Param("fechaFin") Date fechaFin, @Param("entradaSalida") String entradaSalida, @Param("tipoOperacion") String tipoOperacion);
+
+	@Query("SELECT op FROM OperacionesProgramadas op where idOperacion in (SELECT DISTINCT "
+			+" ti.idOperacion "
+			+ "	FROM ErroresContables ec, "
+			+ "		 TransaccionesInternas ti "
+			+ "	WHERE "
+			+ "		 ec.estado = 1 AND "
+			+ "		 ec.transaccionInterna = ti.idTransaccionesInternas AND "
+			+ "		 ti.tipoProceso = ?1) ")
+	public List<OperacionesProgramadas> obtenerConErroresContables(String tipoContabilidad);
 	
 //	List<intradiaPruebaDTO> consultarOperacionesIntradiaSalida(@Param("fechaInicio") Date fechaInicio, @Param("fechaFin") Date fechaFin, @Param("entradaSalida") String entradaSalida, @Param("tipoOperacion") String tipoOperacion);
 	

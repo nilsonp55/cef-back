@@ -17,6 +17,7 @@ import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
 
 import com.ath.adminefectivo.dto.RespuestaContableDTO;
+import com.ath.adminefectivo.dto.compuestos.ConteoContabilidadDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionIntradiaDTO;
 
 import lombok.AllArgsConstructor;
@@ -69,6 +70,16 @@ resultSetMapping = "Mapping.RespuestaContableDTO")
 		@ColumnResult(name = "ordenCo"),	@ColumnResult(name = "areaFuncional"),	@ColumnResult(name = "identificador"),	
 		@ColumnResult(name = "descripcionTransaccion"),	@ColumnResult(name = "terceroGL"),	@ColumnResult(name = "nombreTerceroGL"),	
 		@ColumnResult(name = "fechaConversion"),	@ColumnResult(name = "claveReferencia1"),	@ColumnResult(name = "claveReferencia2") }))
+
+@NamedNativeQuery(name = "TransaccionesContables.conteoContabilidad", 
+query = "SELECT * from fnc_generar_resultado_contable(:fechaInicio, :fechaFin, :tipoProceso) ", 
+resultSetMapping = "Mapping.ConteoContabilidadDTO")
+@SqlResultSetMapping(name = "Mapping.ConteoContabilidadDTO", classes = @ConstructorResult(targetClass = ConteoContabilidadDTO.class, columns = {
+		@ColumnResult(name = "conteoInternasGeneradas"),	@ColumnResult(name = "estadoInternasGeneradas"),	
+		@ColumnResult(name = "conteoContablesGeneradas"),	@ColumnResult(name = "estadoContablesGeneradas"),
+		@ColumnResult(name = "conteoErroresContables"),	@ColumnResult(name = "estadoErroresContables"),	
+		@ColumnResult(name = "conteoContablesCompletadas"),	@ColumnResult(name = "estadoContablesCompletadas"),		
+		}))
 @Entity
 @Table(name = "TRANSACCIONES_CONTABLES")
 @Data
