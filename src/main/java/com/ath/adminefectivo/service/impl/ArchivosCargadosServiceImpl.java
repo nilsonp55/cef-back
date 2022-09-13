@@ -140,7 +140,7 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 		}
 
 		var archivo = archivoOp.get();
-		ValidacionArchivoDTO validacionArchivo = ValidacionArchivoDTO.builder()
+		ValidacionArchivoDTO validacionArchivo = ValidacionArchivoDTO.builder().idArchivo(idArchivo)
 				.nombreArchivo(archivo.getNombreArchivo()).numeroRegistros(archivo.getNumeroRegistros())
 				.numeroErrores(archivo.getNumeroErrores()).usuarioCreacion(archivo.getUsuarioCreacion())
 				.fechaInicioCargue(archivo.getFechaInicioCargue()).estadoValidacion(archivo.getEstadoCargue())

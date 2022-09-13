@@ -10,6 +10,7 @@ import java.util.Objects;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,14 +19,23 @@ import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.constantes.Parametros;
 import com.ath.adminefectivo.delegate.ICargueCertificacionDelegate;
 import com.ath.adminefectivo.dto.ArchivosCargadosDTO;
+import com.ath.adminefectivo.dto.BitacoraAutomaticosDTO;
+import com.ath.adminefectivo.dto.DetallesProcesoAutomaticoDTO;
 import com.ath.adminefectivo.dto.DownloadDTO;
 import com.ath.adminefectivo.dto.MaestrosDefinicionArchivoDTO;
 import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
+import com.ath.adminefectivo.entities.BitacoraAutomaticos;
+import com.ath.adminefectivo.exception.NegocioException;
+import com.ath.adminefectivo.service.IArchivosCargadosService;
+import com.ath.adminefectivo.service.IBitacoraAutomaticosService;
+import com.ath.adminefectivo.service.IDominioService;
+
 import com.ath.adminefectivo.entities.MaestroDefinicionArchivo;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.service.IArchivosCargadosService;
 import com.ath.adminefectivo.service.IFestivosNacionalesService;
+
 import com.ath.adminefectivo.service.IFilesService;
 import com.ath.adminefectivo.service.ILecturaArchivoService;
 import com.ath.adminefectivo.service.ILogProcesoDiarioService;
@@ -63,6 +73,10 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	ILogProcesoDiarioService logProcesoDiarioService;
 	
 	@Autowired
+	IBitacoraAutomaticosService bitacoraAutomaicosService;
+	
+	@Autowired
+	IDominioService dominioService;
 	IFestivosNacionalesService festivosNacionalesService;
 
 	private ValidacionArchivoDTO validacionArchivo;
@@ -287,6 +301,67 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 						ApiResponseCode.ERROR_PROCESO_YA_CERRADO.getHttpStatus());
 			}
 		}
+	}
+	
+	/**
+	 * Metodo o job que es ejecutado segun el cron configurado(de lunes a viernes de 7 a 12 cada 15 minutos)
+	 * encargado de dejar registro de cada vez que se ejecuta el proceso automatico de archivos 
+	 * de certificaciones
+	 * 
+	 * @author duvan.naranjo
+	 */
+	@Scheduled(cron = "* * * * * *")
+	public void certificacionesProgramadas() {
+		List<ArchivosCargadosDTO> certificaciones;
+		List<ValidacionArchivoDTO> validacionesArchivos = new ArrayList<>();
+		//crea el registro en bitacora de automaticos
+				Date fechaActual = parametrosService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
+				
+		BitacoraAutomaticosDTO bitacoraDTO = BitacoraAutomaticosDTO.builder().codigoProceso("CARG_CERTIFICACION").fechaSistema(fechaActual).
+				 fechaHoraInicio(new Date()).build();
+		
+		
+		
+		
+		
+		
+		//lectura
+		var agrupador = Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_CERTIFICACION;
+		var estado = Constantes.ESTADO_CARGUE_PENDIENTE;
+	
+		certificaciones = this.consultarArchivos(estado, agrupador);
+		
+		certificaciones.forEach(archivoCerti ->{
+			validacionesArchivos.add(this.procesarArchivo(archivoCerti.getIdModeloArchivo(), archivoCerti.getNombreArchivo()));
+		});
+		
+		
+		bitacoraDTO = this.procesarValidacionRealizada(bitacoraDTO, validacionesArchivos);
+		bitacoraDTO.setFechaHoraFinal(new Date());
+		
+		bitacoraAutomaicosService.guardarBitacoraAutomaticos(bitacoraDTO);
+		
+		
+		System.out.println("ME EJECUTE CADA 10 SEGUNDOS " + new Date());
+	}
+
+	private BitacoraAutomaticosDTO procesarValidacionRealizada(BitacoraAutomaticosDTO bitacoraDTO,
+			List<ValidacionArchivoDTO> validacionesArchivos) {
+		List<DetallesProcesoAutomaticoDTO> listadoDetallesProcesos = new ArrayList<>();
+		
+		validacionesArchivos.forEach(validacion -> {
+			DetallesProcesoAutomaticoDTO detalleProcesoAuto = new DetallesProcesoAutomaticoDTO();
+			detalleProcesoAuto.setMensajeError(validacion.getDescripcion());
+			detalleProcesoAuto.setNombreArchivo(validacion.getNombreArchivo());
+			detalleProcesoAuto.setResultado(validacion.getEstadoValidacion());
+			detalleProcesoAuto.setIdArchivo(validacion.getIdArchivo());
+			listadoDetallesProcesos.add(detalleProcesoAuto);
+				
+		});
+		bitacoraDTO.setDetallesProcesosAutomaticosDTO(listadoDetallesProcesos);
+		
+		
+		return bitacoraDTO;
 	}
 
 }

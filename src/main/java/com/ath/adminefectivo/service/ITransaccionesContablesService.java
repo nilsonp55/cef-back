@@ -6,6 +6,7 @@ import java.util.List;
 import com.ath.adminefectivo.dto.RespuestaContableDTO;
 import com.ath.adminefectivo.dto.TransaccionesContablesDTO;
 import com.ath.adminefectivo.dto.TransaccionesInternasDTO;
+import com.ath.adminefectivo.dto.compuestos.ConteoContabilidadDTO;
 import com.ath.adminefectivo.entities.TransaccionesContables;
 import com.ath.adminefectivo.entities.TransaccionesInternas;
 
@@ -94,5 +95,16 @@ public interface ITransaccionesContablesService {
 	 * @author Miller.caro
 	 */
 	Integer estadovalidacionContable(int estado);
+
+	/**
+	 * Servicio encargado de consultar el conteo del proceso de contabilidad
+	 * 
+	 * @param fechaProceso
+	 * @param f2
+	 * @param tipoContabilidad
+	 * @param string
+	 * @return ConteoContabilidadDTO
+	 */
+	ConteoContabilidadDTO generarConteoContabilidad(Date f1, Date f2, String tipoContabilidad);
 
 }

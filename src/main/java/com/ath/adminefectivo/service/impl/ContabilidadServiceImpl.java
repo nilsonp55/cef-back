@@ -20,12 +20,16 @@ import com.ath.adminefectivo.delegate.IContabilidadDelegate;
 import com.ath.adminefectivo.dto.ArchivosCargadosDTO;
 import com.ath.adminefectivo.dto.BancosDTO;
 import com.ath.adminefectivo.dto.CiudadesDTO;
+import com.ath.adminefectivo.dto.ErroresContablesDTO;
 import com.ath.adminefectivo.dto.FondosDTO;
 import com.ath.adminefectivo.dto.OperacionesProgramadasDTO;
 import com.ath.adminefectivo.dto.PuntosDTO;
+import com.ath.adminefectivo.dto.RespuestaContableDTO;
 import com.ath.adminefectivo.dto.TransaccionesContablesDTO;
 import com.ath.adminefectivo.dto.TransaccionesInternasDTO;
 import com.ath.adminefectivo.dto.TransportadorasDTO;
+import com.ath.adminefectivo.dto.compuestos.ContabilidadDTO;
+import com.ath.adminefectivo.dto.compuestos.ConteoContabilidadDTO;
 import com.ath.adminefectivo.dto.compuestos.ErroresCamposDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionIntradiaDTO;
 import com.ath.adminefectivo.dto.compuestos.TransaccionInternaIntradiaDTO;
@@ -47,6 +51,7 @@ import com.ath.adminefectivo.service.IBancosService;
 import com.ath.adminefectivo.service.ICiudadesService;
 import com.ath.adminefectivo.service.IContabilidadService;
 import com.ath.adminefectivo.service.IDominioService;
+import com.ath.adminefectivo.service.IErroresContablesService;
 import com.ath.adminefectivo.service.IFondosService;
 import com.ath.adminefectivo.service.IPuntosService;
 import com.ath.adminefectivo.service.ITransaccionesContablesService;
@@ -80,6 +85,9 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 
 	@Autowired
 	IDominioService dominioService;
+	
+	@Autowired
+	IErroresContablesService erroresContablesService;
 
 	int consecutivoDia = 1;
 	int consecutivoMovContable = 1;
@@ -102,9 +110,9 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public int generarMovimientosContables(String fechaInicio, String fechaFin, String tipoContabilidad,
-			int estadoContabilidadGenerado, String formatoFecha) {
-		boolean result = transaccionesInternasService.generarMovimientosContables(fechaInicio, fechaFin, tipoContabilidad, estadoContabilidadGenerado, formatoFecha);
+	public int generarMovimientosContables(Date fechaInicio, Date fechaFin, String tipoContabilidad,
+			int estadoContabilidadGenerado) {
+		boolean result = transaccionesInternasService.generarMovimientosContables(fechaInicio, fechaFin, tipoContabilidad, estadoContabilidadGenerado);
 		return 0;
 	}
 
@@ -138,8 +146,7 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 	}
 
 	/**
-	 * ----------------------------------- METODOS
-	 * PRIVADOS-----------------------------------
+	 * ----------------------------------- METODOS PRIVADOS-----------------------------------
 	 */
 
 	/**
@@ -149,12 +156,20 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 	 */
 	private int procesarRegistrosContabilidad(String tipoContabilidad, OperacionesProgramadasDTO operacionProgramada) {
 		if (tipoContabilidad.equals("PM")) {
-			if (operacionProgramada.getTipoOperacion().equals("CONSIGNACION")) {
+			if (operacionProgramada.getTipoOperacion().equals("CONSIGNACION") && !operacionProgramada.isEsCambio()) {
 				return this.procesarContabilidadConsignacion(tipoContabilidad, operacionProgramada);
-			} else if (operacionProgramada.getTipoOperacion().equals("RETIRO")) {
+			} else if (operacionProgramada.getTipoOperacion().equals("RETIRO") && !operacionProgramada.isEsCambio()) {
 				return this.procesarContabilidadRetiro(tipoContabilidad, operacionProgramada);
 			} else if (operacionProgramada.getTipoOperacion().equals("VENTA")) {
 				return this.procesarContabilidadVenta(tipoContabilidad, operacionProgramada);
+			}else if(operacionProgramada.getTipoOperacion().equals("TRASLADO") ) {
+				return this.procesarContabilidadTraslado(tipoContabilidad, operacionProgramada);
+			}else if(operacionProgramada.getTipoOperacion().equals("INTERCAMBIO") ) {
+				return this.procesarContabilidadIntercambio(tipoContabilidad, operacionProgramada);
+			}else if(operacionProgramada.getTipoOperacion().equals("CONSIGNACION") && operacionProgramada.isEsCambio()) {
+				return this.procesarContabilidadConsignacionCambio(tipoContabilidad, operacionProgramada);
+			}else if(operacionProgramada.getTipoOperacion().equals("RETIRO") && operacionProgramada.isEsCambio()) {
+				return this.procesarContabilidadRetiroCambio(tipoContabilidad, operacionProgramada);
 			}
 		}
 
@@ -345,6 +360,92 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 
 		return consecutivoDia;
 	}
+	
+	/**
+	 * 
+	 * @param operacionProgramada
+	 * @return
+	 */
+	private int procesarContabilidadTraslado(String tipoProceso, OperacionesProgramadasDTO operacionProgramada) {
+
+		TransaccionesInternasDTO transaccionInternaDTOTraslado10 = generarTransaccionInterna(tipoProceso, 10, operacionProgramada,
+				operacionProgramada.getCodigoPuntoOrigen());
+		transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTOTraslado10);
+		
+		TransaccionesInternasDTO transaccionInternaDTOTraslado20 = generarTransaccionInterna(tipoProceso, 20, operacionProgramada,
+				operacionProgramada.getCodigoPuntoDestino());
+		transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTOTraslado20);
+
+		return consecutivoDia;
+	}
+	
+	/**
+	 * 
+	 * @param operacionProgramada
+	 * @return
+	 */
+	private int procesarContabilidadIntercambio(String tipoProceso, OperacionesProgramadasDTO operacionProgramada) {
+
+		TransaccionesInternasDTO transaccionInternaDTOInter10 = generarTransaccionInterna(tipoProceso, 10, operacionProgramada,
+				operacionProgramada.getCodigoFondoTDV());
+		transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTOInter10);
+		
+		TransaccionesInternasDTO transaccionInternaDTOInter20 = generarTransaccionInterna(tipoProceso, 20, operacionProgramada,
+				operacionProgramada.getCodigoFondoTDV());
+		transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTOInter20);
+
+		return consecutivoDia;
+	}
+	
+	/**
+	 * 
+	 * @param operacionProgramada
+	 * @return
+	 */
+	private int procesarContabilidadConsignacionCambio(String tipoProceso, OperacionesProgramadasDTO operacionProgramada) {
+
+		TransaccionesInternasDTO transaccionInternaDTOConsignacion10 = generarTransaccionInterna(tipoProceso, 10, operacionProgramada,
+				operacionProgramada.getCodigoFondoTDV());
+		transaccionInternaDTOConsignacion10.setEsCambio(true);
+		transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTOConsignacion10);
+
+		return consecutivoDia;
+	}
+	
+	/**
+	 * 
+	 * @param operacionProgramada
+	 * @return
+	 */
+	private int procesarContabilidadRetiroCambio(String tipoProceso, OperacionesProgramadasDTO operacionProgramada) {
+		TransaccionesInternasDTO transaccionInternaDTO = generarTransaccionInterna(tipoProceso, 20, operacionProgramada, operacionProgramada.getCodigoFondoTDV());
+		
+		if(!Objects.isNull(operacionProgramada.getComisionBR()) && operacionProgramada.getComisionBR() > 0) {
+			TransaccionesInternasDTO transaccionInternaDTOComision = generarTransaccionInterna(tipoProceso, 21, operacionProgramada, operacionProgramada.getCodigoFondoTDV());
+			transaccionInternaDTOComision.setValor(operacionProgramada.getComisionBR());
+			transaccionInternaDTOComision.setCodigoComision(Integer.valueOf(Dominios.COMISION_1));
+			transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTOComision);
+			
+			TransaccionesInternasDTO transaccionInternaDTOImpuesto = generarTransaccionInterna(tipoProceso, 22, operacionProgramada, operacionProgramada.getCodigoFondoTDV());
+			
+			int valorImpuesto = this.calcularValorConImpuesto(operacionProgramada.getValorTotal().intValue(), Dominios.IMPUESTO_IVA);
+			transaccionInternaDTOImpuesto.setValor(valorImpuesto);
+			transaccionInternaDTOImpuesto.setCodigoComision(Integer.valueOf(Dominios.COMISION_1));
+			transaccionInternaDTOImpuesto.setTipoImpuesto(Integer.valueOf(Dominios.IMPUESTO_IVA));
+
+			transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTOImpuesto);
+			
+			
+			TransaccionesInternasDTO transaccionInternaDTOMedioPago = generarTransaccionInterna(tipoProceso, 23, operacionProgramada, operacionProgramada.getCodigoFondoTDV());
+			int valorD = operacionProgramada.getComisionBR() + valorImpuesto;
+			transaccionInternaDTOMedioPago.setValor(valorD);
+			transaccionInternaDTOMedioPago.setMedioPago(Dominios.MEDIOS_PAGO_DESCUENTO);	
+			transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTOMedioPago);
+
+		}
+
+		return consecutivoDia;
+	}
 
 	private TransaccionesInternasDTO generarTransaccionInterna(String tipoProceso, Integer tipoTransaccion,
 			OperacionesProgramadasDTO operacionProgramada, Integer codigoPunto) {
@@ -376,6 +477,8 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 		 transaccionInternaDTO.setBancoAval(bancoAval);
 		 return TransaccionesInternasDTO.CONVERTER_DTO.apply(transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTO));
 	}
+	
+	
 	
 	private TransaccionesContablesDTO generarMovimientoContable(String tipoProceso, Integer tipoTransaccion, TransaccionesInternasDTO transaccionesInternasDTO) {
 		 TransaccionesContablesDTO transaccionesContablesDTO = TransaccionesContablesDTO.builder()
@@ -429,6 +532,39 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 		consecutivoDia++;
 		return TransaccionesInternasDTO.CONVERTER_DTO
 				.apply(transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTO));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public ContabilidadDTO generarRespuestaContabilidad(Date f1, Date f2, String tipoContabilidad,
+			String mensaje) {
+		ContabilidadDTO contabilidadDTO = new ContabilidadDTO();
+		
+		ConteoContabilidadDTO conteoContabilidadDTO = transaccionesContablesService.generarConteoContabilidad(f1, f2, tipoContabilidad);
+		contabilidadDTO.setConteoContabilidadDTO(conteoContabilidadDTO);	
+		
+		contabilidadDTO.setMensaje(mensaje);
+		
+		List<ErroresContablesDTO> erroresContables = erroresContablesService.consultarErroresContablesByFechas(f1, f2);
+		contabilidadDTO.setErroresContablesDTO(erroresContables);
+
+		List<TransaccionesContablesDTO> transaccionesContables = transaccionesContablesService.getTransaccionesContablesByFechas(f1, f2);
+		contabilidadDTO.setTransaccionesContablesDTO(transaccionesContables);
+		
+		List<RespuestaContableDTO> respuestaContableDTO = transaccionesContablesService.getCierreContable(f2,tipoContabilidad,0);
+		contabilidadDTO.setRespuestasContablesDTO(respuestaContableDTO);
+		
+		return contabilidadDTO;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<TransaccionesInternasDTO> generarRespuestaProcesoContables() {
+		return erroresContablesService.generarRespuestaProcesoContables();
 	}
 
 }
