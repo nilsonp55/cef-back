@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.ath.adminefectivo.dto.RespuestaContableDTO;
 import com.ath.adminefectivo.dto.TransaccionesContablesDTO;
 import com.ath.adminefectivo.dto.TransaccionesInternasDTO;
+import com.ath.adminefectivo.dto.compuestos.ConteoContabilidadDTO;
 import com.ath.adminefectivo.entities.TransaccionesContables;
 import com.ath.adminefectivo.entities.TransaccionesInternas;
 import com.ath.adminefectivo.repositories.ITransaccionesContablesRepository;
@@ -135,10 +136,21 @@ public class TransaccionesContablesServiceImpl implements ITransaccionesContable
 		
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Integer estadovalidacionContable(int estado) {
 		Integer estadoCierre = transaccionesContablesRepository.estadovalidacionContable(estado);
 		return estadoCierre;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public ConteoContabilidadDTO generarConteoContabilidad(Date f1, Date f2, String tipoContabilidad) {
+		return transaccionesContablesRepository.conteoContabilidad(f1, f2, tipoContabilidad);
 	}
 	
 }

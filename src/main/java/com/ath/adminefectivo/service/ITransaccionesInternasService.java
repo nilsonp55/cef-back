@@ -61,8 +61,8 @@ public interface ITransaccionesInternasService {
 	 * @param estadoContabilidadGenerado
 	 * @return boolean
 	 */
-	boolean generarMovimientosContables(String fechaInicio, String fechaFin, String tipoContabilidad,
-			int estadoContabilidadGenerado, String formatoFecha);
+	boolean generarMovimientosContables(Date fechaInicio, Date fechaFin, String tipoContabilidad,
+			int estadoContabilidadGenerado);
 	
 	
 

@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.ath.adminefectivo.dto.RespuestaContableDTO;
 import com.ath.adminefectivo.dto.TransaccionesContablesDTO;
+import com.ath.adminefectivo.dto.compuestos.ConteoContabilidadDTO;
 import com.ath.adminefectivo.entities.OperacionesProgramadas;
 import com.ath.adminefectivo.entities.TransaccionesContables;
 import com.ath.adminefectivo.entities.TransaccionesInternas;
@@ -140,4 +141,7 @@ public interface ITransaccionesContablesRepository extends JpaRepository<Transac
 			+ " tc.id_transacciones_internas = ti.id_transacciones_internas AND "
 			+ " ti.estado = ?1 ",nativeQuery=true)
 	Integer estadovalidacionContable(int estado);
+
+	@Query(nativeQuery = true)
+	ConteoContabilidadDTO conteoContabilidad(Date fechaInicio, Date fechaFin, String tipoProceso);
 }

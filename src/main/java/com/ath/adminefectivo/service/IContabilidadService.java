@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import com.ath.adminefectivo.dto.ArchivosCargadosDTO;
 import com.ath.adminefectivo.dto.OperacionesProgramadasDTO;
 import com.ath.adminefectivo.dto.TransaccionesInternasDTO;
+import com.ath.adminefectivo.dto.compuestos.ContabilidadDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionIntradiaDTO;
 import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoDTO;
 import com.ath.adminefectivo.entities.ArchivosCargados;
@@ -43,8 +44,8 @@ public interface IContabilidadService {
 	 * @return int
 	 * @author duvan.naranjo
 	 */
-	int generarMovimientosContables(String fechaInicio, String fechaFin, String tipoContabilidad,
-			int estadoContabilidadGenerado, String formatoFecha);
+	int generarMovimientosContables(Date fechaInicio, Date fechaFin, String tipoContabilidad,
+			int estadoContabilidadGenerado);
 
 	/**
 	 * Servicio encargado de generar la contabilidad basado en las operaciones 
@@ -58,6 +59,28 @@ public interface IContabilidadService {
 	 */
 	int generarContabilidadIntradia(String tipoContabilidad,
 			List<OperacionIntradiaDTO> listadoOperacionesProgramadasIntradia, int consecutivoDia);
+
+	/**
+	 * 
+	 * @param fechaProceso
+	 * @param f2
+	 * @param tipoContabilidad
+	 * @param string
+	 * @return
+	 */
+	ContabilidadDTO generarRespuestaContabilidad(Date  f1, Date f2, String tipoContabilidad, String mensaje);
+
+	/**
+	 * Metodo encargado de generar un listado de las transacciones internas nuevas
+	 * que se crearon cuando se solucionaron los errores contables, a su vez cambia de 
+	 * estado los errores contables a CORREGIDO 
+	 * 
+	 * 
+	 * List<TransaccionesInternasDTO>
+	 * @return List<TransaccionesInternasDTO>
+	 * @author duvan.naranjo
+	 */
+	List<TransaccionesInternasDTO> generarRespuestaProcesoContables();
 	
 
 }

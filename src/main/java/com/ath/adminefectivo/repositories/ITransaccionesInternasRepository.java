@@ -25,7 +25,7 @@ public interface ITransaccionesInternasRepository extends JpaRepository<Transacc
 	/**
 	 * Metodo encargado de ejecutar la funcion de la base de datos para 
 	 * realizar el proceso de transacciones contables o movimientos contables
-	 * @Query("SELECT fnc_transcciones_contables(?1, ?2,  ?3::VARCHAR , ?4)")
+	 * 
 	 * @param fechaInicio
 	 * @param fechaFin
 	 * @param tipoContabilidad
@@ -33,7 +33,7 @@ public interface ITransaccionesInternasRepository extends JpaRepository<Transacc
 	 * @return duvan.naranjo
 	 */
 	@Procedure(name = "public.fnc_transcciones_contables")
-	boolean fnc_transcciones_contables(@Param("p_fechaInicio") String fechaInicio, @Param("p_fechaFin") String fechaFin, @Param("p_tipoContabilidad") String tipoContabilidad,
-			@Param("p_estado") int estadoContabilidadGenerado, @Param("p_formato_fecha") String formatoFecha);
+	boolean fnc_transcciones_contables(@Param("p_fechaInicio") Date fechaInicio, @Param("p_fechaFin") Date fechaFin, @Param("p_tipoContabilidad") String tipoContabilidad,
+			@Param("p_estado") int estadoContabilidadGenerado);
 
 }

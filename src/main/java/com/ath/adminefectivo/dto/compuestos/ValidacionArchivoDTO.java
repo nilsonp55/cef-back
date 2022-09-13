@@ -27,6 +27,7 @@ import lombok.NoArgsConstructor;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ValidacionArchivoDTO {
 
+	private Long idArchivo;
 	private String nombreArchivo;
 	private String descripcion;
 	private int numeroRegistros;
@@ -50,6 +51,7 @@ public class ValidacionArchivoDTO {
 	 */
 	public static final ValidacionArchivoDTO conversionRespuesta(ValidacionArchivoDTO t) {
 		var validacionRespuesta = new ValidacionArchivoDTO();
+		validacionRespuesta.setIdArchivo(t.idArchivo);
 		validacionRespuesta.setNombreArchivo(t.nombreArchivo);
 		validacionRespuesta.setDescripcion(t.descripcion);
 		validacionRespuesta.setNumeroRegistros(t.numeroRegistros);
