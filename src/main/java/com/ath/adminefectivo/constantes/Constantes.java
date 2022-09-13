@@ -23,10 +23,13 @@ public final class Constantes {
 	public static final String NO = "NO";
 	public static final String ENTRADA = "1";
 	public static final String SALIDA = "2";
-	public static final String SOBRANTE_OTROS_FONDOS = "3";
-	public static final String FALTANTE_OTROS_FONDOS = "4";
+	public static final String SALIDA_BRINKS = "0";
+	public static final String SOBRANTE_OTROS_FONDOS = "1";
+	public static final String FALTANTE_OTROS_FONDOS = "2";
 	public static final String SOBRANTE_BRINKS = "4";
 	public static final String FALTANTE_BRINKS = "5";
+	public static final String SOBRANTE_TVS = "3";
+	public static final String FALTANTE_TVS = "4";
 	public static final Integer NUMERO_INICIA_VALORES_OTROS_FONDOS = 17;
 	public static final Integer NUMERO_INICIA_VALORES_BRINKS = 18;
 	public static final String NOMBRE_ENTRADA = "ENTRADAS";
@@ -486,7 +489,7 @@ public final class Constantes {
 	/**
 	 * Constante para indicar el CODIGOPUNTO en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
 	 */
-	public static final String CAMPO_DETALLE_ARCHIVO_CODIGOPUNTO = "CODIGOPUNTO";
+	public static final String CAMPO_DETALLE_ARCHIVO_CODIGOPUNTO = "DESCRIPCIONPUNTO";
 
 	/**
 	 * Constante para indicar el TIPOSERVICIO en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
@@ -499,7 +502,7 @@ public final class Constantes {
 	public static final String CAMPO_DETALLE_ARCHIVO_DESCRIPCIONNOVEDAD = "DESCRIPCIONNOVEDAD";
 
 	/**
-	 * Constante para indicar el MONTOTOTAL en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
+	 * Constante para indicar el MONTOTOTAL en el archivo de FONDOS NO BRINKS
 	 */
 	public static final String CAMPO_DETALLE_ARCHIVO_MONTOTOTAL = "MONTOTOTAL";
 
@@ -539,9 +542,14 @@ public final class Constantes {
 	public static final String CAMPO_DETALLE_ARCHIVO_ENTRADAOSALIDA = "ENTRADASALIDA";
 
 	/**
+	 * Constante para indicar el VALORNOVEDAD en el archivo de FONDOS BRINKS
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_VALORNOVEDAD = "VALOR";
+	
+	/**
 	 * Constante para indicar el MONTOTOTALNOVEDAD en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
 	 */
-	public static final String CAMPO_DETALLE_ARCHIVO_MONTOTOTALNOVEDAD = "MONTOTOTALNOVEDAD";
+	public static final String CAMPO_DETALLE_ARCHIVO_TIPONOVEDAD = "TIPONOVEDAD";
 	
 	//////////////////////////////////////// MENSAJES ///////////////////////////////////////////
 	/**

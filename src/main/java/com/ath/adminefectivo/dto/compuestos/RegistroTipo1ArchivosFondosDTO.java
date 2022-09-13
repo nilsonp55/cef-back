@@ -23,5 +23,7 @@ public class RegistroTipo1ArchivosFondosDTO {
 	private Integer codigoPunto;
 	
 	private Date fechaEjecucion;
+	
+	private Integer banco_aval;
 
 }

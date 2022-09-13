@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.dto.MaestrosDefinicionArchivoDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
+import com.ath.adminefectivo.entities.MaestroDefinicionArchivo;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.MaestroDefinicionArchivoRepository;
 import com.ath.adminefectivo.service.IMaestroDefinicionArchivoService;
@@ -45,6 +46,14 @@ public class MaestroDefinicionArchivoServiceImpl implements IMaestroDefinicionAr
 		maestrosDefinicion.forEach(entity -> maestrosDefinicionDto.add(MaestrosDefinicionArchivoDTO.CONVERTER_DTO.apply(entity)));
 		
 		return maestrosDefinicionDto;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public MaestroDefinicionArchivo consultarInicialMascara(String inicialMascara) {
+		return maestrosDefinicionArchivoRepository.findByMascaraArchLike(inicialMascara);
 	}
 
 }

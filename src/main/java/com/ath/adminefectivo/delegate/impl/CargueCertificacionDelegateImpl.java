@@ -30,6 +30,12 @@ import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.service.IArchivosCargadosService;
 import com.ath.adminefectivo.service.IBitacoraAutomaticosService;
 import com.ath.adminefectivo.service.IDominioService;
+
+import com.ath.adminefectivo.entities.MaestroDefinicionArchivo;
+import com.ath.adminefectivo.exception.NegocioException;
+import com.ath.adminefectivo.service.IArchivosCargadosService;
+import com.ath.adminefectivo.service.IFestivosNacionalesService;
+
 import com.ath.adminefectivo.service.IFilesService;
 import com.ath.adminefectivo.service.ILecturaArchivoService;
 import com.ath.adminefectivo.service.ILogProcesoDiarioService;
@@ -71,6 +77,7 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	
 	@Autowired
 	IDominioService dominioService;
+	IFestivosNacionalesService festivosNacionalesService;
 
 	private ValidacionArchivoDTO validacionArchivo;
 
@@ -150,21 +157,18 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 		List<ArchivosCargadosDTO> listArchivosCargados = new ArrayList<>();
 
 		var maestrosDefinicion = maestroDefinicionArchivoService.consultarDefinicionArchivoByAgrupador(estado, agrupador);
-		var urlPendinetes = filesService.consultarPathArchivos(estado);
 		var maestro = maestrosDefinicion.get(0);
+		var urlPendinetes = filesService.consultarPathArchivos(estado);
 		var url = maestro.getUbicacion().concat(urlPendinetes);
 		var archivos = filesService.obtenerContenidoCarpeta(url);
 		archivos.forEach(x -> {
 			String nombreArchivo;
 			nombreArchivo = x.split("_")[0];
-			maestrosDefinicion.forEach(y -> {
-				String nombreMaestro;
-				nombreMaestro = y.getMascaraArch().split("_")[0];
-				if (nombreArchivo.equals(nombreMaestro)) {
-					listArchivosCargados.add(
-							organizarDatosArchivo(x, estado, y.getIdMaestroDefinicionArchivo(), y.getMascaraArch()));
-				}
-			});
+			String inicialMascara = nombreArchivo.substring(0, 2);
+			MaestroDefinicionArchivo maestroDefinicion = maestroDefinicionArchivoService
+									.consultarInicialMascara(inicialMascara);
+			listArchivosCargados.add(organizarDatosArchivo(x, estado, 
+					maestroDefinicion.getIdMaestroDefinicionArchivo(), maestroDefinicion.getMascaraArch()));
 		});
 		listArchivosCargados.sort(Comparator.comparing(ArchivosCargadosDTO::getFechaArchivo,
 				Comparator.nullsLast(Comparator.naturalOrder())));
@@ -250,9 +254,10 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 			String idModeloArchivo, String mascaraArchivo) {
 		ArchivosCargadosDTO archivosCargadosDTO = new ArchivosCargadosDTO();
 
-		archivosCargadosDTO = ArchivosCargadosDTO.builder().estadoCargue(estado).nombreArchivo(archivo)
-				.idModeloArchivo(idModeloArchivo)
-				.fechaArchivo(validacionArchivoService.obtenerFechaArchivo(archivo, mascaraArchivo)).build();
+		Date fechaDatos = validacionArchivoService.obtenerFechaArchivo(archivo, mascaraArchivo);
+        fechaDatos = festivosNacionalesService.consultarAnteriorHabil(fechaDatos);
+        archivosCargadosDTO = ArchivosCargadosDTO.builder().estadoCargue(estado).nombreArchivo(archivo)
+                .idModeloArchivo(idModeloArchivo).fechaArchivo(fechaDatos).build();
 
 		return archivosCargadosDTO;
 

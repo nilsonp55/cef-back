@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.GetMapping;
+
 
 import com.ath.adminefectivo.delegate.IConciliacionOperacionesDelegate;
 import com.ath.adminefectivo.dto.CertificadasNoConciliadasDTO;
@@ -50,7 +52,7 @@ public class ConciliacionOperacionesController {
 	 * @param predicate
 	 * @author cesar.castano
 	 */
-	@PostMapping(value = "${endpoints.conciliacion.consultar-conciliadas}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "${endpoints.conciliacion.consultar-conciliadas}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<Page<OperacionesProgramadasNombresDTO>>> getConciliadas(
 			@QuerydslPredicate(root = OperacionesProgramadas.class) Predicate predicate, Pageable page) {
 
@@ -69,17 +71,18 @@ public class ConciliacionOperacionesController {
 	 * @return Page<ProgramadasNoConciliadasDTO>
 	 * @author cesar.castano
 	 */
-	@PostMapping(value = "${endpoints.conciliacion.consultar-programadas-no-conciliadas}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "${endpoints.conciliacion.consultar-programadas-no-conciliadas}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<Page<ProgramadasNoConciliadasDTO>>> getProgramadaNoConcilliada(
 			@QuerydslPredicate(root = OperacionesProgramadas.class) Predicate predicate, Pageable page) {
-
-		var consulta = conciliacionOperacionesDelegate.getProgramadaNoConcilliada(predicate, page);
+		
+		Page<ProgramadasNoConciliadasDTO> consulta = conciliacionOperacionesDelegate.getProgramadaNoConcilliada(predicate, page);
 
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
-
+	
+	
 	/**
 	 * Metodo encargado de consultar los Operaciones Certificadas no conciliadas
 	 * @param predicate
@@ -87,7 +90,7 @@ public class ConciliacionOperacionesController {
 	 * @return Page<CertificadasNoConciliadasDTO>
 	 * @author cesar.castano
 	 */
-	@PostMapping(value = "${endpoints.conciliacion.consultar-certificadas-no-conciliadas}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "${endpoints.conciliacion.consultar-certificadas-no-conciliadas}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<Page<CertificadasNoConciliadasDTO>>> getCertificadaNoConciliada(
 			@QuerydslPredicate(root = OperacionesCertificadas.class) Predicate predicate, Pageable page) {
 

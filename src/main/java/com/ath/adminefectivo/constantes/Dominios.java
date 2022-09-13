@@ -98,6 +98,7 @@ public final class Dominios {
 	public static final String CARACTER_INVALIDO_TX_C2 = "C2";
 	public static final String CARACTER_INVALIDO_TX_C3 = "C3";
 	
+	public static final String COSTO_FLETE_CHARTER = "CHARTER";
 	
 	/**
 	 * Estados de los registros cargados

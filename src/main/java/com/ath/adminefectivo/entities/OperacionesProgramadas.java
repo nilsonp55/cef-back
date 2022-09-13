@@ -18,8 +18,10 @@ import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import com.ath.adminefectivo.dto.compuestos.OperacionIntradiaDTO;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -161,5 +163,38 @@ public class OperacionesProgramadas {
 
 	@Column(name = "CODIGO_MONEDA")
 	private String codigoMoneda;
+	
+	@Transient
+	private String tdv;
+
+	@Transient
+	private String bancoAVAL;
+	
+	@Transient
+	private String nombreBanco;
+	
+	@Transient
+	private String nombreTransportadora;
+	
+	@Transient
+	private String nombreCiudadOrigen;
+	
+	@Transient
+	private String nombreCiudadDestino;
+	
+	@Transient
+	private String nombrePuntoOrigen;
+	
+	@Transient
+	private String nombrePuntoDestino;
+	
+	@Transient
+	private String tipoConciliacion;
+	
+	@Transient
+	private Integer idConciliacion;
+	
+	@Transient
+	private Date fechaEjecucion;
 	
 }

@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -96,6 +97,12 @@ public class OperacionesCertificadas {
 	
 	@Column(name = "ID_ARCHIVO_CARGADO")
 	private Long idArchivoCargado;
+	
+	@Transient
+	private String tdv;
+
+	@Transient
+	private String bancoAVAL;
 	
 	@OneToMany(mappedBy = "operacionesCertificadas")
 	private List<ConciliacionServicios> conciliacionServicios;

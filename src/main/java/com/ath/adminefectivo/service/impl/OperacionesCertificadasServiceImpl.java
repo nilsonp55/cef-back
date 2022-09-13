@@ -139,15 +139,14 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 			if(elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IBBCS) || 
 			   elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IBMCS)) {
 				procesarArchivoBrinks(elemento, listadoDetalleArchivo);
+				procesarSobranteFaltanteBrinks();
 			}else {
 				procesarArchivoOtrosFondos(elemento, listadoDetalleArchivo);
+				procesarSobranteFaltanteNoBrinks();
 			}
-			procesarSobranteFaltante();
 			elemento.setEstadoCargue(Dominios.ESTADO_VALIDACION_ACEPTADO);
 			archivosCargadosService.actualizarArchivosCargados(elemento);
 		}
-
-
 		return true;
 	}
 	
@@ -187,14 +186,15 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	 * @param elemento
 	 * @author cesar.castano
 	 */
+	@Transactional
 	private void procesarArchivoOtrosFondos(ArchivosCargados elemento, 
 										List<DetallesDefinicionArchivoDTO> detalleArchivo) {
 		
 		var registro = new RegistroTipo1ArchivosFondosDTO();
-		var ajusteValor = new SobrantesFaltantesDTO();
 		
 		for (var i = 0; i < elemento.getRegistrosCargados().size(); i++) {
-
+			
+			var ajusteValor = new SobrantesFaltantesDTO();
 			String[] fila = elemento.getRegistrosCargados().get(i).getContenido().split(", ");
 			String tipoRegistro = determinarTipoRegistro(fila, detalleArchivo);
 			switch (Integer.parseInt(tipoRegistro)) {
@@ -239,15 +239,15 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 										SobrantesFaltantesDTO ajusteValor) {
 		String tipoAjuste = determinarCampo(fila, detalleArchivo, 
 										tipoRegistro,
-										Constantes.CAMPO_DETALLE_ARCHIVO_DESCRIPCIONNOVEDAD);
+										Constantes.CAMPO_DETALLE_ARCHIVO_TIPONOVEDAD);
 		String codigoServicio = determinarCampo(fila, detalleArchivo, 
 										tipoRegistro,
 										Constantes.CAMPO_DETALLE_ARCHIVO_CODIGOSERVICIO);
 		String montoTotal = determinarCampo(fila, detalleArchivo, 
 										tipoRegistro,
 										Constantes.CAMPO_DETALLE_ARCHIVO_MONTOTOTAL);
-		guardarSobrantesyFaltantes(tipoAjuste.toUpperCase(), codigoServicio, 
-										Double.parseDouble(montoTotal), ajusteValor);
+		guardarSobrantesyFaltantes(tipoAjuste, codigoServicio, 
+									Double.parseDouble(montoTotal), ajusteValor);
 	}
 
 	/**
@@ -296,14 +296,17 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 										Constantes.CAMPO_DETALLE_ARCHIVO_SIGLATDV);
 		String nit = determinarCampo(fila, detalleArchivo, tipoRegistro,
 										Constantes.CAMPO_DETALLE_ARCHIVO_NITBANCO);
+		String nitbanco = nit.substring(0, 9);
 		String ciudad = determinarCampo(fila, detalleArchivo, tipoRegistro,
 										Constantes.CAMPO_DETALLE_ARCHIVO_CODIGOCIUDAD);
-		Fondos fondo = asignarFondo(tdv, nit, ciudad);
+		String ciudad2 = ciudad.valueOf(Integer.parseInt(ciudad.trim()));
+		Fondos fondo = asignarFondo(tdv, nitbanco, ciudad2);
 		registro.setTdv(fondo.getTdv());
 		registro.setCodigoPunto(fondo.getCodigoPunto());
 		Date fecha = determinarFechaEjecucion(fila, detalleArchivo, tipoRegistro,
 										Constantes.CAMPO_DETALLE_ARCHIVO_FECHAEJECUCION);
 		registro.setFechaEjecucion(fecha);
+		registro.setBanco_aval(fondo.getBancoAVAL());
 	}
 
 	/**
@@ -324,17 +327,15 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 			(elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IPRCS))) {
 			
 			codigoPuntoOrigenDestino = obtenerCodigoPuntoOrigenDestino(
-							entradaSalida, registro.getCodigoPunto(), 
-							codigoPropio, registro.getTdv(), codigoServicio, registro.getFechaEjecucion());
+							entradaSalida, registro, codigoPropio, codigoServicio);
 			longitud = fila.length;
 
 		}else {
 			codigoPuntoOrigenDestino = obtenerCodigoPuntoOrigenDestino(
-							entradaSalida, registro.getCodigoPunto(), 
-							codigoPropio, registro.getTdv(), codigoServicio, registro.getFechaEjecucion());
+							entradaSalida, registro, codigoPropio, codigoServicio);
 			longitud = fila.length - 1;
 		}
-		if (Objects.isNull(codigoPuntoOrigenDestino.getCertificadas())) {
+   		if(Objects.isNull(codigoPuntoOrigenDestino.getCertificadas())){
 			var operaciones = new OperacionesCertificadasDTO();
 			operaciones.setCodigoFondoTDV(registro.getCodigoPunto());
 			operaciones.setCodigoPuntoDestino(codigoPuntoOrigenDestino.getCodigoPuntoDestino());
@@ -350,7 +351,8 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 			operaciones.setFechaEjecucion(registro.getFechaEjecucion());
 			operaciones.setFechaModificacion(new Date());
 			operaciones.setIdArchivoCargado(elemento.getIdArchivo());
-			operaciones.setTipoOperacion(asignarTipoOperacion(entradaSalida, codigoPropio, registro.getTdv()));
+			operaciones.setTipoOperacion(asignarTipoOperacion(entradaSalida, codigoPropio, 
+											registro.getTdv(), registro.getBanco_aval()));
 			operaciones.setTipoServicio(dominioService.valorTextoDominio(
 										Constantes.DOMINIO_TIPO_SERVICIO, tipoServicio));
 			operaciones.setUsuarioCreacion("user1");
@@ -369,7 +371,6 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 			if (!operaciones.getValorTotal().equals(0.0)) {
 				operacionesCertificadasRepository.save(OperacionesCertificadasDTO.CONVERTER_ENTITY.apply(operaciones));
 			}
-			
 		}else {
 			if ((elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_ITVCS)) ||
 					(elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IATCS)) ||
@@ -383,7 +384,6 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 			if (!certificadas.getValorTotal().equals(0.0)) {
 				operacionesCertificadasRepository.save(certificadas);
 			}
-			operacionesCertificadasRepository.save(certificadas);
 		}
 	}
 
@@ -397,23 +397,27 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	 * @return CodigoPuntoOrigenDestinoDTO
 	 */
 	private CodigoPuntoOrigenDestinoDTO obtenerCodigoPuntoOrigenDestino(
-							String entradaSalida, Integer codigoPunto,
-							String codigoPropio, String tdv, String codigoServicio, Date fechaEjecucion) {
+							String entradaSalida, RegistroTipo1ArchivosFondosDTO registro,
+							String codigoPropio, String codigoServicio) {
 		var codigoPuntoOrigenDestino = new CodigoPuntoOrigenDestinoDTO();
 		Integer codigoPuntoOrigen = 0;
 		Integer codigoPuntoDestino = 0;
-		if(asignarEntradaSalida(entradaSalida).equals(Constantes.ENTRADA)) {
-			codigoPuntoDestino = codigoPunto;
-			codigoPuntoOrigen = puntosCodigoTdvService.getCodigoPunto(codigoPropio, tdv);
+		if(asignarEntradaSalida(entradaSalida).equals(Constantes.NOMBRE_ENTRADA)) {
+			codigoPuntoDestino = registro.getCodigoPunto();
+			codigoPuntoOrigen = puntosCodigoTdvService.getCodigoPunto(codigoPropio, registro.getTdv(), 
+														registro.getBanco_aval());
 			certificadas = operacionesCertificadasRepository.
 					findByCodigoPuntoOrigenAndCodigoServicioTdvAndEntradaSalidaAndFechaEjecucion(
-							codigoPuntoOrigen, codigoServicio, Constantes.ENTRADA, fechaEjecucion);
+							codigoPuntoOrigen, codigoServicio, Constantes.NOMBRE_ENTRADA, 
+							registro.getFechaEjecucion());
 		}else {
-			codigoPuntoOrigen = codigoPunto;
-			codigoPuntoDestino = puntosCodigoTdvService.getCodigoPunto(codigoPropio, tdv);
+			codigoPuntoOrigen = registro.getCodigoPunto();
+			codigoPuntoDestino = puntosCodigoTdvService.getCodigoPunto(codigoPropio, registro.getTdv(), 
+														registro.getBanco_aval());
 			certificadas = operacionesCertificadasRepository.
 					findByCodigoPuntoDestinoAndCodigoServicioTdvAndEntradaSalidaAndFechaEjecucion(
-							codigoPuntoDestino, codigoServicio, Constantes.SALIDA, fechaEjecucion);
+							codigoPuntoDestino, codigoServicio, Constantes.NOMBRE_SALIDA, 
+							registro.getFechaEjecucion());
 		}
 		codigoPuntoOrigenDestino.setCertificadas(certificadas);
 		codigoPuntoOrigenDestino.setCodigoPuntoDestino(codigoPuntoDestino);
@@ -435,6 +439,9 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 		if (entSal.equals(Constantes.SALIDA)) {
 			entradaSalida = Constantes.NOMBRE_SALIDA;
 		}
+		if (entSal.equals(Constantes.SALIDA_BRINKS)) {
+			entradaSalida = Constantes.NOMBRE_SALIDA;
+		}
 		return entradaSalida;
 	}
 
@@ -445,6 +452,9 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	 * @author cesar.castano
 	 */
 	private Fondos asignarFondo(String transportadora, String nit, String ciudad) {
+		if(transportadora.equals("SEG")) {
+			transportadora = "TVS";
+		}
 		var fondo = fondosService.getCodigoFondoCertificacion(transportadora, nit, ciudad);
 		if(Objects.isNull(fondo)) {
 			throw new NegocioException(ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getCode(),
@@ -481,11 +491,12 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	 * @return String
 	 * @author cesar.castano
 	 */
-	private String asignarTipoOperacion(String entradaSalida, String codigoPropio, String tdv) {
+	private String asignarTipoOperacion(String entradaSalida, String codigoPropio, 
+												String tdv, Integer banco_aval) {
 		
 		Integer codigoPunto = 0;
 		var tipoOperacion = "";
-		codigoPunto = puntosCodigoTdvService.getCodigoPunto(codigoPropio, tdv);
+		codigoPunto = puntosCodigoTdvService.getCodigoPunto(codigoPropio, tdv, banco_aval);
 		if (asignarEntradaSalida(entradaSalida).equals(Constantes.NOMBRE_SALIDA)) {
 			tipoOperacion = procesarProvisiones(codigoPunto);
 			if (tipoOperacion.isEmpty()) {
@@ -624,13 +635,33 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	 * Metodo encargado de procesar los valores faltantes y sobrantes del registro tipo 05
 	 * @author cesar.castano
 	 */
-	private void procesarSobranteFaltante() {
+	private void procesarSobranteFaltanteBrinks() {
 		for (var i=0;i<listaAjustesValor.size();i++) {
-			if (listaAjustesValor.get(i).getTipoAjuste().equals(Constantes.SOBRANTE)){
+			if (listaAjustesValor.get(i).getTipoAjuste().equals(Constantes.SOBRANTE_BRINKS)){
 				actualizarValorSobrante(listaAjustesValor.get(i).getCodigoServicio(),
 										listaAjustesValor.get(i).getValor());
 			}else {
-				if (listaAjustesValor.get(i).getTipoAjuste().equals(Constantes.FALTANTE)){
+				if (listaAjustesValor.get(i).getTipoAjuste().equals(Constantes.FALTANTE_BRINKS)){
+				actualizarValorFaltante(listaAjustesValor.get(i).getCodigoServicio(),
+										listaAjustesValor.get(i).getValor());
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Metodo encargado de procesar los valores faltantes y sobrantes del registro tipo 05
+	 * @author cesar.castano
+	 */
+	private void procesarSobranteFaltanteNoBrinks() {
+		for (var i=0;i<listaAjustesValor.size();i++) {
+			if (listaAjustesValor.get(i).getTipoAjuste().equals(Constantes.SOBRANTE_OTROS_FONDOS) ||
+				listaAjustesValor.get(i).getTipoAjuste().equals(Constantes.SOBRANTE_TVS)){
+				actualizarValorSobrante(listaAjustesValor.get(i).getCodigoServicio(),
+										listaAjustesValor.get(i).getValor());
+			}else {
+				if (listaAjustesValor.get(i).getTipoAjuste().equals(Constantes.FALTANTE_OTROS_FONDOS) ||
+					listaAjustesValor.get(i).getTipoAjuste().equals(Constantes.FALTANTE_TVS)	){
 				actualizarValorFaltante(listaAjustesValor.get(i).getCodigoServicio(),
 										listaAjustesValor.get(i).getValor());
 				}
@@ -645,15 +676,17 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	 * @author cesar.castano
 	 */
 	private void actualizarValorSobrante(String codigoServicio, Double valor) {
-		var ocertificadas = operacionesCertificadasRepository.findByCodigoServicioTdv(
-								codigoServicio);
+		List<OperacionesCertificadas> ocertificadas = operacionesCertificadasRepository
+									.findByCodigoServicioTdv(codigoServicio);
 		if (Objects.isNull(ocertificadas)) {
 			throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getDescription(),
 					ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getHttpStatus());
 		}else {
-			ocertificadas.setValorSobrante(valor);
-			operacionesCertificadasRepository.save(ocertificadas);
+			for (OperacionesCertificadas operacionesCertificadas : ocertificadas) {
+				operacionesCertificadas.setValorSobrante(valor);
+				operacionesCertificadasRepository.save(operacionesCertificadas);
+			}
 		}
 	}
 	
@@ -664,15 +697,17 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	 * @author cesar.castano
 	 */
 	private void actualizarValorFaltante(String codigoServicio, Double valor) {
-		var ocertificadas = operacionesCertificadasRepository.findByCodigoServicioTdv(
-								codigoServicio);
+		List<OperacionesCertificadas> ocertificadas = operacionesCertificadasRepository
+									.findByCodigoServicioTdv(codigoServicio);
 		if (Objects.isNull(ocertificadas)) {
 			throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getDescription(),
 					ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getHttpStatus());
 		}else {
-			ocertificadas.setValorFaltante(valor);
-			operacionesCertificadasRepository.save(ocertificadas);
+			for (OperacionesCertificadas operacionesCertificadas : ocertificadas) {
+				operacionesCertificadas.setValorFaltante(valor);
+				operacionesCertificadasRepository.save(operacionesCertificadas);
+			}
 		}
 	}
 	
@@ -681,14 +716,15 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	 * @param elemento
 	 * @author cesar.castano
 	 */
+	@Transactional
 	private void procesarArchivoBrinks(ArchivosCargados elemento, 
 									List<DetallesDefinicionArchivoDTO> detalleArchivo) {
 
 		var registro = new RegistroTipo1ArchivosFondosDTO();
-		var ajusteValor = new SobrantesFaltantesDTO();
 		
 		for (var i = 0; i < elemento.getRegistrosCargados().size(); i++) {
-
+			
+			var ajusteValor = new SobrantesFaltantesDTO();
 			String[] fila = elemento.getRegistrosCargados().get(i).getContenido().split(", ");
 			String tipoRegistro = determinarTipoRegistro(fila, detalleArchivo);
 			switch (Integer.parseInt(tipoRegistro)) {
@@ -697,14 +733,17 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 											Constantes.CAMPO_DETALLE_ARCHIVO_SIGLATRANSPORTADORA);
 				String nit = determinarCampo(fila, detalleArchivo, Integer.parseInt(tipoRegistro),
 											Constantes.CAMPO_DETALLE_ARCHIVO_CODIGONITENTIDAD);
+				String nitbanco = nit.substring(0, 9);
 				String ciudad = determinarCampo(fila, detalleArchivo, Integer.parseInt(tipoRegistro),
 											Constantes.CAMPO_DETALLE_ARCHIVO_CODIGODANE);
-				Fondos fondo = asignarFondo(tdv, nit, ciudad);
+				String ciudad1 = String.valueOf(Integer.parseInt(ciudad.trim()));
+				Fondos fondo = asignarFondo(tdv, nitbanco, ciudad1);
 				registro.setTdv(fondo.getTdv());
 				registro.setCodigoPunto(fondo.getCodigoPunto());
 				Date fecha = determinarFechaEjecucion(fila, detalleArchivo, Integer.parseInt(tipoRegistro),
 									Constantes.CAMPO_DETALLE_ARCHIVO_FECHAEMISION);
 				registro.setFechaEjecucion(fecha);
+				registro.setBanco_aval(fondo.getBancoAVAL());
 				break;
 			}
 			case 2: {
@@ -731,15 +770,16 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 				break;
 			}
 			case 5: {
-				String[] novedad = determinarNovedad(fila, detalleArchivo, Integer.parseInt(tipoRegistro),
-						Constantes.CAMPO_DETALLE_ARCHIVO_DESCRIPCIONNOVEDAD);
+				String tipoNovedad = determinarCampo(fila, detalleArchivo, 
+						Integer.parseInt(tipoRegistro),
+						Constantes.CAMPO_DETALLE_ARCHIVO_TIPONOVEDAD);
 				String codigoServicio = determinarCampo(fila, detalleArchivo, 
 						Integer.parseInt(tipoRegistro),
-						Constantes.CAMPO_DETALLE_ARCHIVO_CODIGOSERVTRANS);
+						Constantes.CAMPO_DETALLE_ARCHIVO_CODIGOSERVICIO);
 				String montoTotal = determinarCampo(fila, detalleArchivo, 
 						Integer.parseInt(tipoRegistro),
-						Constantes.CAMPO_DETALLE_ARCHIVO_MONTOTOTALNOVEDAD);
-				guardarSobrantesyFaltantes(novedad[0].trim().toUpperCase(), codigoServicio, 
+						Constantes.CAMPO_DETALLE_ARCHIVO_VALORNOVEDAD);
+				guardarSobrantesyFaltantes(tipoNovedad, codigoServicio, 
 										Double.parseDouble(montoTotal), ajusteValor);
 				break;
 			}
@@ -810,22 +850,4 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 		                 			.findFirst().orElse(null).getId().getNumeroCampo() -1].trim();
 	}
 	
-	/**
-	 * Metodo para determinar el campo Novedad
-	 * @param contenido
-	 * @param detalleArchivo
-	 * @param tipoRegistro
-	 * @param constante
-	 * @return String
-	 * @author cesar.castano
-	 */
-	private String[] determinarNovedad(String[] contenido, 
-										List<DetallesDefinicionArchivoDTO> detalleArchivo,
-										Integer tipoRegistro,
-										String constante) {
-		return contenido[detalleArchivo.stream()
-		            .filter(deta -> deta.getNombreCampo().toUpperCase().trim()
-		            .equals(constante) && deta.getId().getTipoRegistro().equals(tipoRegistro))
-					.findFirst().orElse(null).getId().getNumeroCampo() - 1].trim().split("-");
-	}
 }

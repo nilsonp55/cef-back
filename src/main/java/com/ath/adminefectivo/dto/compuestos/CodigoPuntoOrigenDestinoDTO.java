@@ -1,5 +1,7 @@
 package com.ath.adminefectivo.dto.compuestos;
 
+import java.util.Date;
+
 import com.ath.adminefectivo.entities.OperacionesCertificadas;
 
 import lombok.AllArgsConstructor;

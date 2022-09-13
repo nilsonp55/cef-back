@@ -251,4 +251,18 @@ public class PuntosServiceImpl implements IPuntosService {
 		return true;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Puntos getEntidadPunto(Integer codigo_banco_aval) {
+		Puntos puntos = puntosRepository.obtenerCodigoPunto(codigo_banco_aval);
+		if (Objects.isNull(puntos)) {
+			throw new AplicationException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
+					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
+		} else
+			return puntos;
+	}
+
 }
