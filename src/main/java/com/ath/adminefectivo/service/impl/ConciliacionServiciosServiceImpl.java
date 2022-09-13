@@ -68,7 +68,7 @@ public class ConciliacionServiciosServiceImpl implements IConciliacionServiciosS
 			conciliacion.setIdCertificacion(elemento.getIdCertificacion());
 			conciliacion.setIdOperacion(elemento.getIdOperacion());
 			conciliacion.setTipoConciliacion(dominioService.valorTextoDominio(Constantes.DOMINIO_TIPOS_CONCILIACION,
-					Dominios.TIPO_CONCILIACION_MANUAL));
+					Dominios.TIPO_CONCILIACION_AUTOMATICA));
 			conciliacion.setUsuarioModificacion("user1");
 			conciliacion.setUsuarioCreacion("user1");
 			conciliacionServiciosRepository.save(ConciliacionDTO.CONVERTER_ENTITY.apply(conciliacion));
