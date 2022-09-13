@@ -184,4 +184,20 @@ public class ConciliacionOperacionesController {
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
 	
+	/**
+	 * Controlador que permite hacer el cierre de conciliaciones
+	 * 
+	 * @return Boolean
+	 * @author cesar.castano
+	 */
+	@PostMapping(value = "${endpoints.conciliacion.cierre}")
+	public ResponseEntity<ApiResponseADE<Boolean>> cierreConciliaciones() {
+
+		Boolean consulta = conciliacionOperacionesDelegate.cierreConciliaciones();
+
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
+	}
+	
 }
