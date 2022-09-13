@@ -310,7 +310,7 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	 * 
 	 * @author duvan.naranjo
 	 */
-	@Scheduled(cron = "/15 7-12 * * MON-FRI")
+	@Scheduled(cron = "05,20,35,50 7-12 * * * *")
 	public void certificacionesProgramadas() {
 		List<ArchivosCargadosDTO> certificaciones;
 		List<ValidacionArchivoDTO> validacionesArchivos = new ArrayList<>();
