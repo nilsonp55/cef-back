@@ -310,21 +310,16 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	 * 
 	 * @author duvan.naranjo
 	 */
-	@Scheduled(cron = "* * * * * *")
+	@Scheduled(cron = "/15 7-12 * * MON-FRI")
 	public void certificacionesProgramadas() {
 		List<ArchivosCargadosDTO> certificaciones;
 		List<ValidacionArchivoDTO> validacionesArchivos = new ArrayList<>();
 		//crea el registro en bitacora de automaticos
 				Date fechaActual = parametrosService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
 				
-		BitacoraAutomaticosDTO bitacoraDTO = BitacoraAutomaticosDTO.builder().codigoProceso("CARG_CERTIFICACION").fechaSistema(fechaActual).
+		BitacoraAutomaticosDTO bitacoraDTO = BitacoraAutomaticosDTO.builder().codigoProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION).fechaSistema(fechaActual).
 				 fechaHoraInicio(new Date()).build();
-		
-		
-		
-		
-		
-		
+
 		//lectura
 		var agrupador = Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_CERTIFICACION;
 		var estado = Constantes.ESTADO_CARGUE_PENDIENTE;
@@ -342,7 +337,7 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 		bitacoraAutomaicosService.guardarBitacoraAutomaticos(bitacoraDTO);
 		
 		
-		System.out.println("ME EJECUTE CADA 10 SEGUNDOS " + new Date());
+		System.out.println("ME EJECUTE CADA 15 MINUTOS " + new Date());
 	}
 
 	private BitacoraAutomaticosDTO procesarValidacionRealizada(BitacoraAutomaticosDTO bitacoraDTO,
