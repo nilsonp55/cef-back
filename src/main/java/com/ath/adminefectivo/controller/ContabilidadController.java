@@ -54,7 +54,7 @@ public class ContabilidadController {
 	 * @author duvan.naranjo
 	 */
 	@GetMapping(value = "${endpoints.Contabilidad.generar}")
-	public ResponseEntity<ApiResponseADE<ContabilidadDTO>> getGenerarContabilidad(@RequestBody(required = true) String tipoContabilidad) {
+	public ResponseEntity<ApiResponseADE<ContabilidadDTO>> getGenerarContabilidad(@RequestParam(required = true) String tipoContabilidad) {
 
 		ContabilidadDTO consulta = contabilidadDelegate.generarContabilidad(tipoContabilidad);
 
