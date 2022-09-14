@@ -34,7 +34,7 @@ public interface LogProcesoDiarioRepository extends JpaRepository<LogProcesoDiar
 	 * @return LogProcesoDiario
 	 * @author cesar.castano
 	 */
-	LogProcesoDiario findByCodigoProceso(String codigoProceso);
+	LogProcesoDiario findByCodigoProcesoAndFechaCreacion(String codigoProceso, Date fecha);
 	
 	/**
 	 * Retorna lista de logsProcesoDiario por fecha
