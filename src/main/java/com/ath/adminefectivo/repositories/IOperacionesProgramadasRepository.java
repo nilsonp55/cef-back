@@ -104,7 +104,31 @@ public interface IOperacionesProgramadasRepository
 	 * @author duvan.naranjo
 	 */
 	List<OperacionesProgramadas> findByTipoOperacionAndFechaProgramacionBetween(String tipoOperacion, Date start, Date end);
+	
+	/**
+	 * Retorna una lista de operaciones programadas por tipo operacion, fechas y si es cambio o no
+	 * @param tipoOperacion
+	 * @param start
+	 * @param end
+	 * @param esCambio
+	 * @return List<OperacionesProgramadas>
+	 * @author duvan.naranjo
+	 */
+	List<OperacionesProgramadas> findByTipoOperacionAndFechaProgramacionBetweenAndEsCambio(String tipoOperacion, Date start, Date end, boolean esCambio);
 
+	/**
+	 * Retorna una lista de operaciones programadas por tipo operacion, fechas y si es cambio o no, ademas valida 
+	 * el estado conciliacion
+	 * @param tipoOperacion
+	 * @param start
+	 * @param end
+	 * @param esCambio
+	 * @return List<OperacionesProgramadas>
+	 * @author duvan.naranjo
+	 */
+	List<OperacionesProgramadas> findByTipoOperacionAndFechaProgramacionBetweenAndEsCambioAndEstadoConciliacion(String tipoOperacion, Date start, Date end, boolean esCambio, String estadoConciliacion );
+
+	
 	/**
 	 * Retorna el objeto OperacionesProgramadas con las operaciones candidatas a conciliacion automatica
 	 * @param estadoConciliacion

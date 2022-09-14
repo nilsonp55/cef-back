@@ -60,9 +60,20 @@ public interface ITransaccionesInternasService {
 	 * @param estadoContabilidadGenerado
 	 * @param estadoContabilidadGenerado
 	 * @return boolean
+	 * @author duvan.naranjo
 	 */
 	boolean generarMovimientosContables(Date fechaInicio, Date fechaFin, String tipoContabilidad,
 			int estadoContabilidadGenerado);
+
+	/**
+	 * Servicio encargado de llamar la funcion encargada de realizar el borrado de las transacciones 
+	 * internas que se han procesado en las mismas fechas
+	 * 
+	 * @param fechaInicio
+	 * @param fechaFin
+	 * @author duvan.naranjo
+	 */
+	void deleteTransaccionesInternasByFechas(Date fechaInicio, Date fechaFin);
 	
 	
 

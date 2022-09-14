@@ -61,19 +61,7 @@ public class ContabilidadDelegateImpl implements IContabilidadDelegate {
 	 */
 	@Override
 	public ContabilidadDTO generarContabilidad(String tipoContabilidad) {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		String f1 = "2022-05-28";
-		String f2 = "2022-07-19";
-		Date fechaInicio = null;
-		Date fechaFin = null;
-		try {
-			fechaInicio = sdf.parse(f1);
-			fechaFin = sdf.parse(f2);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace(); 
-		}
-		
+	
 		Date fechaProcesoFin = this.obtenerFechaProceso(tipoContabilidad);
 		Date fechaProcesoInicial = this.obtenerFechaProcesoInicial(fechaProcesoFin);
 		
@@ -81,11 +69,16 @@ public class ContabilidadDelegateImpl implements IContabilidadDelegate {
 		System.out.println("fechaProcesoFin "+fechaProcesoFin);
 		
 		var operacionesProgramadas = operacionesProgramadasService.getOperacionesProgramadasPorFechas(tipoContabilidad, fechaProcesoInicial,fechaProcesoFin);
+		
 		System.out.println("operacionesProgramadas "+operacionesProgramadas.size());
+		
 		if(!operacionesProgramadas.isEmpty()) {
+			
+			contabilidadService.procesoEliminarExistentes(tipoContabilidad, operacionesProgramadas, fechaProcesoInicial, fechaProcesoFin);
+			
 			int resultado = contabilidadService.generarContabilidad(tipoContabilidad, operacionesProgramadas);
 			
-			List<OperacionIntradiaDTO> listadoOperacionesProgramadasIntradia = operacionesProgramadasService.consultarOperacionesIntradia(fechaInicio, fechaFin);	
+			List<OperacionIntradiaDTO> listadoOperacionesProgramadasIntradia = operacionesProgramadasService.consultarOperacionesIntradia(fechaProcesoInicial, fechaProcesoFin);	
 			resultado = contabilidadService.generarContabilidadIntradia(tipoContabilidad, listadoOperacionesProgramadasIntradia, resultado);
 			
 			resultado = contabilidadService.generarMovimientosContables(fechaProcesoInicial, fechaProcesoFin, tipoContabilidad, Dominios.ESTADO_CONTABILIDAD_GENERADO);

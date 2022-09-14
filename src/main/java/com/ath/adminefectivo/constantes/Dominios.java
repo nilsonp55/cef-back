@@ -43,26 +43,26 @@ public final class Dominios {
 	public static final String VIGENCIA_PROCESADO = "P";
 	public static final String VIGENCIA_LEIDO = "L";
 	
-	public static final String ESTADO_CONCILIACION_CONCILIADO = "C";
-	public static final String ESTADO_CONCILIACION_NO_CONCILIADO = "NC";
-	public static final String ESTADO_CONCILIACION_FALLIDA = "F";
-	public static final String ESTADO_CONCILIACION_FUERA_DE_CONCILIACION = "FC";
-	public static final String ESTADO_CONCILIACION_POSPUESTA = "P";
-	public static final String ESTADO_CONCILIACION_CANCELADA = "CA";
+	public static final String ESTADO_CONCILIACION_CONCILIADO = "CONCILIADA";
+	public static final String ESTADO_CONCILIACION_NO_CONCILIADO = "NO_CONCILIADA";
+	public static final String ESTADO_CONCILIACION_FALLIDA = "FALLIDA";
+	public static final String ESTADO_CONCILIACION_FUERA_DE_CONCILIACION = "FUERA_DE_CONCILIACION";
+	public static final String ESTADO_CONCILIACION_POSPUESTA = "POSPUESTA";
+	public static final String ESTADO_CONCILIACION_CANCELADA = "CANCELADA";
 
 
 	
 	public static final String TIPO_CONCILIACION_MANUAL = "M";
 	public static final String TIPO_CONCILIACION_AUTOMATICA = "A";
 	
-	public static final String TIPO_OPERA_RETIRO= "R";
-	public static final String TIPO_OPERA_CONSIGNACION= "C";
-	public static final String TIPO_OPERA_CAMBIO= "CM";
-	public static final String TIPO_OPERA_VENTA= "V";
-	public static final String TIPO_OPERA_TRASLADO= "T";
-	public static final String TIPO_OPERA_INTERCAMBIO= "I";
-	public static final String TIPO_OPERA_RECOLECCION= "RC";
-	public static final String TIPO_OPERA_PROVISION= "P";
+	public static final String TIPO_OPERA_RETIRO= "RETIRO";
+	public static final String TIPO_OPERA_CONSIGNACION= "CONSIGNACION";
+	public static final String TIPO_OPERA_CAMBIO= "CAMBIO";
+	public static final String TIPO_OPERA_VENTA= "VENTA";
+	public static final String TIPO_OPERA_TRASLADO= "TRASLADO";
+	public static final String TIPO_OPERA_INTERCAMBIO= "INTERCAMBIO";
+	public static final String TIPO_OPERA_RECOLECCION= "RECOLECCION";
+	public static final String TIPO_OPERA_PROVISION= "PROVISION";
 	
 	public static final String ESTADOS_OPERA_PROGRAMADO = "P";
 	public static final String ESTADOS_OPERA_EJECUTADO = "E";

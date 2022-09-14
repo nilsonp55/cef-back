@@ -82,4 +82,15 @@ public interface ILogProcesoDiarioService {
 	 */
 	LogProcesoDiario obtenerEntidadLogProcesoDiario(String codigoProceso);
 
+	/**
+	 * Metodo encargado de obtener un log proceso diario con la fecha de sistema y codigo 
+	 * del proceso
+	 * 
+	 * @param codigoProceso
+	 * @param fechaProceso
+	 * @return LogProcesoDiarioDTO
+	 * @author duvan.naranjo
+	 */
+	LogProcesoDiarioDTO obtenerEntidadLogProcesoDiarioByCodigoAndFecha(String codigoProceso, Date fechaProceso);
+
 }

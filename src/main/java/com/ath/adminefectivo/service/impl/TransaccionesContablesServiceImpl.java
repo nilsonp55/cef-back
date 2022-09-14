@@ -152,5 +152,17 @@ public class TransaccionesContablesServiceImpl implements ITransaccionesContable
 	public ConteoContabilidadDTO generarConteoContabilidad(Date f1, Date f2, String tipoContabilidad) {
 		return transaccionesContablesRepository.conteoContabilidad(f1, f2, tipoContabilidad);
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void deleteTransaccionesContablesByFechas(Date fechaInicio, Date fechaFin) {
+		List<TransaccionesContables> listadoTransaccionesContables = transaccionesContablesRepository
+				.findByFechaBetween(fechaInicio, fechaFin);
+		listadoTransaccionesContables.forEach(transaccionContable ->{
+			transaccionesContablesRepository.delete(transaccionContable);
+		});		
+	}
 	
 }

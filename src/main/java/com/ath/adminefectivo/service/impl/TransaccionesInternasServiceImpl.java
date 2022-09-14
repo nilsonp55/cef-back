@@ -79,9 +79,22 @@ public class TransaccionesInternasServiceImpl implements ITransaccionesInternasS
 	@Override
 	public boolean generarMovimientosContables(Date fechaInicio, Date fechaFin, String tipoContabilidad,
 			int estadoContabilidadGenerado) {
-		boolean resultado = transaccionesInternasRepository.fnc_transcciones_contables(fechaInicio, fechaFin,
+		return transaccionesInternasRepository.fnc_transcciones_contables(fechaInicio, fechaFin,
 				tipoContabilidad, estadoContabilidadGenerado);
-		return resultado;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void deleteTransaccionesInternasByFechas(Date fechaInicio, Date fechaFin) {
+		List<TransaccionesInternas> listadoTransaccionesInternas = transaccionesInternasRepository
+				.findByFechaBetween(fechaInicio, fechaFin);
+		
+		listadoTransaccionesInternas.forEach(transaccionInterna ->{
+			transaccionesInternasRepository.delete(transaccionInterna);
+		});
+		
 	}
 
 }

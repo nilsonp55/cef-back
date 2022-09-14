@@ -151,6 +151,21 @@ public class LogProcesoDiarioImpl implements ILogProcesoDiarioService {
 		}
 		return logProcesoDiario;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public LogProcesoDiarioDTO obtenerEntidadLogProcesoDiarioByCodigoAndFecha(String codigoProceso, Date fechaProceso) {
+		LogProcesoDiario logProcesoDiario = logProcesoDiarioRepository.findByCodigoProcesoAndFechaCreacion(codigoProceso, fechaProceso);
+		if(Objects.isNull(logProcesoDiario)) {
+			throw new AplicationException(ApiResponseCode.ERROR_LOGPROCESODIARIO_NO_ENCONTRADO.getCode(),
+					ApiResponseCode.ERROR_LOGPROCESODIARIO_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_LOGPROCESODIARIO_NO_ENCONTRADO.getHttpStatus());
+		}else {
+			return LogProcesoDiarioDTO.CONVERTER_DTO.apply(logProcesoDiario);
+		}
+	}
 
 
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
+import com.ath.adminefectivo.dto.LogProcesoDiarioDTO;
 import com.ath.adminefectivo.entities.LogProcesoDiario;
 
 /**
@@ -44,5 +45,16 @@ public interface LogProcesoDiarioRepository extends JpaRepository<LogProcesoDiar
 	 * @author bayronperez
 	 */
 	List<LogProcesoDiario> findByFechaCreacion(Date fecha);
+
+	/**
+	 * Metodo encargado de obtener un log proceso diario con la fecha de sistema y codigo 
+	 * del proceso
+	 * 
+	 * @param codigoProceso
+	 * @param fechaProceso
+	 * @return LogProcesoDiarioDTO
+	 * @author duvan.naranjo
+	 */
+	LogProcesoDiario findByCodigoProcesoAndFechaCreacion(String codigoProceso, Date fechaProceso);
 	
 }
