@@ -1,5 +1,8 @@
 package com.ath.adminefectivo.service.impl;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -8,11 +11,13 @@ import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.constantes.Parametros;
 import com.ath.adminefectivo.dto.LogProcesoDiarioDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.LogProcesoDiario;
+import com.ath.adminefectivo.entities.Parametro;
 import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.exception.ConflictException;
 import com.ath.adminefectivo.repositories.LogProcesoDiarioRepository;
@@ -143,7 +148,8 @@ public class LogProcesoDiarioImpl implements ILogProcesoDiarioService {
 	 */
 	@Override
 	public LogProcesoDiario obtenerEntidadLogProcesoDiario(String codigoProceso) {
-		var logProcesoDiario = logProcesoDiarioRepository.findByCodigoProceso(codigoProceso);
+		Date fecha = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
+		var logProcesoDiario = logProcesoDiarioRepository.findByCodigoProcesoAndFechaCreacion(codigoProceso, fecha);
 		if(Objects.isNull(logProcesoDiario)) {
 			throw new AplicationException(ApiResponseCode.ERROR_LOGPROCESODIARIO_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_LOGPROCESODIARIO_NO_ENCONTRADO.getDescription(),
@@ -166,6 +172,5 @@ public class LogProcesoDiarioImpl implements ILogProcesoDiarioService {
 			return LogProcesoDiarioDTO.CONVERTER_DTO.apply(logProcesoDiario);
 		}
 	}
-
 
 }

@@ -77,6 +77,8 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	
 	@Autowired
 	IDominioService dominioService;
+	
+	@Autowired
 	IFestivosNacionalesService festivosNacionalesService;
 
 	private ValidacionArchivoDTO validacionArchivo;

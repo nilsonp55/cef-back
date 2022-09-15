@@ -91,5 +91,12 @@ public interface IConciliacionOperacionesService {
 	 * @author cesar.castano
 	 */
 	Boolean conciliacionAutomatica();
+	
+	/**
+	 * Servicio encargado de hacer el cierre de las conciliaciones
+	 * @return Boolean
+	 * @author cesar.castano
+	 */
+	Boolean cierreConciliaciones();
 
 }

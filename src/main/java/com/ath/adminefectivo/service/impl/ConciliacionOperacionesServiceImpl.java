@@ -1,6 +1,6 @@
 package com.ath.adminefectivo.service.impl;
 
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -21,10 +21,11 @@ import com.ath.adminefectivo.dto.compuestos.OperacionespConciliadoDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
-import com.ath.adminefectivo.dto.ArchivosCargadosDTO;
 import com.ath.adminefectivo.dto.CertificadasNoConciliadasDTO;
 import com.ath.adminefectivo.dto.ParametrosConciliacionManualDTO;
 import com.ath.adminefectivo.dto.FechasConciliacionDTO;
+import com.ath.adminefectivo.dto.LogProcesoDiarioDTO;
+import com.ath.adminefectivo.entities.LogProcesoDiario;
 import com.ath.adminefectivo.entities.OperacionesCertificadas;
 import com.ath.adminefectivo.entities.OperacionesProgramadas;
 import com.ath.adminefectivo.exception.NegocioException;
@@ -35,6 +36,7 @@ import com.ath.adminefectivo.service.IConciliacionOperacionesService;
 import com.ath.adminefectivo.service.IConciliacionServiciosService;
 import com.ath.adminefectivo.service.IDominioService;
 import com.ath.adminefectivo.service.IFondosService;
+import com.ath.adminefectivo.service.ILogProcesoDiarioService;
 import com.ath.adminefectivo.service.IOperacionesCertificadasService;
 import com.ath.adminefectivo.service.IOperacionesProgramadasService;
 import com.ath.adminefectivo.service.IPuntosService;
@@ -73,6 +75,9 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	
 	@Autowired
 	ITransportadorasService transportadorasService;
+	
+	@Autowired
+	ILogProcesoDiarioService logProcesoDiarioService;
 
 	List<OperacionesProgramadas> operacionesp;
 	List<OperacionesCertificadas> operacionesc;
@@ -233,7 +238,6 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 		return resumenConciliaciones;
 	}
 	
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -244,6 +248,27 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 		actualizaOperacionesProgramadas();
 		actualizaOperacionesCertificadas();
 		actualizarConciliacionServicios();
+		return true;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Boolean cierreConciliaciones() {
+		LogProcesoDiario LogProcesoDiario = logProcesoDiarioService.obtenerEntidadLogProcesoDiario(
+				Dominios.CODIGO_PROCESO_LOG_CONCILIACION);
+		LogProcesoDiarioDTO logProcesoDiarioDTO = new LogProcesoDiarioDTO();
+		logProcesoDiarioDTO.setIdLogProceso(LogProcesoDiario.getIdLogProceso());
+		logProcesoDiarioDTO.setCodigoProceso(Dominios.CODIGO_PROCESO_LOG_CONCILIACION);
+		logProcesoDiarioDTO.setEstado(Constantes.REGISTRO_ACTIVO);
+		logProcesoDiarioDTO.setFechaFinalizacion(new Date());
+		logProcesoDiarioDTO.setFechaModificacion(new Date());
+		logProcesoDiarioDTO.setFechaCreacion(LogProcesoDiario.getFechaCreacion());
+		logProcesoDiarioDTO.setUsuarioCreacion(LogProcesoDiario.getUsuarioCreacion());
+		logProcesoDiarioDTO.setUsuarioModificacion(LogProcesoDiario.getUsuarioModificacion());
+		logProcesoDiarioDTO.setEstadoProceso(Dominios.ESTADO_PROCESO_DIA_COMPLETO);
+		logProcesoDiarioService.actualizarLogProcesoDiario(logProcesoDiarioDTO);
 		return true;
 	}
 
@@ -359,4 +384,5 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 							Dominios.ESTADO_CONCILIACION_CONCILIADO));
 		}
 	}
+
 }

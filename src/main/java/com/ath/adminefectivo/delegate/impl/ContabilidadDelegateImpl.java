@@ -80,9 +80,8 @@ public class ContabilidadDelegateImpl implements IContabilidadDelegate {
 			
 			List<OperacionIntradiaDTO> listadoOperacionesProgramadasIntradia = operacionesProgramadasService.consultarOperacionesIntradia(fechaProcesoInicial, fechaProcesoFin);	
 			resultado = contabilidadService.generarContabilidadIntradia(tipoContabilidad, listadoOperacionesProgramadasIntradia, resultado);
-			
 			resultado = contabilidadService.generarMovimientosContables(fechaProcesoInicial, fechaProcesoFin, tipoContabilidad, Dominios.ESTADO_CONTABILIDAD_GENERADO);
-	
+		
 			
 			if(resultado > 0) {
 				return contabilidadService.generarRespuestaContabilidad(fechaProcesoInicial, fechaProcesoFin, tipoContabilidad, "MENSAJE EXITOSO");
