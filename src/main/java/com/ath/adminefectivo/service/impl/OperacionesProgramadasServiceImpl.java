@@ -26,6 +26,7 @@ import com.ath.adminefectivo.dto.CiudadesDTO;
 import com.ath.adminefectivo.dto.DetallesDefinicionArchivoDTO;
 import com.ath.adminefectivo.dto.FechasConciliacionDTO;
 import com.ath.adminefectivo.dto.FondosDTO;
+import com.ath.adminefectivo.dto.LogProcesoDiarioDTO;
 import com.ath.adminefectivo.dto.MaestrosDefinicionArchivoDTO;
 import com.ath.adminefectivo.dto.OperacionesProgramadasDTO;
 import com.ath.adminefectivo.dto.PuntosDTO;
@@ -36,6 +37,7 @@ import com.ath.adminefectivo.dto.compuestos.OperacionIntradiaDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionesProgramadasNombresDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.ArchivosCargados;
+import com.ath.adminefectivo.entities.LogProcesoDiario;
 import com.ath.adminefectivo.entities.OperacionesProgramadas;
 import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.exception.NegocioException;
@@ -50,9 +52,11 @@ import com.ath.adminefectivo.service.IDetalleOperacionesProgramadasService;
 import com.ath.adminefectivo.service.IDominioService;
 import com.ath.adminefectivo.service.IFondosService;
 import com.ath.adminefectivo.service.ILecturaArchivoService;
+import com.ath.adminefectivo.service.ILogProcesoDiarioService;
 import com.ath.adminefectivo.service.IMaestroDefinicionArchivoService;
 import com.ath.adminefectivo.service.IOficinasService;
 import com.ath.adminefectivo.service.IOperacionesProgramadasService;
+import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.IPuntosService;
 import com.ath.adminefectivo.service.ISitiosClientesService;
 import com.ath.adminefectivo.service.IRegistrosCargadosService;
@@ -122,6 +126,12 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
 	@Autowired
 	IDetalleOperacionesProgramadasService detalleOperacionesProgramadasService;
+	
+	@Autowired
+	IParametroService parametroService;
+	
+	@Autowired
+	ILogProcesoDiarioService logProcesoDiarioService;
 
 	private OperacionesProgramadasDTO operaciones;
 	private List<OperacionesProgramadas> operacionesp;
@@ -262,12 +272,42 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	public List<OperacionesProgramadasDTO> getOperacionesProgramadasPorFechas(String tipoContabilidad, Date fechaInicio, Date fechaFin) {
 		List<OperacionesProgramadas> listaOperacionesProgramadas = new ArrayList<>();
 		if(tipoContabilidad.equals("PM")) {
-			listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaProgramacionBetween("CONSIGNACION", fechaInicio,
-					fechaFin));
-			listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaProgramacionBetween("RETIRO", fechaInicio,
-					fechaFin));
-			listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaProgramacionBetween("VENTA", fechaInicio,
-					fechaFin));
+			listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaProgramacionBetweenAndEsCambio(Dominios.TIPO_OPERA_CONSIGNACION, fechaInicio,
+					fechaFin, false));
+			listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaProgramacionBetweenAndEsCambio(Dominios.TIPO_OPERA_RETIRO, fechaInicio,
+					fechaFin, false));
+			listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaProgramacionBetweenAndEsCambio(Dominios.TIPO_OPERA_VENTA, fechaInicio,
+					fechaFin, false));
+		}else if(tipoContabilidad.equals("AM")) {
+			Date fechaProceso = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
+			LogProcesoDiarioDTO logProcesoDiarioDTO = logProcesoDiarioService.obtenerEntidadLogProcesoDiarioByCodigoAndFecha(Dominios.CODIGO_PROCESO_LOG_CONCILIACION, fechaProceso);
+			if(!Objects.isNull(logProcesoDiarioDTO) && logProcesoDiarioDTO.getEstadoProceso().equals(Dominios.ESTADO_PROCESO_DIA_COMPLETO)){
+				//CONFORMAN UN CAMBIO (RETIRO Y CONSIGNACION ESCAMBIO=TRUE) conciliada
+				listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaProgramacionBetweenAndEsCambioAndEstadoConciliacion(Dominios.TIPO_OPERA_CONSIGNACION, fechaInicio,
+						fechaFin, true, Dominios.ESTADO_CONCILIACION_CONCILIADO));
+				listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaProgramacionBetweenAndEsCambioAndEstadoConciliacion(Dominios.TIPO_OPERA_RETIRO, fechaInicio,
+						fechaFin, true, Dominios.ESTADO_CONCILIACION_CONCILIADO));
+				
+				//CONFORMAN UN CAMBIO (RETIRO Y CONSIGNACION ESCAMBIO=TRUE) pospuesta
+				listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaProgramacionBetweenAndEsCambioAndEstadoConciliacion(Dominios.TIPO_OPERA_CONSIGNACION, fechaInicio,
+						fechaFin, true, Dominios.ESTADO_CONCILIACION_POSPUESTA));
+				listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaProgramacionBetweenAndEsCambioAndEstadoConciliacion(Dominios.TIPO_OPERA_RETIRO, fechaInicio,
+						fechaFin, true, Dominios.ESTADO_CONCILIACION_POSPUESTA));
+				
+				listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaProgramacionBetweenAndEsCambioAndEstadoConciliacion(Dominios.TIPO_OPERA_TRASLADO, fechaInicio,
+						fechaFin, false, Dominios.ESTADO_CONCILIACION_CONCILIADO));
+				listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaProgramacionBetweenAndEsCambioAndEstadoConciliacion(Dominios.TIPO_OPERA_TRASLADO, fechaInicio,
+						fechaFin, false, Dominios.ESTADO_CONCILIACION_POSPUESTA));
+				
+				listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaProgramacionBetweenAndEsCambioAndEstadoConciliacion(Dominios.TIPO_OPERA_INTERCAMBIO, fechaInicio,
+						fechaFin, false, Dominios.ESTADO_CONCILIACION_CONCILIADO));
+				listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaProgramacionBetweenAndEsCambioAndEstadoConciliacion(Dominios.TIPO_OPERA_INTERCAMBIO, fechaInicio,
+						fechaFin, false, Dominios.ESTADO_CONCILIACION_POSPUESTA));
+			}else {
+				throw new AplicationException(ApiResponseCode.ERROR_LOGPROCESODIARIO_NO_ENCONTRADO.getCode(),
+						ApiResponseCode.ERROR_LOGPROCESODIARIO_NO_ENCONTRADO.getDescription(),
+						ApiResponseCode.ERROR_LOGPROCESODIARIO_NO_ENCONTRADO.getHttpStatus());
+			}
 		}
 		List<OperacionesProgramadasDTO> listadoOperacionesProgramadasDTO = new ArrayList<>();
 		if (!listaOperacionesProgramadas.isEmpty()) {

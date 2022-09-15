@@ -104,7 +104,15 @@ public interface ITransaccionesContablesService {
 	 * @param tipoContabilidad
 	 * @param string
 	 * @return ConteoContabilidadDTO
+	 * @author duvan.naranjo
 	 */
 	ConteoContabilidadDTO generarConteoContabilidad(Date f1, Date f2, String tipoContabilidad);
+
+	/**
+	 * 
+	 * @param fechaInicio
+	 * @param fechaFin
+	 */
+	void deleteTransaccionesContablesByFechas(Date fechaInicio, Date fechaFin);
 
 }
