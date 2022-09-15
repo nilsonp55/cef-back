@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import com.ath.adminefectivo.delegate.IConciliacionOperacionesDelegate;
 import com.ath.adminefectivo.dto.CertificadasNoConciliadasDTO;
-import com.ath.adminefectivo.dto.ParametrosConciliacionManualDTO;
+import com.ath.adminefectivo.dto.ParametrosConciliacionDTO;
 import com.ath.adminefectivo.dto.FechasConciliacionDTO;
 import com.ath.adminefectivo.dto.ProgramadasNoConciliadasDTO;
 import com.ath.adminefectivo.dto.ResumenConciliacionesDTO;
@@ -148,14 +148,14 @@ public class ConciliacionOperacionesController {
 	 * certificadas seleccionadas
 	 * 
 	 * @return Boolean
-	 * @param ParametrosConciliacionManualDTO
+	 * @param ParametrosConciliacionDTO
 	 * @param page
 	 * @author cesar.castano
 	 */
 	@PostMapping(value = "${endpoints.conciliacion.manual}", 
 			consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<Boolean>> conciliacionManual(
-			@RequestBody(required = true) List<ParametrosConciliacionManualDTO> conciliacionManualDTO) {
+			@RequestBody(required = true) List<ParametrosConciliacionDTO> conciliacionManualDTO) {
 
 		Boolean respuesta = conciliacionOperacionesDelegate.conciliacionManual(conciliacionManualDTO);
 

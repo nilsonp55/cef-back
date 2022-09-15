@@ -36,8 +36,6 @@ import com.ath.adminefectivo.dto.compuestos.DetalleOperacionesDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionIntradiaDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionesProgramadasNombresDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
-import com.ath.adminefectivo.entities.ArchivosCargados;
-import com.ath.adminefectivo.entities.LogProcesoDiario;
 import com.ath.adminefectivo.entities.OperacionesProgramadas;
 import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.exception.NegocioException;
@@ -1869,13 +1867,4 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		            .equals(Constantes.CAMPO_DETALLE_ARCHIVO_VALOR))
 					.findFirst().orElse(null).getId().getNumeroCampo() - 1].trim();
 	}
-
-	@Override
-	public Boolean procesarArchivos(List<ArchivosCargados> archivosCargados) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-
 }

@@ -26,7 +26,6 @@ import com.ath.adminefectivo.service.ILecturaArchivoService;
 import com.ath.adminefectivo.service.IMaestroDefinicionArchivoService;
 import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.IValidacionArchivoService;
-import com.ath.adminefectivo.utils.UtilsString;
 
 /**
  * Delegate responsable del manejo, consulta y persistencia de archivos
@@ -154,6 +153,14 @@ public class CarguePreliminarDelegateImpl implements ICarguePreliminarDelegate {
 		return listArchivosCargados;
 	}
 
+	/**
+	 * 
+	 * @param archivo
+	 * @param estado
+	 * @param idModeloArchivo
+	 * @param mascaraArchivo
+	 * @return
+	 */
 	private ArchivosCargadosDTO organizarDatosArchivo(String archivo, String estado,
 			String idModeloArchivo, String mascaraArchivo) {
 

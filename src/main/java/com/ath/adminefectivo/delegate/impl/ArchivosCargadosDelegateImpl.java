@@ -54,6 +54,9 @@ public class ArchivosCargadosDelegateImpl implements IArchivosCargadosDelegate {
 		return archivosCargadosService.getAll(predicate, page);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Page<ArchivosCargadosDTO> getAllByAgrupador(String agrupador, Pageable page) {
 		return archivosCargadosService.getAllByAgrupador(agrupador, page);

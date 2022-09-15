@@ -216,7 +216,6 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 		List<ArchivosCargados> archivosCargados = archivosCargadosRepository
 				.findByEstadoCargueAndIdModeloArchivo(Dominios.ESTADO_VALIDACION_CORRECTO, idModeloArchivo);
 
-
 		if (!Objects.isNull(archivosCargados)) {
 			archivosCargados.forEach(arch -> {
 				resultado.add(ArchivosCargadosDTO.CONVERTER_DTO.apply(arch));

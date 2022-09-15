@@ -31,8 +31,6 @@ import com.ath.adminefectivo.service.IMaestroDefinicionArchivoService;
 import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.IValidacionArchivoService;
 
-import net.bytebuddy.agent.builder.AgentBuilder.InitializationStrategy.SelfInjection.Split;
-
 /**
  * Delegate responsable del manejo, consulta y persistencia de archivos
  *
@@ -156,6 +154,22 @@ public class CargueDefinitivoDelegateImpl implements ICargueDefinitivoDelegate {
 		return listArchivosCargados;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public ValidacionArchivoDTO consultarDetalleArchivo(Long idArchivoCargado) {
+		return archivosCargadosService.consultarDetalleArchivo(idArchivoCargado);
+	}
+	
+	/**
+	 * 
+	 * @param archivo
+	 * @param estado
+	 * @param idModeloArchivo
+	 * @param mascaraArchivo
+	 * @return
+	 */
 	private ArchivosCargadosDTO organizarDatosArchivo(String archivo, String estado,
 			String idModeloArchivo, String mascaraArchivo) {
 		ArchivosCargadosDTO archivosCargadosDTO = new ArchivosCargadosDTO();
@@ -167,14 +181,6 @@ public class CargueDefinitivoDelegateImpl implements ICargueDefinitivoDelegate {
 
 		return archivosCargadosDTO;
 
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public ValidacionArchivoDTO consultarDetalleArchivo(Long idArchivoCargado) {
-		return archivosCargadosService.consultarDetalleArchivo(idArchivoCargado);
 	}
 
 	/**
@@ -249,7 +255,6 @@ public class CargueDefinitivoDelegateImpl implements ICargueDefinitivoDelegate {
 			this.validacionArchivo = validacionArchivoService.validar(maestroDefinicion, contenido, 
 					validacionArchivo);
 		}
-
 	}
 	
 	/**

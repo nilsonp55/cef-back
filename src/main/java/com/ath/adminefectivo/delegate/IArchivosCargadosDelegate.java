@@ -52,7 +52,5 @@ public interface IArchivosCargadosDelegate {
 	 * @author CamiloBenavides
 	 */
 	Boolean eliminarArchivo(Long idArchivo);
-
 	
-		
 }
