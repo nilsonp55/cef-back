@@ -1,8 +1,5 @@
 package com.ath.adminefectivo.service.impl;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,7 +14,6 @@ import com.ath.adminefectivo.constantes.Parametros;
 import com.ath.adminefectivo.dto.LogProcesoDiarioDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.LogProcesoDiario;
-import com.ath.adminefectivo.entities.Parametro;
 import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.exception.ConflictException;
 import com.ath.adminefectivo.repositories.LogProcesoDiarioRepository;
@@ -46,10 +42,13 @@ public class LogProcesoDiarioImpl implements ILogProcesoDiarioService {
 	 */
 	@Override
 	public List<LogProcesoDiarioDTO> getLogsProcesosDierios(Predicate predicate) {
-		var logProcesoDiario = logProcesoDiarioRepository.findAll(predicate);
+		Date fecha = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
+		var logProcesoDiarios = logProcesoDiarioRepository.findByFechaCreacion(fecha);
 		
 		List<LogProcesoDiarioDTO> listLogProcesoDiarioDto = new ArrayList<>();
-		logProcesoDiario.forEach(entity -> listLogProcesoDiarioDto.add(LogProcesoDiarioDTO.CONVERTER_DTO.apply(entity)));
+		logProcesoDiarios.forEach(entity -> {
+			listLogProcesoDiarioDto.add(LogProcesoDiarioDTO.CONVERTER_DTO.apply(entity));
+		});
 		return listLogProcesoDiarioDto;
 	}
 	

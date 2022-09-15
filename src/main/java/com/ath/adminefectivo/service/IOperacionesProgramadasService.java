@@ -76,13 +76,6 @@ public interface IOperacionesProgramadasService {
 	 */
 	List<OperacionesProgramadas> obtenerOperacionesProgramadas();
 /**
-	 * Servicio encargado de procesar los archivos cargados a la entidad OperacionesProgramadas
-	 * @param archivoscargados
-	 * @return Boolean
-	 * @author cesar.castano
-	 */
-	Boolean procesarArchivos(List<ArchivosCargados> archivosCargados);
-
 	/**
 	 * Servicio encargado de consultar las operaciones programadas intradia  
 	 * 
