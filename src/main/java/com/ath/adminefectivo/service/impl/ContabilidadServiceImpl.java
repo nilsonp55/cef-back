@@ -113,6 +113,9 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 	public int generarMovimientosContables(Date fechaInicio, Date fechaFin, String tipoContabilidad,
 			int estadoContabilidadGenerado) {
 		boolean result = transaccionesInternasService.generarMovimientosContables(fechaInicio, fechaFin, tipoContabilidad, estadoContabilidadGenerado);
+		if(result) {
+			return 1;
+		}
 		return 0;
 	}
 
@@ -134,6 +137,51 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 
 		return consecutivoDia;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public ContabilidadDTO generarRespuestaContabilidad(Date f1, Date f2, String tipoContabilidad,
+			String mensaje) {
+		ContabilidadDTO contabilidadDTO = new ContabilidadDTO();
+		
+		ConteoContabilidadDTO conteoContabilidadDTO = transaccionesContablesService.generarConteoContabilidad(f1, f2, tipoContabilidad);
+		contabilidadDTO.setConteoContabilidadDTO(conteoContabilidadDTO);	
+		
+		contabilidadDTO.setMensaje(mensaje);
+		
+		List<ErroresContablesDTO> erroresContables = erroresContablesService.consultarErroresContablesByFechas(f1, f2);
+		contabilidadDTO.setErroresContablesDTO(erroresContables);
+
+		List<TransaccionesContablesDTO> transaccionesContables = transaccionesContablesService.getTransaccionesContablesByFechas(f1, f2);
+		contabilidadDTO.setTransaccionesContablesDTO(transaccionesContables);
+		
+		List<RespuestaContableDTO> respuestaContableDTO = transaccionesContablesService.getCierreContable(f2,tipoContabilidad,0);
+		contabilidadDTO.setRespuestasContablesDTO(respuestaContableDTO);
+		
+		return contabilidadDTO;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<TransaccionesInternasDTO> generarRespuestaProcesoContables() {
+		return erroresContablesService.generarRespuestaProcesoContables();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void procesoEliminarExistentes(String tipoContabilidad,
+			List<OperacionesProgramadasDTO> operacionesProgramadas, Date fechaInicio, Date fechaFin) {
+			transaccionesContablesService.deleteTransaccionesContablesByFechas(fechaInicio, fechaFin);
+			transaccionesInternasService.deleteTransaccionesInternasByFechas(fechaInicio, fechaFin);
+		
+	}
+	
 
 	/**
 	 * 
@@ -162,7 +210,10 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 				return this.procesarContabilidadRetiro(tipoContabilidad, operacionProgramada);
 			} else if (operacionProgramada.getTipoOperacion().equals("VENTA")) {
 				return this.procesarContabilidadVenta(tipoContabilidad, operacionProgramada);
-			}else if(operacionProgramada.getTipoOperacion().equals("TRASLADO") ) {
+			}
+		}
+		if (tipoContabilidad.equals("AM")) {
+			if(operacionProgramada.getTipoOperacion().equals("TRASLADO") ) {
 				return this.procesarContabilidadTraslado(tipoContabilidad, operacionProgramada);
 			}else if(operacionProgramada.getTipoOperacion().equals("INTERCAMBIO") ) {
 				return this.procesarContabilidadIntercambio(tipoContabilidad, operacionProgramada);
@@ -534,37 +585,6 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 				.apply(transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTO));
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public ContabilidadDTO generarRespuestaContabilidad(Date f1, Date f2, String tipoContabilidad,
-			String mensaje) {
-		ContabilidadDTO contabilidadDTO = new ContabilidadDTO();
-		
-		ConteoContabilidadDTO conteoContabilidadDTO = transaccionesContablesService.generarConteoContabilidad(f1, f2, tipoContabilidad);
-		contabilidadDTO.setConteoContabilidadDTO(conteoContabilidadDTO);	
-		
-		contabilidadDTO.setMensaje(mensaje);
-		
-		List<ErroresContablesDTO> erroresContables = erroresContablesService.consultarErroresContablesByFechas(f1, f2);
-		contabilidadDTO.setErroresContablesDTO(erroresContables);
 
-		List<TransaccionesContablesDTO> transaccionesContables = transaccionesContablesService.getTransaccionesContablesByFechas(f1, f2);
-		contabilidadDTO.setTransaccionesContablesDTO(transaccionesContables);
-		
-		List<RespuestaContableDTO> respuestaContableDTO = transaccionesContablesService.getCierreContable(f2,tipoContabilidad,0);
-		contabilidadDTO.setRespuestasContablesDTO(respuestaContableDTO);
-		
-		return contabilidadDTO;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public List<TransaccionesInternasDTO> generarRespuestaProcesoContables() {
-		return erroresContablesService.generarRespuestaProcesoContables();
-	}
 
 }

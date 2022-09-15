@@ -81,6 +81,19 @@ public interface IContabilidadService {
 	 * @author duvan.naranjo
 	 */
 	List<TransaccionesInternasDTO> generarRespuestaProcesoContables();
+
+	/**
+	 * Metodo encargado de eliminar las transacciones contables e interas generadas en una contabilidad
+	 * ejecutada la misma fecha 
+	 * 
+	 * @param String
+	 * @param List<OperacionesProgramadasDTO>
+	 * @param fechaInicio
+	 * @param fechaFin
+	 *
+	 * @author duvan.naranjo
+	 */
+	void procesoEliminarExistentes(String tipoContabilidad, List<OperacionesProgramadasDTO> operacionesProgramadas, Date fechaInicio, Date fechaFin);
 	
 
 }
