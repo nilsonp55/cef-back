@@ -19,7 +19,7 @@ import com.ath.adminefectivo.dto.response.ResponseADE;
  */
 @RestController
 @RequestMapping("${endpoints.Certificaciones}")
-public class ProcesarCertificaciones {
+public class ProcesarCertificacionesController {
 
 	@Autowired
 	ICertificacionesDelegate certificacionesDelegate;

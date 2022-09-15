@@ -14,7 +14,7 @@ import com.ath.adminefectivo.dto.UpdateCertificadasFallidasDTO;
 import com.ath.adminefectivo.dto.UpdateProgramadasFallidasDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionesProgramadasNombresDTO;
 import com.ath.adminefectivo.dto.CertificadasNoConciliadasDTO;
-import com.ath.adminefectivo.dto.ParametrosConciliacionManualDTO;
+import com.ath.adminefectivo.dto.ParametrosConciliacionDTO;
 import com.ath.adminefectivo.dto.FechasConciliacionDTO;
 import com.ath.adminefectivo.service.IConciliacionOperacionesService;
 import com.querydsl.core.types.Predicate;
@@ -78,7 +78,7 @@ public class ConciliacionOperacionesDelegateImpl implements IConciliacionOperaci
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Boolean conciliacionManual(List<ParametrosConciliacionManualDTO> conciliacionManualDTO) {
+	public Boolean conciliacionManual(List<ParametrosConciliacionDTO> conciliacionManualDTO) {
 		
 		return conciliacionOperacionesService.conciliacionManual(conciliacionManualDTO);
 	}

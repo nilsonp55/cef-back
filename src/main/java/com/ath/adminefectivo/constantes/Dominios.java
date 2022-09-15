@@ -43,12 +43,12 @@ public final class Dominios {
 	public static final String VIGENCIA_PROCESADO = "P";
 	public static final String VIGENCIA_LEIDO = "L";
 	
-	public static final String ESTADO_CONCILIACION_CONCILIADO = "C";
-	public static final String ESTADO_CONCILIACION_NO_CONCILIADO = "NC";
-	public static final String ESTADO_CONCILIACION_FALLIDA = "F";
-	public static final String ESTADO_CONCILIACION_FUERA_DE_CONCILIACION = "FC";
-	public static final String ESTADO_CONCILIACION_POSPUESTA = "P";
-	public static final String ESTADO_CONCILIACION_CANCELADA = "CA";
+	public static final String ESTADO_CONCILIACION_CONCILIADO = "CONCILIADA";/*C*/
+	public static final String ESTADO_CONCILIACION_NO_CONCILIADO = "NO_CONCILIADA";/*NC*/
+	public static final String ESTADO_CONCILIACION_FALLIDA = "FALLIDA";/*F*/
+	public static final String ESTADO_CONCILIACION_FUERA_DE_CONCILIACION = "FUERA_DE_CONCILIACION";/*FC*/
+	public static final String ESTADO_CONCILIACION_POSPUESTA = "POSPUESTA";/*P*/
+	public static final String ESTADO_CONCILIACION_CANCELADA = "CANCELADA";/*CA*/
 
 
 	

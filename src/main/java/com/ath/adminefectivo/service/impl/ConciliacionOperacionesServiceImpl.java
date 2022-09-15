@@ -22,7 +22,7 @@ import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.CertificadasNoConciliadasDTO;
-import com.ath.adminefectivo.dto.ParametrosConciliacionManualDTO;
+import com.ath.adminefectivo.dto.ParametrosConciliacionDTO;
 import com.ath.adminefectivo.dto.FechasConciliacionDTO;
 import com.ath.adminefectivo.dto.LogProcesoDiarioDTO;
 import com.ath.adminefectivo.entities.LogProcesoDiario;
@@ -184,9 +184,9 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Boolean conciliacionManual(List<ParametrosConciliacionManualDTO> conciliacionManualDTO) {
+	public Boolean conciliacionManual(List<ParametrosConciliacionDTO> conciliacionManualDTO) {
 
-		for (ParametrosConciliacionManualDTO elemento : conciliacionManualDTO) {
+		for (ParametrosConciliacionDTO elemento : conciliacionManualDTO) {
 			var conciliaciones = operacionesProgramadasRepository.conciliacionManual(
 					dominioService.valorTextoDominio(Constantes.DOMINIO_ESTADO_CONCILIACION,
 							Dominios.ESTADO_CONCILIACION_NO_CONCILIADO),
@@ -202,6 +202,9 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 			operacionesCertificadasService.actualizarEstadoEnCertificadas(elemento.getIdCertificacion(),
 						dominioService.valorTextoDominio(Constantes.DOMINIO_ESTADO_CONCILIACION,
 										Dominios.ESTADO_CONCILIACION_CONCILIADO));
+			elemento.setTipoConciliacion(dominioService.valorTextoDominio(
+									Constantes.DOMINIO_TIPOS_CONCILIACION,
+									Dominios.TIPO_CONCILIACION_MANUAL));
 			conciliacionServicesService.crearRegistroConciliacion(elemento);
 		}
 		return true;
@@ -333,7 +336,7 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	 */
 	private void actualizarConciliacionServicios() {
 		for (var i = 0; i < operacionesp.size(); i++) {
-			var parametros = new ParametrosConciliacionManualDTO();
+			var parametros = new ParametrosConciliacionDTO();
 			var conciliado = new OperacionespConciliadoDTO();
 			conciliado.setCodigoFondoTDV(operacionesp.get(i).getCodigoFondoTDV());
 			conciliado.setCodigoPuntoDestino(operacionesp.get(i).getCodigoPuntoDestino());
@@ -357,6 +360,9 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 
 			parametros.setIdOperacion(operacionesp.get(i).getIdOperacion());
 			parametros.setIdCertificacion(operaciones.getIdCertificacion());
+			parametros.setTipoConciliacion(dominioService.valorTextoDominio(
+										Constantes.DOMINIO_TIPOS_CONCILIACION,
+										Dominios.TIPO_CONCILIACION_AUTOMATICA));
 			conciliacionServicesService.crearRegistroConciliacion(parametros);
 		}
 	}

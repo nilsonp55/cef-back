@@ -11,7 +11,7 @@ import com.ath.adminefectivo.dto.UpdateCertificadasFallidasDTO;
 import com.ath.adminefectivo.dto.UpdateProgramadasFallidasDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionesProgramadasNombresDTO;
 import com.ath.adminefectivo.dto.CertificadasNoConciliadasDTO;
-import com.ath.adminefectivo.dto.ParametrosConciliacionManualDTO;
+import com.ath.adminefectivo.dto.ParametrosConciliacionDTO;
 import com.ath.adminefectivo.dto.FechasConciliacionDTO;
 import com.querydsl.core.types.Predicate;
 
@@ -64,12 +64,12 @@ public interface IConciliacionOperacionesDelegate {
 
 	/**
 	 * Delegate encargado de hacer la conciliacion manual
-	 * @param ParametrosConciliacionManualDTO
+	 * @param ParametrosConciliacionDTO
 	 * @param page
 	 * @return Boolean
 	 * @author cesar.castano
 	 */
-	Boolean conciliacionManual(List<ParametrosConciliacionManualDTO> conciliacionManualDTO);
+	Boolean conciliacionManual(List<ParametrosConciliacionDTO> conciliacionManualDTO);
 
 	/**
 	 * Delegate encargado de hacer el resumen de las conciliaciones

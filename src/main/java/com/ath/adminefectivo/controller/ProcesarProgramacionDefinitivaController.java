@@ -20,7 +20,7 @@ import com.ath.adminefectivo.dto.response.ResponseADE;
  */
 @RestController
 @RequestMapping("${endpoints.ProgramacionDefinitiva}")
-public class ProcesarProgramacionDefinitiva {
+public class ProcesarProgramacionDefinitivaController {
 
 	@Autowired
 	IProgramacionDefinitivaDelegate programacionDefinitivaDelegate;

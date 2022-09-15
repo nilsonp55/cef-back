@@ -28,7 +28,6 @@ public class PuntosDelegateImpl implements IPuntosDelegate{
 	@Autowired
 	IDominioService dominioService;
 
-	
 	/**
 	 * {@inheritDoc}
 	 */

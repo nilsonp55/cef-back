@@ -81,6 +81,11 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 		}
 	}
 
+	/**
+	 * 
+	 * @param archivosCargados
+	 * @author prv_ccastano
+	 */
 	private void validarExistenciaArchivos(List<ArchivosCargados> archivosCargados) {
 
 		Integer valor = parametroService.valorParametroEntero(Constantes.NUMERO_MINIMO_ARCHIVOS_PARA_CIERRE);

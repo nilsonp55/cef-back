@@ -35,7 +35,6 @@ public class OperacionesProgramadasDelegateImpl implements IOperacionesProgramad
 	@Autowired
 	IArchivosCargadosService archivosCargadosService;
 	
-
 	@Autowired
 	ILogProcesoDiarioService logProcesoDiarioService;
 
@@ -50,6 +49,7 @@ public class OperacionesProgramadasDelegateImpl implements IOperacionesProgramad
 
 	@Autowired
 	IFestivosNacionalesService festivosNacionalesService;
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -76,7 +76,6 @@ public class OperacionesProgramadasDelegateImpl implements IOperacionesProgramad
 		return Constantes.MENSAJE_NO_SE_ENCONTRARON_ARCHIVOS_OP;
 	}
 	
-
 	/**
 	 * Metodo encargado de cambiar el estado del log de proceso diario
 	 * @author cesar.castano
@@ -94,6 +93,10 @@ public class OperacionesProgramadasDelegateImpl implements IOperacionesProgramad
 		}
 	}
 	
+	/**
+	 * 
+	 * @param agrupador
+	 */
 	private void validarExistenciayFechaArchivos(String agrupador) {
 
 		Date fechaArchivo = parametroService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
@@ -119,5 +122,4 @@ public class OperacionesProgramadasDelegateImpl implements IOperacionesProgramad
 						ApiResponseCode.ERROR_FALTAN_ARCHIVOS_POR_CARGAR.getHttpStatus());
 		}
 	}
-
 }

@@ -1,7 +1,7 @@
 package com.ath.adminefectivo.service;
 
 import com.ath.adminefectivo.dto.FechasConciliacionDTO;
-import com.ath.adminefectivo.dto.ParametrosConciliacionManualDTO;
+import com.ath.adminefectivo.dto.ParametrosConciliacionDTO;
 
 /**
  * @author cesar.castano
@@ -21,7 +21,7 @@ public interface IConciliacionServiciosService {
 	 * @param elemento
 	 * @return Boolean
 	 */
-	Boolean crearRegistroConciliacion(ParametrosConciliacionManualDTO elemento);
+	Boolean crearRegistroConciliacion(ParametrosConciliacionDTO elemento);
 	
 	/**
 	 * Servicio encargado de generar el numero de servicios concilliados por rango de fechas
