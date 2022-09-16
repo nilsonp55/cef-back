@@ -14,9 +14,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ParametrosConciliacionManualDTO {
+public class ParametrosConciliacionDTO {
 
 	private Integer idOperacion;
 	
 	private Integer idCertificacion;
+	
+	private String tipoConciliacion;
 }

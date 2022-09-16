@@ -25,15 +25,12 @@ import com.ath.adminefectivo.dto.DownloadDTO;
 import com.ath.adminefectivo.dto.MaestrosDefinicionArchivoDTO;
 import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
-import com.ath.adminefectivo.entities.BitacoraAutomaticos;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.service.IArchivosCargadosService;
 import com.ath.adminefectivo.service.IBitacoraAutomaticosService;
 import com.ath.adminefectivo.service.IDominioService;
 
 import com.ath.adminefectivo.entities.MaestroDefinicionArchivo;
-import com.ath.adminefectivo.exception.NegocioException;
-import com.ath.adminefectivo.service.IArchivosCargadosService;
 import com.ath.adminefectivo.service.IFestivosNacionalesService;
 
 import com.ath.adminefectivo.service.IFilesService;
@@ -156,8 +153,8 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	 */
 	@Override
 	public List<ArchivosCargadosDTO> consultarArchivos(String estado, String agrupador) {
+		
 		List<ArchivosCargadosDTO> listArchivosCargados = new ArrayList<>();
-
 		var maestrosDefinicion = maestroDefinicionArchivoService.consultarDefinicionArchivoByAgrupador(estado, agrupador);
 		var maestro = maestrosDefinicion.get(0);
 		var urlPendinetes = filesService.consultarPathArchivos(estado);
@@ -249,39 +246,17 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 			this.validacionArchivo = validacionArchivoService.validar(maestroDefinicion, contenido,
 					validacionArchivo);
 		}
-
 	}
 
 	private ArchivosCargadosDTO organizarDatosArchivo(String archivo, String estado,
 			String idModeloArchivo, String mascaraArchivo) {
+		
 		ArchivosCargadosDTO archivosCargadosDTO = new ArchivosCargadosDTO();
-
 		Date fechaDatos = validacionArchivoService.obtenerFechaArchivo(archivo, mascaraArchivo);
         fechaDatos = festivosNacionalesService.consultarAnteriorHabil(fechaDatos);
         archivosCargadosDTO = ArchivosCargadosDTO.builder().estadoCargue(estado).nombreArchivo(archivo)
                 .idModeloArchivo(idModeloArchivo).fechaArchivo(fechaDatos).build();
-
 		return archivosCargadosDTO;
-
-	}
-
-	/**
-	 * Método encargado de organizar la lista de archivos y armar el objeto de
-	 * archivos cargados
-	 * 
-	 * @param archivos
-	 * @return
-	 * @return List<ArchivosCargadosDTO>
-	 * @author cesar.castano
-	 */
-	private List<ArchivosCargadosDTO> organizarDataArchivos(List<String> archivos, String estado,
-			String idModeloArchivo, String mascaraArchivo) {
-		List<ArchivosCargadosDTO> archivosCargados = new ArrayList<>();
-		archivos.forEach(x -> archivosCargados.add(
-				ArchivosCargadosDTO.builder().estadoCargue(estado).nombreArchivo(x).idModeloArchivo(idModeloArchivo)
-						.fechaArchivo(validacionArchivoService.obtenerFechaArchivo(x, mascaraArchivo)).build()));
-
-		return archivosCargados;
 
 	}
 	
