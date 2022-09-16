@@ -312,8 +312,9 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	 * 
 	 * @author duvan.naranjo
 	 */
-	@Scheduled(cron = "05,20,35,50 7-12 * * * *")
+	@Scheduled(cron = "05 7-12 * * * *")
 	public void certificacionesProgramadas() {
+		System.out.println("ME EJECUTE CADA HORA MINUTOS " + new Date());
 		List<ArchivosCargadosDTO> certificaciones;
 		List<ValidacionArchivoDTO> validacionesArchivos = new ArrayList<>();
 		//crea el registro en bitacora de automaticos
@@ -339,7 +340,7 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 		bitacoraAutomaicosService.guardarBitacoraAutomaticos(bitacoraDTO);
 		
 		
-		System.out.println("ME EJECUTE CADA 15 MINUTOS " + new Date());
+		
 	}
 
 	private BitacoraAutomaticosDTO procesarValidacionRealizada(BitacoraAutomaticosDTO bitacoraDTO,

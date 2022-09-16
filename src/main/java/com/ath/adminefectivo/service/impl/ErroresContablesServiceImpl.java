@@ -15,12 +15,16 @@ import com.ath.adminefectivo.entities.ErroresContables;
 import com.ath.adminefectivo.entities.TransaccionesInternas;
 import com.ath.adminefectivo.repositories.IErroresContablesRepository;
 import com.ath.adminefectivo.service.IErroresContablesService;
+import com.ath.adminefectivo.service.ITransaccionesInternasService;
 
 @Service
 public class ErroresContablesServiceImpl implements IErroresContablesService{
 	
 	@Autowired
 	IErroresContablesRepository erroresContablesRepository;
+	
+	@Autowired
+	ITransaccionesInternasService transaccionesInternasService;
 
 	/**
 	 * {@inheritDoc}
@@ -49,10 +53,9 @@ public class ErroresContablesServiceImpl implements IErroresContablesService{
 	 */
 	@Override
 	public List<TransaccionesInternasDTO> generarRespuestaProcesoContables() {
-		List<TransaccionesInternas> transaccionesInterasEntity = erroresContablesRepository.fnc_generar_proceso_contables();
 		List<TransaccionesInternasDTO> transaccionesInternasDTO = new ArrayList<>();
-		transaccionesInterasEntity.forEach(transaccion ->{
-			transaccionesInternasDTO.add(TransaccionesInternasDTO.CONVERTER_DTO.apply(transaccion));
+		erroresContablesRepository.fnc_generar_proceso_contables().forEach(idTransaccion ->{
+			transaccionesInternasDTO.add(transaccionesInternasService.getTransaccionesInternasById(idTransaccion));
 		});
 		
 		return transaccionesInternasDTO;

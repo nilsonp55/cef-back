@@ -37,9 +37,10 @@ public class TransaccionesInternasServiceImpl implements ITransaccionesInternasS
 	 * {@inheritDoc}
 	 */
 	@Override
-	public TransaccionesInternas getTransaccionesInternasById(String idTransaccionesInternas) {
-		// TODO Auto-generated method stub
-		return null;
+	public TransaccionesInternasDTO getTransaccionesInternasById(Long idTransaccionesInternas) {
+		TransaccionesInternas transaccionInternaEntity = transaccionesInternasRepository.getById(idTransaccionesInternas);
+		
+		return TransaccionesInternasDTO.CONVERTER_DTO.apply(transaccionInternaEntity);
 	}
 
 	@Override
