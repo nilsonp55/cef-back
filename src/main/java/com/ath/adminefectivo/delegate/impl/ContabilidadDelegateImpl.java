@@ -153,22 +153,22 @@ public class ContabilidadDelegateImpl implements IContabilidadDelegate {
 	 * @param tipoContabilidad
 	 * @return Date
 	 */
-	private Date obtenerFechaProceso(String tipoContabilidad) {
-		String valorFecha = parametroService.valorParametro(Parametros.FECHA_DIA_ACTUAL_PROCESO);
-		String formatoFecha = dominioService.valorTextoDominio(Constantes.DOMINIO_FORMATO_FECHA, Dominios.FORMATO_FECHA_F1);
-		SimpleDateFormat sdf = new SimpleDateFormat(formatoFecha);
-		Date fechaSistema = null;
-		try {
-			fechaSistema = sdf.parse(valorFecha);
-		} catch (ParseException e) {
+	public Date obtenerFechaProceso(String tipoContabilidad) {
+		Date fechaSistema = parametroService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
+		if(!Objects.isNull(fechaSistema)) {
+			if(tipoContabilidad.equals("AM")) {
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(fechaSistema);
+				cal.add(Calendar.DATE, -1);
+				return cal.getTime();
+			}
+			return fechaSistema;
+		}else {
 			throw new AplicationException(ApiResponseCode.ERROR_FECHA_CONTABILIDAD.getCode(),
 					ApiResponseCode.ERROR_FECHA_CONTABILIDAD.getDescription(),
 					ApiResponseCode.ERROR_FECHA_CONTABILIDAD.getHttpStatus());
 		}
-		if(!Objects.isNull(fechaSistema)) {
-			return fechaSistema;
-		}
-		return null;
+
 	}
 	
 	/**

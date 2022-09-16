@@ -24,7 +24,7 @@ public interface ITransaccionesInternasService {
 	 * @param idTransaccionesInternas
 	 * @return
 	 */
-	TransaccionesInternas getTransaccionesInternasById(String idTransaccionesInternas);
+	TransaccionesInternasDTO getTransaccionesInternasById(Long idTransaccionesInternas);
 	
 	/**
 	 * Servicio para persistir un transaccionesInternas
