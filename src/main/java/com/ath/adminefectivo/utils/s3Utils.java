@@ -1,6 +1,9 @@
 package com.ath.adminefectivo.utils;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -98,7 +101,7 @@ public class s3Utils {
 	 * @return
 	 */
 	public List<String> getObjectsFromPathS3(String path) {
-		conexionS3(bucketName);
+		//conexionS3(bucketName);
 		ListObjectsV2Request req = new ListObjectsV2Request().withBucketName(bucketName).withPrefix(path)
 				.withDelimiter("/");
 		ListObjectsV2Result listing = s3.listObjectsV2(req);
@@ -122,12 +125,21 @@ public class s3Utils {
 	 * 
 	 * @param key
 	 * @return
+	 * @throws IOException 
 	 */
-	public InputStream downloadFile(String key) {
-		conexionS3(bucketName);
+	public InputStream downloadFile(String key) throws IOException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		byte[] buffer = new byte[1024];
+		int len;
+		//conexionS3(bucketName);
 		S3Object object;
 		try {
 			object = s3.getObject(bucketName, key);
+			InputStream is = object.getObjectContent();
+			while ((len = is.read(buffer, 0, buffer.length)) > -1 ) { 
+				  baos.write(buffer, 0, len); 
+			} 
+			baos.flush();
 		} catch (AmazonServiceException e) {
 			LOGGER.error(e.getMessage(), e);
 			throw new NegocioException(ApiResponseCode.ERROR_LECTURA_CARGUE_ARCHIVO.getCode(),
@@ -144,7 +156,9 @@ public class s3Utils {
 					ApiResponseCode.ERROR_LECTURA_CARGUE_ARCHIVO.getDescription(),
 					ApiResponseCode.ERROR_LECTURA_CARGUE_ARCHIVO.getHttpStatus());
 		}
-		return object.getObjectContent();
+		InputStream is1 = new ByteArrayInputStream(baos.toByteArray());
+		object.close();
+		return is1;
 	}
 	
 	/**
@@ -152,17 +166,19 @@ public class s3Utils {
 	 * 
 	 * @param key
 	 * @return
+	 * @throws IOException 
 	 */
-	public Boolean consultarArchivo(String key) {
+	public Boolean consultarArchivo(String key) throws IOException {
 		Boolean salida = true;
-		conexionS3(bucketName);
-		S3Object object;
+		//conexionS3(bucketName);
+		S3Object object = null;
 		try {
 			object = s3.getObject(bucketName, key);
 			}
 		catch (Exception e) {
 			salida = false;
 		}
+		object.close();
 		return salida;
 	}
 	
@@ -210,7 +226,7 @@ public class s3Utils {
 	 */
 	public void moverObjeto(String keyOrigin, String keyDestination) {
 		try {
-			conexionS3(bucketName);
+			//conexionS3(bucketName);
 			s3.copyObject(bucketName, keyOrigin, bucketName, keyDestination);
 			deleteObjectBucket(keyOrigin);
 		} catch (AmazonServiceException e) {
@@ -229,7 +245,7 @@ public class s3Utils {
 	 */
 	public void deleteObjectBucket(String objectKey) {
 		try {
-			conexionS3(bucketName);
+			//conexionS3(bucketName);
 			s3.deleteObject(bucketName, objectKey);
 		} catch (AmazonServiceException e) {
 			LOGGER.error(e.getMessage(), e);
