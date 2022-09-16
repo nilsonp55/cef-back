@@ -1,7 +1,12 @@
 package com.ath.adminefectivo.utils;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Writer;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -19,11 +24,14 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.ListObjectsV2Request;
 import com.amazonaws.services.s3.model.ListObjectsV2Result;
 import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+import org.apache.catalina.connector.InputBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -122,12 +130,21 @@ public class s3Utils {
 	 * 
 	 * @param key
 	 * @return
+	 * @throws IOException 
 	 */
-	public InputStream downloadFile(String key) {
+	public InputStream downloadFile(String key) throws IOException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		byte[] buffer = new byte[1024];
+		int len;
 		conexionS3(bucketName);
 		S3Object object;
 		try {
 			object = s3.getObject(bucketName, key);
+			InputStream is = object.getObjectContent();
+			while ((len = is.read(buffer, 0, buffer.length)) > -1 ) { 
+				  baos.write(buffer, 0, len); 
+			} 
+			baos.flush();
 		} catch (AmazonServiceException e) {
 			LOGGER.error(e.getMessage(), e);
 			throw new NegocioException(ApiResponseCode.ERROR_LECTURA_CARGUE_ARCHIVO.getCode(),
@@ -144,7 +161,9 @@ public class s3Utils {
 					ApiResponseCode.ERROR_LECTURA_CARGUE_ARCHIVO.getDescription(),
 					ApiResponseCode.ERROR_LECTURA_CARGUE_ARCHIVO.getHttpStatus());
 		}
-		return object.getObjectContent();
+		InputStream is2 = new ByteArrayInputStream(baos.toByteArray());
+		object.close();
+		return is2;
 	}
 	
 	/**
