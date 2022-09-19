@@ -38,9 +38,7 @@ public class GenerarArchivoController {
 	@Autowired
 	GenerarArchivoDelegate generarArchivoDelegate;
 	
-	@PostMapping(value = "${endpoints.GenerarArchivo.generar}"
-)
-	//public ResponseEntity<ApiResponseADE<InputStreamResource>> GenerarContabilidadCierre(
+	@GetMapping(value = "${endpoints.GenerarArchivo.generar}")
 	  public ResponseEntity<InputStreamResource> GenerarContabilidadCierre(
 			@RequestParam(value = "fecha") Date fecha,
 			@RequestParam(value = "tipoContabilidad") String tipoContabilidad,
@@ -49,12 +47,7 @@ public class GenerarArchivoController {
 		ByteArrayInputStream archivo =generarArchivoDelegate.generarArchivo(fecha, tipoContabilidad, codBanco);
  		 HttpHeaders headers = new HttpHeaders();
  		 headers.add("Content-Disposition", "attachment; filename=cierreContable.xls");
- 		 
- 		 
-		// return ResponseEntity.status(HttpStatus.OK)
-			//		.body(new ApiResponseADE<>(archivo, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
-				//			.description(ApiResponseCode.SUCCESS.getDescription()).build()));
-		 
+	 
 		 return ResponseEntity.ok().headers(headers).body(new InputStreamResource(archivo));
 		 
 	}
