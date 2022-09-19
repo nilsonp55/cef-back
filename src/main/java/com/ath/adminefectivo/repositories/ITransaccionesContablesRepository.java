@@ -5,15 +5,11 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
 
 import com.ath.adminefectivo.dto.RespuestaContableDTO;
-import com.ath.adminefectivo.dto.TransaccionesContablesDTO;
 import com.ath.adminefectivo.dto.compuestos.ConteoContabilidadDTO;
-import com.ath.adminefectivo.entities.OperacionesProgramadas;
 import com.ath.adminefectivo.entities.TransaccionesContables;
-import com.ath.adminefectivo.entities.TransaccionesInternas;
 
 public interface ITransaccionesContablesRepository extends JpaRepository<TransaccionesContables, Long> {
 	
@@ -43,18 +39,7 @@ public interface ITransaccionesContablesRepository extends JpaRepository<Transac
 	 * @return List<TransaccionesContables>
 	 * @author Miller.Caro
 	 */
-//	@Query(value ="SELECT tc.banco_aval, tc.naturaleza, tc.cuenta_contable, tc.cuenta_auxiliar, tc.tipo_identificacion, "
-//			+ " tc.codigo_moneda, tc.valor, tc.codigo_centro, null as codigo_beneficio, null as ordenCo, null as areaFuncional, "
-//			+ " tc.identificador, tc.descripcion, tc.id_tercero, tc.nombre_tercero, null as fechaConversion, tc.referencia1, tc.referencia2 "
-//			+ "FROM transacciones_contables tc, cuentas_puc cp, transacciones_internas ti "
-//			+ "WHERE tc.cuenta_contable = cp.CUENTA_CONTABLE AND "
-//			+ " tc.naturaleza in('C','D') AND "
-//			+ " cp.tipo_cuenta<>'TRAINT' AND "
-//			+ " tc.id_transacciones_internas = ti.id_transacciones_internas AND "
-//			+ " ti.estado = ?4 AND "
-//			+ " tc.fecha = ?1 AND "
-//			+ " ti.tipo_proceso = ?2 AND "
-//			+ " tc.banco_aval = ?3 ",nativeQuery=true)
+
 	@Query(nativeQuery = true)
 	List<RespuestaContableDTO> cierreContablebyBanco(@Param("fecha")Date fecha, @Param("tipoContabilidad") String tipoContabilidad, @Param("codBanco") int codBanco, @Param("estado") int estado);
 	
@@ -65,16 +50,7 @@ public interface ITransaccionesContablesRepository extends JpaRepository<Transac
 	 * @return List<TransaccionesContables>
 	 * @author Miller.Caro
 	 */
-//	@Query(value ="SELECT tc.id_operacion,tc.id_generico,tc.fecha, tc.consecutivo_dia, tc.tipo_transaccion, tc.banco_aval, "
-//			+ "	tc.codigo_centro, tc.naturaleza, tc.cuenta_contable, tc.codigo_moneda, tc.valor, tc.tipo_proceso, "
-//			+ "	tc.numero_comprobante, tc.tipo_identificacion, tc.id_tercero, tc.nombre_tercero, tc.identificador, "
-//			+ "	tc.descripcion, tc.referencia1,tc.referencia2 "
-//			+ "FROM transacciones_contables tc, cuentas_puc cp, transacciones_internas ti WHERE "
-//			+ "tc.CUENTA_CONTABLE = cp.CUENTA_CONTABLE AND "
-//			+ "tc.id_transacciones_internas = ti.id_transacciones_internas AND "
-//			+ "cp.tipo_cuenta<>'TRAINT' AND "
-//			+ "tc.naturaleza in('C','D') AND "
-//			+ "tc.fecha = ?1 AND ti.tipo_proceso = ?2 ",nativeQuery=true)
+
 	@Query(nativeQuery = true)
 	List<RespuestaContableDTO> cierreContableAllBancos(Date fecha,String tipoContabilidad, int estado);
 	
