@@ -32,7 +32,7 @@ import lombok.NoArgsConstructor;
  */
 
 @NamedNativeQuery(name = "TransaccionesContables.cierreContablebyBanco", 
-query = "SELECT tc.banco_aval as bancoAval, tc.naturaleza as naturalezaContable, tc.cuenta_contable as  cuentaMayor, tc.cuenta_auxiliar as subAuxiliar, "
+query = "SELECT DISTINCT tc.banco_aval as bancoAval, tc.naturaleza as naturalezaContable, tc.cuenta_contable as  cuentaMayor, tc.cuenta_auxiliar as subAuxiliar, "
 		+ "tc.tipo_identificacion as tipoIdentificacion, tc.codigo_moneda as codigoMoneda, tc.valor as valor, tc.codigo_centro as centroCosto, "
 		+ "'' as centroBeneficio, '' as ordenCo, '' as areaFuncional, "
 		+ " tc.identificador as identificador, tc.descripcion as descripcionTransaccion, tc.id_tercero as terceroGL, tc.nombre_tercero as nombreTerceroGL,"
@@ -49,7 +49,7 @@ query = "SELECT tc.banco_aval as bancoAval, tc.naturaleza as naturalezaContable,
 resultSetMapping = "Mapping.RespuestaContableDTO")
 
 @NamedNativeQuery(name = "TransaccionesContables.cierreContableAllBancos", 
-query = "SELECT tc.banco_aval as bancoAval, tc.naturaleza as naturalezaContable, tc.cuenta_contable as  cuentaMayor, tc.cuenta_auxiliar as subAuxiliar, "
+query = "SELECT DISTINCT tc.banco_aval as bancoAval, tc.naturaleza as naturalezaContable, tc.cuenta_contable as  cuentaMayor, tc.cuenta_auxiliar as subAuxiliar, "
 		+ "tc.tipo_identificacion as tipoIdentificacion, tc.codigo_moneda as codigoMoneda, tc.valor as valor, tc.codigo_centro as centroCosto, "
 		+ "'' as centroBeneficio, '' as ordenCo, '' as areaFuncional, "
 		+ " tc.identificador as identificador, tc.descripcion as descripcionTransaccion, tc.id_tercero as terceroGL, tc.nombre_tercero as nombreTerceroGL,"

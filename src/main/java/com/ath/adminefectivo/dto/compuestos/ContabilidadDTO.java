@@ -28,8 +28,6 @@ public class ContabilidadDTO {
 	
 	private ConteoContabilidadDTO conteoContabilidadDTO;
 	
-	private List<TransaccionesContablesDTO> transaccionesContablesDTO;
-	
 	private List<ErroresContablesDTO> erroresContablesDTO;
 	
 	private List<RespuestaContableDTO> respuestasContablesDTO;

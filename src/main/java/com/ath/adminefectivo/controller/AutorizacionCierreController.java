@@ -28,7 +28,7 @@ public class AutorizacionCierreController {
 	@Autowired
 	AutorizacionContableDelegate autorizacionContableDelegate;
 	
-	@PostMapping(value = "${endpoints.AutorizacionCierre.autorizacion}")
+	@GetMapping(value = "${endpoints.AutorizacionCierre.autorizacion}")
 	public ResponseEntity<ApiResponseADE<LogProcesoDiarioDTO>> getGenerarContabilidad(
 			@RequestParam(value = "fecha") Date fecha,
 			@RequestParam(value = "tipoContabilidad") String tipoContabilidad,
