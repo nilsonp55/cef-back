@@ -9,6 +9,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
 import com.ath.adminefectivo.constantes.Constantes;
+import com.ath.adminefectivo.dto.response.ApiResponseCode;
+import com.ath.adminefectivo.exception.AplicationException;
+import com.ath.adminefectivo.exception.NegocioException;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -196,9 +199,11 @@ public class UtilsString {
 		strArray = listaDominioFecha.toArray(strArray);
 		if(isFecha(fecha, listaDominioFecha)) {
 			try {
-				return DateUtils.parseDate(fecha, strArray);
+				return DateUtils.parseDateStrictly(fecha, strArray);
 			} catch (ParseException e) {
-				return null;
+				throw new AplicationException(ApiResponseCode.ERROR_PARAMETRO_NO_FECHA.getCode(),
+						ApiResponseCode.ERROR_PARAMETRO_NO_FECHA.getDescription(),
+						ApiResponseCode.ERROR_PARAMETRO_NO_FECHA.getHttpStatus());
 			}
 		}
 		return null;
