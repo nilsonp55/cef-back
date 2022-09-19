@@ -478,6 +478,10 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 					ApiResponseCode.ERROR_NO_ES_BANREP.getDescription(),
 					ApiResponseCode.ERROR_NO_ES_BANREP.getHttpStatus());
 		}
+		
+		if(Objects.isNull(puntoBancoDestino) && esCambio) {
+			puntoBancoDestino = puntoFondoOrigen;
+		}
 
 		operacionesProgramadasDTO = OperacionesProgramadasDTO.builder()
 				.codigoFondoTDV(puntoFondoOrigen.getCodigoPunto()).entradaSalida(Constantes.VALOR_SALIDA)
@@ -521,6 +525,10 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 					ApiResponseCode.ERROR_NO_ES_FONDO.getHttpStatus());
 		}
 
+		if(Objects.isNull(puntoBancoOrigen) && esCambio) {
+			puntoBancoOrigen = puntoFondoDestino;
+		}
+		
 		operacionesProgramadasDTO = OperacionesProgramadasDTO.builder()
 				.codigoFondoTDV(puntoFondoDestino.getCodigoPunto()).entradaSalida(Constantes.VALOR_ENTRADA)
 				.codigoPuntoOrigen(puntoBancoOrigen.getCodigoPunto())
@@ -1030,7 +1038,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 				.filter(deta -> deta.getNombreCampo().toUpperCase().equals(nombreCampo)).findFirst().orElse(null);
 		if (!Objects.isNull(detalle)) {
 			String puntoBanRepTDV = contenido[detalle.getId().getNumeroCampo() - 1].trim();
-			puntoBanRepTDV = puntoBanRepTDV.substring(1, puntoBanRepTDV.lastIndexOf('-') );
+			puntoBanRepTDV = puntoBanRepTDV.substring(0, puntoBanRepTDV.lastIndexOf('-') );
 			return puntosService.getPuntoByNombrePunto(puntoBanRepTDV);
 		}
 		return null;
