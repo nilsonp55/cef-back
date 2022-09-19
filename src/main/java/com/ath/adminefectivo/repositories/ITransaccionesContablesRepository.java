@@ -39,7 +39,6 @@ public interface ITransaccionesContablesRepository extends JpaRepository<Transac
 	 * @return List<TransaccionesContables>
 	 * @author Miller.Caro
 	 */
-
 	@Query(nativeQuery = true)
 	List<RespuestaContableDTO> cierreContablebyBanco(@Param("fecha")Date fecha, @Param("tipoContabilidad") String tipoContabilidad, @Param("codBanco") int codBanco, @Param("estado") int estado);
 	
@@ -50,7 +49,6 @@ public interface ITransaccionesContablesRepository extends JpaRepository<Transac
 	 * @return List<TransaccionesContables>
 	 * @author Miller.Caro
 	 */
-
 	@Query(nativeQuery = true)
 	List<RespuestaContableDTO> cierreContableAllBancos(Date fecha,String tipoContabilidad, int estado);
 	

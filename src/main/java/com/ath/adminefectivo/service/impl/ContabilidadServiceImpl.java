@@ -154,8 +154,8 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 		List<ErroresContablesDTO> erroresContables = erroresContablesService.consultarErroresContablesByFechas(f1, f2);
 		contabilidadDTO.setErroresContablesDTO(erroresContables);
 
-		List<TransaccionesContablesDTO> transaccionesContables = transaccionesContablesService.getTransaccionesContablesByFechas(f1, f2);
-		contabilidadDTO.setTransaccionesContablesDTO(transaccionesContables);
+//		List<TransaccionesContablesDTO> transaccionesContables = transaccionesContablesService.getTransaccionesContablesByFechas(f1, f2);
+//		contabilidadDTO.setTransaccionesContablesDTO(transaccionesContables);
 		
 		List<RespuestaContableDTO> respuestaContableDTO = transaccionesContablesService.getCierreContable(f2,tipoContabilidad,0);
 		contabilidadDTO.setRespuestasContablesDTO(respuestaContableDTO);
