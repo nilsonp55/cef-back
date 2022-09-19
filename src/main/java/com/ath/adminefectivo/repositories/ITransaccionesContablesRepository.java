@@ -5,15 +5,11 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
 
 import com.ath.adminefectivo.dto.RespuestaContableDTO;
-import com.ath.adminefectivo.dto.TransaccionesContablesDTO;
 import com.ath.adminefectivo.dto.compuestos.ConteoContabilidadDTO;
-import com.ath.adminefectivo.entities.OperacionesProgramadas;
 import com.ath.adminefectivo.entities.TransaccionesContables;
-import com.ath.adminefectivo.entities.TransaccionesInternas;
 
 public interface ITransaccionesContablesRepository extends JpaRepository<TransaccionesContables, Long> {
 	

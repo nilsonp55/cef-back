@@ -89,10 +89,11 @@ public final class Dominios {
 	
 	public static final String FORMATO_FECHA_HORA_F1 = "F1";
 	public static final String FORMATO_FECHA_HORA_F2 = "F2";
-	public static final String FORMATO_FECHA_HORA_3 = "F3";
+	public static final String FORMATO_FECHA_HORA_F3 = "F3";
 	
 	public static final String FORMATO_FECHA_F1 = "F1";
 	public static final String FORMATO_FECHA_F2 = "F2";
+	public static final String FORMATO_FECHA_F3 = "F3";
 	
 	public static final String CARACTER_INVALIDO_TX_C1 = "C1";
 	public static final String CARACTER_INVALIDO_TX_C2 = "C2";
