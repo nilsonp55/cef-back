@@ -386,22 +386,22 @@ public final class Constantes {
 	/**
 	 * Constante para indicar el valor FECHA APROBACION en el archivo de OFICINAS (PROG. DEFINTIVA)
 	 */
-	public static final String CAMPO_DETALLE_ARCHIVO_FECHA_APROBACION = "FECHAAPROBACION";
+	public static final String CAMPO_DETALLE_ARCHIVO_FECHA_APROBACION = "FECHAAPROBACIÓN";
 
 	/**
 	 * Constante para indicar el valor ORDERID en el archivo de OFICINAS (PROG. DEFINTIVA)
 	 */
-	public static final String CAMPO_DETALLE_ARCHIVO_ORDERID = "ORDERID";
+	public static final String CAMPO_DETALLE_ARCHIVO_ORDERID = "NROORDEN";
 
 	/**
 	 * Constante para indicar el valor SHIPIN en el archivo de OFICINAS (PROG. DEFINTIVA)
 	 */
-	public static final String CAMPO_DETALLE_ARCHIVO_SHIPIN = "SHIPIN";
+	public static final String CAMPO_DETALLE_ARCHIVO_SHIPIN = "SHIP-IN";
 
 	/**
 	 * Constante para indicar el valor SHIPOUT en el archivo de OFICINAS (PROG. DEFINTIVA)
 	 */
-	public static final String CAMPO_DETALLE_ARCHIVO_SHIPOUT = "SHIPOUT";
+	public static final String CAMPO_DETALLE_ARCHIVO_SHIPOUT = "SHIP-OUT";
 
 	/**
 	 * Constante para indicar el valor ESTATUS en el archivo de OFICINAS (PROG. DEFINTIVA)
@@ -411,12 +411,12 @@ public final class Constantes {
 	/**
 	 * Constante para indicar el valor TRANSPORTADORA en el archivo de OFICINAS Y CAJEROS (PROG. DEFINTIVA)
 	 */
-	public static final String CAMPO_DETALLE_ARCHIVO_TRANSPORTADORA = "TRANSPORTADORA";
+	public static final String CAMPO_DETALLE_ARCHIVO_TRANSPORTADORA = "USERFIELD2-TRANSPORTADORA";
 
 	/**
 	 * Constante para indicar el valor CIUDAD en el archivo de OFICINAS (PROG. DEFINTIVA)
 	 */
-	public static final String CAMPO_DETALLE_ARCHIVO_CIUDAD = "CIUDAD";
+	public static final String CAMPO_DETALLE_ARCHIVO_CIUDAD = "USERFIELD2-CIUDAD";
 
 	/**
 	 * Constante para indicar el valor REFERENCEID en el archivo de OFICINAS (PROG. DEFINTIVA)
@@ -426,7 +426,7 @@ public final class Constantes {
 	/**
 	 * Constante para indicar el valor DENOMINACION en el archivo de OFICINAS (PROG. DEFINTIVA)
 	 */
-	public static final String CAMPO_DETALLE_ARCHIVO_DENOMINACION = "DENOMINACION";
+	public static final String CAMPO_DETALLE_ARCHIVO_DENOMINACION = "DENOMINACIÓN";
 
 	/**
 	 * PROGRAMACION DEFINITIVA CAJEROS

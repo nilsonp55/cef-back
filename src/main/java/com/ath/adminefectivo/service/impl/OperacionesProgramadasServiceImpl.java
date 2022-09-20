@@ -224,10 +224,16 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		archivos.forEach(archivo -> {
 			List<OperacionesProgramadasDTO> listaOperacionesProgramadas = this
 					.procesarRegistrosCargadosArchivo(archivo);
+			
 			listadoOperacionesProgramadas.addAll(listaOperacionesProgramadas);
+			
 			if (!listaOperacionesProgramadas.isEmpty()) {
 				archivo.setEstadoCargue(Dominios.ESTADO_VALIDACION_ACEPTADO);
 				archivosCargadosService.actualizarArchivosCargados(archivo);
+			}else {
+				throw new NegocioException(ApiResponseCode.ERROR_CREACION_OPERACION_PROGRAMADA.getCode(),
+						ApiResponseCode.ERROR_CREACION_OPERACION_PROGRAMADA.getDescription(),
+						ApiResponseCode.ERROR_CREACION_OPERACION_PROGRAMADA.getHttpStatus());
 			}
 		});
 		return listadoOperacionesProgramadas;
@@ -404,7 +410,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 				&& tipoServicio.toUpperCase().trim().contains(Dominios.TIPO_OPERA_VENTA)) {
 			operacionProgramada = this.generarOperacionVenta(contenido, detalleArchivo, archivo);
 		} else if (archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IPPSV)
-				&& tipoServicio.toUpperCase().trim().contains(Dominios.TIPO_OPERA_CAMBIO)) {
+				&& tipoServicio.toUpperCase().trim().startsWith(Dominios.TIPO_OPERA_CAMBIO)) {
 			operacionProgramada = this.generarOperacionCambio(contenido, detalleArchivo, archivo);
 		} else if (archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IPPSV)
 				&& tipoServicio.toUpperCase().trim().contains(Dominios.TIPO_OPERA_INTERCAMBIO)) {
@@ -417,7 +423,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 				&& tipoServicio.toUpperCase().trim().contains(Dominios.TIPO_OPERA_TRASLADO)) {
 			operacionProgramada = this.generarOperacionTraslado(contenido, detalleArchivo, archivo);
 		} else if (archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_ISTRC)
-				&& tipoServicio.toUpperCase().trim().contains(Dominios.TIPO_OPERA_CAMBIO)) {
+				&& tipoServicio.toUpperCase().trim().startsWith(Dominios.TIPO_OPERA_CAMBIO)) {
 			operacionProgramada = this.generarOperacionCambio(contenido, detalleArchivo, archivo);
 		} else if (archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_ISTRC)
 				&& tipoServicio.toUpperCase().trim().contains(Dominios.TIPO_OPERA_VENTA)) {
@@ -488,7 +494,8 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 				.codigoPuntoOrigen(puntoFondoOrigen.getCodigoPunto())
 				.codigoPuntoDestino(puntoBancoDestino.getCodigoPunto())
 				.idArchivoCargado(Math.toIntExact(archivo.getIdArchivo())).build();
-
+		
+		operacionesProgramadasDTO.setTipoOperacion(Dominios.TIPO_OPERA_CONSIGNACION);
 		var operacionProgramadaEnt = operacionesProgramadasRepository.save(OperacionesProgramadasDTO.CONVERTER_ENTITY
 				.apply(this.completarOperacionesProgramadas(operacionesProgramadasDTO, contenido, detalleArchivo)));
 
@@ -534,7 +541,8 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 				.codigoPuntoOrigen(puntoBancoOrigen.getCodigoPunto())
 				.codigoPuntoDestino(puntoFondoDestino.getCodigoPunto())
 				.idArchivoCargado(Math.toIntExact(archivo.getIdArchivo())).build();
-
+		
+		operacionesProgramadasDTO.setTipoOperacion(Dominios.TIPO_OPERA_RETIRO);
 		var operacionProgramadaEnt = operacionesProgramadasRepository.save(OperacionesProgramadasDTO.CONVERTER_ENTITY
 				.apply(this.completarOperacionesProgramadas(operacionesProgramadasDTO, contenido, detalleArchivo)));
 		return OperacionesProgramadasDTO.CONVERTER_DTO.apply(operacionProgramadaEnt);
@@ -584,12 +592,12 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		} else {
 			PuntosDTO puntoBancoDestino = this.consultarPuntoPorDetalle(contenido, detalleArchivo,
 					Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_DESTINO);
-			if (!Objects.isNull(puntoFondoDestino)
-					&& puntoFondoDestino.getTipoPunto().equals(Constantes.PUNTO_BANCO)) {
-				operacionesProgramadasDTO.setCodigoPuntoDestino(bancoDestino.getCodigoPunto());
+			if (!Objects.isNull(puntoBancoDestino)
+					&& puntoBancoDestino.getTipoPunto().equals(Constantes.PUNTO_BANCO)) {
+				operacionesProgramadasDTO.setCodigoPuntoDestino(puntoBancoDestino.getCodigoPunto());
 			}
 		}
-
+		
 		var operacionProgramadaEnt = operacionesProgramadasRepository.save(OperacionesProgramadasDTO.CONVERTER_ENTITY
 				.apply(this.completarOperacionesProgramadas(operacionesProgramadasDTO, contenido, detalleArchivo)));
 		return OperacionesProgramadasDTO.CONVERTER_DTO.apply(operacionProgramadaEnt);
@@ -966,7 +974,9 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 				.setFechaProgramacion(UtilsString.convertirFecha(fechaProgramacion, listaDominioFecha));
 		operacionesProgramadasDTO.setFechaOrigen(UtilsString.convertirFecha(fechaOrigen, listaDominioFecha));
 		operacionesProgramadasDTO.setFechaDestino(UtilsString.convertirFecha(fechaDestino, listaDominioFecha));
-		operacionesProgramadasDTO.setTipoOperacion(tipoOperacion);
+		if (Objects.isNull(tipoOperacion) ) {
+			operacionesProgramadasDTO.setTipoOperacion(tipoOperacion);
+		}
 		operacionesProgramadasDTO.setValorTotal(valorTotal);
 		operacionesProgramadasDTO.setIdNegociacion(idNegoc);
 		operacionesProgramadasDTO.setTasaNegociacion(tasaNegociacion);
