@@ -287,7 +287,7 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	 * 
 	 * @author duvan.naranjo
 	 */
-	@Scheduled(cron = "05 7-12 * * * *")
+	@Scheduled(cron = "* 05 7-12 * * *")
 	public void certificacionesProgramadas() {
 		System.out.println("ME EJECUTE CADA HORA MINUTOS " + new Date());
 		List<ArchivosCargadosDTO> certificaciones;

@@ -42,11 +42,13 @@ public class ClientesCorporativosServiceImpl implements IClientesCorporativosSer
 	 */
 	@Override
 	public Integer getCodigoCliente(Integer codigoBanco, String nit) {
+		System.out.println("codigoBanco, nit " +codigoBanco+ " -- nit " + nit);
 		var clientesCorporativos = clientesCorporativosRepository.findByCodigoBancoAvalAndIdentificacion(codigoBanco, nit);
 		if (Objects.isNull(clientesCorporativos)) {
-			throw new AplicationException(ApiResponseCode.ERROR_CLIENTES_CORPORATIVOS_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_CLIENTES_CORPORATIVOS_NO_ENCONTRADO.getDescription(),
-					ApiResponseCode.ERROR_CLIENTES_CORPORATIVOS_NO_ENCONTRADO.getHttpStatus());
+			return clientesCorporativosRepository.findByCodigoBancoAvalAndIdentificacion(codigoBanco, "9999999999").getCodigoCliente();
+//			throw new AplicationException(ApiResponseCode.ERROR_CLIENTES_CORPORATIVOS_NO_ENCONTRADO.getCode(),
+//					ApiResponseCode.ERROR_CLIENTES_CORPORATIVOS_NO_ENCONTRADO.getDescription(),
+//					ApiResponseCode.ERROR_CLIENTES_CORPORATIVOS_NO_ENCONTRADO.getHttpStatus());
 		} else {
 			return clientesCorporativos.getCodigoCliente();
 		}

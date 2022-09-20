@@ -60,20 +60,21 @@ public class OperacionesProgramadasDelegateImpl implements IOperacionesProgramad
 									.consultarDefinicionArchivoByAgrupador(
 									Constantes.ESTADO_MAESTRO_DEFINICION_ACTIVO, agrupador);
 		validarExistenciayFechaArchivos(agrupador);
+			
 		for (MaestrosDefinicionArchivoDTO definicionArchivo : maestroDefinicionArchivo) {
+			
 			List<ArchivosCargadosDTO> listadoArchivosCargados = archivosCargadosService
 					.getArchivosCargadosSinProcesar(
 					definicionArchivo.getIdMaestroDefinicionArchivo().toUpperCase().trim());
+			
 			if (!Objects.isNull(listadoArchivosCargados)) {
 				List<OperacionesProgramadasDTO> operacionesProgramadas = operacionesProgramadasService
-						.generarOperacionesProgramadas(listadoArchivosCargados);
-				if (!operacionesProgramadas.isEmpty()) {
-					return Constantes.MENSAJE_GENERO_OPERACIONES_PROGRAMADAS_CORRECTO;
-				}
+						.generarOperacionesProgramadas(listadoArchivosCargados);	
 			}
 		}
 		cambiarEstadoLogProcesoDiario();
-		return Constantes.MENSAJE_NO_SE_ENCONTRARON_ARCHIVOS_OP;
+		//return Constantes.MENSAJE_NO_SE_ENCONTRARON_ARCHIVOS_OP;
+		return Constantes.MENSAJE_GENERO_OPERACIONES_PROGRAMADAS_CORRECTO;
 	}
 	
 	/**
@@ -88,6 +89,7 @@ public class OperacionesProgramadasDelegateImpl implements IOperacionesProgramad
 					ApiResponseCode.ERROR_CODIGO_PROCESO_NO_EXISTE.getDescription(),
 					ApiResponseCode.ERROR_CODIGO_PROCESO_NO_EXISTE.getHttpStatus());
 		}else {
+			logProcesoDiario.setEstadoProceso(Dominios.ESTADO_PROCESO_DIA_COMPLETO);
 			logProcesoDiarioService.actualizarLogProcesoDiario(
 					LogProcesoDiarioDTO.CONVERTER_DTO.apply(logProcesoDiario));
 		}
@@ -100,9 +102,6 @@ public class OperacionesProgramadasDelegateImpl implements IOperacionesProgramad
 	private void validarExistenciayFechaArchivos(String agrupador) {
 
 		Date fechaArchivo = parametroService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
-		if(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_DEFINITIVO.equals(agrupador)) {
-			fechaArchivo = festivosNacionalesService.consultarAnteriorHabil(fechaArchivo);
-		}
 
 		List<ArchivosCargados> listadoArchivosCargados = archivosCargadosService
 							.listadoArchivosCargadosSinProcesarDefinitiva(agrupador, fechaArchivo,

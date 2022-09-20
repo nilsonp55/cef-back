@@ -510,7 +510,14 @@ public enum ApiResponseCode {
 	/**
 	 * Ocurrió un error al consultar el estado de carga Conciliacion
 	 */
-	ERROR_TIPO_CONTABILIDAD("E944", "Error, TIPO DE CONTABILIDAD DEBE SER AM O PM", HttpStatus.PRECONDITION_FAILED);
+	ERROR_TIPO_CONTABILIDAD("E944", "Error, TIPO DE CONTABILIDAD DEBE SER AM O PM", HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Ocurrió un error al consultar el estado de carga Conciliacion
+	 */
+	ERROR_CREACION_OPERACION_PROGRAMADA("E945", "Error, Ocurrió un error al crear la operacion programada. ", HttpStatus.PRECONDITION_FAILED);
+	
+	
 	/**
 	 * Código asociado a la respuesta
 	 */
