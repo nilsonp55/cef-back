@@ -397,7 +397,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	 */
 	private OperacionesProgramadasDTO procesarRegistroCargado(String[] contenido,
 			List<DetallesDefinicionArchivoDTO> detalleArchivo, ArchivosCargadosDTO archivo) {
-
+		
 		OperacionesProgramadasDTO operacionProgramada = null;
 		String tipoServicio = contenido[this.obtenerNumeroCampoTipoServ(detalleArchivo)];
 
@@ -975,13 +975,14 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 				.setFechaProgramacion(UtilsString.convertirFecha(fechaProgramacion, listaDominioFecha));
 		operacionesProgramadasDTO.setFechaOrigen(UtilsString.convertirFecha(fechaOrigen, listaDominioFecha));
 		operacionesProgramadasDTO.setFechaDestino(UtilsString.convertirFecha(fechaDestino, listaDominioFecha));
-		if (Objects.isNull(tipoOperacion) ) {
-			operacionesProgramadasDTO.setTipoOperacion(tipoOperacion);
-		}
+		
+		
+		operacionesProgramadasDTO.setTipoOperacion(this.obtenerTipoOperacion(tipoOperacion));
+		
 		operacionesProgramadasDTO.setValorTotal(valorTotal);
 		operacionesProgramadasDTO.setIdNegociacion(idNegoc);
 		operacionesProgramadasDTO.setTasaNegociacion(tasaNegociacion);
-		operacionesProgramadasDTO.setEstadoOperacion(Dominios.ESTADOS_OPERA_PROGRAMADO);
+		operacionesProgramadasDTO.setEstadoOperacion(dominioService.valorTextoDominio(Constantes.DOMINIO_ESTADOS_OPERACION,Dominios.ESTADOS_OPERA_PROGRAMADO));
 		
 		operacionesProgramadasDTO.setEstadoConciliacion(dominioService.valorTextoDominio(
 				Constantes.DOMINIO_ESTADO_CONCILIACION,Dominios.ESTADO_CONCILIACION_NO_CONCILIADO));
@@ -991,6 +992,32 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		operacionesProgramadasDTO.setEsCambio(false);
 
 		return operacionesProgramadasDTO;
+	}
+
+	/**
+	 * Metodo encargado de obtener el tipo de operacion como se encuentre alojado 
+	 * en los dominios
+	 * 
+	 * @param tipoOperacion
+	 * @return String
+	 * @uthor duvan.naranjo
+	 * 
+	 */
+	private String obtenerTipoOperacion(String tipoOperacion) {
+		if (tipoOperacion.toUpperCase().trim().contains(Dominios.TIPO_OPERA_CONSIGNACION)) {
+			return dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_OPERACION, Dominios.TIPO_OPERA_CONSIGNACION);
+		} else if (tipoOperacion.toUpperCase().trim().contains(Dominios.TIPO_OPERA_RETIRO)) {
+			return dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_OPERACION, Dominios.TIPO_OPERA_RETIRO);
+		} else if (tipoOperacion.toUpperCase().trim().contains(Dominios.TIPO_OPERA_VENTA)) {
+			return dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_OPERACION, Dominios.TIPO_OPERA_VENTA);
+		} else if (tipoOperacion.toUpperCase().trim().startsWith(Dominios.TIPO_OPERA_CAMBIO)) {
+			return dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_OPERACION, Dominios.TIPO_OPERA_CAMBIO);
+		} else if (tipoOperacion.toUpperCase().trim().contains(Dominios.TIPO_OPERA_INTERCAMBIO)) {
+			return dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_OPERACION, Dominios.TIPO_OPERA_INTERCAMBIO);
+		} else if (tipoOperacion.toUpperCase().trim().contains(Dominios.TIPO_OPERA_TRASLADO)) {
+			return dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_OPERACION, Dominios.TIPO_OPERA_TRASLADO);
+		}
+		return null;
 	}
 
 	/**
