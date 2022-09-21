@@ -32,15 +32,15 @@ import lombok.NoArgsConstructor;
  */
 
 @NamedNativeQuery(name = "TransaccionesContables.cierreContablebyBanco", 
-query = "SELECT DISTINCT tc.banco_aval as bancoAval, tc.naturaleza as naturalezaContable, tc.cuenta_contable as  cuentaMayor, tc.cuenta_auxiliar as subAuxiliar, "
+query = "SELECT tc.banco_aval as bancoAval, tc.naturaleza as naturalezaContable, tc.cuenta_contable as  cuentaMayor, tc.cuenta_auxiliar as subAuxiliar, "
 		+ "tc.tipo_identificacion as tipoIdentificacion, tc.codigo_moneda as codigoMoneda, tc.valor as valor, tc.codigo_centro as centroCosto, "
 		+ "'' as centroBeneficio, '' as ordenCo, '' as areaFuncional, "
 		+ " tc.identificador as identificador, tc.descripcion as descripcionTransaccion, tc.id_tercero as terceroGL, tc.nombre_tercero as nombreTerceroGL,"
 		+ " tc.fecha as fechaConversion, tc.referencia1 as claveReferencia1, tc.referencia2 as claveReferencia2 "
 		+ "FROM transacciones_contables tc, cuentas_puc cp, transacciones_internas ti "
 		+ "WHERE tc.cuenta_contable = cp.CUENTA_CONTABLE AND "
-		+ " tc.naturaleza in('C','D') AND "
-		+ " cp.tipo_cuenta<>'TRAINT' AND "
+		+ " tc.banco_aval = cp.banco_aval AND "
+		+ " cp.nombre_cuenta like 'Transitoria%' AND "
 		+ " tc.id_transacciones_internas = ti.id_transacciones_internas AND "
 		+ " ti.estado = :estado AND "
 		+ " tc.fecha = :fecha AND "
@@ -49,15 +49,15 @@ query = "SELECT DISTINCT tc.banco_aval as bancoAval, tc.naturaleza as naturaleza
 resultSetMapping = "Mapping.RespuestaContableDTO")
 
 @NamedNativeQuery(name = "TransaccionesContables.cierreContableAllBancos", 
-query = "SELECT DISTINCT tc.banco_aval as bancoAval, tc.naturaleza as naturalezaContable, tc.cuenta_contable as  cuentaMayor, tc.cuenta_auxiliar as subAuxiliar, "
+query = "SELECT tc.banco_aval as bancoAval, tc.naturaleza as naturalezaContable, tc.cuenta_contable as  cuentaMayor, tc.cuenta_auxiliar as subAuxiliar, "
 		+ "tc.tipo_identificacion as tipoIdentificacion, tc.codigo_moneda as codigoMoneda, tc.valor as valor, tc.codigo_centro as centroCosto, "
 		+ "'' as centroBeneficio, '' as ordenCo, '' as areaFuncional, "
 		+ " tc.identificador as identificador, tc.descripcion as descripcionTransaccion, tc.id_tercero as terceroGL, tc.nombre_tercero as nombreTerceroGL,"
 		+ " tc.fecha as fechaConversion, tc.referencia1 as claveReferencia1, tc.referencia2 as claveReferencia2 "
 		+ "FROM transacciones_contables tc, cuentas_puc cp, transacciones_internas ti "
 		+ "WHERE tc.cuenta_contable = cp.CUENTA_CONTABLE AND "
-		+ " tc.naturaleza in('C','D') AND "
-		+ " cp.tipo_cuenta<>'TRAINT' AND "
+		+ " tc.banco_aval = cp.banco_aval AND "
+		+ " cp.nombre_cuenta <> 'Transitoria%' AND "
 		+ " tc.id_transacciones_internas = ti.id_transacciones_internas AND "
 		+ " ti.estado = :estado AND "
 		+ " tc.fecha = :fecha AND "

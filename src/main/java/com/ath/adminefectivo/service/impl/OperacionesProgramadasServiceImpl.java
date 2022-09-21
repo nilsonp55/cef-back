@@ -377,6 +377,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 			listadoRegistrosCargados
 					.forEach(registroCargado -> listadoOperacionesProgramadas.add(this.procesarRegistroCargado(
 							registroCargado.getContenido().split(delimitador), listadoDetalleArchivo, archivo)));
+			
 			if(archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_ISRPO)) {
 				actualizarValorTotalOficinas(archivo.getIdArchivo().intValue());
 			}
@@ -1212,7 +1213,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		String shipIn = determinarShipIn(contenido, detalleArchivo);
 		String shipOut = determinarShipOut(contenido, detalleArchivo);
 		operaciones = new OperacionesProgramadasDTO();
-		var operacionesProg = operacionesProgramadasRepository.findByIdServicio(orderId);
+		var operacionesProg = operacionesProgramadasRepository.findByIdServicioAndIdArchivoCargado(orderId, archivo.getIdArchivo().intValue());
 		if(Objects.isNull(operacionesProg)) {
 			if (Integer.parseInt(shipIn) + Integer.parseInt(shipOut) != 0){
 				String transportadora = determinarTransportadora(contenido, detalleArchivo, 

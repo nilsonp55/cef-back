@@ -149,10 +149,11 @@ public interface IOperacionesProgramadasRepository
 	/**
 	 * Retorna el objeto OperacionesProgramadas segun el IdServicio
 	 * @param orderId
+	 * @param idArchivo
 	 * @return OperacionesProgramadas
 	 * @author cesar.castano
 	 */
-	OperacionesProgramadas findByIdServicio(String orderId);
+	OperacionesProgramadas findByIdServicioAndIdArchivoCargado(String orderId, int idArchivo);
 	
 	/**
 	 * Retorna el id de un bancoAval yla operacion programada perteneciente al banco

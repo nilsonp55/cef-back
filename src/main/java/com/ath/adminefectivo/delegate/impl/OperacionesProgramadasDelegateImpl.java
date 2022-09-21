@@ -17,6 +17,7 @@ import com.ath.adminefectivo.dto.MaestrosDefinicionArchivoDTO;
 import com.ath.adminefectivo.dto.OperacionesProgramadasDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.ArchivosCargados;
+import com.ath.adminefectivo.entities.LogProcesoDiario;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.service.IArchivosCargadosService;
 import com.ath.adminefectivo.service.IDominioService;
@@ -72,7 +73,7 @@ public class OperacionesProgramadasDelegateImpl implements IOperacionesProgramad
 						.generarOperacionesProgramadas(listadoArchivosCargados);	
 			}
 		}
-		cambiarEstadoLogProcesoDiario();
+		cambiarEstadoLogProcesoDiario(agrupador);
 		//return Constantes.MENSAJE_NO_SE_ENCONTRARON_ARCHIVOS_OP;
 		return Constantes.MENSAJE_GENERO_OPERACIONES_PROGRAMADAS_CORRECTO;
 	}
@@ -81,9 +82,16 @@ public class OperacionesProgramadasDelegateImpl implements IOperacionesProgramad
 	 * Metodo encargado de cambiar el estado del log de proceso diario
 	 * @author cesar.castano
 	 */
-	private void cambiarEstadoLogProcesoDiario() {
-		var logProcesoDiario = logProcesoDiarioService.obtenerEntidadLogProcesoDiario(
-										Dominios.CODIGO_PROCESO_LOG_DEFINITIVO);
+	private void cambiarEstadoLogProcesoDiario(String agrupador) {
+		LogProcesoDiario logProcesoDiario = null;
+		if(agrupador.equals(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_PRELIMINARES)) {
+			 logProcesoDiarioService.obtenerEntidadLogProcesoDiario(
+					Dominios.CODIGO_PROCESO_LOG_PRELIMINAR);
+		}else if(agrupador.equals(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_DEFINITIVO)) {
+			logProcesoDiario = logProcesoDiarioService.obtenerEntidadLogProcesoDiario(
+					Dominios.CODIGO_PROCESO_LOG_DEFINITIVO);
+		}
+		
 		if (Objects.isNull(logProcesoDiario)) {
 			throw new NegocioException(ApiResponseCode.ERROR_CODIGO_PROCESO_NO_EXISTE.getCode(),
 					ApiResponseCode.ERROR_CODIGO_PROCESO_NO_EXISTE.getDescription(),

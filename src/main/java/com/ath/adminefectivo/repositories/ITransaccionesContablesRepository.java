@@ -66,7 +66,7 @@ public interface ITransaccionesContablesRepository extends JpaRepository<Transac
 			+ "	FROM transacciones_contables tc, cuentas_puc cp, transacciones_internas ti where "
 			+ " tc.CUENTA_CONTABLE = cp.CUENTA_CONTABLE AND "
 			+ " tc.naturaleza in('C','D') AND "
-			+ " cp.tipo_cuenta<>'TRAINT' AND "
+			+ " cp.nombre_cuenta <> 'Transitoria%' AND "
 			+ " ti.estado = 2 AND "
 			+ " tc.id_transacciones_internas = ti.id_transacciones_internas AND "
 			+ " tc.fecha = ?1 AND ti.tipo_proceso = ?2 AND tc.banco_aval = ?3 ",nativeQuery=true)
@@ -86,7 +86,7 @@ public interface ITransaccionesContablesRepository extends JpaRepository<Transac
 			+ "FROM Transacciones_contables tc, cuentas_puc cp, transacciones_internas ti WHERE "
 			+ " tc.CUENTA_CONTABLE = cp.CUENTA_CONTABLE AND "
 			+ " tc.naturaleza in('C','D') AND "
-			+ " cp.tipo_cuenta<>'TRAINT' AND "
+			+ " cp.nombre_cuenta <> 'Transitoria%' AND "
 			+ " ti.estado = 3 AND "
 			+ " tc.id_transacciones_internas = ti.id_transacciones_internas) AND "
 			+ " tc.fecha = ?1 AND ti.tipo_proceso = ?2)",nativeQuery=true)
@@ -111,7 +111,7 @@ public interface ITransaccionesContablesRepository extends JpaRepository<Transac
 			+ " FROM transacciones_contables tc, cuentas_puc cp, transacciones_internas ti where "
 			+ " tc.CUENTA_CONTABLE = cp.CUENTA_CONTABLE AND "
 			+ " tc.naturaleza in('C','D') AND "
-			+ " cp.tipo_cuenta<>'TRAINT' AND "
+			+ " cp.nombre_cuenta <> 'Transitoria%' AND "
 			+ " tc.id_transacciones_internas = ti.id_transacciones_internas AND "
 			+ " ti.estado = ?1 ",nativeQuery=true)
 	Integer estadovalidacionContable(int estado);
