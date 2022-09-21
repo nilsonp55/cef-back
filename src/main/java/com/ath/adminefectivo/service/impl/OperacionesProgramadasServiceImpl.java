@@ -986,7 +986,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		
 		operacionesProgramadasDTO.setEstadoConciliacion(dominioService.valorTextoDominio(
 				Constantes.DOMINIO_ESTADO_CONCILIACION,Dominios.ESTADO_CONCILIACION_NO_CONCILIADO));
-		operacionesProgramadasDTO.setTipoServicio(Dominios.TIPO_SERVICIO_PROGRAMADA);
+		operacionesProgramadasDTO.setTipoServicio(dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_SERVICIO,Dominios.TIPO_SERVICIO_PROGRAMADA));
 		operacionesProgramadasDTO.setUsuarioCreacion("ATH");
 		operacionesProgramadasDTO.setFechaCreacion(new Date());
 		operacionesProgramadasDTO.setEsCambio(false);
