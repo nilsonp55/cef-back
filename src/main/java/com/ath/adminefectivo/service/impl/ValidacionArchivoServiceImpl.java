@@ -374,9 +374,17 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 					break;
 				}
 				case "TH": {
-					fecha = nombreArchivo.substring(11, 19);
+					if(nombreArchivo.length() == 22) {
+						fecha = nombreArchivo.substring(10, 18);
+					}if(nombreArchivo.length() == 23) {
+						fecha = nombreArchivo.substring(11, 19);
+					}
+					else {
+						fecha = nombreArchivo.substring(13, 21);
+					}
 					mascaraFecha = mascaraArchivo.substring(19, 27);
 					fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
+					
 					break;
 				}
 				case "SC": {

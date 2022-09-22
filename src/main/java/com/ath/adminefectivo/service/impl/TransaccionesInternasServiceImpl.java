@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ath.adminefectivo.dto.RespuestaContableDTO;
 import com.ath.adminefectivo.dto.TransaccionesInternasDTO;
 import com.ath.adminefectivo.entities.TransaccionesInternas;
 import com.ath.adminefectivo.repositories.ITransaccionesInternasRepository;
@@ -88,6 +89,35 @@ public class TransaccionesInternasServiceImpl implements ITransaccionesInternasS
 	 * {@inheritDoc}
 	 */
 	@Override
+	public void deleteTransaccionesInternasByFechasAndTipoProceso(Date fechaInicio, Date fechaFin, String tipoProceso) {
+		List<TransaccionesInternas> listadoTransaccionesInternas = transaccionesInternasRepository
+				.findByFechaBetweenAndTipoProceso(fechaInicio, fechaFin, tipoProceso);
+		
+		listadoTransaccionesInternas.forEach(transaccionInterna ->{
+			transaccionesInternasRepository.delete(transaccionInterna);
+		});
+		
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean existErroresContablesByBanco (Date fecha,String tipoContabilidad,int codBanco) {
+		return transaccionesInternasRepository.existErroresContablesByBanco(fecha, tipoContabilidad, codBanco, 3);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean existErroresContablesAllBanco (Date fecha,String tipoContabilidad) {
+		return  transaccionesInternasRepository.existErroresContablesAllBanco(fecha, tipoContabilidad, 3);
+
+		
+	}
+
+	@Override
 	public void deleteTransaccionesInternasByFechas(Date fechaInicio, Date fechaFin) {
 		List<TransaccionesInternas> listadoTransaccionesInternas = transaccionesInternasRepository
 				.findByFechaBetween(fechaInicio, fechaFin);
@@ -95,7 +125,6 @@ public class TransaccionesInternasServiceImpl implements ITransaccionesInternasS
 		listadoTransaccionesInternas.forEach(transaccionInterna ->{
 			transaccionesInternasRepository.delete(transaccionInterna);
 		});
-		
 	}
 
 }

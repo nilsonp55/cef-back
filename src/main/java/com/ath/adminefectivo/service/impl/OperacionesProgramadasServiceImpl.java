@@ -308,7 +308,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 				listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaProgramacionBetweenAndEsCambioAndEstadoConciliacion(Dominios.TIPO_OPERA_INTERCAMBIO, fechaInicio,
 						fechaFin, false, Dominios.ESTADO_CONCILIACION_POSPUESTA));
 			}else {
-				throw new AplicationException(ApiResponseCode.ERROR_LOGPROCESODIARIO_NO_ENCONTRADO.getCode(),
+				throw new NegocioException(ApiResponseCode.ERROR_LOGPROCESODIARIO_NO_ENCONTRADO.getCode(),
 						ApiResponseCode.ERROR_LOGPROCESODIARIO_NO_ENCONTRADO.getDescription(),
 						ApiResponseCode.ERROR_LOGPROCESODIARIO_NO_ENCONTRADO.getHttpStatus());
 			}

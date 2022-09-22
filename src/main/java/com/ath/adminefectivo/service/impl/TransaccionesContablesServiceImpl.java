@@ -92,14 +92,12 @@ public class TransaccionesContablesServiceImpl implements ITransaccionesContable
 	public List<RespuestaContableDTO> getCierreContable(Date fecha, String tipoContabilidad,
 			int codBanco) {
 		List<TransaccionesContablesDTO> listadoTransaccionesCierreDTO = new ArrayList<>();
-		System.out.println("ENTRO 94");
 		List<RespuestaContableDTO> listadoTransaccionContables = null;
 			if(codBanco == 0) {
 				listadoTransaccionContables = transaccionesContablesRepository
 						.cierreContableAllBancos(fecha,tipoContabilidad, 1);
 			}else if(codBanco > 0)
 			{
-				System.out.println("ENTRO 101");
 				listadoTransaccionContables = transaccionesContablesRepository
 						.cierreContablebyBanco(fecha,tipoContabilidad,codBanco,1 );
 			}
@@ -120,22 +118,7 @@ public class TransaccionesContablesServiceImpl implements ITransaccionesContable
 		return listadoTransaccionesContablesDTO;
 		
 	}
-	
-	public List<RespuestaContableDTO> existErroresContablesByBanco (Date fecha,String tipoContabilidad,int codBanco) {
-		//aqui va el repository
-		System.out.println("ENTRO existErroresContablesByBanco transacciones contables 125");
-		List<RespuestaContableDTO>  dato = transaccionesContablesRepository.cierreContablebyBanco(fecha, tipoContabilidad, codBanco, 3);
-		return dato;
-	}
-	
-	public List<RespuestaContableDTO> existErroresContablesAllBanco (Date fecha,String tipoContabilidad) {
-		//aqui va el repository
-		List<RespuestaContableDTO> dato = transaccionesContablesRepository.cierreContableAllBancos(fecha, tipoContabilidad, 3);
-
-		return dato;
 		
-	}
-	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -157,9 +140,9 @@ public class TransaccionesContablesServiceImpl implements ITransaccionesContable
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void deleteTransaccionesContablesByFechas(Date fechaInicio, Date fechaFin) {
+	public void deleteTransaccionesContablesByFechasAndTipoProceso(Date fechaInicio, Date fechaFin, String tipoProceso) {
 		List<TransaccionesContables> listadoTransaccionesContables = transaccionesContablesRepository
-				.findByFechaBetween(fechaInicio, fechaFin);
+				.findByFechaBetweenAndTipoProceso(fechaInicio, fechaFin, tipoProceso);
 		listadoTransaccionesContables.forEach(transaccionContable ->{
 			transaccionesContablesRepository.delete(transaccionContable);
 		});		

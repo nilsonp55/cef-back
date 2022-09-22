@@ -113,6 +113,6 @@ public interface ITransaccionesContablesService {
 	 * @param fechaInicio
 	 * @param fechaFin
 	 */
-	void deleteTransaccionesContablesByFechas(Date fechaInicio, Date fechaFin);
+	void deleteTransaccionesContablesByFechasAndTipoProceso(Date fechaInicio, Date fechaFin, String tipoProceso);
 
 }

@@ -21,6 +21,16 @@ public interface ITransaccionesContablesRepository extends JpaRepository<Transac
 	 * @author duvan.naranjo
 	 */
 	List<TransaccionesContables> findByFechaBetween(Date start, Date end);
+	
+	/**
+	 * Retorna una lista de transacciones contables por fecha
+	 * @param start
+	 * @param end
+	 * @param tipoProceso
+	 * @return List<TransaccionesContables>
+	 * @author duvan.naranjo
+	 */
+	List<TransaccionesContables> findByFechaBetweenAndTipoProceso(Date start, Date end, String tipoProceso);
 
 	/**
 	 * Retorna una lista de transacciones contables por naturaleza, debito y credito
