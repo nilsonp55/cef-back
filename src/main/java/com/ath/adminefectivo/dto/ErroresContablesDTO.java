@@ -30,6 +30,8 @@ public class ErroresContablesDTO {
 	
 	private String mensajeError;
 	
+	private int estado;
+	
 	/**
 	 * Funcion que retorna la entidad recibiendo un DTO *
 	 */
