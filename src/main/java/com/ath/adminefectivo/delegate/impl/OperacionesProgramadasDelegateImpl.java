@@ -57,6 +57,7 @@ public class OperacionesProgramadasDelegateImpl implements IOperacionesProgramad
 	@Override
 	public String generarOperacionesProgramadas(String agrupador) {
 
+		this.consultarEstadoLogProcesoDiario(agrupador);
 		List<MaestrosDefinicionArchivoDTO> maestroDefinicionArchivo = maestroDefinicionArchivoService
 									.consultarDefinicionArchivoByAgrupador(
 									Constantes.ESTADO_MAESTRO_DEFINICION_ACTIVO, agrupador);
@@ -78,6 +79,23 @@ public class OperacionesProgramadasDelegateImpl implements IOperacionesProgramad
 		return Constantes.MENSAJE_GENERO_OPERACIONES_PROGRAMADAS_CORRECTO;
 	}
 	
+	private void consultarEstadoLogProcesoDiario(String agrupador) {
+		LogProcesoDiario logProcesoDiario = null;
+		if(agrupador.equals(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_PRELIMINARES)) {
+			logProcesoDiario = logProcesoDiarioService.obtenerEntidadLogProcesoDiario(
+					Dominios.CODIGO_PROCESO_LOG_PRELIMINAR);
+		}else if(agrupador.equals(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_DEFINITIVO)) {
+			logProcesoDiario = logProcesoDiarioService.obtenerEntidadLogProcesoDiario(
+					Dominios.CODIGO_PROCESO_LOG_DEFINITIVO);
+		}
+		
+		if (Objects.isNull(logProcesoDiario) || logProcesoDiario.getEstadoProceso().equals(Dominios.ESTADO_PROCESO_DIA_COMPLETO)) {
+			throw new NegocioException(ApiResponseCode.ERROR_CODIGO_PROCESO_NO_EXISTE.getCode(),
+					ApiResponseCode.ERROR_CODIGO_PROCESO_NO_EXISTE.getDescription(),
+					ApiResponseCode.ERROR_CODIGO_PROCESO_NO_EXISTE.getHttpStatus());
+		}		
+	}
+
 	/**
 	 * Metodo encargado de cambiar el estado del log de proceso diario
 	 * @author cesar.castano
@@ -85,7 +103,7 @@ public class OperacionesProgramadasDelegateImpl implements IOperacionesProgramad
 	private void cambiarEstadoLogProcesoDiario(String agrupador) {
 		LogProcesoDiario logProcesoDiario = null;
 		if(agrupador.equals(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_PRELIMINARES)) {
-			 logProcesoDiarioService.obtenerEntidadLogProcesoDiario(
+			logProcesoDiario = logProcesoDiarioService.obtenerEntidadLogProcesoDiario(
 					Dominios.CODIGO_PROCESO_LOG_PRELIMINAR);
 		}else if(agrupador.equals(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_DEFINITIVO)) {
 			logProcesoDiario = logProcesoDiarioService.obtenerEntidadLogProcesoDiario(

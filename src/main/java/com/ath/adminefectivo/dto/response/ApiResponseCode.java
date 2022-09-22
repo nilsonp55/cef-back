@@ -460,7 +460,7 @@ public enum ApiResponseCode {
 	/**
 	 * Ocurrió un error al consultar el Log Proceso Diario
 	 */
-	ERROR_CODIGO_PROCESO_NO_EXISTE("E929", "Codigo Proceso no existe en Log Proceso Diario", HttpStatus.PRECONDITION_FAILED),
+	ERROR_CODIGO_PROCESO_NO_EXISTE("E929", "Codigo Proceso no existe en Log Proceso Diario o se encuentra en estado Cerrado", HttpStatus.PRECONDITION_FAILED),
 
 	/**
 	 * Ocurrió un error al consultar el Log Proceso Diario
