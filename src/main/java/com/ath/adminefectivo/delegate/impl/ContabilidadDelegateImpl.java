@@ -63,18 +63,17 @@ public class ContabilidadDelegateImpl implements IContabilidadDelegate {
 	public ContabilidadDTO generarContabilidad(String tipoContabilidad) {
 	
 		Date fechaProcesoFin = this.obtenerFechaProceso(tipoContabilidad);
-		Date fechaProcesoInicial = this.obtenerFechaProcesoInicial(fechaProcesoFin);
+		Date fechaProcesoInicial = this.obtenerFechaProcesoInicial(tipoContabilidad,fechaProcesoFin);
+		Date fechaSistema = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
 		
 		System.out.println("fechaProcesoInicial "+fechaProcesoInicial);
 		System.out.println("fechaProcesoFin "+fechaProcesoFin);
 		
 		var operacionesProgramadas = operacionesProgramadasService.getOperacionesProgramadasPorFechas(tipoContabilidad, fechaProcesoInicial,fechaProcesoFin);
-		
-		System.out.println("operacionesProgramadas "+operacionesProgramadas.size());
-		
+				
 		if(!operacionesProgramadas.isEmpty()) {
 			
-			contabilidadService.procesoEliminarExistentes(tipoContabilidad, operacionesProgramadas, fechaProcesoInicial, fechaProcesoFin);
+			contabilidadService.procesoEliminarExistentes(tipoContabilidad, operacionesProgramadas, fechaSistema, fechaSistema);
 			
 			int resultado = contabilidadService.generarContabilidad(tipoContabilidad, operacionesProgramadas);
 			
@@ -86,7 +85,7 @@ public class ContabilidadDelegateImpl implements IContabilidadDelegate {
 			if(resultado > 0) {
 				return contabilidadService.generarRespuestaContabilidad(fechaProcesoInicial, fechaProcesoFin, tipoContabilidad, "MENSAJE EXITOSO");
 			}else {
-				return contabilidadService.generarRespuestaContabilidad(fechaProcesoInicial, fechaProcesoFin, tipoContabilidad, "NO SE ENCONTRARON OPERACIONES POR PROCESAR PARA LA FECHA");
+				return contabilidadService.generarRespuestaContabilidad(fechaProcesoInicial, fechaProcesoFin, tipoContabilidad, "NO SE GENERARON TRANSACCIONES CONTABLES. ");
 			}
 		}
 		return contabilidadService.generarRespuestaContabilidad(fechaProcesoInicial, fechaProcesoFin, tipoContabilidad, "NO SE ENCONTRARON OPERACIONES POR PROCESAR PARA LA FECHA");
@@ -141,8 +140,13 @@ public class ContabilidadDelegateImpl implements IContabilidadDelegate {
 	 * @param fechaProcesoFin
 	 * @return Date
 	 */
-	private Date obtenerFechaProcesoInicial(Date fechaProcesoFin) {
-		return festivosNacionalesService.consultarAnteriorHabil(fechaProcesoFin);
+	private Date obtenerFechaProcesoInicial(String tipoContabilidad, Date fechaProcesoFin) {
+		if(tipoContabilidad.equals("AM")){
+			return festivosNacionalesService.consultarAnteriorHabil(fechaProcesoFin);
+		}else {
+			return fechaProcesoFin;
+		}
+		
 	}
 
 	/**
