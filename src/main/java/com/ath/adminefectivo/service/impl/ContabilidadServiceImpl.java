@@ -53,10 +53,12 @@ import com.ath.adminefectivo.service.IContabilidadService;
 import com.ath.adminefectivo.service.IDominioService;
 import com.ath.adminefectivo.service.IErroresContablesService;
 import com.ath.adminefectivo.service.IFondosService;
+import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.IPuntosService;
 import com.ath.adminefectivo.service.ITransaccionesContablesService;
 import com.ath.adminefectivo.service.ITransaccionesInternasService;
 import com.ath.adminefectivo.service.ITransportadorasService;
+import com.fasterxml.jackson.databind.deser.impl.CreatorCandidate.Param;
 import com.querydsl.core.types.Predicate;
 
 @Service
@@ -88,6 +90,9 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 	
 	@Autowired
 	IErroresContablesService erroresContablesService;
+	
+	@Autowired
+	IParametroService parametroService;
 
 	int consecutivoDia = 1;
 	int consecutivoMovContable = 1;
@@ -177,8 +182,8 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 	@Override
 	public void procesoEliminarExistentes(String tipoContabilidad,
 			List<OperacionesProgramadasDTO> operacionesProgramadas, Date fechaInicio, Date fechaFin) {
-			transaccionesContablesService.deleteTransaccionesContablesByFechas(fechaInicio, fechaFin);
-			transaccionesInternasService.deleteTransaccionesInternasByFechas(fechaInicio, fechaFin);
+			transaccionesContablesService.deleteTransaccionesContablesByFechasAndTipoProceso(fechaInicio, fechaFin, tipoContabilidad);
+			transaccionesInternasService.deleteTransaccionesInternasByFechasAndTipoProceso(fechaInicio, fechaFin,tipoContabilidad);
 		
 	}
 	
@@ -500,10 +505,13 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 
 	private TransaccionesInternasDTO generarTransaccionInterna(String tipoProceso, Integer tipoTransaccion,
 			OperacionesProgramadasDTO operacionProgramada, Integer codigoPunto) {
+		
+		Date fechaSistema = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
+		
 				Double valorD = operacionProgramada.getValorTotal();
 		TransaccionesInternasDTO transaccionInternaDTO = TransaccionesInternasDTO.builder()
 				.idOperacion(operacionProgramada).consecutivoDia(String.valueOf(consecutivoDia))
-				.fecha(operacionProgramada.getFechaProgramacion()).tipoTransaccion(tipoTransaccion)
+				.fecha(fechaSistema).tipoTransaccion(tipoTransaccion)
 				.codigoMoneda(operacionProgramada.getCodigoMoneda()).valor(valorD.intValue())
 				.tasaEjeCop(1).tasaNoEje(1).tipoOperacion(operacionProgramada.getTipoOperacion())
 				.tipoProceso(tipoProceso).estado(Dominios.ESTADO_CONTABILIDAD_GENERADO).esCambio(false).build();

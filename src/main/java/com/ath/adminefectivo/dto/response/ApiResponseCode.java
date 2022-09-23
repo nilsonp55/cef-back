@@ -456,7 +456,7 @@ public enum ApiResponseCode {
 	/**
 	 * Ocurrió un error al consultar el Log Proceso Diario
 	 */
-	ERROR_LOGPROCESODIARIO_NO_ENCONTRADO("E927", "Log Proceso Diario no encontrado", HttpStatus.PRECONDITION_FAILED),
+	ERROR_LOGPROCESODIARIO_NO_ENCONTRADO("E927", "Log Proceso Diario no encontrado o el proceso se encuentra cerrado. ", HttpStatus.PRECONDITION_FAILED),
 
 	/**
 	 * Ocurrió un error al consultar el Log Proceso Diario
@@ -521,8 +521,12 @@ public enum ApiResponseCode {
 	/**
 	 * Ocurrió un error al consultar el estado de carga Conciliacion
 	 */
-	ERROR_CREACION_OPERACION_PROGRAMADA("E945", "Error, Ocurrió un error al crear la operacion programada. ", HttpStatus.PRECONDITION_FAILED);
+	ERROR_CREACION_OPERACION_PROGRAMADA("E945", "Error, Ocurrió un error al crear la operacion programada. ", HttpStatus.PRECONDITION_FAILED),
 	
+	/**
+	 * Ocurrió un error al validar la contabilidad porque ya esta cerrada
+	 */
+	PROCESO_CONTABILIDAD_CERRADA("E946", "El proceso de contabilidad AM o PM ya se encuentra cerrada para la fecha. ", HttpStatus.PRECONDITION_FAILED);
 	
 	/**
 	 * Código asociado a la respuesta

@@ -3,6 +3,7 @@ package com.ath.adminefectivo.service;
 import java.util.Date;
 import java.util.List;
 
+import com.ath.adminefectivo.dto.RespuestaContableDTO;
 import com.ath.adminefectivo.dto.TransaccionesInternasDTO;
 import com.ath.adminefectivo.entities.TransaccionesInternas;
 
@@ -74,6 +75,39 @@ public interface ITransaccionesInternasService {
 	 * @author duvan.naranjo
 	 */
 	void deleteTransaccionesInternasByFechas(Date fechaInicio, Date fechaFin);
+	
+	/**
+	 * Servicio encargado de llamar la funcion encargada de realizar el borrado de las transacciones 
+	 * internas que se han procesado en las mismas fechas
+	 * 
+	 * @param fechaInicio
+	 * @param fechaFin
+	 * @param tipoServicio
+	 * @author duvan.naranjo
+	 */
+	void deleteTransaccionesInternasByFechasAndTipoProceso(Date fechaInicio, Date fechaFin, String tipoProceso);
+
+	/**
+	 * Metodo encargado de validar los errores contables por banco
+	 * 
+	 * @param fecha
+	 * @param tipoContabilidad
+	 * @param codBanco
+	 * @return boolean
+	 * @author duvan.naranjo
+	 */
+	boolean existErroresContablesByBanco(Date fecha, String tipoContabilidad, int codBanco);
+
+	/**
+	 * Metodo encargado de validar los errores contables para todos los bancos
+	 * 
+	 * @param fecha
+	 * @param tipoContabilidad
+	 * @param codBanco
+	 * @return boolean
+	 * @author duvan.naranjo
+	 */
+	boolean existErroresContablesAllBanco(Date fecha, String tipoContabilidad);
 	
 	
 
