@@ -21,6 +21,8 @@ import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvException;
 
+import com.ath.adminefectivo.exception.NegocioException;
+
 @Service
 public class LecturaArchivoServiceImpl implements ILecturaArchivoService {
 
@@ -58,8 +60,8 @@ public class LecturaArchivoServiceImpl implements ILecturaArchivoService {
 		
 		try (CSVReader csvReader = new CSVReaderBuilder(new InputStreamReader(archivo)).withCSVParser(parser).build()) {
 			return csvReader.readAll();
-		} catch (IOException | CsvException e) {
-			throw new AplicationException(ApiResponseCode.ERROR_LECTURA_DOCUMENTO.getCode(),
+		} catch (Exception e) {
+			throw new NegocioException(ApiResponseCode.ERROR_LECTURA_DOCUMENTO.getCode(),
 					ApiResponseCode.ERROR_LECTURA_DOCUMENTO.getDescription(),
 					ApiResponseCode.ERROR_LECTURA_DOCUMENTO.getHttpStatus());
 		}
