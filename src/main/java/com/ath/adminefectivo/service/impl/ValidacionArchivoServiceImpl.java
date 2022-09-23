@@ -272,6 +272,15 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 				}
 				case "TH": {
 					fecha = nombreArchivo.substring(11, 19);
+					if(nombreArchivo.length() == 22) {
+						fecha = nombreArchivo.substring(10, 18);
+					}if(nombreArchivo.length() == 23) {
+						fecha = nombreArchivo.substring(11, 19);
+					}
+					else {
+						fecha = nombreArchivo.substring(13, 21);
+					}
+										
 					mascaraFecha = maestroDefinicion.getMascaraArch().substring(19, 27);
 					formatoFecha = new ArrayList();
 					formatoFecha.add(mascaraFecha);
