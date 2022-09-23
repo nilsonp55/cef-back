@@ -71,14 +71,19 @@ public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService{
 		List<LogProcesoDiario> logProcesoDiarios = logProcesoDiarioRepository.findByFechaCreacion(fecha);
 
 		var procesoDiarioConciliacionCerrad = false;
+		var procesoDiarioLiquidacionPendiente = false;
 		for(int i=0; i<logProcesoDiarios.size(); i++) {
 			LogProcesoDiario item = logProcesoDiarios.get(i);
 			if(item.getCodigoProceso().equals(Dominios.CODIGO_PROCESO_LOG_CONCILIACION)) {
 				procesoDiarioConciliacionCerrad = 
 						item.getEstadoProceso().equals(Dominios.ESTADO_PROCESO_DIA_COMPLETO) ? true : false;
 			}
+			if(item.getCodigoProceso().equals(Dominios.CODIGO_PROCESO_LOG_LIQUIDACION)) {
+				procesoDiarioLiquidacionPendiente = 
+						item.getEstadoProceso().equals(Dominios.ESTADO_PROCESO_DIA_PENDIENTE) ? true : false;
+			}
 		};
-		if(procesoDiarioConciliacionCerrad) {
+		if(procesoDiarioConciliacionCerrad && procesoDiarioLiquidacionPendiente) {
 			try {
 				ValoresLiquidadosDTO valoresLiquidadosDTO = new ValoresLiquidadosDTO();
 				//Se ejecutan procedimientos
