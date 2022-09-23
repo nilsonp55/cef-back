@@ -283,9 +283,21 @@ public enum ApiResponseCode {
 	/**
 	 * Ocurrió un error al consultar la table de conciliados
 	 */
-	ERROR_PROCESO_CONSTO_VALORES_LIQUIDADOS("E938", "Ocurrió un error al ejecutar el procedimiento de costos en valores liquidados",
+	ERROR_PROCESO_CONSTO_VALORES_LIQUIDADOS("E938", "Ocurrió un error al ejecutar el procedimiento no se encontro para la fecha de liquidación la conciliación en estado cerrado o pendiente el estado de la liquidación",
 			HttpStatus.PRECONDITION_FAILED),
 	
+	/**
+	 * Ocurrió un error al consultar la table de conciliados
+	 */
+	ERROR_PROCESO_CONSTO_VALORES_LIQUIDADOS_SIN_PARAM("E938", "No se puede ejecutar el procedimiento ya que no se encontro para la fecha registros para la liquidación",
+			HttpStatus.PRECONDITION_FAILED),
+	
+	
+	/**
+	 * Ocurrió un error al consultar la table de conciliados
+	 */
+	ERROR_PROCESO_VALIDACION_CIERRE_CONSTO_VALORES_LIQUIDADOS("E939", "No se puede ejecutar la liquidación de costos ya que la conciliación no ha sido cerrada",
+			HttpStatus.PRECONDITION_FAILED),
 	/**
 	 * No se puede realizar el cierre del dia por que no han finalizado todos los
 	 * proceso

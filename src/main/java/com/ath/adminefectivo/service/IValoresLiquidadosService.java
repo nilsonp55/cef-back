@@ -1,5 +1,6 @@
 package com.ath.adminefectivo.service;
 
+import com.ath.adminefectivo.dto.ValoresLiquidadosDTO;
 import com.ath.adminefectivo.dto.compuestos.costosCharterDTO;
 
 public interface IValoresLiquidadosService {
@@ -16,5 +17,5 @@ public interface IValoresLiquidadosService {
 	 * Servicio que ejecuta los procesos de costos
 	 * @author bayron.perez
 	 */
-	Boolean procesarPackageCostos();
+	ValoresLiquidadosDTO procesarPackageCostos();
 }

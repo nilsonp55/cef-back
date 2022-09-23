@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ath.adminefectivo.delegate.IPuntosDelegate;
 import com.ath.adminefectivo.dto.CreatePuntosDTO;
 import com.ath.adminefectivo.dto.PuntosDTO;
+import com.ath.adminefectivo.dto.ValoresLiquidadosDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
@@ -36,10 +37,10 @@ public class ValoresLiquidadosController {
 	 */
 	@PostMapping(value = "${endpoints.ValoresLiquidacion.costos}", 
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponseADE<Boolean>> procesarCostos() {
+	public ResponseEntity<ApiResponseADE<ValoresLiquidadosDTO>> procesarCostos() {
 		
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ApiResponseADE<Boolean>(valoresLiquidadosServicioImpl.procesarPackageCostos(),
+				.body(new ApiResponseADE<ValoresLiquidadosDTO>(valoresLiquidadosServicioImpl.procesarPackageCostos(),
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 								.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 
