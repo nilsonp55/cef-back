@@ -45,4 +45,19 @@ public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService{
 		return estado;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Boolean procesarPackageCostos() {
+		try {
+			Integer parametro = valoresLiquidadosRepository.armar_parametros_liquida();
+			valoresLiquidadosRepository.liquidar_costos(parametro);
+			return true;
+		} catch (Exception e) {
+			throw new NegocioException(ApiResponseCode.ERROR_PROCESO_CONSTO_VALORES_LIQUIDADOS.getCode(),
+					ApiResponseCode.ERROR_PROCESO_CONSTO_VALORES_LIQUIDADOS.getDescription(),
+					ApiResponseCode.ERROR_PROCESO_CONSTO_VALORES_LIQUIDADOS.getHttpStatus());
+				}
+	}
 }

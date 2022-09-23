@@ -11,4 +11,10 @@ public interface IValoresLiquidadosService {
 	 * @author prv_ccastano
 	 */
 	Boolean ActualizaCostosFletesCharter(costosCharterDTO costosCharter);
+	
+	/**
+	 * Servicio que ejecuta los procesos de costos
+	 * @author bayron.perez
+	 */
+	Boolean procesarPackageCostos();
 }

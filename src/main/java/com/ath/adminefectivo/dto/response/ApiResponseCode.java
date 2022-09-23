@@ -281,6 +281,12 @@ public enum ApiResponseCode {
 			HttpStatus.PRECONDITION_FAILED),
 	
 	/**
+	 * Ocurrió un error al consultar la table de conciliados
+	 */
+	ERROR_PROCESO_CONSTO_VALORES_LIQUIDADOS("E938", "Ocurrió un error al ejecutar el procedimiento de costos en valores liquidados",
+			HttpStatus.PRECONDITION_FAILED),
+	
+	/**
 	 * No se puede realizar el cierre del dia por que no han finalizado todos los
 	 * proceso
 	 */
