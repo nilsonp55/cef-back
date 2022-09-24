@@ -41,6 +41,7 @@ import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 
 import java.util.Properties;
 import java.net.URISyntaxException;
+import java.util.Objects;
 
 /**
  * Clase para generar funcionalidades con respect al s3 del PP
@@ -183,7 +184,9 @@ public class s3Utils {
 		catch (Exception e) {
 			salida = false;
 		}
-		object.close();
+		if(!Objects.isNull(object)){
+			object.close();
+		}
 		return salida;
 	}
 	
