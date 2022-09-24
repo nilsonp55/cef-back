@@ -33,7 +33,7 @@ public interface IErroresContablesService {
 	 * @return ErroresContablesDTO
 	 * @author duvan.naranjo
 	 */
-	List<ErroresContablesDTO> consultarErroresContablesByFechas(Date fechaInicio, Date fechaFin);
+	List<ErroresContablesDTO> consultarErroresContablesByFechaAndTipoProceso(Date fechaFin, String tipoProceso);
 
 	/**
 	 * Servicio encargado de generar el listado de los errores contables 

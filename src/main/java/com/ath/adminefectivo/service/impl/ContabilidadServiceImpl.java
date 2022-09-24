@@ -147,22 +147,22 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public ContabilidadDTO generarRespuestaContabilidad(Date f1, Date f2, String tipoContabilidad,
+	public ContabilidadDTO generarRespuestaContabilidad(Date fechaSistema, String tipoContabilidad,
 			String mensaje) {
 		ContabilidadDTO contabilidadDTO = new ContabilidadDTO();
 		
-		ConteoContabilidadDTO conteoContabilidadDTO = transaccionesContablesService.generarConteoContabilidad(f1, f2, tipoContabilidad);
+		ConteoContabilidadDTO conteoContabilidadDTO = transaccionesContablesService.generarConteoContabilidad(fechaSistema, tipoContabilidad);
 		contabilidadDTO.setConteoContabilidadDTO(conteoContabilidadDTO);	
 		
 		contabilidadDTO.setMensaje(mensaje);
 		
-		List<ErroresContablesDTO> erroresContables = erroresContablesService.consultarErroresContablesByFechas(f1, f2);
+		List<ErroresContablesDTO> erroresContables = erroresContablesService.consultarErroresContablesByFechaAndTipoProceso(fechaSistema, tipoContabilidad);
 		contabilidadDTO.setErroresContablesDTO(erroresContables);
 
 //		List<TransaccionesContablesDTO> transaccionesContables = transaccionesContablesService.getTransaccionesContablesByFechas(f1, f2);
 //		contabilidadDTO.setTransaccionesContablesDTO(transaccionesContables);
 		
-		List<RespuestaContableDTO> respuestaContableDTO = transaccionesContablesService.getCierreContable(f2,tipoContabilidad,0);
+		List<RespuestaContableDTO> respuestaContableDTO = transaccionesContablesService.getCierreContable(fechaSistema,tipoContabilidad,0);
 		contabilidadDTO.setRespuestasContablesDTO(respuestaContableDTO);
 		
 		return contabilidadDTO;

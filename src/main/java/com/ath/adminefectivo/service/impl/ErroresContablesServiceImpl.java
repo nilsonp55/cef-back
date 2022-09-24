@@ -30,8 +30,8 @@ public class ErroresContablesServiceImpl implements IErroresContablesService{
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<ErroresContablesDTO> consultarErroresContablesByFechas(Date fechaInicio, Date fechaFin) {
-		List<ErroresContables> listadoErroresContablesEntity = erroresContablesRepository.findByFechaBetween(fechaInicio, fechaFin);
+	public List<ErroresContablesDTO> consultarErroresContablesByFechaAndTipoProceso(Date fechaFin, String tipoProceso) {
+		List<ErroresContables> listadoErroresContablesEntity = erroresContablesRepository.findByFechaBetweenAndTipoProceso(fechaFin, tipoProceso);
 		List<ErroresContablesDTO> listadoErroresContablesDTO = new ArrayList<>();
 		listadoErroresContablesEntity.forEach(errorContableEntity -> {
 			listadoErroresContablesDTO.add(ErroresContablesDTO.CONVERTER_DTO.apply(errorContableEntity));

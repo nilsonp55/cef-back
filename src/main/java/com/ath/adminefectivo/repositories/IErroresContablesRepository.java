@@ -29,7 +29,13 @@ public interface IErroresContablesRepository extends JpaRepository<ErroresContab
 	 * @return List<ErroresContables>
 	 * @author duvan.naranjo
 	 */
-	public List<ErroresContables> findByFechaBetween(Date start, Date end);
+	@Query(value = "SELECT ec.* from public.errores_contables ec, "
+			+ "			public.transacciones_internas ti "
+			+ "	where "
+			+ "		ec.fecha  = ?1 and "
+			+ "		ec.id_transacciones_internas = ti.id_transacciones_internas and "
+			+ "		ti.tipo_proceso = ?2 ", nativeQuery = true )
+	public List<ErroresContables> findByFechaBetweenAndTipoProceso(Date end, String tipoContabilidad);
 
 	/**
 	 * Consulta la lista de errores contables y lo devuelve en el tipo

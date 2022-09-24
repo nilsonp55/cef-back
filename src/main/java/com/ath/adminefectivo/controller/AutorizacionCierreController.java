@@ -29,13 +29,13 @@ public class AutorizacionCierreController {
 	AutorizacionContableDelegate autorizacionContableDelegate;
 	
 	@GetMapping(value = "${endpoints.AutorizacionCierre.autorizacion}")
-	public ResponseEntity<ApiResponseADE<LogProcesoDiarioDTO>> getGenerarContabilidad(
+	public ResponseEntity<ApiResponseADE<String>> getGenerarContabilidad(
 			@RequestParam(value = "fecha") Date fecha,
 			@RequestParam(value = "tipoContabilidad") String tipoContabilidad,
 			@RequestParam(value = "estado") String estado
 			) {
 
-		LogProcesoDiarioDTO consulta = autorizacionContableDelegate.autorizacionContable(fecha,tipoContabilidad,estado);
+		String consulta = autorizacionContableDelegate.autorizacionContable(fecha,tipoContabilidad,estado);
 
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())

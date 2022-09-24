@@ -68,7 +68,7 @@ public interface IContabilidadService {
 	 * @param string
 	 * @return
 	 */
-	ContabilidadDTO generarRespuestaContabilidad(Date  f1, Date f2, String tipoContabilidad, String mensaje);
+	ContabilidadDTO generarRespuestaContabilidad(Date fechaProceso, String tipoContabilidad, String mensaje);
 
 	/**
 	 * Metodo encargado de generar un listado de las transacciones internas nuevas
