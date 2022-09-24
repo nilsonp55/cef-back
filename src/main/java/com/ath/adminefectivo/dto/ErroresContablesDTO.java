@@ -1,6 +1,7 @@
 package com.ath.adminefectivo.dto;
 
 import java.util.Date;
+import java.util.Objects;
 import java.util.function.Function;
 
 import com.ath.adminefectivo.entities.ErroresContables;
@@ -24,7 +25,7 @@ public class ErroresContablesDTO {
 
 	private Integer idErroresContables;
 	
-	private Long transaccionInterna;
+	private TransaccionesInternasDTO transaccionInterna;
 	
 	private Date fecha;
 	
@@ -32,12 +33,16 @@ public class ErroresContablesDTO {
 	
 	private int estado;
 	
+	
 	/**
 	 * Funcion que retorna la entidad recibiendo un DTO *
 	 */
 	public static final Function<ErroresContablesDTO, ErroresContables> CONVERTER_ENTITY = (ErroresContablesDTO t) -> {
 		var errores = new ErroresContables();
 		UtilsObjects.copiarPropiedades(t, errores);
+		if(!Objects.isNull(t.getTransaccionInterna())) {
+			errores.setTransaccionInterna(TransaccionesInternasDTO.CONVERTER_ENTITY.apply(t.getTransaccionInterna()));
+		}
 		return errores;
 	};
 
@@ -47,6 +52,9 @@ public class ErroresContablesDTO {
 	public static final Function<ErroresContables, ErroresContablesDTO> CONVERTER_DTO = (ErroresContables t) -> {
 		var erroresContablesDTO = new ErroresContablesDTO();
 		UtilsObjects.copiarPropiedades(t, erroresContablesDTO);
+		if(!Objects.isNull(t.getTransaccionInterna())) {
+			erroresContablesDTO.setTransaccionInterna(TransaccionesInternasDTO.CONVERTER_DTO.apply(t.getTransaccionInterna()));
+		}
 		return erroresContablesDTO;
 	};
 }

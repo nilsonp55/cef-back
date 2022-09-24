@@ -9,8 +9,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
 
@@ -49,8 +53,9 @@ public class ErroresContables {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer idErroresContables;
 	
-	@Column(name = "ID_TRANSACCIONES_INTERNAS")
-	private Long transaccionInterna;
+	@ManyToOne
+	@JoinColumn(name="ID_TRANSACCIONES_INTERNAS")
+	private TransaccionesInternas transaccionInterna;
 	
 	@Column(name = "FECHA")
 	private Date fecha;

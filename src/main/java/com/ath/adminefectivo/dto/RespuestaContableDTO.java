@@ -13,7 +13,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RespuestaContableDTO {
 	
+	
 	private int bancoAval;
+	
+	private String nombreBancoAval;
+	
+	private String abreviaturaBancoAval;
 	
 	private String naturalezaContable;
 	
