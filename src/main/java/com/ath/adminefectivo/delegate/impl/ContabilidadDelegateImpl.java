@@ -31,6 +31,9 @@ import com.ath.adminefectivo.service.IFestivosNacionalesService;
 import com.ath.adminefectivo.service.IOperacionesProgramadasService;
 import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.ITransaccionesInternasService;
+import com.ath.adminefectivo.utils.UtilsString;
+
+import antlr.Utils;
 
 @Service
 public class ContabilidadDelegateImpl implements IContabilidadDelegate {
@@ -62,9 +65,12 @@ public class ContabilidadDelegateImpl implements IContabilidadDelegate {
 	@Override
 	public ContabilidadDTO generarContabilidad(String tipoContabilidad) {
 	
-		Date fechaProcesoFin = this.obtenerFechaProceso(tipoContabilidad);
-		Date fechaProcesoInicial = this.obtenerFechaProcesoInicial(tipoContabilidad,fechaProcesoFin);
 		Date fechaSistema = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
+		Date fechaProcesoInicial = this.obtenerFechaProceso(fechaSistema, tipoContabilidad);
+		
+		Date fechaProcesoFin = this.obtenerFechaProcesoFinal(tipoContabilidad, fechaSistema);
+		
+		
 		
 		System.out.println("fechaProcesoInicial "+fechaProcesoInicial);
 		System.out.println("fechaProcesoFin "+fechaProcesoFin);
@@ -79,16 +85,16 @@ public class ContabilidadDelegateImpl implements IContabilidadDelegate {
 			
 			List<OperacionIntradiaDTO> listadoOperacionesProgramadasIntradia = operacionesProgramadasService.consultarOperacionesIntradia(fechaProcesoInicial, fechaProcesoFin);	
 			resultado = contabilidadService.generarContabilidadIntradia(tipoContabilidad, listadoOperacionesProgramadasIntradia, resultado);
-			resultado = contabilidadService.generarMovimientosContables(fechaProcesoInicial, fechaProcesoFin, tipoContabilidad, Dominios.ESTADO_CONTABILIDAD_GENERADO);
+			resultado = contabilidadService.generarMovimientosContables(fechaSistema, fechaSistema, tipoContabilidad, Dominios.ESTADO_CONTABILIDAD_GENERADO);
 		
 			
 			if(resultado > 0) {
-				return contabilidadService.generarRespuestaContabilidad(fechaProcesoInicial, fechaProcesoFin, tipoContabilidad, "MENSAJE EXITOSO");
+				return contabilidadService.generarRespuestaContabilidad(fechaSistema, tipoContabilidad, "MENSAJE EXITOSO");
 			}else {
-				return contabilidadService.generarRespuestaContabilidad(fechaProcesoInicial, fechaProcesoFin, tipoContabilidad, "NO SE GENERARON TRANSACCIONES CONTABLES. ");
+				return contabilidadService.generarRespuestaContabilidad(fechaSistema, tipoContabilidad, "NO SE GENERARON TRANSACCIONES CONTABLES. ");
 			}
 		}
-		return contabilidadService.generarRespuestaContabilidad(fechaProcesoInicial, fechaProcesoFin, tipoContabilidad, "NO SE ENCONTRARON OPERACIONES POR PROCESAR PARA LA FECHA");
+		return contabilidadService.generarRespuestaContabilidad(fechaSistema, tipoContabilidad, "NO SE ENCONTRARON OPERACIONES POR PROCESAR PARA LA FECHA");
 	}
 	
 	/**
@@ -112,8 +118,9 @@ public class ContabilidadDelegateImpl implements IContabilidadDelegate {
 		int resultado = contabilidadService.generarContabilidad("PM", listadoOperacionesProgramadasPM);
 		resultado = contabilidadService.generarContabilidad("AM", listadoOperacionesProgramadasAM);
 		
+		Date fechaSistema = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
 		Date fechaInicio = this.obtenerFecha2000();
-		Date fechaFin = this.obtenerFechaProceso("PM");
+		Date fechaFin = this.obtenerFechaProcesoFinal("PM", fechaSistema);
 		
 		List<OperacionIntradiaDTO> listadoOperacionesProgramadasIntradia = operacionesProgramadasService.consultarOperacionesIntradia(fechaInicio, fechaFin);	
 		resultado = contabilidadService.generarContabilidadIntradia("PM", listadoOperacionesProgramadasIntradia, resultado);
@@ -140,11 +147,11 @@ public class ContabilidadDelegateImpl implements IContabilidadDelegate {
 	 * @param fechaProcesoFin
 	 * @return Date
 	 */
-	private Date obtenerFechaProcesoInicial(String tipoContabilidad, Date fechaProcesoFin) {
+	private Date obtenerFechaProcesoFinal(String tipoContabilidad, Date fechaSistema) {
 		if(tipoContabilidad.equals("AM")){
-			return festivosNacionalesService.consultarAnteriorHabil(fechaProcesoFin);
+			return UtilsString.restarDiasAFecha(fechaSistema, -1);			
 		}else {
-			return fechaProcesoFin;
+			return fechaSistema;
 		}
 		
 	}
@@ -157,14 +164,10 @@ public class ContabilidadDelegateImpl implements IContabilidadDelegate {
 	 * @param tipoContabilidad
 	 * @return Date
 	 */
-	public Date obtenerFechaProceso(String tipoContabilidad) {
-		Date fechaSistema = parametroService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
+	public Date obtenerFechaProceso(Date fechaSistema, String tipoContabilidad) {
 		if(!Objects.isNull(fechaSistema)) {
 			if(tipoContabilidad.equals("AM")) {
-				Calendar cal = Calendar.getInstance();
-				cal.setTime(fechaSistema);
-				cal.add(Calendar.DATE, -1);
-				return cal.getTime();
+				return festivosNacionalesService.consultarAnteriorHabil(fechaSistema);
 			}
 			return fechaSistema;
 		}else {

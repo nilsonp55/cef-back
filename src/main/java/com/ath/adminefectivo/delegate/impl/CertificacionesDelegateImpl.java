@@ -45,6 +45,7 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 	public Boolean procesarCertificaciones(String agrupador) {
 
 		Date fechaProceso = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
+		
 		List<ArchivosCargados> archivosCargados = archivosCargadosRepository
 				.getRegistrosCargadosSinProcesarDeHoy(agrupador, fechaProceso, Constantes.ESTADO_CARGUE_VALIDO);
 		if (archivosCargados.isEmpty()) {

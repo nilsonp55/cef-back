@@ -22,6 +22,7 @@ import com.ath.adminefectivo.service.ICierreContabilidadService;
 import com.ath.adminefectivo.service.ITransaccionesContablesService;
 import com.ath.adminefectivo.service.IgenerarArchivoService;
 import com.ath.adminefectivo.utils.UtilsObjects;
+import com.ath.adminefectivo.utils.s3Utils;
 
 @Service
 public class generarArchivoServiceimpl implements IgenerarArchivoService{
@@ -31,6 +32,9 @@ GenerarArchivoRepository generarArchivoRepository;
 
 @Autowired
 ITransaccionesContablesService transaccionesContablesService;
+
+@Autowired
+s3Utils s3utils;
 	
 @Override
 public ByteArrayInputStream generarArchivo(Date fecha, String tipoContabilidad,int codBanco) {
@@ -83,6 +87,23 @@ public ByteArrayInputStream generarArchivo(Date fecha, String tipoContabilidad,i
 	
 	
 }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void generarArchivosCierreContable(Date fecha, String tipoContabilidad) {
+		ByteArrayInputStream archivo297 = this.generarArchivo(fecha, tipoContabilidad, 297);
+		
+		s3utils.guardarArchivoEnBytes(archivo297, "CEfectivo/Contabilidad/BBOG");
+		
+		
+		ByteArrayInputStream archivo298 = this.generarArchivo(fecha, tipoContabilidad, 298);
+		
+		ByteArrayInputStream archivo299 = this.generarArchivo(fecha, tipoContabilidad, 299);
+		
+		ByteArrayInputStream archivo300 = this.generarArchivo(fecha, tipoContabilidad, 300);
+		
+	}
 
 }
 

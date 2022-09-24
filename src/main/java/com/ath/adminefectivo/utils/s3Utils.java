@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.AmazonServiceException;
@@ -21,18 +22,22 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.ListObjectsV2Request;
 import com.amazonaws.services.s3.model.ListObjectsV2Result;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.exception.NegocioException;
+
+import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 
 import java.util.Properties;
 import java.net.URISyntaxException;
@@ -252,6 +257,24 @@ public class s3Utils {
 			throw new NegocioException(ApiResponseCode.ERROR_ELIMINAR_ARCHIVO_FISICO.getCode(),
 					ApiResponseCode.ERROR_ELIMINAR_ARCHIVO_FISICO.getDescription(),
 					ApiResponseCode.ERROR_ELIMINAR_ARCHIVO_FISICO.getHttpStatus());
+		}
+	}
+	
+	public void guardarArchivoEnBytes(ByteArrayInputStream archivo, String key) {
+		try {
+			File w = null;
+			FileUtils.writeByteArrayToFile (w, archivo.readAllBytes());
+			s3.putObject(bucketName, key, w);
+		} catch (AmazonServiceException e) {
+			LOGGER.error(e.getMessage(), e);
+			throw new NegocioException(ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getCode(),
+					ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getDescription(),
+					ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getHttpStatus());
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage(), e);
+			throw new NegocioException(ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getCode(),
+					ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getDescription(),
+					ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getHttpStatus());
 		}
 	}
 

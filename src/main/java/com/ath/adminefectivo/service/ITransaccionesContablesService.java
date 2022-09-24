@@ -87,15 +87,6 @@ public interface ITransaccionesContablesService {
 	 */
 	String findBytipoProceso(String str);
 
-	
-	/**
-	 * 
-	 * @param estado
-	 * @return
-	 * @author Miller.caro
-	 */
-	Integer estadovalidacionContable(int estado);
-
 	/**
 	 * Servicio encargado de consultar el conteo del proceso de contabilidad
 	 * 
@@ -106,7 +97,7 @@ public interface ITransaccionesContablesService {
 	 * @return ConteoContabilidadDTO
 	 * @author duvan.naranjo
 	 */
-	ConteoContabilidadDTO generarConteoContabilidad(Date f1, Date f2, String tipoContabilidad);
+	ConteoContabilidadDTO generarConteoContabilidad(Date fechaProceso, String tipoContabilidad);
 
 	/**
 	 * 
@@ -115,4 +106,14 @@ public interface ITransaccionesContablesService {
 	 */
 	void deleteTransaccionesContablesByFechasAndTipoProceso(Date fechaInicio, Date fechaFin, String tipoProceso);
 
+	/**
+	 * Metodo encargado de ejecutar el metodo de la base de datos 
+	 * encargado de generar el comprobante contable.
+	 * 
+	 * @param fecha
+	 * @param tipoContabilidad
+	 * @return String
+	 * @author duvan.naranjo
+	 */
+	String generarComprobanteContable(Date fecha, String tipoContabilidad);
 }
