@@ -23,6 +23,7 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.ListObjectsV2Request;
 import com.amazonaws.services.s3.model.ListObjectsV2Result;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.PutObjectResult;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 
@@ -263,11 +264,16 @@ public class s3Utils {
 		}
 	}
 	
-	public void guardarArchivoEnBytes(ByteArrayInputStream archivo, String key) {
+	public void guardarArchivoEnBytes(ByteArrayOutputStream archivo, String key, String nombreArchivo) {
+		
+		PutObjectResult result;
 		try {
-			File w = null;
-			FileUtils.writeByteArrayToFile (w, archivo.readAllBytes());
-			s3.putObject(bucketName, key, w);
+			conexionS3(bucketName);
+			String pathArchivo = key+nombreArchivo;
+			File archivoFile = new File(pathArchivo);			
+			FileUtils.writeByteArrayToFile (archivoFile, archivo.toByteArray());
+
+			result = s3.putObject(bucketName, pathArchivo, archivoFile);
 		} catch (AmazonServiceException e) {
 			LOGGER.error(e.getMessage(), e);
 			throw new NegocioException(ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getCode(),
@@ -279,6 +285,7 @@ public class s3Utils {
 					ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getDescription(),
 					ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getHttpStatus());
 		}
+		
 	}
 
 }
