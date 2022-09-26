@@ -1,6 +1,7 @@
 package com.ath.adminefectivo.service;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.Date;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import com.ath.adminefectivo.dto.RespuestaContableDTO;
  */
 public interface IgenerarArchivoService {
 
-	ByteArrayInputStream generarArchivo(Date fecha,String tipoContabilidad,int codBanco );
+	ByteArrayOutputStream generarArchivo(Date fecha,String tipoContabilidad,int codBanco );
 
 	/**
 	 * Metodo encargado de generar los archivos de cierre de contabilidad
