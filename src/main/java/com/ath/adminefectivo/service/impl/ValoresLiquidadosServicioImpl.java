@@ -88,7 +88,7 @@ public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService{
 				ValoresLiquidadosDTO valoresLiquidadosDTO = new ValoresLiquidadosDTO();
 				//Se ejecutan procedimientos
 				String parametro = valoresLiquidadosRepository.armar_parametros_liquida(fecha);
-				if(Integer.parseInt(parametro) == 0) {
+				if(Integer.parseInt(parametro) > 0) {
 					String resultado= valoresLiquidadosRepository.liquidar_costos(Integer.parseInt(parametro));
 					//Sacamos los dos cumero de la cadena de texto
 					String cantidad1 = "";
@@ -111,8 +111,8 @@ public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService{
 							.findByIdSeqGrupo(Integer.parseInt(parametro));
 
 					valoresLiquidadosDTO.setValoresLiquidados(valoresLiquidados);
-					valoresLiquidadosDTO.setCantidad1(Integer.parseInt(cantidad1));
-					valoresLiquidadosDTO.setCantidad2(Integer.parseInt(cantidad2));
+					valoresLiquidadosDTO.setCantidadOperacionesLiquidadas(Integer.parseInt(cantidad1));
+					valoresLiquidadosDTO.setRegistrosConError(Integer.parseInt(cantidad2));
 				}
 				else {
 					throw new NegocioException(ApiResponseCode.ERROR_PROCESO_CONSTO_VALORES_LIQUIDADOS_SIN_PARAM.getCode(),

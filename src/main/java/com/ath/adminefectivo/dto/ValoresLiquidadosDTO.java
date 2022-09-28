@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class ValoresLiquidadosDTO {
-	Integer cantidad1;
-	Integer cantidad2;
+	Integer cantidadOperacionesLiquidadas;
+	Integer registrosConError;
 	List<ValoresLiquidados> valoresLiquidados;
 }
