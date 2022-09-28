@@ -207,7 +207,7 @@ public class s3Utils {
          System.out.println(false);
       }
 	  
-		BasicAWSCredentials credentials = new BasicAWSCredentials("AKIAZPUFXGZ5GEMGWLFZ", "HD1RM1Il0nAJYu2gNr1oYG6MtdBzafSKpf+1TtMM");
+	BasicAWSCredentials credentials = new BasicAWSCredentials("AKIAZPUFXGZ5GEMGWLFZ", "HD1RM1Il0nAJYu2gNr1oYG6MtdBzafSKpf+1TtMM");
 		try {
 			ClientConfiguration config = new ClientConfiguration();
 			config.setProtocol(Protocol.HTTP);
@@ -268,7 +268,7 @@ public class s3Utils {
 		
 		PutObjectResult result;
 		try {
-			conexionS3(bucketName);
+			//conexionS3(bucketName);
 			String pathArchivo = key+nombreArchivo;
 			File archivoFile = new File(pathArchivo);			
 			FileUtils.writeByteArrayToFile (archivoFile, archivo.toByteArray());
