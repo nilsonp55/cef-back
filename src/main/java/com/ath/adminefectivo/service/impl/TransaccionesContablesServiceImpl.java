@@ -29,7 +29,7 @@ public class TransaccionesContablesServiceImpl implements ITransaccionesContable
 
 	@Autowired
 	ITransaccionesContablesRepository transaccionesContablesRepository;
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -118,22 +118,14 @@ public class TransaccionesContablesServiceImpl implements ITransaccionesContable
 		return listadoTransaccionesContablesDTO;
 		
 	}
-		
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Integer estadovalidacionContable(int estado) {
-		Integer estadoCierre = transaccionesContablesRepository.estadovalidacionContable(estado);
-		return estadoCierre;
-	}
+
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public ConteoContabilidadDTO generarConteoContabilidad(Date f1, Date f2, String tipoContabilidad) {
-		return transaccionesContablesRepository.conteoContabilidad(f1, f2, tipoContabilidad);
+	public ConteoContabilidadDTO generarConteoContabilidad(Date fechaProceso, String tipoContabilidad) {
+		return transaccionesContablesRepository.conteoContabilidad(fechaProceso, fechaProceso, tipoContabilidad);
 	}
 
 	/**
@@ -146,6 +138,14 @@ public class TransaccionesContablesServiceImpl implements ITransaccionesContable
 		listadoTransaccionesContables.forEach(transaccionContable ->{
 			transaccionesContablesRepository.delete(transaccionContable);
 		});		
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String generarComprobanteContable(Date fecha, String tipoContabilidad) {
+		return transaccionesContablesRepository.generarcomprobantecontable(fecha, tipoContabilidad);
 	}
 	
 }

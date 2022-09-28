@@ -15,5 +15,5 @@ public interface IAutorizacionContable {
 	 * @author miller.caro
 	 */
 	
-	LogProcesoDiarioDTO autorizacionContable(Date fecha,String tipoContabilidad,String estado);
+	String autorizacionContable(Date fecha,String tipoContabilidad,String estado);
 }

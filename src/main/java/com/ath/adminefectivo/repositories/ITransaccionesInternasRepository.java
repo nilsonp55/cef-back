@@ -79,7 +79,7 @@ public interface ITransaccionesInternasRepository extends JpaRepository<Transacc
 	 * 
 	 * @param fecha
 	 * @param tipoContabilidad
-	 * @param i
+	 * @param estado
 	 * @return boolean
 	 * @author duvan.naranjo
 	 */
@@ -95,6 +95,6 @@ public interface ITransaccionesInternasRepository extends JpaRepository<Transacc
 			+ "	fecha = ?1 AND "
 			+ "	estado = ?3 AND "
 			+ " tipo_proceso = ?2 ", nativeQuery = true)
-	boolean existErroresContablesAllBanco(Date fecha, String tipoContabilidad, int i);
+	boolean existErroresContablesAllBanco(Date fecha, String tipoContabilidad, int estado);
 
 }

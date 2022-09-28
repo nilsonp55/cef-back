@@ -1,6 +1,7 @@
 package com.ath.adminefectivo.delegate.impl;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ public class GenerarArchivoDelegate implements IGenerarArchivoDelegate {
 	@Override
 	public ByteArrayInputStream generarArchivo(Date fecha, String tipoContabilidad, int codBanco) {
 		//RespuestaContableDTO registros = new RespuestaContableDTO();
-		ByteArrayInputStream registros = null;
+		ByteArrayOutputStream registros = null;
 		//fecha actual
 		//Date fechaActual = parametroService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
 		//valida el tipoContabilidad
@@ -44,7 +45,7 @@ public class GenerarArchivoDelegate implements IGenerarArchivoDelegate {
 			registros = generarArchivoService.generarArchivo(fecha, tipoContabilidad, codBanco);
 		}
 		
-		return registros;
+		return new ByteArrayInputStream(registros.toByteArray());
 		
 	}
 }

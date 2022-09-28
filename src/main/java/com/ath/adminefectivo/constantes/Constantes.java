@@ -583,4 +583,21 @@ public final class Constantes {
 	public static final String MENSAJE_GENERO_OPERACIONES_PROGRAMADAS_CORRECTO = "Se han generado las operaciones programadas de forma correcta.";
 	
 	public static final String DELETE_SEPARADORES = "";
+	
+	/**
+	 * Nombre de archivos generados xls 
+	 */
+	public static final String CTB_BBOG_Manana = "CTB_BBOG_Manana";
+	public static final String CTB_BBOG_Tarde = "CTB_BBOG_Tarde";
+	public static final String CTB_BOCC_Manana = "CTB_BOCC_Manana";
+	public static final String CTB_BOCC_Tarde = "CTB_BOCC_Tarde";
+	public static final String CTB_BPOP_Manana = "CTB_BPOP_Manana";
+	public static final String CTB_BPOP_Tarde = "CTB_BPOP_Tarde";
+	public static final String CTB_BAVV_Manana = "CTB_BAVV_Manana";
+	public static final String CTB_BAVV_Tarde = "CTB_BAVV_Tarde";
+	
+	/**
+	 * URL en la cual se almacenaran los archivos generados de contabilidad
+	 */
+	public static final String URL_ARCHIVOS_CONTABLES_S3 = "CEfectivo/Contabilidad/";
 }

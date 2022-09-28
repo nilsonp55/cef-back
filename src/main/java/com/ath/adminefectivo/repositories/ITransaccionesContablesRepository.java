@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 
 import com.ath.adminefectivo.dto.RespuestaContableDTO;
@@ -111,21 +112,17 @@ public interface ITransaccionesContablesRepository extends JpaRepository<Transac
 	 * */
 	String findBytipoProceso(String str);
 
-	/**
-	 * Retorna validacion del cierre contable
-	 * @param estado
-	 * @return String estado 
-	 * @author Miller.Caro
-	 * */
-	@Query(value ="SELECT distinct case when  ti.estado = null then 0 else ti.estado end as estado"
-			+ " FROM transacciones_contables tc, cuentas_puc cp, transacciones_internas ti where "
-			+ " tc.CUENTA_CONTABLE = cp.CUENTA_CONTABLE AND "
-			+ " tc.naturaleza in('C','D') AND "
-			+ " cp.nombre_cuenta <> 'Transitoria%' AND "
-			+ " tc.id_transacciones_internas = ti.id_transacciones_internas AND "
-			+ " ti.estado = ?1 ",nativeQuery=true)
-	Integer estadovalidacionContable(int estado);
-
 	@Query(nativeQuery = true)
 	ConteoContabilidadDTO conteoContabilidad(Date fechaInicio, Date fechaFin, String tipoProceso);
+
+	/**
+	 * Ejecuta el procedimiento de la base de datos generarcomprobantecontable
+	 * 
+	 * @param fecha
+	 * @param tipoContabilidad
+	 * @return String
+	 * @author rparra
+	 */
+	@Procedure(name = "generarcomprobantecontable")
+	String generarcomprobantecontable(@Param("pfechaproceso") Date fecha, @Param("ptipoproceso") String tipoContabilidad);
 }

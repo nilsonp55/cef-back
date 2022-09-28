@@ -14,6 +14,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.dto.RespuestaContableDTO;
 import com.ath.adminefectivo.dto.TransaccionesContablesDTO;
 import com.ath.adminefectivo.entities.TransaccionesContables;
@@ -22,6 +23,7 @@ import com.ath.adminefectivo.service.ICierreContabilidadService;
 import com.ath.adminefectivo.service.ITransaccionesContablesService;
 import com.ath.adminefectivo.service.IgenerarArchivoService;
 import com.ath.adminefectivo.utils.UtilsObjects;
+import com.ath.adminefectivo.utils.s3Utils;
 
 @Service
 public class generarArchivoServiceimpl implements IgenerarArchivoService{
@@ -31,9 +33,12 @@ GenerarArchivoRepository generarArchivoRepository;
 
 @Autowired
 ITransaccionesContablesService transaccionesContablesService;
+
+@Autowired
+s3Utils s3utils;
 	
 @Override
-public ByteArrayInputStream generarArchivo(Date fecha, String tipoContabilidad,int codBanco) {
+public ByteArrayOutputStream generarArchivo(Date fecha, String tipoContabilidad,int codBanco) {
 	
 	//List<RespuestaContableDTO> listaContable;
 	List<RespuestaContableDTO> listaContable = transaccionesContablesService.getCierreContable(fecha,tipoContabilidad,codBanco);
@@ -78,11 +83,56 @@ public ByteArrayInputStream generarArchivo(Date fecha, String tipoContabilidad,i
 			e.printStackTrace();
 		}
 		
-		return new ByteArrayInputStream(stream.toByteArray());
+//		return new ByteArrayInputStream(stream.toByteArray());
+		return stream;
 		//return dtoContable;
 	
 	
 }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void generarArchivosCierreContable(Date fecha, String tipoContabilidad) {
+		
+		ByteArrayOutputStream archivo297 = this.generarArchivo(fecha, tipoContabilidad, 297);
+		s3utils.guardarArchivoEnBytes(archivo297, Constantes.URL_ARCHIVOS_CONTABLES_S3+"BBOG/", this.obtenerNombreArchivo(297, tipoContabilidad));
+		
+		
+		ByteArrayOutputStream archivo298 = this.generarArchivo(fecha, tipoContabilidad, 298);
+		s3utils.guardarArchivoEnBytes(archivo298, Constantes.URL_ARCHIVOS_CONTABLES_S3+"BAVV/", this.obtenerNombreArchivo(298, tipoContabilidad));
+		
+		ByteArrayOutputStream archivo299 = this.generarArchivo(fecha, tipoContabilidad, 299);
+		s3utils.guardarArchivoEnBytes(archivo299, Constantes.URL_ARCHIVOS_CONTABLES_S3+"BOCC/", this.obtenerNombreArchivo(299, tipoContabilidad));
+		
+		ByteArrayOutputStream archivo300 = this.generarArchivo(fecha, tipoContabilidad, 300);
+		s3utils.guardarArchivoEnBytes(archivo300, Constantes.URL_ARCHIVOS_CONTABLES_S3+"BPOP/", this.obtenerNombreArchivo(300, tipoContabilidad));
+		
+	}
+	private String obtenerNombreArchivo(int codigoBanco, String tipoContabilidad) {
+		if(tipoContabilidad.equals("AM")) {
+			if(codigoBanco == 297) {
+				return Constantes.CTB_BBOG_Manana;
+			}else if(codigoBanco == 298) {
+				return Constantes.CTB_BAVV_Manana;
+			}else if(codigoBanco == 299) {
+				return Constantes.CTB_BOCC_Manana;
+			}else if(codigoBanco == 300) {
+				return Constantes.CTB_BPOP_Manana;
+			}
+		}else {
+			if(codigoBanco == 297) {
+				return Constantes.CTB_BBOG_Tarde;
+			}else if(codigoBanco == 298) {
+				return Constantes.CTB_BAVV_Tarde;
+			}else if(codigoBanco == 299) {
+				return Constantes.CTB_BOCC_Tarde;
+			}else if(codigoBanco == 300) {
+				return Constantes.CTB_BPOP_Tarde;
+			}
+		}
+		return null;
+	}
 
 }
 
