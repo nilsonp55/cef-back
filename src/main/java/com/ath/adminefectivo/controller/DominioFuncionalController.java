@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ath.adminefectivo.dto.DominioMaestroDto;
@@ -36,9 +37,9 @@ public class DominioFuncionalController {
 	 * @return ResponseEntity<ApiResponseADE<LDominioMaestroDto>>
 	 * @author Bayron Andres Perez Muñoz
 	 */
-	@GetMapping(value = "${endpoints.DominioFuncional.consultar}/{dominio}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "${endpoints.DominioFuncional.consultar}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<List<String>>> obtenerDominioMaestroById(
-			@PathVariable("dominio") String dominio) {
+			@RequestParam("dominio") String dominio) {
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<List<String>>(dominioServiceImpl.consultaListValoresPorDominio(dominio),
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
