@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ath.adminefectivo.dto.CentroCiudadDTO;
@@ -54,9 +55,9 @@ public class CentroCiudadController {
 	 * @return ResponseEntity<ApiResponseADE<List<CentroCiudadDTO>>>
 	 * @author cesar.castano
 	 */
-	@GetMapping(value = "${endpoints.CentroCiudad.consultar}/{idCIudad}/{idBanco}")
-	public ResponseEntity<ApiResponseADE<CentroCiudadDTO>> getCentroCiudadById(@PathVariable Integer idCentroCiudad,
-			@PathVariable Integer bancoAval) {
+	@GetMapping(value = "${endpoints.CentroCiudad.consultarByCiudadAndBanco}")
+	public ResponseEntity<ApiResponseADE<CentroCiudadDTO>> getCentroCiudadById(@RequestParam(required = true) Integer idCentroCiudad,
+			@RequestParam(required = true) Integer bancoAval) {
 		
 		CentroCiudadDTO consulta = centroCiudadService.getCentroCiudadById(idCentroCiudad);
 		return ResponseEntity.status(HttpStatus.OK)

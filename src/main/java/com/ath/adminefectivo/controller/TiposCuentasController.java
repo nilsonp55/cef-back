@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ath.adminefectivo.dto.TiposCuentasDTO;
@@ -54,8 +55,8 @@ public class TiposCuentasController {
 	 * @return ResponseEntity<ApiResponseADE<List<TiposCuentasDTO>>>
 	 * @author cesar.castano
 	 */
-	@GetMapping(value = "${endpoints.Tiposcuentas.consultar}/{id}")
-	public ResponseEntity<ApiResponseADE<TiposCuentasDTO>> getTiposCuentasById(@PathVariable String idTiposCuentas) {
+	@GetMapping(value = "${endpoints.Tiposcuentas.consultarById}")
+	public ResponseEntity<ApiResponseADE<TiposCuentasDTO>> getTiposCuentasById(@RequestParam(required = true) String idTiposCuentas) {
 		TiposCuentasDTO consulta = tiposCuentasService.getTiposCuentasById(idTiposCuentas);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
