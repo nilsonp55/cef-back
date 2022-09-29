@@ -712,7 +712,9 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 			//SI EL BANCO ORIGEN ES AVAL
 			if(Objects.isNull(bancoOrigen)) {
 				if(Objects.isNull(bancoDestino)) {
-					//LANZA EXCEPCION
+					throw new NegocioException(ApiResponseCode.ERROR_BANCO_EXTERNO_NO_ENCONTRADO.getCode(),
+							ApiResponseCode.ERROR_BANCO_EXTERNO_NO_ENCONTRADO.getDescription(),
+							ApiResponseCode.ERROR_BANCO_EXTERNO_NO_ENCONTRADO.getHttpStatus());
 				}else {
 					operacionesProgramadasIntercambio1 = this.generarOperacionIntercambioSalida(contenido,
 							detallesArchivo, archivo, false);

@@ -115,23 +115,23 @@ public ByteArrayOutputStream generarArchivo(Date fecha, String tipoContabilidad,
 	private String obtenerNombreArchivo(int codigoBanco, String tipoContabilidad) {
 		if(tipoContabilidad.equals("AM")) {
 			if(codigoBanco == 297) {
-				return Constantes.CTB_BBOG_Manana;
+				return Constantes.CTB_BBOG_Manana+Constantes.EXTENSION_ARCHIVO_XLS;
 			}else if(codigoBanco == 298) {
-				return Constantes.CTB_BAVV_Manana;
+				return Constantes.CTB_BAVV_Manana+Constantes.EXTENSION_ARCHIVO_XLS;
 			}else if(codigoBanco == 299) {
-				return Constantes.CTB_BOCC_Manana;
+				return Constantes.CTB_BOCC_Manana+Constantes.EXTENSION_ARCHIVO_XLS;
 			}else if(codigoBanco == 300) {
-				return Constantes.CTB_BPOP_Manana;
+				return Constantes.CTB_BPOP_Manana+Constantes.EXTENSION_ARCHIVO_XLS;
 			}
 		}else {
 			if(codigoBanco == 297) {
-				return Constantes.CTB_BBOG_Tarde;
+				return Constantes.CTB_BBOG_Tarde+Constantes.EXTENSION_ARCHIVO_XLS;
 			}else if(codigoBanco == 298) {
-				return Constantes.CTB_BAVV_Tarde;
+				return Constantes.CTB_BAVV_Tarde+Constantes.EXTENSION_ARCHIVO_XLS;
 			}else if(codigoBanco == 299) {
-				return Constantes.CTB_BOCC_Tarde;
+				return Constantes.CTB_BOCC_Tarde+Constantes.EXTENSION_ARCHIVO_XLS;
 			}else if(codigoBanco == 300) {
-				return Constantes.CTB_BPOP_Tarde;
+				return Constantes.CTB_BPOP_Tarde+Constantes.EXTENSION_ARCHIVO_XLS;
 			}
 		}
 		return null;

@@ -601,6 +601,8 @@ public final class Constantes {
 	public static final String CTB_BAVV_Manana = "CTB_BAVV_Manana";
 	public static final String CTB_BAVV_Tarde = "CTB_BAVV_Tarde";
 	
+	public static final String EXTENSION_ARCHIVO_XLS = ".xls";
+	
 	/**
 	 * URL en la cual se almacenaran los archivos generados de contabilidad
 	 */
