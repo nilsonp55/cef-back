@@ -36,6 +36,7 @@ import com.ath.adminefectivo.dto.compuestos.DetalleOperacionesDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionIntradiaDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionesProgramadasNombresDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
+import com.ath.adminefectivo.entities.Fondos;
 import com.ath.adminefectivo.entities.OperacionesProgramadas;
 import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.exception.NegocioException;
@@ -596,6 +597,8 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 			if (!Objects.isNull(puntoBancoDestino)
 					&& puntoBancoDestino.getTipoPunto().equals(Constantes.PUNTO_BANCO)) {
 				operacionesProgramadasDTO.setCodigoPuntoDestino(puntoBancoDestino.getCodigoPunto());
+			}else {
+				
 			}
 		}
 		
@@ -685,17 +688,46 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	@Transactional
 	private OperacionesProgramadasDTO generarOperacionIntercambio(String[] contenido,
 			List<DetallesDefinicionArchivoDTO> detallesArchivo, ArchivosCargadosDTO archivo) {
+		
+		PuntosDTO bancoOrigen = this.consultarPuntoPorDetalle(contenido, detallesArchivo,
+				Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_ORIGEN);
 
-		OperacionesProgramadasDTO operacionesProgramadasIntercambio1 = this.generarOperacionIntercambioSalida(contenido,
-				detallesArchivo, archivo);
+		PuntosDTO bancoDestino = this.consultarPuntoPorDetalle(contenido, detallesArchivo,
+				Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_DESTINO);
+		
+		OperacionesProgramadasDTO operacionesProgramadasIntercambio1 = null;
+		//SI LOS DOS BANCOS SON AVAL
+		if(Objects.isNull(bancoOrigen) && Objects.isNull(bancoDestino)) {
+			operacionesProgramadasIntercambio1 = this.generarOperacionIntercambioSalida(contenido,
+					detallesArchivo, archivo, true);
 
-		OperacionesProgramadasDTO operacionesProgramadasIntercambio2 = this
-				.generarOperacionIntercambioEntrada(contenido, detallesArchivo, archivo);
+			OperacionesProgramadasDTO operacionesProgramadasIntercambio2 = this
+					.generarOperacionIntercambioEntrada(contenido, detallesArchivo, archivo, true);
 
-		operacionesProgramadasIntercambio1.setIdOperacionRelac(operacionesProgramadasIntercambio2.getIdOperacion());
+			operacionesProgramadasIntercambio1.setIdOperacionRelac(operacionesProgramadasIntercambio2.getIdOperacion());
 
-		operacionesProgramadasRepository
-				.save(OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(operacionesProgramadasIntercambio1));
+			operacionesProgramadasRepository
+					.save(OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(operacionesProgramadasIntercambio1));
+		}else {
+			//SI EL BANCO ORIGEN ES AVAL
+			if(Objects.isNull(bancoOrigen)) {
+				if(Objects.isNull(bancoDestino)) {
+					throw new NegocioException(ApiResponseCode.ERROR_BANCO_EXTERNO_NO_ENCONTRADO.getCode(),
+							ApiResponseCode.ERROR_BANCO_EXTERNO_NO_ENCONTRADO.getDescription(),
+							ApiResponseCode.ERROR_BANCO_EXTERNO_NO_ENCONTRADO.getHttpStatus());
+				}else {
+					operacionesProgramadasIntercambio1 = this.generarOperacionIntercambioSalida(contenido,
+							detallesArchivo, archivo, false);
+				}
+			}else {
+				//SI EL BANCO DESTINO ES AVAL Y EL ORIGEN NO ES AVAL
+				operacionesProgramadasIntercambio1 = this
+						.generarOperacionIntercambioEntrada(contenido, detallesArchivo, archivo, false);
+				
+			}
+		}
+
+		
 
 		return operacionesProgramadasIntercambio1;
 	}
@@ -826,7 +858,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	 * @author duvan.naranjo
 	 */
 	private OperacionesProgramadasDTO generarOperacionIntercambioSalida(String[] contenido,
-			List<DetallesDefinicionArchivoDTO> detallesArchivo, ArchivosCargadosDTO archivo) {
+			List<DetallesDefinicionArchivoDTO> detallesArchivo, ArchivosCargadosDTO archivo, boolean esAval) {
 
 		OperacionesProgramadasDTO operacionesProgramadasDTO = null;
 		PuntosDTO puntoFondoOrigen = this.consultarPuntoPorDetalle(contenido, detallesArchivo,
@@ -837,20 +869,34 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
 		if (!Objects.isNull(puntoFondoOrigen)
 				&& !puntoFondoOrigen.getTipoPunto().toUpperCase().trim().equals(Constantes.PUNTO_FONDO)) {
-			throw new AplicationException(ApiResponseCode.ERROR_NO_ES_FONDO.getCode(),
+			throw new NegocioException(ApiResponseCode.ERROR_NO_ES_FONDO.getCode(),
 					ApiResponseCode.ERROR_NO_ES_FONDO.getDescription(),
 					ApiResponseCode.ERROR_NO_ES_FONDO.getHttpStatus());
 		} else if (!Objects.isNull(puntoFondoDestino)
 				&& !puntoFondoDestino.getTipoPunto().toUpperCase().trim().equals(Constantes.PUNTO_FONDO)) {
-			throw new AplicationException(ApiResponseCode.ERROR_NO_ES_FONDO.getCode(),
+			throw new NegocioException(ApiResponseCode.ERROR_NO_ES_FONDO.getCode(),
 					ApiResponseCode.ERROR_NO_ES_FONDO.getDescription(),
 					ApiResponseCode.ERROR_NO_ES_FONDO.getHttpStatus());
+		}
+		int codigoPuntoDestino ;
+		if(esAval) {
+			codigoPuntoDestino = puntoFondoDestino.getCodigoPunto();
+		}else {
+			PuntosDTO puntoEntidadDestino = this.consultarPuntoPorDetalle(contenido, detallesArchivo,
+					Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_DESTINO);
+			if(!Objects.isNull(puntoEntidadDestino)) {
+				codigoPuntoDestino = puntoEntidadDestino.getCodigoPunto();
+			}else {
+				throw new NegocioException(ApiResponseCode.ERROR_BANCO_EXTERNO_NO_ENCONTRADO.getCode(),
+						ApiResponseCode.ERROR_BANCO_EXTERNO_NO_ENCONTRADO.getDescription(),
+						ApiResponseCode.ERROR_BANCO_EXTERNO_NO_ENCONTRADO.getHttpStatus());
+			}
 		}
 
 		operacionesProgramadasDTO = OperacionesProgramadasDTO.builder()
 				.codigoFondoTDV(puntoFondoOrigen.getCodigoPunto()).entradaSalida(Constantes.VALOR_SALIDA)
 				.codigoPuntoOrigen(puntoFondoOrigen.getCodigoPunto())
-				.codigoPuntoDestino(puntoFondoDestino.getCodigoPunto())
+				.codigoPuntoDestino(codigoPuntoDestino)
 				.idArchivoCargado(Math.toIntExact(archivo.getIdArchivo())).build();
 
 		return this.completarOperacionesProgramadas(operacionesProgramadasDTO, contenido, detallesArchivo);
@@ -867,7 +913,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	 * @author duvan.naranjo
 	 */
 	private OperacionesProgramadasDTO generarOperacionIntercambioEntrada(String[] contenido,
-			List<DetallesDefinicionArchivoDTO> detallesArchivo, ArchivosCargadosDTO archivo) {
+			List<DetallesDefinicionArchivoDTO> detallesArchivo, ArchivosCargadosDTO archivo, boolean esAval) {
 
 		OperacionesProgramadasDTO operacionesProgramadasDTO = null;
 		PuntosDTO puntoFondoDestino = this.consultarPuntoPorDetalle(contenido, detallesArchivo,
@@ -882,11 +928,30 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 					ApiResponseCode.ERROR_NO_ES_FONDO.getDescription(),
 					ApiResponseCode.ERROR_NO_ES_FONDO.getHttpStatus());
 		}
+		
+		int codigoPuntoOrigen ;
+		int codigoPuntoDestino;
+		if(esAval) {
+			codigoPuntoOrigen = puntoFondoDestino.getCodigoPunto();
+			codigoPuntoDestino = puntoFondoOrigen.getCodigoPunto();
+		}else {
+			codigoPuntoDestino = puntoFondoDestino.getCodigoPunto();
+			
+			PuntosDTO puntoEntidadOrigen = this.consultarPuntoPorDetalle(contenido, detallesArchivo,
+					Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_ORIGEN);
+			if(!Objects.isNull(puntoEntidadOrigen)) {
+				codigoPuntoOrigen = puntoEntidadOrigen.getCodigoPunto();
+			}else {
+				throw new NegocioException(ApiResponseCode.ERROR_BANCO_EXTERNO_NO_ENCONTRADO.getCode(),
+						ApiResponseCode.ERROR_BANCO_EXTERNO_NO_ENCONTRADO.getDescription(),
+						ApiResponseCode.ERROR_BANCO_EXTERNO_NO_ENCONTRADO.getHttpStatus());
+			}
+		}
 
 		operacionesProgramadasDTO = OperacionesProgramadasDTO.builder()
 				.codigoFondoTDV(puntoFondoDestino.getCodigoPunto()).entradaSalida(Constantes.VALOR_ENTRADA)
-				.codigoPuntoOrigen(puntoFondoDestino.getCodigoPunto())
-				.codigoPuntoDestino(puntoFondoOrigen.getCodigoPunto())
+				.codigoPuntoOrigen(codigoPuntoOrigen)
+				.codigoPuntoDestino(codigoPuntoDestino)
 				.idArchivoCargado(Math.toIntExact(archivo.getIdArchivo())).build();
 
 		return this.completarOperacionesProgramadas(operacionesProgramadasDTO, contenido, detallesArchivo);
@@ -1240,18 +1305,32 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		String shipIn = determinarShipIn(contenido, detalleArchivo);
 		String shipOut = determinarShipOut(contenido, detalleArchivo);
 		operaciones = new OperacionesProgramadasDTO();
+		
+		if(Objects.isNull(shipIn) || shipIn.trim().equals("")) {
+			shipIn = "0";
+		}
+		if(Objects.isNull(shipOut) || shipOut.trim().equals("")) {
+			shipOut = "0";
+		}
+		
 		var operacionesProg = operacionesProgramadasRepository.findByIdServicioAndIdArchivoCargado(orderId, archivo.getIdArchivo().intValue());
 		if(Objects.isNull(operacionesProg)) {
-			if (Integer.parseInt(shipIn) + Integer.parseInt(shipOut) != 0){
+			if (Long.parseLong(shipIn) + Long.parseLong(shipOut) != 0){
 				String transportadora = determinarTransportadora(contenido, detalleArchivo, 
 										Constantes.CAMPO_DETALLE_ARCHIVO_TRANSPORTADORA);
 				String ciudad = determinarCiudad(contenido, detalleArchivo, 
 										Constantes.CAMPO_DETALLE_ARCHIVO_CIUDAD);
-				operaciones.setCodigoFondoTDV(fondosService
-										.getCodigoFondo(transportadora, 
-										determinarCodigoCompensacion(contenido, detalleArchivo), 
-										ciudad)
-										.getCodigoPunto());
+				System.out.println("/// transportadora "+ transportadora + "determinarCodigoCompensacion(contenido, detalleArchivo) "+determinarCodigoCompensacion(contenido, detalleArchivo)+" ciudad "+ciudad);
+				
+				Fondos codigoFondoTDV = fondosService.getCodigoFondo(transportadora, determinarCodigoCompensacion(contenido, detalleArchivo), ciudad);
+				if(!Objects.isNull(codigoFondoTDV)) {
+					operaciones.setCodigoFondoTDV(codigoFondoTDV.getCodigoPunto());
+				}else {
+					throw new NegocioException(ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getCode(),
+							ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getDescription(),
+							ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getHttpStatus());
+				}
+				
 				operaciones.setEntradaSalida(asignarEntradaSalida(asignarTipoOperacion(contenido, detalleArchivo)));
 				operaciones.setCodigoPuntoOrigen(determinarPuntoOrigen(
 										contenido, detalleArchivo, transportadora, ciudad));
@@ -1288,7 +1367,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 				});
 			}
 		}else {
-			if (Integer.parseInt(shipIn) + Integer.parseInt(shipOut) != 0){
+			if (Long.parseLong(shipIn) + Long.parseLong(shipOut) != 0){
 				operaciones = OperacionesProgramadasDTO.CONVERTER_DTO.apply(operacionesProg);
 				operaciones = crearDetalleOperacionesProgramadas(contenido, idOperacion, detalleArchivo);
 				var operacionesP = operacionesProgramadasRepository.save(
@@ -1575,8 +1654,9 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		detalleOperacionesDTO.setUsuarioModificacion("User ATH");
 		listDetalleOperaciones.add(detalleOperacionesDTO);
 		operaciones.setDetalleOperacionesProgramadasDTO(listDetalleOperaciones);
+				
 		
-		System.out.println("operaciones detalle " + operaciones);
+		
 		
 		return operaciones;
 	}

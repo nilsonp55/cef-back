@@ -41,7 +41,7 @@ public interface IFondosRepository extends JpaRepository<Fondos, Integer>, Query
 			+ "f.codigoPunto = p.codigoPunto "
 			+ "WHERE f.tdv = (SELECT codigo FROM Transportadoras WHERE nombreTransportadora = ?1) and "
 			+ "      f.bancoAVAL = (SELECT codigoPunto FROM Bancos WHERE codigoCompensacion = ?2) and "
-			+ "      p.codigoCiudad = (SELECT codigoDANE FROM Ciudades WHERE nombreCiudad = ?3)")
+			+ "      p.codigoCiudad in (SELECT codigoDANE FROM Ciudades WHERE nombreCiudad = ?3)")
 	Fondos obtenerCodigoFondoTDV(String nombreTransportadora, Integer codigoCompensacion, String codigoCiudad);
 	
 	/**

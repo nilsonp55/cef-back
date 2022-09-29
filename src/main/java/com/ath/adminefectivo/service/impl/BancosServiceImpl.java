@@ -14,6 +14,7 @@ import com.ath.adminefectivo.dto.PuntosDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.Bancos;
 import com.ath.adminefectivo.exception.AplicationException;
+import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.IBancosRepository;
 import com.ath.adminefectivo.service.IBancosService;
 import com.ath.adminefectivo.service.IDominioService;
@@ -61,7 +62,7 @@ public class BancosServiceImpl implements IBancosService {
 		if (bancoOpt.isPresent() && Objects.nonNull(bancoOpt.get().getAbreviatura())) {
 			return bancoOpt.get().getAbreviatura();
 		} else {
-			throw new AplicationException(ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getCode(),
+			throw new NegocioException(ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getDescription(),
 					ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getHttpStatus());
 		}
@@ -74,7 +75,7 @@ public class BancosServiceImpl implements IBancosService {
 	public Integer getCodigoPuntoBanco(Integer codigoCompensacion) {
 		var bancoOpt = bancosRepository.findByCodigoCompensacion(codigoCompensacion);
 		if (bancoOpt == null) {
-			throw new AplicationException(ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getCode(),
+			throw new NegocioException(ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getDescription(),
 					ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getHttpStatus());
 		} else {
@@ -92,7 +93,7 @@ public class BancosServiceImpl implements IBancosService {
 		if (!Objects.isNull(bancoOpt)) {
 			return BancosDTO.CONVERTER_DTO.apply(bancoOpt);
 		} else {
-			throw new AplicationException(ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getCode(),
+			throw new NegocioException(ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getDescription(),
 					ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getHttpStatus());
 		}
@@ -108,9 +109,10 @@ public class BancosServiceImpl implements IBancosService {
 		if (!Objects.isNull(bancoOpt)) {
 			return BancosDTO.CONVERTER_DTO.apply(bancoOpt);
 		} else {
-			throw new AplicationException(ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getDescription(),
-					ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getHttpStatus());
+//			throw new NegocioException(ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getCode(),
+//					ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getDescription(),
+//					ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getHttpStatus());
+			return null;
 		}
 	}
 
