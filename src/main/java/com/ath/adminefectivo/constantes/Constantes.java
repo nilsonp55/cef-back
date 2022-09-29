@@ -223,6 +223,11 @@ public final class Constantes {
 	public static final String DOMINIO_MEDIOS_PAGO = "MEDIOS_PAGO";
 	
 	/**
+	 * Constante del agrupador de los dominios  de los estados generales
+	 */
+	public static final String DOMINIO_ESTADO_GENERAL = "ESTADO_GENERAL";
+	
+	/**
 	 * Delimintadores de los archivos
 	 */
 	public static final String DELIMITADOR_OTROS = "O";
@@ -595,6 +600,8 @@ public final class Constantes {
 	public static final String CTB_BPOP_Tarde = "CTB_BPOP_Tarde";
 	public static final String CTB_BAVV_Manana = "CTB_BAVV_Manana";
 	public static final String CTB_BAVV_Tarde = "CTB_BAVV_Tarde";
+	
+	public static final String EXTENSION_ARCHIVO_XLS = ".xls";
 	
 	/**
 	 * URL en la cual se almacenaran los archivos generados de contabilidad
