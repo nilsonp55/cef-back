@@ -68,4 +68,7 @@ public class ValoresLiquidados {
 	
 	@Column(name = "TASA_AEROPORTUARIA")
 	private Double tasaAeroportuaria;
+	
+	@Column(name = "ID_SEQ_GRUPO")
+	private Integer idSeqGrupo;
 }

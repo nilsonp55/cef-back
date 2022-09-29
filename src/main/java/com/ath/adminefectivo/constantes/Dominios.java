@@ -156,6 +156,7 @@ public final class Dominios {
 	public static final String CODIGO_PROCESO_LOG_DEFINITIVO = "CARG_DEFINITIVO";
 	public static final String CODIGO_PROCESO_LOG_CERTIFICACION = "CARG_CERTIFICACION";
 	public static final String CODIGO_PROCESO_LOG_CONCILIACION = "CONCILIACION";
+	public static final String CODIGO_PROCESO_LOG_LIQUIDACION = "LIQUIDACION";
 	
 	
 	/**

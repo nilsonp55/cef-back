@@ -8,10 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ath.adminefectivo.dto.ConfContableEntidadesDTO;
@@ -54,8 +54,8 @@ public class ConfContableEntidadesController {
 	 * @return ResponseEntity<ApiResponseADE<List<ConfContableEntidadesDTO>>>
 	 * @author cesar.castano
 	 */
-	@GetMapping(value = "${endpoints.ConfContableEntidades.consultar}/{id}")
-	public ResponseEntity<ApiResponseADE<ConfContableEntidadesDTO>> getConfContableEntidadesById(@PathVariable Long idConfContableEntidades) {
+	@GetMapping(value = "${endpoints.ConfContableEntidades.consultarById}")
+	public ResponseEntity<ApiResponseADE<ConfContableEntidadesDTO>> getConfContableEntidadesById(@RequestParam(required = true) Long idConfContableEntidades) {
 		ConfContableEntidadesDTO consulta = confContableEntidadesService.getConfContableEntidadesById(idConfContableEntidades);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
