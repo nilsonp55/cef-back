@@ -10,6 +10,7 @@ import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Parametros;
 import com.ath.adminefectivo.delegate.ICierreContabilidadDelegate;
 import com.ath.adminefectivo.dto.RespuestaContableDTO;
@@ -44,6 +45,8 @@ public class CierreContabilidadDelegateImpl implements ICierreContabilidadDelega
 	public List<RespuestaContableDTO> cerrarContabilidad(Date fechaSistema, String tipoContabilidad, int codBanco,
 			String fase) {
 		List<RespuestaContableDTO> respuesta = null;
+		
+		fechaSistema = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
 
 		if (fase.equals("INICIAL")) {
 			// VALIDA QUE LA CARGA PELIMINAR ESTE CERRADA SI ES PM

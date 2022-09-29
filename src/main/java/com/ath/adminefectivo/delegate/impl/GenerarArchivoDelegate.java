@@ -7,6 +7,7 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.delegate.IGenerarArchivoDelegate;
 import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.impl.TransaccionesContablesServiceImpl;
@@ -40,6 +41,7 @@ public class GenerarArchivoDelegate implements IGenerarArchivoDelegate {
 		//Date fechaActual = parametroService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
 		//valida el tipoContabilidad
 	
+		fecha = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
 		
 		if(tipoContabilidad.equals("AM") || tipoContabilidad.equals("PM")) {
 			registros = generarArchivoService.generarArchivo(fecha, tipoContabilidad, codBanco);

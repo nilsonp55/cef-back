@@ -91,6 +91,7 @@ public class TransaccionesContablesServiceImpl implements ITransaccionesContable
 	@Override
 	public List<RespuestaContableDTO> getCierreContable(Date fecha, String tipoContabilidad,
 			int codBanco) {
+		
 		List<TransaccionesContablesDTO> listadoTransaccionesCierreDTO = new ArrayList<>();
 		List<RespuestaContableDTO> listadoTransaccionContables = null;
 			if(codBanco == 0) {
