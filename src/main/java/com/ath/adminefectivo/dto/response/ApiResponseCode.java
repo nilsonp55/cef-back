@@ -160,7 +160,7 @@ public enum ApiResponseCode {
 	/**
 	 * Ocurrió un error al consultar la table de fondos
 	 */
-	ERROR_FONDOS_NO_ENCONTRADO("E904", "Ocurrió un error al consultar la table de fondos",
+	ERROR_FONDOS_NO_ENCONTRADO("E904", "Ocurrió un error al consultar la tabla de fondos, el fondo no existe. ",
 			HttpStatus.PRECONDITION_FAILED),
 
 	/**
@@ -520,7 +520,13 @@ public enum ApiResponseCode {
 	/**
 	 * Ocurrió un error al validar la contabilidad porque ya esta cerrada
 	 */
-	PROCESO_CONTABILIDAD_CERRADA("E946", "El proceso de contabilidad AM o PM ya se encuentra cerrada para la fecha. ", HttpStatus.PRECONDITION_FAILED);
+	PROCESO_CONTABILIDAD_CERRADA("E946", "El proceso de contabilidad AM o PM ya se encuentra cerrada para la fecha. ", HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Ocurrió un error al consultar la table de ciudades
+	 */
+	ERROR_BANCO_EXTERNO_NO_ENCONTRADO("E947", "Error, El banco externo en el proceso de intercambio no fue encontrado. ",
+			HttpStatus.PRECONDITION_FAILED);
 	
 	/**
 	 * Código asociado a la respuesta

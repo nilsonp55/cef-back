@@ -43,6 +43,8 @@ public ByteArrayOutputStream generarArchivo(Date fecha, String tipoContabilidad,
 	//List<RespuestaContableDTO> listaContable;
 	List<RespuestaContableDTO> listaContable = transaccionesContablesService.getCierreContable(fecha,tipoContabilidad,codBanco);
 	
+
+	System.out.println("listaContable "+listaContable.size());
 	
 	//AQUI ARMAR EL ARCHIVO EXCEL
 	Workbook workbook = new HSSFWorkbook();
@@ -58,6 +60,7 @@ public ByteArrayOutputStream generarArchivo(Date fecha, String tipoContabilidad,
 		
 		row = sheet.createRow(i);
 		dtoContable = listaContable.get(i);
+		
 		
 		row.createCell(0).setCellValue(dtoContable.getBancoAval());
 		row.createCell(1).setCellValue(dtoContable.getNaturalezaContable());

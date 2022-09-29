@@ -223,6 +223,11 @@ public final class Constantes {
 	public static final String DOMINIO_MEDIOS_PAGO = "MEDIOS_PAGO";
 	
 	/**
+	 * Constante del agrupador de los dominios  de los estados generales
+	 */
+	public static final String DOMINIO_ESTADO_GENERAL = "ESTADO_GENERAL";
+	
+	/**
 	 * Delimintadores de los archivos
 	 */
 	public static final String DELIMITADOR_OTROS = "O";
