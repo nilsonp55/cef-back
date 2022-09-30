@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,15 +16,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.http.MediaType;
 
-import com.ath.adminefectivo.delegate.IPuntosDelegate;
 import com.ath.adminefectivo.delegate.ITarifasOperacionDelegate;
-import com.ath.adminefectivo.dto.CreatePuntosDTO;
-import com.ath.adminefectivo.dto.PuntosDTO;
 import com.ath.adminefectivo.dto.TarifasOperacionDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
-import com.ath.adminefectivo.entities.Puntos;
 import com.ath.adminefectivo.entities.TarifasOperacion;
 import com.querydsl.core.types.Predicate;
 
@@ -59,7 +55,7 @@ public class TarifasOperacionController {
 	 * @return ResponseEntity<ApiResponseADE<TarifasOperacionDTO>>
 	 * @author duvan.naranjo
 	 */
-	@PostMapping(value = "${endpoints.Puntos.guardar}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, 
+	@PostMapping(value = "${endpoints.TarifasOperacion.guardar}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, 
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<TarifasOperacionDTO>> guardarTarifasOperacion(@RequestBody TarifasOperacionDTO tarifasOperacionDTO) {
 
@@ -77,7 +73,7 @@ public class TarifasOperacionController {
 	 * @author duvan.naranjo
 	 */
 	@GetMapping(value = "${endpoints.TarifasOperacion.consultar}/{id}")
-	public ResponseEntity<ApiResponseADE<TarifasOperacionDTO>> getPunto(@RequestParam("idTarifaOperacion") Integer idTarifaOperacion) {
+	public ResponseEntity<ApiResponseADE<TarifasOperacionDTO>> getPunto(@RequestParam("id") Integer idTarifaOperacion) {
 		TarifasOperacionDTO consulta = tarifasOperacionDelegate.getTarifasOperacionById(idTarifaOperacion);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
@@ -104,9 +100,9 @@ public class TarifasOperacionController {
 	 * @return ResponseEntity<ApiResponseADE<List<TarifasOperacionDTO>>>
 	 * @author duvan.naranjo
 	 */
-	@GetMapping(value = "${endpoints.TarifasOperacion.eliminar}/{id}")
-	public ResponseEntity<ApiResponseADE<TarifasOperacionDTO>> eliminar(@RequestParam("idTarifaOperacion") Integer idTarifaOperacion) {
-		TarifasOperacionDTO consulta = tarifasOperacionDelegate.eliminarTarifasOperacion(idTarifaOperacion);
+	@DeleteMapping(value = "${endpoints.TarifasOperacion.eliminar}/{id}")
+	public ResponseEntity<ApiResponseADE<Boolean>> eliminar(@RequestParam("id") Integer idTarifaOperacion) {
+		boolean consulta = tarifasOperacionDelegate.eliminarTarifasOperacion(idTarifaOperacion);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));

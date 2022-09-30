@@ -39,11 +39,13 @@ public class TarifasOperacion {
 	@Column(name = "ID_TARIFAS_OPERACION")
 	private int idTarifasOperacion;
 
-	@Column(name = "CODIGO_BANCO")
-	private int codigoBanco;
+	@ManyToOne
+	@JoinColumn(name = "CODIGO_BANCO", nullable = false)
+	private Bancos banco;
 
-	@Column(name = "CODIGO_TDV")
-	private String codigoTdv; 
+	@ManyToOne
+	@JoinColumn(name = "CODIGO_TDV", nullable = false)
+	private Transportadoras transportadora; 
 
 	@Column(name = "TIPO_PUNTO")
 	private String tipoPunto; 

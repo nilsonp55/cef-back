@@ -1,67 +1,60 @@
-package com.ath.adminefectivo.delegate;
+package com.ath.adminefectivo.service;
 
 import java.util.List;
 
 import com.ath.adminefectivo.dto.TarifasOperacionDTO;
 import com.querydsl.core.types.Predicate;
 
-/**
- * Delegate que expone los servicios referente a las funciones dinamicas
- * @author duvan.naranjo
- */
-public interface ITarifasOperacionDelegate {
+public interface ITarifasOperacionService {
 
 	/**
-	 * Delegate encargado de contener la union con el servicio para listar 
-	 * las tarifas operacion
+	 * Servicio encargado de contener la logica para listar las
+	 * tarifas operacion
 	 * 
-	 * @param idTarifaOperacion
-	 * @return TarifasOperacionDTO
+	 * @param predicate
+	 * @return List<TarifasOperacionDTO>
 	 * @author duvan.naranjo
 	 */
 	List<TarifasOperacionDTO> getTarifasOperacion(Predicate predicate);
-	
+
 	/**
-	 * Delegate encargado de contener la union con el servicio para obtener 
-	 * una tarifa operacion por id
+	 * Servicio encargado de contener la logica para consultar una
+	 * tarifa operacion
 	 * 
 	 * @param idTarifaOperacion
 	 * @return TarifasOperacionDTO
 	 * @author duvan.naranjo
 	 */
 	TarifasOperacionDTO getTarifasOperacionById(Integer idTarifaOperacion);
-	
 
 	/**
-	 * Delegate encargado de contener la union con el servicio de guardar 
-	 * una tarifa operacion
+	 * Servicio encargado de contener la logica guardar o persistir una 
+	 * tarifa operacion
 	 * 
-	 * @param idTarifaOperacion
+	 * @param tarifasOperacionDTO
 	 * @return TarifasOperacionDTO
 	 * @author duvan.naranjo
 	 */
 	TarifasOperacionDTO guardarTarifasOperacion(TarifasOperacionDTO tarifasOperacionDTO);
 
 	/**
-	 * Delegate encargado de contener la union con el servicio para actualizar 
-	 * una tarifa operacion
+	 * Servicio encargado de contener la logica para actualizar una tarifa operacion
 	 * 
-	 * @param idTarifaOperacion
+	 * @param tarifasOperacionDTO
 	 * @return TarifasOperacionDTO
 	 * @author duvan.naranjo
 	 */
 	TarifasOperacionDTO actualizarTarifasOperacion(TarifasOperacionDTO tarifasOperacionDTO);
 
 	/**
-	 * Delegate encargado de contener la union con el servicio para eliminar 
-	 * una tarifa operacion
+	 * Servicio encargado de contener la logica eliminar una tarifa operacion
 	 * 
 	 * @param idTarifaOperacion
-	 * @return TarifasOperacionDTO
+	 * @return boolean
 	 * @author duvan.naranjo
 	 */
 	boolean eliminarTarifasOperacion(Integer idTarifaOperacion);
 
-
+	
 
 }

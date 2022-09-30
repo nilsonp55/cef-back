@@ -11,7 +11,7 @@ import com.ath.adminefectivo.entities.PuntosCodigoTDV;
  * @author cesar.castano
  */
 public interface IPuntosCodigoTDVRepository
-		extends JpaRepository<PuntosCodigoTDV, String>, QuerydslPredicateExecutor<PuntosCodigoTDV> {
+		extends JpaRepository<PuntosCodigoTDV, Integer>, QuerydslPredicateExecutor<PuntosCodigoTDV> {
 
 	/**
 	 * Retorna el objeto PuntosCodigoTDV para un codigoTDV

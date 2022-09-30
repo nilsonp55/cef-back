@@ -2,6 +2,7 @@ package com.ath.adminefectivo.dto;
 
 
 import java.util.Date;
+import java.util.Objects;
 import java.util.function.Function;
 
 import com.ath.adminefectivo.entities.TarifasOperacion;
@@ -26,9 +27,9 @@ public class TarifasOperacionDTO {
 
 	private int idTarifasOperacion;
 
-	private int codigoBanco;
+	private BancosDTO bancoDTO;
 
-	private String codigoTdv; 
+	private TransportadorasDTO transportadoraDTO; 
 
 	private String tipoPunto; 
 
@@ -68,7 +69,12 @@ public class TarifasOperacionDTO {
 	public static final Function<TarifasOperacionDTO, TarifasOperacion> CONVERTER_ENTITY = (TarifasOperacionDTO t) -> {
 		var tarifasOperacion = new TarifasOperacion();
 		UtilsObjects.copiarPropiedades(t, tarifasOperacion);
-				
+		if(!Objects.isNull(t.getBancoDTO())) {
+			tarifasOperacion.setBanco(BancosDTO.CONVERTER_ENTITY.apply(t.getBancoDTO()));
+		}
+		if(!Objects.isNull(t.getTransportadoraDTO())) {
+			tarifasOperacion.setTransportadora(TransportadorasDTO.CONVERTER_ENTITY.apply(t.getTransportadoraDTO()));
+		}
 		return tarifasOperacion;
 	};
 
@@ -78,7 +84,12 @@ public class TarifasOperacionDTO {
 	public static final Function<TarifasOperacion, TarifasOperacionDTO> CONVERTER_DTO = (TarifasOperacion t) -> {
 		var tarifasOperacionDTO = new TarifasOperacionDTO();
 		UtilsObjects.copiarPropiedades(t, tarifasOperacionDTO);
-		
+		if(!Objects.isNull(t.getBanco())) {
+			tarifasOperacionDTO.setBancoDTO(BancosDTO.CONVERTER_DTO.apply(t.getBanco()));
+		}
+		if(!Objects.isNull(t.getTransportadora())) {
+			tarifasOperacionDTO.setTransportadoraDTO(TransportadorasDTO.CONVERTER_DTO.apply(t.getTransportadora()));
+		}
 		return tarifasOperacionDTO;
 	};
 }

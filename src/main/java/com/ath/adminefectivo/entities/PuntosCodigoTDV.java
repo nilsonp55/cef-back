@@ -28,6 +28,9 @@ import lombok.NoArgsConstructor;
 public class PuntosCodigoTDV {
 
 	@Id
+	@Column(name = "id_punto_codigo_tdv")
+	private Integer idPuntoCodigoTdv;
+	
 	@Column(name = "CODIGO_PUNTO")
 	private Integer codigoPunto;
 	
@@ -37,8 +40,11 @@ public class PuntosCodigoTDV {
 	@Column(name = "CODIGO_PROPIO_TDV")
 	private String codigoPropioTDV;
 	
-	//@ManyToOne
-	//@JoinColumn(name = "COD_PUNTO", nullable = false)
-	//private Puntos puntos;
+	@ManyToOne
+	@JoinColumn(name = "COD_PUNTO", nullable = false)
+	private Puntos puntos;
+	
+	@Column(name = "ESTADO")
+	private int estado;
 	
 }

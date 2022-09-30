@@ -556,6 +556,11 @@ public final class Constantes {
 	 */
 	public static final String CAMPO_DETALLE_ARCHIVO_TIPONOVEDAD = "TIPONOVEDAD";
 	
+	/**
+	 * Constante para indicar el CODIGOPUNTO en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_CODIGOPUNTO_TIPO_5 = "CODIGOPUNTO";
+	
 	//////////////////////////////////////// MENSAJES ///////////////////////////////////////////
 	/**
 	 * Mensaje de campo requerido 

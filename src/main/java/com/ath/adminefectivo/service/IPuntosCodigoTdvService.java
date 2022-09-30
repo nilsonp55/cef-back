@@ -34,13 +34,53 @@ public interface IPuntosCodigoTdvService {
 	 * @author cesar.castano
 	 */
 	Integer getCodigoPunto(String codigoPuntoTdv, String codigoTdv, Integer codigo_aval);
+	
 	/**
 	 * Servicio encargado de consultar la lista de todos los Puntos Codigos TDV filtrados
 	 * con el predicado
+	 * 
 	 * @param predicate
 	 * @return List<PuntosCodigoTdvDTO>
 	 * @author cesar.castano
 	 */
 	List<PuntosCodigoTdvDTO> getPuntosCodigoTdvAll();
+
+	/**
+	 * Servicio encargado de contener la logica para consultar un
+	 * Puntos Codigos TDV
+	 * 
+	 * @param idPuntoCodigoTdv
+	 * @return PuntosCodigoTdvDTO
+	 * @author duvan.naranjo
+	 */
+	PuntosCodigoTdvDTO getPuntosCodigoTdvById(Integer idPuntoCodigoTdv);
+
+	/**
+	 * Servicio encargado de contener la logica guardar o persistir un
+	 * Puntos Codigos TDV
+	 * 
+	 * @param puntosCodigoTdvDTO
+	 * @return PuntosCodigoTdvDTO
+	 * @author duvan.naranjo
+	 */
+	PuntosCodigoTdvDTO guardarPuntosCodigoTdv(PuntosCodigoTdvDTO puntosCodigoTdvDTO);
+
+	/**
+	 * Servicio encargado de contener la logica para actualizar un Puntos Codigos TDV
+	 * 
+	 * @param puntosCodigoTdvDTO
+	 * @return PuntosCodigoTdvDTO
+	 * @author duvan.naranjo
+	 */
+	PuntosCodigoTdvDTO actualizarPuntosCodigoTdv(PuntosCodigoTdvDTO puntosCodigoTdvDTO);
+
+	/**
+	 * Servicio encargado de contener la logica eliminar un Puntos Codigos TDV
+	 * 
+	 * @param idPuntoCodigoTdv
+	 * @return boolean
+	 * @author duvan.naranjo
+	 */
+	boolean eliminarPuntosCodigoTdv(Integer idPuntoCodigoTdv);
 	
 }

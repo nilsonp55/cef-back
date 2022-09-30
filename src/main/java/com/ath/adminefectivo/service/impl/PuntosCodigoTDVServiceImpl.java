@@ -7,10 +7,14 @@ import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.PuntosCodigoTdvDTO;
+import com.ath.adminefectivo.dto.TarifasOperacionDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.PuntosCodigoTDV;
+import com.ath.adminefectivo.entities.TarifasOperacion;
 import com.ath.adminefectivo.exception.AplicationException;
+import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.IPuntosCodigoTDVRepository;
 import com.ath.adminefectivo.service.IPuntosCodigoTdvService;
 import com.ath.adminefectivo.service.IPuntosService;
@@ -75,6 +79,54 @@ public class PuntosCodigoTDVServiceImpl implements IPuntosCodigoTdvService {
 		List<PuntosCodigoTdvDTO> listPuntosCodigoTDVDto = new ArrayList<>();
 		puntosCodigoTDV.forEach(entity -> listPuntosCodigoTDVDto.add(PuntosCodigoTdvDTO.CONVERTER_DTO.apply(entity)));
 		return listPuntosCodigoTDVDto;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public PuntosCodigoTdvDTO getPuntosCodigoTdvById(Integer idPuntoCodigoTdv) {
+		PuntosCodigoTDV puntosCodigoTdvEntity = puntosCodigoTDVRepository.findById(idPuntoCodigoTdv).get();
+		if(Objects.isNull(puntosCodigoTdvEntity)) {
+			throw new NegocioException(ApiResponseCode.ERROR_PUNTOS_CODIGO_TDV_NO_ENCONTRADO.getCode(),
+					ApiResponseCode.ERROR_PUNTOS_CODIGO_TDV_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_PUNTOS_CODIGO_TDV_NO_ENCONTRADO.getHttpStatus());
+		}
+		return PuntosCodigoTdvDTO.CONVERTER_DTO.apply(puntosCodigoTdvEntity);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public PuntosCodigoTdvDTO guardarPuntosCodigoTdv(PuntosCodigoTdvDTO puntosCodigoTdvDTO) {
+		PuntosCodigoTDV puntosCodigoTdvEntity = PuntosCodigoTdvDTO.CONVERTER_ENTITY.apply(puntosCodigoTdvDTO);
+		return PuntosCodigoTdvDTO.CONVERTER_DTO.apply(puntosCodigoTDVRepository.save(puntosCodigoTdvEntity));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public PuntosCodigoTdvDTO actualizarPuntosCodigoTdv(PuntosCodigoTdvDTO puntosCodigoTdvDTO) {
+		return this.guardarPuntosCodigoTdv(puntosCodigoTdvDTO);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean eliminarPuntosCodigoTdv(Integer idPuntoCodigoTdv) {
+		PuntosCodigoTDV puntosCodigoTdvEntity = puntosCodigoTDVRepository.findById(idPuntoCodigoTdv).get();
+		
+		puntosCodigoTdvEntity.setEstado(Dominios.ESTADO_GENERAL_ELIMINADO);
+		PuntosCodigoTDV PuntosCodigoTDVActualizado = puntosCodigoTDVRepository.save(puntosCodigoTdvEntity);
+		
+		if(!Objects.isNull(PuntosCodigoTDVActualizado)) {
+			return true;
+		}else {
+			return false;
+		}
 	}
 
 }
