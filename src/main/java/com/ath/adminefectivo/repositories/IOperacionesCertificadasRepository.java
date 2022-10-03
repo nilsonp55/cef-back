@@ -115,7 +115,7 @@ public interface IOperacionesCertificadasRepository
 	 * @return List<OperacionesCertificadas>
 	 * @author cesar.castano
 	 */
-	List<OperacionesCertificadas> findByCodigoPuntoDestinoAndEntradaSalidaAndFechaEjecucion(String codigoPuntoDestino, String entradaSalida, Date fechaEjecucion);
+	List<OperacionesCertificadas> findByCodigoPuntoDestinoAndEntradaSalidaAndFechaEjecucion(Integer codigoPuntoDestino, String entradaSalida, Date fechaEjecucion);
 
 	/**
 	 * Retorna una lista de operaciones certificadas segun el codigo del servicio tdv
@@ -123,7 +123,7 @@ public interface IOperacionesCertificadasRepository
 	 * @return List<OperacionesCertificadas>
 	 * @author cesar.castano
 	 */
-	List<OperacionesCertificadas> findByCodigoPuntoOrigenAndEntradaSalidaAndFechaEjecucion(String codigoPuntoOrigen, String entradaSalida, Date fechaEjecucion);
+	List<OperacionesCertificadas> findByCodigoPuntoOrigenAndEntradaSalidaAndFechaEjecucion(Integer codigoPuntoOrigen, String entradaSalida, Date fechaEjecucion);
 
 	
 }

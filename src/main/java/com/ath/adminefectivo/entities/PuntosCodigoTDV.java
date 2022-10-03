@@ -44,6 +44,11 @@ public class PuntosCodigoTDV {
 	@JoinColumn(name = "COD_PUNTO", nullable = false)
 	private Puntos puntos;
 	
+	@ManyToOne
+	@JoinColumn(name = "codigo_banco", nullable = true)
+	private Bancos bancos;
+	
+	
 	@Column(name = "ESTADO")
 	private int estado;
 	

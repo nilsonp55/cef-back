@@ -8,14 +8,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.constantes.Dominios;
+import com.ath.adminefectivo.dto.BancosDTO;
 import com.ath.adminefectivo.dto.PuntosCodigoTdvDTO;
 import com.ath.adminefectivo.dto.TarifasOperacionDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
+import com.ath.adminefectivo.entities.Bancos;
 import com.ath.adminefectivo.entities.PuntosCodigoTDV;
 import com.ath.adminefectivo.entities.TarifasOperacion;
 import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.IPuntosCodigoTDVRepository;
+import com.ath.adminefectivo.service.IBancosService;
 import com.ath.adminefectivo.service.IPuntosCodigoTdvService;
 import com.ath.adminefectivo.service.IPuntosService;
 import com.querydsl.core.types.Predicate;
@@ -28,6 +31,9 @@ public class PuntosCodigoTDVServiceImpl implements IPuntosCodigoTdvService {
 	
 	@Autowired
 	IPuntosService puntosService;
+	
+	@Autowired
+	IBancosService bancoService;
 	
 	/**
 	 * {@inheritDoc}
@@ -61,8 +67,12 @@ public class PuntosCodigoTDVServiceImpl implements IPuntosCodigoTdvService {
 	 */
 	@Override
 	public Integer getCodigoPunto(String codigoPuntoTdv, String codigoTdv, Integer banco_aval) {
-		var puntosCodigoTDV = puntosCodigoTDVRepository.findByCodigoPropioTDVAndCodigoTDV(
-				codigoPuntoTdv, codigoTdv);
+		
+		BancosDTO bancoAval = bancoService.findBancoByCodigoPunto(banco_aval);
+		
+		
+		var puntosCodigoTDV = puntosCodigoTDVRepository.findByCodigoPropioTDVAndCodigoTDVAndBancos(
+				codigoPuntoTdv, codigoTdv, BancosDTO.CONVERTER_ENTITY.apply(bancoAval));
 		if (Objects.isNull(puntosCodigoTDV)) {
 			return puntosService.getEntidadPunto(banco_aval).getCodigoPunto();
 		} else {
@@ -123,7 +133,11 @@ public class PuntosCodigoTDVServiceImpl implements IPuntosCodigoTdvService {
 		PuntosCodigoTDV PuntosCodigoTDVActualizado = puntosCodigoTDVRepository.save(puntosCodigoTdvEntity);
 		
 		if(!Objects.isNull(PuntosCodigoTDVActualizado)) {
-			return true;
+			if(puntosCodigoTdvEntity.getEstado() == Dominios.ESTADO_GENERAL_ELIMINADO) {
+				return true;
+			}else {
+				return false;
+			}
 		}else {
 			return false;
 		}

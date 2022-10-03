@@ -33,6 +33,10 @@ public class PuntosCodigoTdvDTO {
 	
 	private PuntosDTO puntosDTO;
 	
+	private BancosDTO bancosDTO;
+		
+	private int estado;
+	
 	/**
 	 * Funcion que retorna la entidad recibiendo un DTO *
 	 */
@@ -41,6 +45,9 @@ public class PuntosCodigoTdvDTO {
 		UtilsObjects.copiarPropiedades(t, puntosCodigoTDV);
 		if(!Objects.isNull(t.getPuntosDTO())) {
 			puntosCodigoTDV.setPuntos(PuntosDTO.CONVERTER_ENTITY.apply(t.getPuntosDTO()));
+		}
+		if(!Objects.isNull(t.getBancosDTO())) {
+			puntosCodigoTDV.setBancos(BancosDTO.CONVERTER_ENTITY.apply(t.getBancosDTO()));
 		}
 		return puntosCodigoTDV;
 	};
@@ -53,6 +60,9 @@ public class PuntosCodigoTdvDTO {
 		UtilsObjects.copiarPropiedades(t, puntosCodigoTdvDTO);
 		if(!Objects.isNull(t.getPuntos())){
 			puntosCodigoTdvDTO.setPuntosDTO(PuntosDTO.CONVERTER_DTO.apply(t.getPuntos()));
+		}
+		if(!Objects.isNull(t.getBancos())) {
+			puntosCodigoTdvDTO.setBancosDTO(BancosDTO.CONVERTER_DTO.apply(t.getBancos()));
 		}
 		return puntosCodigoTdvDTO;
 	};

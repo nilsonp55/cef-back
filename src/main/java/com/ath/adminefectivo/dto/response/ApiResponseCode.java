@@ -552,10 +552,21 @@ public enum ApiResponseCode {
 	ERROR_TARIFAS_OPERACION_NO_ENCONTRADO("E948", "Ocurrió un error al consultar la tabla de Tarifas Operacion, no fue encontrado",
 			HttpStatus.PRECONDITION_FAILED),
 	/**
-	 * Ocurrió un error al consultar la tabla Tarifas Operacion o no fue encontrado
+	 * Ocurrió un error al consultar la tabla Puntos Codigo TDV o no fue encontrado
 	 */
 	ERROR_PUNTOS_CODIGO_TDV_NO_ENCONTRADO("E949", "Ocurrió un error al consultar la tabla de Puntos Codigo TDV, no fue encontrado",
-			HttpStatus.PRECONDITION_FAILED);
+			HttpStatus.PRECONDITION_FAILED),
+	/**
+	 * Ocurrió un error al consultar la tabla PuntosCostos o no fue encontrado
+	 */
+	ERROR_PUNTOS_COSTOS_NO_ENCONTRADO("E950", "Ocurrió un error al consultar la tabla de Puntos Costos, no fue encontrado",
+			HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Ocurrió un error al consultar la tabla Escalas o no fue encontrado
+	 */
+	ERROR_ESCALAS_NO_ENCONTRADO("E951", "Ocurrió un error al consultar la tabla de Escalas, no fue encontrado",
+			HttpStatus.PRECONDITION_FAILED);;
 	
 	/**
 	 * Código asociado a la respuesta

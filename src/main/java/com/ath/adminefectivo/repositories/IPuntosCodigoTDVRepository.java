@@ -3,6 +3,7 @@ package com.ath.adminefectivo.repositories;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
+import com.ath.adminefectivo.entities.Bancos;
 import com.ath.adminefectivo.entities.PuntosCodigoTDV;
 
 /**
@@ -27,5 +28,12 @@ public interface IPuntosCodigoTDVRepository
 	 * @return
 	 */
 	public PuntosCodigoTDV findByCodigoPropioTDVAndCodigoTDV(String codigoPropioTdv, String codigoTdv);
+	
+	/**
+	 * Retorna el objeto PuntosCodigoTDV para un codigoPropioTDV
+	 * @param codigoPropioTdv
+	 * @return
+	 */
+	public PuntosCodigoTDV findByCodigoPropioTDVAndCodigoTDVAndBancos(String codigoPropioTdv, String codigoTdv, Bancos banco);
 
 }

@@ -82,7 +82,11 @@ public class TarifasOperacionServiceImpl implements ITarifasOperacionService {
 		TarifasOperacion tarifaOperacionActualizado = tarifasOperacionRepository.save(tarifaOperacionEntity);
 		
 		if(!Objects.isNull(tarifaOperacionActualizado)) {
-			return true;
+			if(tarifaOperacionEntity.getEstado() == Dominios.ESTADO_GENERAL_ELIMINADO) {
+				return true;
+			}else {
+				return false;
+			}
 		}else {
 			return false;
 		}

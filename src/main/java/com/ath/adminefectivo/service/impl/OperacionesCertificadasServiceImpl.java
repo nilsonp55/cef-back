@@ -404,6 +404,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 		var codigoPuntoOrigenDestino = new CodigoPuntoOrigenDestinoDTO();
 		Integer codigoPuntoOrigen = 0;
 		Integer codigoPuntoDestino = 0;
+		System.out.println("---------- codigoPropio = " +codigoPropio+ " registro.getTdv() = " + registro.getTdv()+ "registro.getBanco_aval() = "+registro.getBanco_aval());
 		if(asignarEntradaSalida(entradaSalida).equals(Constantes.NOMBRE_ENTRADA)) {
 			codigoPuntoDestino = registro.getCodigoPunto();
 			codigoPuntoOrigen = puntosCodigoTdvService.getCodigoPunto(codigoPropio, registro.getTdv(), 
@@ -454,6 +455,8 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	 * @author cesar.castano
 	 */
 	private Fondos asignarFondo(String transportadora, String nit, String ciudad) {
+		
+		System.out.println("transportadora = "+transportadora+" nit = "+ nit + " ciudad = "+ciudad);
 		if(transportadora.equals("SEG")) {
 			transportadora = "TVS";
 		}
@@ -727,11 +730,11 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	 */
 	private void actualizarValorSobranteNoBrinks(String codigoServicio, Double valor, Date fecha) {
 		List<OperacionesCertificadas> ocertificadas = operacionesCertificadasRepository
-		.findByCodigoPuntoDestinoAndEntradaSalidaAndFechaEjecucion(codigoServicio, "SALIDAS", fecha);
+		.findByCodigoPuntoDestinoAndEntradaSalidaAndFechaEjecucion(Integer.valueOf(codigoServicio), "SALIDAS", fecha);
 
 		if(Objects.isNull(ocertificadas)) {
 		ocertificadas = operacionesCertificadasRepository
-		.findByCodigoPuntoOrigenAndEntradaSalidaAndFechaEjecucion(codigoServicio, "ENTRADAS", fecha);
+		.findByCodigoPuntoOrigenAndEntradaSalidaAndFechaEjecucion(Integer.valueOf(codigoServicio), "ENTRADAS", fecha);
 		}
 
 		if (Objects.isNull(ocertificadas)) {
@@ -755,11 +758,11 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	 */
 	private void actualizarValorFaltanteNoBrinks(String codigoServicio, Double valor, Date fecha) {
 		List<OperacionesCertificadas> ocertificadas = operacionesCertificadasRepository
-									.findByCodigoPuntoDestinoAndEntradaSalidaAndFechaEjecucion(codigoServicio, "SALIDAS", fecha);
+									.findByCodigoPuntoDestinoAndEntradaSalidaAndFechaEjecucion(Integer.valueOf(codigoServicio), "SALIDAS", fecha);
 		
 		if(Objects.isNull(ocertificadas)) {
 			ocertificadas = operacionesCertificadasRepository
-					.findByCodigoPuntoOrigenAndEntradaSalidaAndFechaEjecucion(codigoServicio, "ENTRADAS", fecha);
+					.findByCodigoPuntoOrigenAndEntradaSalidaAndFechaEjecucion(Integer.valueOf(codigoServicio), "ENTRADAS", fecha);
 		}
 		
 		if (Objects.isNull(ocertificadas)) {
