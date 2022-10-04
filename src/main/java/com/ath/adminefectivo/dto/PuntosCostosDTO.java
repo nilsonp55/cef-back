@@ -42,7 +42,7 @@ public class PuntosCostosDTO {
 
 	private long idTarifasGenerales;
 
-	private boolean mixto;
+	private Boolean mixto;
 	
 	private int estado;
 	
