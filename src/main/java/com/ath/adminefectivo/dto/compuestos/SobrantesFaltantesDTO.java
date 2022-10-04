@@ -1,5 +1,7 @@
 package com.ath.adminefectivo.dto.compuestos;
 
+import java.util.Date;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,4 +23,8 @@ public class SobrantesFaltantesDTO {
 	private String codigoServicio;
 	
 	private Double valor;
+	
+	private Date fecha;
+	
+	private boolean esBrinks;
 }

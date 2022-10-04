@@ -85,7 +85,7 @@ public interface ArchivosCargadosRepository
 	 * @author duvan.naranjo
 	 */
 	@Query("select ac from ArchivosCargados ac "
-		 + "where estadoCargue = ?3 and cast(fechaArchivo as date) = cast(?2 as date) and "
+		 + "where estadoCargue = ?3 and fechaArchivo = ?2 and "
 		 + "idModeloArchivo IN (select idMaestroDefinicionArchivo from MaestroDefinicionArchivo "
 		 + "where agrupador = ?1)")
 	List<ArchivosCargados> getRegistrosCargadosSinProcesarDeHoy(String agrupador, Date fecha, String estado);

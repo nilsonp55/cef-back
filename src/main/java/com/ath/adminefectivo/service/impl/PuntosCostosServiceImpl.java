@@ -1,0 +1,100 @@
+package com.ath.adminefectivo.service.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.ath.adminefectivo.constantes.Dominios;
+import com.ath.adminefectivo.dto.FuncionesDinamicasDTO;
+import com.ath.adminefectivo.dto.PuntosCostosDTO;
+import com.ath.adminefectivo.dto.TarifasOperacionDTO;
+import com.ath.adminefectivo.dto.response.ApiResponseCode;
+import com.ath.adminefectivo.entities.FuncionesDinamicas;
+import com.ath.adminefectivo.entities.PuntosCostos;
+import com.ath.adminefectivo.entities.TarifasOperacion;
+import com.ath.adminefectivo.exception.NegocioException;
+import com.ath.adminefectivo.repositories.IBancosRepository;
+import com.ath.adminefectivo.repositories.IFuncionesDinamicasRepository;
+import com.ath.adminefectivo.repositories.IPuntosCostosRepository;
+import com.ath.adminefectivo.repositories.ITarifasOperacionRepository;
+import com.ath.adminefectivo.service.IFuncionesDinamicasService;
+import com.ath.adminefectivo.service.IPuntosCostosService;
+import com.ath.adminefectivo.service.ITarifasOperacionService;
+import com.querydsl.core.types.Predicate;
+
+@Service
+public class PuntosCostosServiceImpl implements IPuntosCostosService {
+
+	@Autowired
+	IPuntosCostosRepository puntosCostosRepository;
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<PuntosCostosDTO> getPuntosCostos(Predicate predicate) {
+		var puntosCostosEntity = puntosCostosRepository.findAll(predicate);
+		List<PuntosCostosDTO> puntosCostosDTO = new ArrayList<>();
+		puntosCostosEntity.forEach(puntoCosto ->{
+			puntosCostosDTO.add(PuntosCostosDTO.CONVERTER_DTO.apply(puntoCosto));
+		});
+		return puntosCostosDTO;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public PuntosCostosDTO getPuntosCostosById(Integer idPuntoCosto) {
+		PuntosCostos puntosCostosEntity = puntosCostosRepository.findById(idPuntoCosto).get();
+		if(Objects.isNull(puntosCostosEntity)) {
+			throw new NegocioException(ApiResponseCode.ERROR_PUNTOS_COSTOS_NO_ENCONTRADO.getCode(),
+					ApiResponseCode.ERROR_PUNTOS_COSTOS_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_PUNTOS_COSTOS_NO_ENCONTRADO.getHttpStatus());
+		}
+		return PuntosCostosDTO.CONVERTER_DTO.apply(puntosCostosEntity);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public PuntosCostosDTO guardarPuntosCostos(PuntosCostosDTO puntosCostosDTO) {
+		PuntosCostos puntosCostosEntity = PuntosCostosDTO.CONVERTER_ENTITY.apply(puntosCostosDTO);
+		return PuntosCostosDTO.CONVERTER_DTO.apply(puntosCostosRepository.save(puntosCostosEntity));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public PuntosCostosDTO actualizarPuntosCostos(PuntosCostosDTO puntosCostosDTO) {
+		return this.guardarPuntosCostos(puntosCostosDTO);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean eliminarPuntosCostos(Integer idPuntoCosto) {
+		PuntosCostos puntosCostosEntity = puntosCostosRepository.findById(idPuntoCosto).get();
+		
+		puntosCostosEntity.setEstado(Dominios.ESTADO_GENERAL_ELIMINADO);
+		PuntosCostos puntosCostosActualizado = puntosCostosRepository.save(puntosCostosEntity);
+		
+		if(!Objects.isNull(puntosCostosActualizado)) {
+			if(puntosCostosActualizado.getEstado() == Dominios.ESTADO_GENERAL_ELIMINADO) {
+				return true;
+			}else {
+				return false;
+			}
+			
+		}else {
+			return false;
+		}
+	}
+	
+}

@@ -5,50 +5,59 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ath.adminefectivo.delegate.IFuncionesDinamicasDelegate;
 import com.ath.adminefectivo.delegate.ITarifasOperacionDelegate;
-import com.ath.adminefectivo.dto.FuncionesDinamicasDTO;
 import com.ath.adminefectivo.dto.TarifasOperacionDTO;
-import com.ath.adminefectivo.service.IFuncionesDinamicasService;
+import com.ath.adminefectivo.service.ITarifasOperacionService;
 import com.querydsl.core.types.Predicate;
 
 @Service
 public class TarifasOperacionDelegateImpl implements ITarifasOperacionDelegate{
 
-	@Override
-	public TarifasOperacionDTO eliminarTarifasOperacion(Integer idTarifaOperacion) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public TarifasOperacionDTO actualizarTarifasOperacion(TarifasOperacionDTO tarifasOperacionDTO) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public TarifasOperacionDTO getTarifasOperacionById(Integer idTarifaOperacion) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public TarifasOperacionDTO guardarTarifasOperacion(TarifasOperacionDTO tarifasOperacionDTO) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	@Autowired
+	ITarifasOperacionService tarifasOperacionService;
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public List<TarifasOperacionDTO> getTarifasOperacion(Predicate predicate) {
-		// TODO Auto-generated method stub
-		return null;
+		return tarifasOperacionService.getTarifasOperacion(predicate);
 	}
-
 
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
+	public TarifasOperacionDTO getTarifasOperacionById(Integer idTarifaOperacion) {
+		return tarifasOperacionService.getTarifasOperacionById(idTarifaOperacion);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public TarifasOperacionDTO guardarTarifasOperacion(TarifasOperacionDTO tarifasOperacionDTO) {
+		return tarifasOperacionService.guardarTarifasOperacion(tarifasOperacionDTO);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public TarifasOperacionDTO actualizarTarifasOperacion(TarifasOperacionDTO tarifasOperacionDTO) {
+		return tarifasOperacionService.actualizarTarifasOperacion(tarifasOperacionDTO);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean eliminarTarifasOperacion(Integer idTarifaOperacion) {
+		return tarifasOperacionService.eliminarTarifasOperacion(idTarifaOperacion);
+	}
+
+
+
 
 	
 }

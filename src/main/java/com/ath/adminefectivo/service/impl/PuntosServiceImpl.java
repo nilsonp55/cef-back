@@ -17,6 +17,7 @@ import com.ath.adminefectivo.entities.Puntos;
 import com.ath.adminefectivo.entities.SitiosClientes;
 import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.exception.ConflictException;
+import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.CajerosATMRepository;
 import com.ath.adminefectivo.repositories.IBancosRepository;
 import com.ath.adminefectivo.repositories.IFondosRepository;
@@ -258,7 +259,7 @@ public class PuntosServiceImpl implements IPuntosService {
 	public Puntos getEntidadPunto(Integer codigo_banco_aval) {
 		Puntos puntos = puntosRepository.obtenerCodigoPunto(codigo_banco_aval);
 		if (Objects.isNull(puntos)) {
-			throw new AplicationException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
+			throw new NegocioException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription(),
 					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
 		} else

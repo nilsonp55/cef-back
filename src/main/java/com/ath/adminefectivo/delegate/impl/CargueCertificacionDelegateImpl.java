@@ -235,9 +235,13 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 		// Validaciones de arcihvo	
 		String delimitador = lecturaArchivoService.obtenerDelimitadorArchivo(maestroDefinicion);
 		List<String[]> contenido = lecturaArchivoService.leerArchivo(dowloadFile.getFile(), delimitador);
+		
 		Date fechaActual = parametrosService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
-		var fechaArchivo = validacionArchivoService.validarFechaArchivo(nombreArchivo,
-				maestroDefinicion.getMascaraArch(), fechaActual);
+		Date fechaAnteriorHabil = festivosNacionalesService.consultarAnteriorHabil(fechaActual);
+		
+		var fechaArchivo = validacionArchivoService.validarFechaArchivoBetween(nombreArchivo,
+				maestroDefinicion.getMascaraArch(), fechaActual, fechaAnteriorHabil);
+		
 		this.validacionArchivo = ValidacionArchivoDTO.builder().nombreArchivo(nombreArchivo)
 				.descripcion(maestroDefinicion.getDescripcionArch()).fechaArchivo(fechaArchivo)
 				.maestroDefinicion(maestroDefinicion).url(url)
