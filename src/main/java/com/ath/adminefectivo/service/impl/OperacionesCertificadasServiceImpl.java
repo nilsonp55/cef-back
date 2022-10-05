@@ -4,6 +4,9 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -26,6 +29,7 @@ import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.ArchivosCargados;
 import com.ath.adminefectivo.entities.Fondos;
 import com.ath.adminefectivo.entities.OperacionesCertificadas;
+import com.ath.adminefectivo.entities.RegistrosCargados;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.IOperacionesCertificadasRepository;
 import com.ath.adminefectivo.service.IArchivosCargadosService;
@@ -195,7 +199,16 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 		for (var i = 0; i < elemento.getRegistrosCargados().size(); i++) {
 			
 			var ajusteValor = new SobrantesFaltantesDTO();
-			String[] fila = elemento.getRegistrosCargados().get(i).getContenido().split(", ");
+			List<RegistrosCargados> registrosOrdenados = elemento.getRegistrosCargados();
+
+			Collections.sort(registrosOrdenados, new Comparator<RegistrosCargados>() {  
+				@Override
+				public int compare(RegistrosCargados r1, RegistrosCargados r2) {
+					return r1.getId().getConsecutivoRegistro().compareTo(r2.getId().getConsecutivoRegistro());  
+				}});
+			
+			String[] fila = registrosOrdenados.get(i).getContenido().split(", ");
+			System.out.println("************ FILA posicion I = "+fila);
 			String tipoRegistro = determinarTipoRegistro(fila, detalleArchivo);
 			switch (Integer.parseInt(tipoRegistro)) {
 			case 1: {

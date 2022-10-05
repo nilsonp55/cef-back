@@ -55,8 +55,8 @@ public class PuntosCostos {
 	@Column(name= "id_tarifas_generales")
 	private long idTarifasGenerales;
 
-	@Column(name= "mixto")
-	private boolean mixto;
+	@Column(name= "mixto", nullable = true)
+	private Boolean mixto;
 	
 	@Column(name = "estado")
 	private int estado;

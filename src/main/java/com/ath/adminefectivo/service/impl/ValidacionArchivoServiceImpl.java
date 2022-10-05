@@ -693,6 +693,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 	 */
 	private void obtenerTipoRegistro(MaestrosDefinicionArchivoDTO maestroDefinicion,
 			ValidacionLineasDTO validacionLineasDTO) {
+		System.out.println("validacionLineasDTO.getContenido().get(maestroDefinicion.getCampoMultiformato())" +validacionLineasDTO.getContenido().get(maestroDefinicion.getCampoMultiformato()));
 		if (maestroDefinicion.isMultiformato()) {
 			try {
 				Integer tipo = Integer
