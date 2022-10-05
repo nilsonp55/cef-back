@@ -192,5 +192,6 @@ public final class Dominios {
 	public static final int ESTADO_GENERAL_PENDIENTE = 2;
 	public static final int ESTADO_GENERAL_ERROR = 3;
 	public static final int ESTADO_GENERAL_CORREGIDO = 4;
+	public static final int ESTADO_GENERAL_ELIMINADO = 5;
 	
 }

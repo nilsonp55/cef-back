@@ -2,65 +2,65 @@ package com.ath.adminefectivo.delegate;
 
 import java.util.List;
 
-import com.ath.adminefectivo.dto.TarifasOperacionDTO;
+import com.ath.adminefectivo.dto.EscalasDTO;
 import com.querydsl.core.types.Predicate;
 
 /**
  * Delegate que expone los servicios referente a las funciones dinamicas
  * @author duvan.naranjo
  */
-public interface ITarifasOperacionDelegate {
+public interface IEscalasDelegate {
 
 	/**
 	 * Delegate encargado de contener la union con el servicio para listar 
-	 * las tarifas operacion
+	 * las escalas
 	 * 
 	 * @param idTarifaOperacion
-	 * @return TarifasOperacionDTO
+	 * @return PuntosCostosDTO
 	 * @author duvan.naranjo
 	 */
-	List<TarifasOperacionDTO> getTarifasOperacion(Predicate predicate);
+	List<EscalasDTO> getEscalas(Predicate predicate);
 	
 	/**
 	 * Delegate encargado de contener la union con el servicio para obtener 
-	 * una tarifa operacion por id
+	 * una escala por id
 	 * 
 	 * @param idTarifaOperacion
-	 * @return TarifasOperacionDTO
+	 * @return EscalasDTO
 	 * @author duvan.naranjo
 	 */
-	TarifasOperacionDTO getTarifasOperacionById(Integer idTarifaOperacion);
+	EscalasDTO getEscalasById(Integer idTarifaOperacion);
 	
 
 	/**
 	 * Delegate encargado de contener la union con el servicio de guardar 
-	 * una tarifa operacion
+	 * una escala
 	 * 
-	 * @param idTarifaOperacion
-	 * @return TarifasOperacionDTO
+	 * @param idEscalas
+	 * @return EscalasDTO
 	 * @author duvan.naranjo
 	 */
-	TarifasOperacionDTO guardarTarifasOperacion(TarifasOperacionDTO tarifasOperacionDTO);
+	EscalasDTO guardarEscalas(EscalasDTO escalasDTO);
 
 	/**
 	 * Delegate encargado de contener la union con el servicio para actualizar 
-	 * una tarifa operacion
+	 * una escala
 	 * 
-	 * @param idTarifaOperacion
-	 * @return TarifasOperacionDTO
+	 * @param idEscalas
+	 * @return EscalasDTO
 	 * @author duvan.naranjo
 	 */
-	TarifasOperacionDTO actualizarTarifasOperacion(TarifasOperacionDTO tarifasOperacionDTO);
+	EscalasDTO actualizarEscalas(EscalasDTO escalasDTO);
 
 	/**
 	 * Delegate encargado de contener la union con el servicio para eliminar 
-	 * una tarifa operacion
+	 * una escala
 	 * 
-	 * @param idTarifaOperacion
-	 * @return TarifasOperacionDTO
+	 * @param idEscalas
+	 * @return EscalasDTO
 	 * @author duvan.naranjo
 	 */
-	boolean eliminarTarifasOperacion(Integer idTarifaOperacion);
+	boolean eliminarEscalas(Integer idEscalas);
 
 
 

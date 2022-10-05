@@ -244,8 +244,9 @@ public class CargueDefinitivoDelegateImpl implements ICargueDefinitivoDelegate {
 		String delimitador = lecturaArchivoService.obtenerDelimitadorArchivo(maestroDefinicion);
 		List<String[]> contenido = lecturaArchivoService.leerArchivo(dowloadFile.getFile(), delimitador);
 		Date fechaActual = parametrosService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
+		Date fechaAnteriorHabil = festivosNacionalesService.consultarAnteriorHabil(fechaActual);
 		var fechaArchivo = validacionArchivoService.validarFechaArchivo(nombreArchivo,
-				maestroDefinicion.getMascaraArch(), fechaActual);
+				maestroDefinicion.getMascaraArch(), fechaAnteriorHabil);
 
 		this.validacionArchivo = ValidacionArchivoDTO.builder().nombreArchivo(nombreArchivo)
 				.descripcion(maestroDefinicion.getDescripcionArch()).fechaArchivo(fechaArchivo)

@@ -285,7 +285,6 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 					formatoFecha = new ArrayList();
 					formatoFecha.add(mascaraFecha);
 					if (!UtilsString.isFecha(fecha, formatoFecha)) {
-						System.out.println(fecha+" "+formatoFecha);
 						throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
 								ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
 								ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
@@ -293,8 +292,14 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 					break;
 				}
 				case "SC": {
-					fecha = nombreArchivo.substring(4, 12);
-					mascaraFecha = maestroDefinicion.getMascaraArch().substring(5, 13);
+					if(nombreArchivo.contains("VILLAS")) {
+						fecha = nombreArchivo.substring(4, 14);
+						mascaraFecha = maestroDefinicion.getMascaraArch().substring(5, 13)+"yy";
+					}else {
+						fecha = nombreArchivo.substring(4, 12);
+						mascaraFecha = maestroDefinicion.getMascaraArch().substring(5, 13);
+					}
+					
 					formatoFecha = new ArrayList();
 					formatoFecha.add(mascaraFecha);
 					if (!UtilsString.isFecha(fecha, formatoFecha)) {
@@ -352,6 +357,30 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 		return fechaArchivo;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Date validarFechaArchivoBetween(String nombreArchivo, String mascaraArchivo, Date fechaComparacion, Date fechaAnteriorHabil) {
+
+		Date fechaArchivo = this.obtenerFechaArchivo(nombreArchivo,mascaraArchivo);
+		
+		if (!Objects.nonNull(fechaArchivo)){
+
+			throw new NegocioException(ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getCode(),
+					ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getDescription(),
+					ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getHttpStatus());
+		}
+		else {
+			if (Objects.nonNull(fechaComparacion) && fechaArchivo.compareTo(fechaAnteriorHabil) <  0 && fechaArchivo.compareTo(fechaComparacion) >= 0) {
+				throw new NegocioException(ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getCode(),
+					ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getDescription(),
+					ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getHttpStatus());
+			}
+		}
+		return fechaArchivo;
+	}
+	
 	/**n
 	 * {@inheritDoc}
 	 */
@@ -400,7 +429,13 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 					break;
 				}
 				case "SC": {
-					fecha = nombreArchivo.substring(4, 12);
+					if(nombreArchivo.contains("VILLAS")) {
+						fecha = nombreArchivo.substring(4, 14);
+						mascaraFecha = mascaraArchivo.substring(5, 13)+"yy";
+					}else {
+						fecha = nombreArchivo.substring(4, 12);
+						mascaraFecha = mascaraArchivo.substring(5, 13);
+					}
 					mascaraFecha = mascaraArchivo.substring(5, 13);
 					fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
 					break;
@@ -658,6 +693,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 	 */
 	private void obtenerTipoRegistro(MaestrosDefinicionArchivoDTO maestroDefinicion,
 			ValidacionLineasDTO validacionLineasDTO) {
+		System.out.println("validacionLineasDTO.getContenido().get(maestroDefinicion.getCampoMultiformato())" +validacionLineasDTO.getContenido().get(maestroDefinicion.getCampoMultiformato()));
 		if (maestroDefinicion.isMultiformato()) {
 			try {
 				Integer tipo = Integer

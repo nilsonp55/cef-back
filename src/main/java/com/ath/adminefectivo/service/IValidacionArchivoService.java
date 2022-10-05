@@ -62,6 +62,19 @@ public interface IValidacionArchivoService {
 	 * @author CamiloBenavides
 	 */
 	Date validarFechaArchivo(String nombreArchivo, String mascaraArchivo, Date fechaComparacion);
+	
+	/**
+	 * Método que retona la fecha contenida en el nombre del archivo y si se envia
+	 * la fecha comparacion valida que sea la misma fecha sin tener en cuenta horas
+	 * ni minutos
+	 * 
+	 * @param nombreArchivo
+	 * @param fechaComparacion
+	 * @param fechaAnteriorHabil
+	 * @return Date
+	 * @author CamiloBenavides
+	 */
+	Date validarFechaArchivoBetween(String nombreArchivo, String mascaraArchivo, Date fechaComparacion, Date fechaAnteriorHabil);
 
 	/**
 	 * Retorna la fecha de archivo cargado, en caso de no poderla obtener retorna
