@@ -6,9 +6,9 @@ import javax.persistence.Table;
 
 /**
  * Entidad encargada de manejar la logica de la tabla USUARIOROL
- * @author cesar.castano
- *
+ * @author bayron.perez
  */
+
 @Table(name = "USUARIO_ROL")
 public class UsuarioRol {
 

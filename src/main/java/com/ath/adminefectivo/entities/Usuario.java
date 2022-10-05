@@ -5,6 +5,8 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -17,9 +19,9 @@ import lombok.NoArgsConstructor;
 
 /**
  *  Entidad encargada de manejar la logica de la tabla USUARIO
- *
- * @author CamiloBenavides
+ * @author bayron.perez
  */
+
 @Entity
 @Table(name = "USUARIO")
 @Data
@@ -44,6 +46,10 @@ public class Usuario {
 	
 	@Column(name = "ESTADO")
 	private String estado;
+	
+	@ManyToOne
+	@JoinColumn(name = "ROL", referencedColumnName = "ID_ROL", nullable = false)
+	private Rol rol;
 	
 	@Temporal(TemporalType.DATE)
 	@Column(name = "FECHA_CREACION")

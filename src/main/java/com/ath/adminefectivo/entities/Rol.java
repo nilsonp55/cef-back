@@ -1,11 +1,14 @@
 package com.ath.adminefectivo.entities;
 
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -17,9 +20,9 @@ import lombok.NoArgsConstructor;
 
 /**
  *  Entidad encargada de manejar la logica de la tabla ROL
- *
- * @author CamiloBenavides
+ * @author bayron.perez
  */
+
 @Entity
 @Table(name = "ROL")
 @Data
@@ -30,7 +33,7 @@ import lombok.NoArgsConstructor;
 public class Rol {
 	
 	@Id
-	@Column(name = "IDROL")
+	@Column(name = "ID_ROL")
 	private String idRol;
 	
 	@Column(name = "NOMBRE")
@@ -41,6 +44,9 @@ public class Rol {
 	
 	@Column(name = "ESTADO")
 	private String estado;
+	
+	@OneToMany(mappedBy = "rol", cascade = {CascadeType.ALL}, orphanRemoval = true)
+	private List<MenuRol> menuRol;
 	
 	@Column(name = "USUARIO_CREACION")
 	private String usuarioCreacion;
