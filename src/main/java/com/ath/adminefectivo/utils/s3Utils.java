@@ -235,7 +235,7 @@ public class s3Utils {
 	 */
 	public void moverObjeto(String keyOrigin, String keyDestination) {
 		try {
-//			conexionS3(bucketName);
+			conexionS3(bucketName);
 			s3.copyObject(bucketName, keyOrigin, bucketName, keyDestination);
 			deleteObjectBucket(keyOrigin);
 		} catch (AmazonServiceException e) {
