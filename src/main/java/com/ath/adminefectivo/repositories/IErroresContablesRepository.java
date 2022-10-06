@@ -52,4 +52,19 @@ public interface IErroresContablesRepository extends JpaRepository<ErroresContab
 			+ " from fnc_generar_proceso_contables()", nativeQuery = true)
 	public List<Long> fnc_generar_proceso_contables();
 
+	/**
+	 * Metodo encargado de consultar los errores existentes para la 
+	 * transaccion interna recibida
+	 * 
+	 * @param transaccionesInternas
+	 * @return List<ErroresContables>
+	 */
+	@Query(value = "SELECT "
+			+ "			* "
+			+ "		FROM "
+			+ "			errores_contables ec "
+			+ "		WHERE "
+			+ "			ec.id_transacciones_internas = ?1 ", nativeQuery = true )
+	public List<ErroresContables> findByTransaccionInterna(long idTransaccionesInternas);
+
 }

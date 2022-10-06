@@ -11,6 +11,7 @@ import com.ath.adminefectivo.dto.RespuestaContableDTO;
 import com.ath.adminefectivo.dto.TransaccionesInternasDTO;
 import com.ath.adminefectivo.entities.TransaccionesInternas;
 import com.ath.adminefectivo.repositories.ITransaccionesInternasRepository;
+import com.ath.adminefectivo.service.IErroresContablesService;
 import com.ath.adminefectivo.service.ITransaccionesInternasService;
 
 /**
@@ -24,6 +25,9 @@ public class TransaccionesInternasServiceImpl implements ITransaccionesInternasS
 
 	@Autowired
 	ITransaccionesInternasRepository transaccionesInternasRepository;
+	
+	@Autowired
+	IErroresContablesService erroresContablesService;
 
 	/**
 	 * {@inheritDoc}
@@ -94,7 +98,9 @@ public class TransaccionesInternasServiceImpl implements ITransaccionesInternasS
 				.findByFechaBetweenAndTipoProceso(fechaInicio, fechaFin, tipoProceso);
 		
 		listadoTransaccionesInternas.forEach(transaccionInterna ->{
+			erroresContablesService.eliminarErrorContableByIdTransaccionInterna(transaccionInterna.getIdTransaccionesInternas());
 			transaccionesInternasRepository.delete(transaccionInterna);
+			
 		});
 		
 	}

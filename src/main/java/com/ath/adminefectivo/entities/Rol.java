@@ -30,7 +30,7 @@ import lombok.NoArgsConstructor;
 public class Rol {
 	
 	@Id
-	@Column(name = "IDROL")
+	@Column(name = "ID_ROL")
 	private String idRol;
 	
 	@Column(name = "NOMBRE")
