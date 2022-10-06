@@ -15,6 +15,7 @@ import com.ath.adminefectivo.dto.compuestos.OperacionIntradiaDTO;
 import com.ath.adminefectivo.dto.compuestos.ResultadoErroresContablesDTO;
 import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoDTO;
 import com.ath.adminefectivo.entities.ArchivosCargados;
+import com.ath.adminefectivo.entities.TransaccionesInternas;
 import com.querydsl.core.types.Predicate;
 
 /**
@@ -51,6 +52,16 @@ public interface IErroresContablesService {
 	 * @author duvan.naranjo
 	 */
 	List<TransaccionesInternasDTO> generarRespuestaProcesoContables();
+
+	
+	/**
+	 * Servicio encargado de realizar el proceso de eliminar un error contable por 
+	 * el id de la transaccion interna.
+	 * 
+	 * @return List<TransaccionesInternasDTO>
+	 * @author duvan.naranjo
+	 */
+	void eliminarErrorContableByIdTransaccionInterna(long idTransaccionesInternas);
 
 	
 	
