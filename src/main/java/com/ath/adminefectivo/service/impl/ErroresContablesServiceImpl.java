@@ -61,6 +61,19 @@ public class ErroresContablesServiceImpl implements IErroresContablesService{
 		return transaccionesInternasDTO;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void eliminarErrorContableByIdTransaccionInterna(long idTransaccionesInternas) {
+		List<ErroresContables> erroresListado = erroresContablesRepository.findByTransaccionInterna(idTransaccionesInternas);
+		erroresListado.forEach(errorContable -> {
+			erroresContablesRepository.delete(errorContable);
+			System.out.println(errorContable.getMensajeError());
+		});
+		
+	}
+
 	
 
 }
