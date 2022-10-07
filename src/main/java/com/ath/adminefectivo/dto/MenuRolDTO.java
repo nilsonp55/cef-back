@@ -4,7 +4,7 @@ import java.util.function.Function;
 
 import com.ath.adminefectivo.entities.Menu;
 import com.ath.adminefectivo.entities.MenuRol;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.ath.adminefectivo.entities.Rol;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -55,6 +55,10 @@ public class MenuRolDTO {
 		MenuRol.setCodigo(t.getCodigo());
 		MenuRol.setMenu(t.getMenu());
 		MenuRol.setEstado(t.getEstado());
+		
+		Rol rol = new Rol();
+		rol.setIdRol(t.getRol().getIdRol());
+		MenuRol.setRol(rol);
 
 		return MenuRol;
 	};
