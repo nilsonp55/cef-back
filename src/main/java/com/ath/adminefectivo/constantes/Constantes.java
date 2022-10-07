@@ -32,8 +32,8 @@ public final class Constantes {
 	public static final String FALTANTE_TVS = "4";
 	public static final Integer NUMERO_INICIA_VALORES_OTROS_FONDOS = 17;
 	public static final Integer NUMERO_INICIA_VALORES_BRINKS = 18;
-	public static final String NOMBRE_ENTRADA = "ENTRADAS";
-	public static final String NOMBRE_SALIDA = "SALIDAS";
+	public static final String NOMBRE_ENTRADA = "ENTRADA";
+	public static final String NOMBRE_SALIDA = "SALIDA";
 	public static final String SOBRANTE = "SOBRANTE";
 	public static final String FALTANTE = "FALTANTE";
 	public static final Integer INICIA_DENOMINACION_OTROS_FONDOS = 17;

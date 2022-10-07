@@ -72,7 +72,7 @@ public class PuntosCodigoTDVServiceImpl implements IPuntosCodigoTdvService {
 		
 		
 		var puntosCodigoTDV = puntosCodigoTDVRepository.findByCodigoPropioTDVAndCodigoTDVAndBancos(
-				codigoPuntoTdv, codigoTdv, BancosDTO.CONVERTER_ENTITY.apply(bancoAval));
+				codigoPuntoTdv.trim(), codigoTdv, BancosDTO.CONVERTER_ENTITY.apply(bancoAval));
 		if (Objects.isNull(puntosCodigoTDV)) {
 			return puntosService.getEntidadPunto(banco_aval).getCodigoPunto();
 		} else {

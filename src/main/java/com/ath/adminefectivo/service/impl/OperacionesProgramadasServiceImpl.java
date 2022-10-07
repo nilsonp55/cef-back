@@ -1414,7 +1414,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
     private Integer determinarPuntoOrigen(String[] contenido, List<DetallesDefinicionArchivoDTO> detalleArchivo,
     										String transportadora, String ciudad) {
     	Integer codigo = 0;
-		if(this.asignarEntradaSalida(asignarTipoOperacion(contenido, detalleArchivo)).equals("O")) {
+		if(this.asignarEntradaSalida(asignarTipoOperacion(contenido, detalleArchivo)).equals(Constantes.VALOR_SALIDA)) {
 			return fondosService.getCodigoFondo(transportadora, 
 												determinarCodigoCompensacion(contenido, detalleArchivo), 
 												ciudad)
@@ -1435,7 +1435,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
     private Integer determinarPuntoDestino(String[] contenido, List<DetallesDefinicionArchivoDTO> detalleArchivo,
     										String transportadora, String ciudad) {
     	Integer codigo = 0;
-		if(this.asignarEntradaSalida(asignarTipoOperacion(contenido, detalleArchivo)).equals("O")) {
+		if(this.asignarEntradaSalida(asignarTipoOperacion(contenido, detalleArchivo)).equals(Constantes.VALOR_SALIDA)) {
 			codigo = asignarClienteOficina(contenido, detalleArchivo);
 		}else {
 			return fondosService.getCodigoFondo(transportadora, 
@@ -1523,12 +1523,12 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		if (tipoOperacion.equals(dominioService.valorTextoDominio(
 									Constantes.DOMINIO_TIPO_OPERACION,
 									Dominios.TIPO_OPERA_PROVISION))) {
-			entradaSalida = Constantes.SALIDA;
+			entradaSalida = Constantes.VALOR_SALIDA;
 		}else {
 			if (tipoOperacion.equals(dominioService.valorTextoDominio(
 										Constantes.DOMINIO_TIPO_OPERACION,
 										Dominios.TIPO_OPERA_RECOLECCION))) {
-				entradaSalida = Constantes.ENTRADA;
+				entradaSalida = Constantes.VALOR_ENTRADA;
 			}
 		}
 		return entradaSalida;

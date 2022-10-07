@@ -743,11 +743,11 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	 */
 	private void actualizarValorSobranteNoBrinks(String codigoServicio, Double valor, Date fecha) {
 		List<OperacionesCertificadas> ocertificadas = operacionesCertificadasRepository
-		.findByCodigoPuntoDestinoAndEntradaSalidaAndFechaEjecucion(Integer.valueOf(codigoServicio), "SALIDAS", fecha);
+		.findByCodigoPuntoDestinoAndEntradaSalidaAndFechaEjecucion(Integer.valueOf(codigoServicio), Constantes.VALOR_SALIDA, fecha);
 
 		if(Objects.isNull(ocertificadas)) {
 		ocertificadas = operacionesCertificadasRepository
-		.findByCodigoPuntoOrigenAndEntradaSalidaAndFechaEjecucion(Integer.valueOf(codigoServicio), "ENTRADAS", fecha);
+		.findByCodigoPuntoOrigenAndEntradaSalidaAndFechaEjecucion(Integer.valueOf(codigoServicio), Constantes.VALOR_ENTRADA, fecha);
 		}
 
 		if (Objects.isNull(ocertificadas)) {
