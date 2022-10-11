@@ -184,6 +184,13 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 		}
 		return operacionesC;
 	}
+	
+	@Override
+	public void validarNoConciliables(List<ArchivosCargados> archivosCargados) {
+		archivosCargados.forEach(archivo ->{
+			boolean resultado = operacionesCertificadasRepository.validarnoconciliables(archivo.getIdArchivo());
+		});
+	}
 
 	/**
 	 * Metodo encargado de procesar los archivos de otros fondos (no Brinks)
@@ -929,5 +936,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 		                 			.equals(constante) && detalle.getId().getTipoRegistro().equals(tipoRegistro))
 		                 			.findFirst().orElse(null).getId().getNumeroCampo() -1].trim();
 	}
+
+
 	
 }

@@ -45,7 +45,7 @@ public class TransaccionesInternasDTO {
 
 	private String codigoMoneda;
 	
-	private Integer valor;
+	private Long valor;
 	
 	private Integer tasaNoEje;
 

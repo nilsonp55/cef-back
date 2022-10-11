@@ -61,7 +61,7 @@ public class TransaccionesInternas {
 	private String codigoMoneda;
 	
 	@Column(name = "VALOR")
-	private Integer valor;
+	private Long valor;
 	
 	@Column(name = "TASA_MO_EJE")
 	private Integer tasaNoEje;

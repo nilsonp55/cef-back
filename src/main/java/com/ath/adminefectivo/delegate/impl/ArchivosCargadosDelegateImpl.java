@@ -10,11 +10,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.delegate.IArchivosCargadosDelegate;
 import com.ath.adminefectivo.dto.ArchivosCargadosDTO;
 import com.ath.adminefectivo.entities.ArchivosCargados;
 import com.ath.adminefectivo.service.IArchivosCargadosService;
 import com.ath.adminefectivo.service.IFilesService;
+import com.ath.adminefectivo.service.IParametroService;
 import com.querydsl.core.types.Predicate;
 
 @Service
@@ -22,6 +24,9 @@ public class ArchivosCargadosDelegateImpl implements IArchivosCargadosDelegate {
 
 	@Autowired
 	IArchivosCargadosService archivosCargadosService;
+	
+	@Autowired
+	IParametroService parametrosService;
 	
 	@Autowired
 	IFilesService filesService;
@@ -43,6 +48,7 @@ public class ArchivosCargadosDelegateImpl implements IArchivosCargadosDelegate {
 		archivo.setFechaCreacion(new Date());
 		archivo.setUsuarioCreacion("cbenavides");
 		archivo.setFechaInicioCargue(new Date());
+		archivo.setFechaArchivo(parametrosService.valorParametroDate(Constantes.FECHA_DIA_PROCESO));
 		return archivosCargadosService.guardarArchivos(Arrays.asList(archivo));
 	}
 

@@ -60,7 +60,7 @@ public class TransaccionesContablesDTO {
 	
 	private String codigoMoneda;
 	
-	private Integer valor;
+	private long valor;
 	
 	private String tipoProceso;
 	

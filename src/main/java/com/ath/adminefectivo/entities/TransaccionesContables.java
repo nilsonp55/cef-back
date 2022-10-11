@@ -133,7 +133,7 @@ public class TransaccionesContables {
 	private String codigoMoneda;
 	
 	@Column(name = "VALOR")
-	private Integer valor;
+	private Long valor;
 	
 	@Column(name = "TIPO_PROCESO")
 	private String tipoProceso;

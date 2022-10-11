@@ -139,7 +139,7 @@ public interface IOperacionesProgramadasRepository
 	 */
 	@Query("SELECT distinct(op) FROM OperacionesProgramadas op JOIN OperacionesCertificadas oc ON "
 			+ "(oc.fechaEjecucion = op.fechaOrigen OR oc.fechaEjecucion = op.fechaDestino) AND "
-			+ "oc.codigoFondoTDV = op.codigoFondoTDV AND oc.tipoOperacion = op.tipoOperacion AND "
+			+ "oc.codigoFondoTDV = op.codigoFondoTDV AND oc.entradaSalida = op.entradaSalida AND "
 			+ "(oc.valorTotal + oc.valorFaltante - oc.valorSobrante) = op.valorTotal AND "
 			+ "oc.codigoPuntoOrigen = op.codigoPuntoOrigen AND oc.codigoPuntoDestino = op.codigoPuntoDestino AND "
 			+ "oc.estadoConciliacion = op.estadoConciliacion "
