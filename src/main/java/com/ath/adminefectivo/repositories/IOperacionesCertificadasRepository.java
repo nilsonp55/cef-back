@@ -7,7 +7,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
+import org.springframework.data.repository.query.Param;
 
 import com.ath.adminefectivo.entities.OperacionesCertificadas;
 
@@ -102,7 +104,7 @@ public interface IOperacionesCertificadasRepository
 	 */
 	@Query("SELECT distinct(oc) FROM OperacionesProgramadas op JOIN OperacionesCertificadas oc ON "
 			+ "(oc.fechaEjecucion = op.fechaOrigen OR oc.fechaEjecucion = op.fechaDestino) AND "
-			+ "oc.codigoFondoTDV = op.codigoFondoTDV AND oc.tipoOperacion = op.tipoOperacion AND "
+			+ "oc.codigoFondoTDV = op.codigoFondoTDV AND oc.entradaSalida = op.entradaSalida AND "
 			+ "(oc.valorTotal + oc.valorFaltante - oc.valorSobrante) = op.valorTotal AND "
 			+ "oc.codigoPuntoOrigen = op.codigoPuntoOrigen AND oc.codigoPuntoDestino = op.codigoPuntoDestino AND "
 			+ "oc.estadoConciliacion = op.estadoConciliacion "
@@ -124,6 +126,9 @@ public interface IOperacionesCertificadasRepository
 	 * @author cesar.castano
 	 */
 	List<OperacionesCertificadas> findByCodigoPuntoOrigenAndEntradaSalidaAndFechaEjecucion(Integer codigoPuntoOrigen, String entradaSalida, Date fechaEjecucion);
+
+	@Procedure(name = "validarnoconciliables")
+	public boolean validarnoconciliables(@Param("p_id_archivo") long idArchivo);
 
 	
 }

@@ -184,6 +184,13 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 		}
 		return operacionesC;
 	}
+	
+	@Override
+	public void validarNoConciliables(List<ArchivosCargados> archivosCargados) {
+		archivosCargados.forEach(archivo ->{
+			boolean resultado = operacionesCertificadasRepository.validarnoconciliables(archivo.getIdArchivo());
+		});
+	}
 
 	/**
 	 * Metodo encargado de procesar los archivos de otros fondos (no Brinks)
@@ -743,11 +750,11 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	 */
 	private void actualizarValorSobranteNoBrinks(String codigoServicio, Double valor, Date fecha) {
 		List<OperacionesCertificadas> ocertificadas = operacionesCertificadasRepository
-		.findByCodigoPuntoDestinoAndEntradaSalidaAndFechaEjecucion(Integer.valueOf(codigoServicio), "SALIDAS", fecha);
+		.findByCodigoPuntoDestinoAndEntradaSalidaAndFechaEjecucion(Integer.valueOf(codigoServicio), Constantes.VALOR_SALIDA, fecha);
 
 		if(Objects.isNull(ocertificadas)) {
 		ocertificadas = operacionesCertificadasRepository
-		.findByCodigoPuntoOrigenAndEntradaSalidaAndFechaEjecucion(Integer.valueOf(codigoServicio), "ENTRADAS", fecha);
+		.findByCodigoPuntoOrigenAndEntradaSalidaAndFechaEjecucion(Integer.valueOf(codigoServicio), Constantes.VALOR_ENTRADA, fecha);
 		}
 
 		if (Objects.isNull(ocertificadas)) {
@@ -929,5 +936,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 		                 			.equals(constante) && detalle.getId().getTipoRegistro().equals(tipoRegistro))
 		                 			.findFirst().orElse(null).getId().getNumeroCampo() -1].trim();
 	}
+
+
 	
 }

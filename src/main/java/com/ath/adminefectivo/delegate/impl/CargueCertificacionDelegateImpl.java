@@ -257,7 +257,7 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 		
 		ArchivosCargadosDTO archivosCargadosDTO = new ArchivosCargadosDTO();
 		Date fechaDatos = validacionArchivoService.obtenerFechaArchivo(archivo, mascaraArchivo);
-        fechaDatos = festivosNacionalesService.consultarAnteriorHabil(fechaDatos);
+//        fechaDatos = festivosNacionalesService.consultarAnteriorHabil(fechaDatos);
         archivosCargadosDTO = ArchivosCargadosDTO.builder().estadoCargue(estado).nombreArchivo(archivo)
                 .idModeloArchivo(idModeloArchivo).fechaArchivo(fechaDatos).build();
 		return archivosCargadosDTO;

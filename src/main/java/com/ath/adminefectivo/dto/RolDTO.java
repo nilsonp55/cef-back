@@ -36,7 +36,7 @@ public class RolDTO {
 	
 	private Date fechaModificacion;
 	
-	private List<MenuRolDTO> menuRol;
+//	private List<MenuRolDTO> menuRol;
 	
 	
 	/**

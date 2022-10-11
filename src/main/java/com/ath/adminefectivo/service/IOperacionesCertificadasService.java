@@ -54,4 +54,13 @@ public interface IOperacionesCertificadasService {
 	 * @author cesar.castano
 	 */
 	OperacionesCertificadas obtenerEntidadOperacionesCertificacionesporId(Integer idCertificacion);
+
+	/**
+	 * Metodo encargado de realizar la validacion de las operaciones certificadas que no pueden 
+	 * ser conciliadas
+	 * 
+	 * @param archivosCargados
+	 * @author duvan.naranjo
+	 */
+	void validarNoConciliables(List<ArchivosCargados> archivosCargados);
 }
