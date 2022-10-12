@@ -48,6 +48,9 @@ public class PuntosCodigoTDV {
 	@JoinColumn(name = "codigo_banco", nullable = true)
 	private Bancos bancos;
 	
+	@Column(name = "ciudad_fondo", nullable = true)
+	private String ciudadCodigo;
+	
 	
 	@Column(name = "ESTADO", nullable = true)
 	private int estado;
