@@ -2,9 +2,8 @@ package com.ath.adminefectivo.delegate;
 
 import java.util.List;
 
-import com.ath.adminefectivo.dto.EscalasDTO;
 import com.ath.adminefectivo.dto.compuestos.CostosMensualesClasificacionDTO;
-import com.querydsl.core.types.Predicate;
+
 
 /**
  * Delegate que expone los servicios referente a las funciones dinamicas
@@ -18,14 +17,14 @@ public interface IClasificacionCostosDelegate {
 	 * @param mesAnio
 	 * @return
 	 */
-	List<CostosMensualesClasificacionDTO> getClasificacionMensualPorBanco(String transportadora, String mesAnio);
+	List<CostosMensualesClasificacionDTO> getClasificacionMensualCostos(String transportadora, String mesAnio);
 
 	/**
 	 * 
 	 * @param listadoCostosMensuales
 	 * @return
 	 */
-	List<CostosMensualesClasificacionDTO> getClasificacionMensualPorBanco(
+	List<CostosMensualesClasificacionDTO> liquidarClasificacionCostos(
 			List<CostosMensualesClasificacionDTO> listadoCostosMensuales);
 
 	/**

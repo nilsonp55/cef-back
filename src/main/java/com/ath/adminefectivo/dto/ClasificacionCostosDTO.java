@@ -11,7 +11,7 @@ import javax.persistence.ManyToOne;
 
 import com.ath.adminefectivo.entities.Bancos;
 import com.ath.adminefectivo.entities.Ciudades;
-import com.ath.adminefectivo.entities.CostosClasificacion;
+import com.ath.adminefectivo.entities.ClasificacionCostos;
 import com.ath.adminefectivo.entities.Escalas;
 import com.ath.adminefectivo.entities.PuntosCostos;
 import com.ath.adminefectivo.entities.TarifasOperacion;
@@ -32,7 +32,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CostosClasificacionDTO {
+public class ClasificacionCostosDTO {
 
 
 	private int idCostosClasificacion;
@@ -41,7 +41,7 @@ public class CostosClasificacionDTO {
 	
 	private String transportadora;
 	
-	private String mesAño;
+	private String mesAnio;
 	
 	private Date fechaModificacion;
 	
@@ -68,8 +68,8 @@ public class CostosClasificacionDTO {
 	/**
 	 * Funcion que retorna la entidad recibiendo un DTO *
 	 */
-	public static final Function<CostosClasificacionDTO, CostosClasificacion> CONVERTER_ENTITY = (CostosClasificacionDTO t) -> {
-		var costosClasificacion = new CostosClasificacion();
+	public static final Function<ClasificacionCostosDTO, ClasificacionCostos> CONVERTER_ENTITY = (ClasificacionCostosDTO t) -> {
+		var costosClasificacion = new ClasificacionCostos();
 		UtilsObjects.copiarPropiedades(t, costosClasificacion);
 //		if(!Objects.isNull(t.getBancosDTO())) {
 //			escalas.setBancos(BancosDTO.CONVERTER_ENTITY.apply(t.getBancosDTO()));
@@ -92,8 +92,8 @@ public class CostosClasificacionDTO {
 	/**
 	 * Función encargada de recibir un DTO y retornar un objeto con los mismos datos
 	 */
-	public static final Function<CostosClasificacion, CostosClasificacionDTO> CONVERTER_DTO = (CostosClasificacion t) -> {
-		var costosClasificacionDTO = new CostosClasificacionDTO();
+	public static final Function<ClasificacionCostos, ClasificacionCostosDTO> CONVERTER_DTO = (ClasificacionCostos t) -> {
+		var costosClasificacionDTO = new ClasificacionCostosDTO();
 		UtilsObjects.copiarPropiedades(t, costosClasificacionDTO);
 //		if(!Objects.isNull(t.getBancos())) {
 //			escalasDTO.setBancosDTO(BancosDTO.CONVERTER_DTO.apply(t.getBancos()));

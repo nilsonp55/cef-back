@@ -24,8 +24,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@NamedQuery(name = "CostosClasificacion.findAll", query = "SELECT t FROM CostosClasificacion t")
-public class CostosClasificacion {
+@NamedQuery(name = "ClasificacionCostos.findAll", query = "SELECT t FROM ClasificacionCostos t")
+public class ClasificacionCostos {
 
 	@Id
 	@Column(name= "id_costos_clasificacion")

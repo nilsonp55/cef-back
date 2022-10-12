@@ -34,6 +34,8 @@ public class PuntosCodigoTdvDTO {
 	private PuntosDTO puntosDTO;
 	
 	private BancosDTO bancosDTO;
+	
+	private String ciudadFondo;
 		
 	private int estado;
 	
