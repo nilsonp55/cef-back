@@ -2,6 +2,8 @@ package com.ath.adminefectivo.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -29,6 +31,7 @@ public class PuntosCodigoTDV {
 
 	@Id
 	@Column(name = "id_punto_codigo_tdv")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer idPuntoCodigoTdv;
 	
 	@Column(name = "CODIGO_PUNTO")
