@@ -31,6 +31,7 @@ import com.ath.adminefectivo.repositories.ArchivosCargadosRepository;
 import com.ath.adminefectivo.repositories.IRegistrosCargadosRepository;
 import com.ath.adminefectivo.service.IArchivosCargadosService;
 import com.ath.adminefectivo.service.IMaestroDefinicionArchivoService;
+import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.utils.UtilsString;
 import com.querydsl.core.types.Predicate;
 
@@ -45,6 +46,9 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 
 	@Autowired
 	IMaestroDefinicionArchivoService maestroDefinicionArchivoService;
+	
+	@Autowired
+	IParametroService parametrosService;
 
 	/**
 	 * {@inheritDoc}
@@ -166,7 +170,7 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 	@Transactional
 	public Long persistirDetalleArchivoCargado(ValidacionArchivoDTO validacionArchivo, boolean soloErrores) {
 		Date fechaGuardar;
-		fechaGuardar = validacionArchivo.getFechaArchivo();
+		fechaGuardar = parametrosService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
 
 		if (Dominios.ESTADO_VALIDACION_CORRECTO.equals(validacionArchivo.getEstadoValidacion()) ) {
 			this.cambiarEstadoArchivoOK(validacionArchivo);

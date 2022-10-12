@@ -563,14 +563,32 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	private OperacionesProgramadasDTO generarOperacionVenta(String[] contenido,
 			List<DetallesDefinicionArchivoDTO> detalleArchivo, ArchivosCargadosDTO archivo) {
 
+		boolean esEntrada = false;
+		
 		OperacionesProgramadasDTO operacionesProgramadasDTO = null;
-
+		
 		PuntosDTO puntoFondoOrigen = this.consultarPuntoPorDetalle(contenido, detalleArchivo,
 				Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN);
+		PuntosDTO bancoOrigen = null;
+		PuntosDTO bancoDestino = null;
+		var operacionProgramadaEnt = new OperacionesProgramadas();
+		if(Objects.isNull(puntoFondoOrigen)) {
+			esEntrada = true;
+			bancoOrigen = this.consultarPuntoPorDetalle(contenido, detalleArchivo,
+					Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_ORIGEN);
+		}
+		
+		
 		PuntosDTO puntoFondoDestino = this.consultarPuntoPorDetalle(contenido, detalleArchivo,
 				Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO);
-		BancosDTO bancoDestino = this.consultarBancoPorDetalle(contenido, detalleArchivo,
-				Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_DESTINO);
+		
+		if(Objects.isNull(puntoFondoDestino)) {
+			bancoDestino = this.consultarPuntoPorDetalle(contenido, detalleArchivo,
+					Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_DESTINO);
+		}
+//		BancosDTO bancoDestino = this.consultarBancoPorDetalle(contenido, detalleArchivo,
+//				Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_DESTINO);
+		
 
 		if (!Objects.isNull(puntoFondoOrigen)
 				&& !puntoFondoOrigen.getTipoPunto().toUpperCase().trim().equals(Constantes.PUNTO_FONDO)) {
@@ -579,31 +597,56 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 					ApiResponseCode.ERROR_NO_ES_FONDO.getHttpStatus());
 		}
 
-		operacionesProgramadasDTO = OperacionesProgramadasDTO.builder()
-				.codigoFondoTDV(puntoFondoOrigen.getCodigoPunto()).entradaSalida(Constantes.VALOR_SALIDA)
-				.codigoPuntoOrigen(puntoFondoOrigen.getCodigoPunto())
-				.idArchivoCargado(Math.toIntExact(archivo.getIdArchivo())).build();
-
-		OperacionesProgramadasDTO operacionesProgramadasCompra = null;
-		if (!Objects.isNull(bancoDestino) && bancoDestino.getEsAVAL()) {
-			operacionesProgramadasDTO.setCodigoPuntoDestino(bancoDestino.getCodigoPunto());
-			operacionesProgramadasCompra = this.generarOperacionVentaCompra(contenido, detalleArchivo, archivo);
-			var operacionProgramadaEntity = operacionesProgramadasRepository
-					.save(OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(operacionesProgramadasCompra));
-			operacionesProgramadasDTO.setIdOperacionRelac(operacionProgramadaEntity.getIdOperacion());
-		} else {
-			PuntosDTO puntoBancoDestino = this.consultarPuntoPorDetalle(contenido, detalleArchivo,
-					Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_DESTINO);
-			if (!Objects.isNull(puntoBancoDestino)
-					&& puntoBancoDestino.getTipoPunto().equals(Constantes.PUNTO_BANCO)) {
-				operacionesProgramadasDTO.setCodigoPuntoDestino(puntoBancoDestino.getCodigoPunto());
+		if(esEntrada) {
+			if(!Objects.isNull(puntoFondoDestino)) {
+				operacionesProgramadasDTO = OperacionesProgramadasDTO.builder()
+						.codigoFondoTDV(puntoFondoDestino.getCodigoPunto()).entradaSalida(Constantes.VALOR_ENTRADA)
+						.codigoPuntoOrigen(bancoOrigen.getCodigoPunto())
+						.codigoPuntoDestino(puntoFondoDestino.getCodigoPunto())
+						.idArchivoCargado(Math.toIntExact(archivo.getIdArchivo())).build();
+				operacionProgramadaEnt = operacionesProgramadasRepository.save(OperacionesProgramadasDTO.CONVERTER_ENTITY
+						.apply(this.completarOperacionesProgramadas(operacionesProgramadasDTO, contenido, detalleArchivo)));
+				
+			}	
+		}else {
+			if(!Objects.isNull(bancoDestino)) {
+				if(!Objects.isNull(puntoFondoOrigen)) {
+					operacionesProgramadasDTO = OperacionesProgramadasDTO.builder()
+							.codigoFondoTDV(puntoFondoOrigen.getCodigoPunto()).entradaSalida(Constantes.VALOR_SALIDA)
+							.codigoPuntoOrigen(puntoFondoOrigen.getCodigoPunto())
+							.codigoPuntoDestino(bancoDestino.getCodigoPunto())
+							.idArchivoCargado(Math.toIntExact(archivo.getIdArchivo())).build();
+					operacionProgramadaEnt = operacionesProgramadasRepository.save(OperacionesProgramadasDTO.CONVERTER_ENTITY
+							.apply(this.completarOperacionesProgramadas(operacionesProgramadasDTO, contenido, detalleArchivo)));
+				}else {
+					// exepcion de que punto fondo origen no existe
+				}
 			}else {
+				//EN CASO DE QUE LOS DOS PUNTOS FONDOS NO SEAN NULL ES PORQUE AMBOS SON AVAL
+				operacionesProgramadasDTO = OperacionesProgramadasDTO.builder()
+						.codigoFondoTDV(puntoFondoOrigen.getCodigoPunto()).entradaSalida(Constantes.VALOR_SALIDA)
+						.codigoPuntoOrigen(puntoFondoOrigen.getCodigoPunto())
+						.codigoPuntoDestino(puntoFondoDestino.getCodigoPunto())
+						.idArchivoCargado(Math.toIntExact(archivo.getIdArchivo())).build();
+				
+				OperacionesProgramadasDTO operacionesProgramadasEntradaDTO = OperacionesProgramadasDTO.builder()
+						.codigoFondoTDV(puntoFondoDestino.getCodigoPunto()).entradaSalida(Constantes.VALOR_ENTRADA)
+						.codigoPuntoOrigen(puntoFondoDestino.getCodigoPunto())
+						.codigoPuntoDestino(puntoFondoOrigen.getCodigoPunto())
+						.idArchivoCargado(Math.toIntExact(archivo.getIdArchivo())).build();
+				
+				OperacionesProgramadas operacionProgramadaEntradaEnt = operacionesProgramadasRepository.save(OperacionesProgramadasDTO.CONVERTER_ENTITY
+						.apply(this.completarOperacionesProgramadas(operacionesProgramadasEntradaDTO, contenido, detalleArchivo)));
+				operacionesProgramadasDTO.setIdOperacionRelac(operacionProgramadaEntradaEnt.getIdOperacion());
+				
+				operacionProgramadaEnt = operacionesProgramadasRepository.save(OperacionesProgramadasDTO.CONVERTER_ENTITY
+						.apply(this.completarOperacionesProgramadas(operacionesProgramadasDTO, contenido, detalleArchivo)));
 				
 			}
+			
+			
 		}
-		
-		var operacionProgramadaEnt = operacionesProgramadasRepository.save(OperacionesProgramadasDTO.CONVERTER_ENTITY
-				.apply(this.completarOperacionesProgramadas(operacionesProgramadasDTO, contenido, detalleArchivo)));
+	
 		return OperacionesProgramadasDTO.CONVERTER_DTO.apply(operacionProgramadaEnt);
 
 	}
@@ -1116,10 +1159,11 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	 */
 	private PuntosDTO consultarPuntoPorDetalle(String[] contenido, List<DetallesDefinicionArchivoDTO> detallesArchivo,
 			String nombreCampo) {
-
+		System.out.println("CONTENIDO "+ contenido+ " nombreCampo "+nombreCampo);
 		DetallesDefinicionArchivoDTO detalle = detallesArchivo.stream()
 				.filter(deta -> deta.getNombreCampo().toUpperCase().equals(nombreCampo)).findFirst().orElse(null);
 		if (!Objects.isNull(detalle)) {
+			System.out.println("contenido[detalle.getId().getNumeroCampo() - 1].trim() "+contenido[detalle.getId().getNumeroCampo() - 1].trim());
 			return puntosService.getPuntoByNombrePunto(contenido[detalle.getId().getNumeroCampo() - 1].trim());
 		}
 		return null;

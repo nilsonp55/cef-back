@@ -58,6 +58,6 @@ public class Escalas {
 	@Column(name= "escala")
 	private String escala;
 	
-	@Column(name = "estado")
+	@Column(name = "estado", nullable = true)
 	private int estado;
 }
