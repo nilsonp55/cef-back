@@ -55,7 +55,7 @@ public class TarifasOperacionController {
 	 * @return ResponseEntity<ApiResponseADE<TarifasOperacionDTO>>
 	 * @author duvan.naranjo
 	 */
-	@PostMapping(value = "${endpoints.TarifasOperacion.guardar}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, 
+	@PostMapping(value = "${endpoints.TarifasOperacion.guardar}", consumes = MediaType.APPLICATION_JSON_VALUE, 
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<TarifasOperacionDTO>> guardarTarifasOperacion(@RequestBody TarifasOperacionDTO tarifasOperacionDTO) {
 
