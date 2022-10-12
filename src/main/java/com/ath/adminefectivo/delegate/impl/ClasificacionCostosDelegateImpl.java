@@ -6,39 +6,31 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.delegate.IClasificacionCostosDelegate;
-import com.ath.adminefectivo.delegate.IEscalasDelegate;
-import com.ath.adminefectivo.delegate.ITarifasOperacionDelegate;
-import com.ath.adminefectivo.dto.EscalasDTO;
-import com.ath.adminefectivo.dto.TarifasOperacionDTO;
 import com.ath.adminefectivo.dto.compuestos.CostosMensualesClasificacionDTO;
-import com.ath.adminefectivo.service.IEscalasService;
-import com.ath.adminefectivo.service.ITarifasOperacionService;
-import com.querydsl.core.types.Predicate;
+import com.ath.adminefectivo.service.IClasificacionCostosService;
 
 @Service
 public class ClasificacionCostosDelegateImpl implements IClasificacionCostosDelegate{
 
 	@Autowired
-	IEscalasService escalasService;
+	IClasificacionCostosService clasificacionCostosService;
 
 	@Override
-	public List<CostosMensualesClasificacionDTO> getClasificacionMensualPorBanco(String transportadora,
+	public List<CostosMensualesClasificacionDTO> getClasificacionMensualCostos(String transportadora,
 			String mesAnio) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return clasificacionCostosService.getClasificacionMensualCostos(transportadora, mesAnio);
 	}
 
 	@Override
-	public List<CostosMensualesClasificacionDTO> getClasificacionMensualPorBanco(
+	public List<CostosMensualesClasificacionDTO> liquidarClasificacionCostos(
 			List<CostosMensualesClasificacionDTO> listadoCostosMensuales) {
-		// TODO Auto-generated method stub
-		return null;
+		return clasificacionCostosService.liquidarClasificacionCostos(listadoCostosMensuales);
 	}
 
 	@Override
 	public String guardarClasificacionCostosMensuales(List<CostosMensualesClasificacionDTO> listadoCostosMensuales) {
-		// TODO Auto-generated method stub
-		return null;
+		return  clasificacionCostosService.guardarClasificacionCostosMensuales(listadoCostosMensuales);
 	}
 	
 	

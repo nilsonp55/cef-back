@@ -46,14 +46,14 @@ public class ClasificacionCostosController {
 	@GetMapping(value = "${endpoints.ClasificacionMensual.consultar}")
 	public ResponseEntity<ApiResponseADE<List<CostosMensualesClasificacionDTO>>> getClasificacionMensualPorBanco(@RequestParam("transportadora") String transportadora, 
 			@RequestParam("mesAnio") String mesAnio) {
-		List<CostosMensualesClasificacionDTO> consulta = clasificacionCostosDelegate.getClasificacionMensualPorBanco(transportadora, mesAnio);
+		List<CostosMensualesClasificacionDTO> consulta = clasificacionCostosDelegate.getClasificacionMensualCostos(transportadora, mesAnio);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
 	
 	/**
-	 * Servicio encargado de guardar las escalas
+	 * Servicio encargado de realizar la liquidacion de las clasificacion de costos mensuales
 	 * 
 	 * @return ResponseEntity<ApiResponseADE<List<CostosMensualesClasificacionDTO>>>
 	 * @author duvan.naranjo
@@ -62,7 +62,7 @@ public class ClasificacionCostosController {
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<List<CostosMensualesClasificacionDTO>>> liquidarClasificacionCostos(@RequestBody List<CostosMensualesClasificacionDTO> listadoCostosMensuales) {
 
-		List<CostosMensualesClasificacionDTO> consulta = clasificacionCostosDelegate.getClasificacionMensualPorBanco(listadoCostosMensuales);
+		List<CostosMensualesClasificacionDTO> consulta = clasificacionCostosDelegate.liquidarClasificacionCostos(listadoCostosMensuales);
 		
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<List<CostosMensualesClasificacionDTO>>(consulta,
@@ -73,9 +73,9 @@ public class ClasificacionCostosController {
 	
 
 	/**
-	 * Servicio encargado de guardar las escalas
+	 * Servicio encargado de guardar la clasificacion de costos mensual
 	 * 
-	 * @return ResponseEntity<ApiResponseADE<EscalasDTO>>
+	 * @return ResponseEntity<ApiResponseADE<String>>
 	 * @author duvan.naranjo
 	 */
 	@PostMapping(value = "${endpoints.ClasificacionMensual.guardar}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, 
