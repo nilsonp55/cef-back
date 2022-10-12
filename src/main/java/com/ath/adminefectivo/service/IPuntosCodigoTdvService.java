@@ -2,6 +2,9 @@ package com.ath.adminefectivo.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.ath.adminefectivo.dto.PuntosCodigoTdvDTO;
 import com.ath.adminefectivo.entities.PuntosCodigoTDV;
 import com.querydsl.core.types.Predicate;
@@ -15,7 +18,7 @@ public interface IPuntosCodigoTdvService {
 	 * @return List<PuntosCodigoTdvDTO>
 	 * @author cesar.castano
 	 */
-	List<PuntosCodigoTdvDTO> getPuntosCodigoTDV(Predicate predicate);
+	Page<PuntosCodigoTdvDTO> getPuntosCodigoTDV(Predicate predicate, Pageable page);
 
 	/**
 	 * Servicio encargado de consultar el objeto PuntosCodigoTdv por codigo. Este

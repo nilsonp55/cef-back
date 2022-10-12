@@ -4,15 +4,9 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-
-import com.ath.adminefectivo.dto.BancosDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -44,7 +38,7 @@ public class CostosClasificacion {
 	private String transportadora;
 	
 	@Column(name= "mes_año")
-	private String mesAño;
+	private String mesAnio;
 	
 	@Column(name = "fecha_modificacion")
 	private Date fechaModificacion;
