@@ -41,7 +41,7 @@ public class PuntosCodigoTdvController {
 	 * @return ResponseEntity<ApiResponseADE<List<PuntosCodigoTdvDTO>>>
 	 * @author cesar.castano
 	 */
-	@GetMapping(value = "${endpoints.PuntosCodigoTdv.consultar}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "${endpoints.PuntosCodigoTdv.consultar}")
 	public ResponseEntity<ApiResponseADE<Page<PuntosCodigoTdvDTO>>> getPuntosCodigoTDV(
 			@QuerydslPredicate(root = PuntosCodigoTDV.class) Predicate predicate, Pageable page) {
 		
