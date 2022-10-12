@@ -1,6 +1,7 @@
 package com.ath.adminefectivo.delegate;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.ath.adminefectivo.dto.PuntosCodigoTdvDTO;
 import com.querydsl.core.types.Predicate;
@@ -13,7 +14,7 @@ public interface IPuntosCodigoTdvDelegate {
 	 * @return List<PuntosCodigoTdvDTO>
 	 * @author cesar.castano
 	 */
-	List<PuntosCodigoTdvDTO> getPuntosCodigoTDV(Predicate predicate);
+	Page<PuntosCodigoTdvDTO> getPuntosCodigoTDV(Predicate predicate, Pageable page);
 
 	/**
 	 * Delegate encargado de contener la union con el servicio de guardar 

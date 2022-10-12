@@ -5,16 +5,16 @@ import java.util.List;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.BancosDTO;
 import com.ath.adminefectivo.dto.PuntosCodigoTdvDTO;
-import com.ath.adminefectivo.dto.TarifasOperacionDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
-import com.ath.adminefectivo.entities.Bancos;
 import com.ath.adminefectivo.entities.PuntosCodigoTDV;
-import com.ath.adminefectivo.entities.TarifasOperacion;
 import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.IPuntosCodigoTDVRepository;
@@ -39,12 +39,12 @@ public class PuntosCodigoTDVServiceImpl implements IPuntosCodigoTdvService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<PuntosCodigoTdvDTO> getPuntosCodigoTDV(Predicate predicate) {
+	public Page<PuntosCodigoTdvDTO> getPuntosCodigoTDV(Predicate predicate, Pageable page) {
 		
-		List<PuntosCodigoTDV> puntosCodigoTDV = (List<PuntosCodigoTDV>) puntosCodigoTDVRepository.findAll(predicate);
-		List<PuntosCodigoTdvDTO> listPuntosCodigoTDVDto = new ArrayList<>();
-		puntosCodigoTDV.forEach(entity -> listPuntosCodigoTDVDto.add(PuntosCodigoTdvDTO.CONVERTER_DTO.apply(entity)));
-		return listPuntosCodigoTDVDto;
+		var puntosCodigoTDV = puntosCodigoTDVRepository.findAll(predicate, page);
+		return new PageImpl<>(puntosCodigoTDV.getContent().stream()
+				.map(PuntosCodigoTdvDTO.CONVERTER_DTO).toList(),puntosCodigoTDV
+				.getPageable(), puntosCodigoTDV.getTotalElements());
 	}
 
 	/**
