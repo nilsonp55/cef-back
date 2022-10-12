@@ -41,7 +41,7 @@ public class PuntosCodigoTdvController {
 	 * @return ResponseEntity<ApiResponseADE<List<PuntosCodigoTdvDTO>>>
 	 * @author cesar.castano
 	 */
-	@GetMapping(value = "${endpoints.PuntosCodigoTdv.consultar}")
+	@GetMapping(value = "${endpoints.PuntosCodigoTdv.consultar}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<Page<PuntosCodigoTdvDTO>>> getPuntosCodigoTDV(
 			@QuerydslPredicate(root = PuntosCodigoTDV.class) Predicate predicate, Pageable page) {
 		
@@ -58,7 +58,7 @@ public class PuntosCodigoTdvController {
 	 * @return ResponseEntity<ApiResponseADE<PuntosCodigoTdvDTO>>
 	 * @author duvan.naranjo
 	 */
-	@PostMapping(value = "${endpoints.PuntosCodigoTdv.guardar}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, 
+	@PostMapping(value = "${endpoints.PuntosCodigoTdv.guardar}", consumes = MediaType.APPLICATION_JSON_VALUE, 
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<PuntosCodigoTdvDTO>> guardarPuntosCodigoTdv(@RequestBody PuntosCodigoTdvDTO puntosCodigoTdvDTO) {
 
