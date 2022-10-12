@@ -58,6 +58,6 @@ public class PuntosCostos {
 	@Column(name= "mixto", nullable = true)
 	private Boolean mixto;
 	
-	@Column(name = "estado")
+	@Column(name = "estado", nullable = true)
 	private int estado;
 }

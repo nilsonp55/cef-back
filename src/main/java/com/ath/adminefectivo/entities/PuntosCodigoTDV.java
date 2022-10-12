@@ -49,7 +49,7 @@ public class PuntosCodigoTDV {
 	private Bancos bancos;
 	
 	
-	@Column(name = "ESTADO")
+	@Column(name = "ESTADO", nullable = true)
 	private int estado;
 	
 }

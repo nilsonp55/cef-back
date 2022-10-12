@@ -8,7 +8,6 @@ import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -55,7 +55,7 @@ public class TdvDenominCantidad {
 	@Column(name = "cantidad_por_denom")
 	private int cantidad_por_denom;
 
-	@Column(name = "ESTADO")
+	@Column(name = "ESTADO", nullable = true)
 	private int estado;
 
 }

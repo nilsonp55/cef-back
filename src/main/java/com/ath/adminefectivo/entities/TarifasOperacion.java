@@ -74,7 +74,7 @@ public class TarifasOperacion {
 	@Column(name = "VALOR_TARIFA")
 	private int valorTarifa; 
 
-	@Column(name = "ESTADO")
+	@Column(name = "ESTADO", nullable = true)
 	private int estado;
 	
 	@Column(name = "USUARIO_CREACION")

@@ -1,7 +1,5 @@
 package com.ath.adminefectivo.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.HttpStatus;
@@ -15,10 +13,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.ath.adminefectivo.delegate.IPuntosCodigoTdvDelegate;
 import com.ath.adminefectivo.dto.PuntosCodigoTdvDTO;
-import com.ath.adminefectivo.dto.TarifasOperacionDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
@@ -43,10 +42,10 @@ public class PuntosCodigoTdvController {
 	 * @author cesar.castano
 	 */
 	@GetMapping(value = "${endpoints.PuntosCodigoTdv.consultar}")
-	public ResponseEntity<ApiResponseADE<List<PuntosCodigoTdvDTO>>> getPuntosCodigoTDV(
-			@QuerydslPredicate(root = PuntosCodigoTDV.class) Predicate predicate) {
+	public ResponseEntity<ApiResponseADE<Page<PuntosCodigoTdvDTO>>> getPuntosCodigoTDV(
+			@QuerydslPredicate(root = PuntosCodigoTDV.class) Predicate predicate, Pageable page) {
 		
-		List<PuntosCodigoTdvDTO> consulta = puntosCodigoTdvDelegate.getPuntosCodigoTDV(predicate);
+		var consulta = puntosCodigoTdvDelegate.getPuntosCodigoTDV(predicate, page);
 		
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
