@@ -55,7 +55,7 @@ public class EscalasController {
 	 * @return ResponseEntity<ApiResponseADE<EscalasDTO>>
 	 * @author duvan.naranjo
 	 */
-	@PostMapping(value = "${endpoints.Escalas.guardar}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, 
+	@PostMapping(value = "${endpoints.Escalas.guardar}", consumes = MediaType.APPLICATION_JSON_VALUE, 
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<EscalasDTO>> guardarEscalas(@RequestBody EscalasDTO escalasDTO) {
 
