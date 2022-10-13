@@ -746,7 +746,10 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
 			OperacionesProgramadasDTO operacionesProgramadasIntercambio2 = this
 					.generarOperacionIntercambioEntrada(contenido, detallesArchivo, archivo, true);
-
+			
+			operacionesProgramadasIntercambio2 = OperacionesProgramadasDTO.CONVERTER_DTO.apply(operacionesProgramadasRepository
+			.save(OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(operacionesProgramadasIntercambio2)));
+			
 			operacionesProgramadasIntercambio1.setIdOperacionRelac(operacionesProgramadasIntercambio2.getIdOperacion());
 
 			operacionesProgramadasRepository
@@ -975,15 +978,19 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		int codigoPuntoOrigen ;
 		int codigoPuntoDestino;
 		if(esAval) {
+			
 			codigoPuntoOrigen = puntoFondoDestino.getCodigoPunto();
 			codigoPuntoDestino = puntoFondoOrigen.getCodigoPunto();
 		}else {
-			codigoPuntoDestino = puntoFondoDestino.getCodigoPunto();
+			puntoFondoOrigen = puntoFondoDestino;
+			codigoPuntoOrigen = puntoFondoDestino.getCodigoPunto();
+			
 			
 			PuntosDTO puntoEntidadOrigen = this.consultarPuntoPorDetalle(contenido, detallesArchivo,
 					Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_ORIGEN);
 			if(!Objects.isNull(puntoEntidadOrigen)) {
-				codigoPuntoOrigen = puntoEntidadOrigen.getCodigoPunto();
+				codigoPuntoDestino = puntoEntidadOrigen.getCodigoPunto();
+				
 			}else {
 				throw new NegocioException(ApiResponseCode.ERROR_BANCO_EXTERNO_NO_ENCONTRADO.getCode(),
 						ApiResponseCode.ERROR_BANCO_EXTERNO_NO_ENCONTRADO.getDescription(),
@@ -992,7 +999,8 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		}
 
 		operacionesProgramadasDTO = OperacionesProgramadasDTO.builder()
-				.codigoFondoTDV(puntoFondoDestino.getCodigoPunto()).entradaSalida(Constantes.VALOR_ENTRADA)
+				.codigoFondoTDV(puntoFondoOrigen.getCodigoPunto())
+				.entradaSalida(Constantes.VALOR_ENTRADA)
 				.codigoPuntoOrigen(codigoPuntoOrigen)
 				.codigoPuntoDestino(codigoPuntoDestino)
 				.idArchivoCargado(Math.toIntExact(archivo.getIdArchivo())).build();

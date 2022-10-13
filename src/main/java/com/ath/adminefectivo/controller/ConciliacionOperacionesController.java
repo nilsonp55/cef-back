@@ -24,7 +24,9 @@ import com.ath.adminefectivo.dto.ProgramadasNoConciliadasDTO;
 import com.ath.adminefectivo.dto.ResumenConciliacionesDTO;
 import com.ath.adminefectivo.dto.UpdateCertificadasFallidasDTO;
 import com.ath.adminefectivo.dto.UpdateProgramadasFallidasDTO;
+import com.ath.adminefectivo.dto.compuestos.CertificadasNoConciliadasNombresDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionesProgramadasNombresDTO;
+import com.ath.adminefectivo.dto.compuestos.ProgramadasNoConciliadasNombresDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
@@ -68,7 +70,7 @@ public class ConciliacionOperacionesController {
 	 * Metodo encargado de consultar las operaciones programadas no conciliadas
 	 * @param predicate
 	 * @param page
-	 * @return Page<ProgramadasNoConciliadasDTO>
+	 * @return Page<ProgramadasNoConciliadasNombresDTO>
 	 * @author cesar.castano
 	 */
 	@GetMapping(value = "${endpoints.conciliacion.consultar-programadas-no-conciliadas}", produces = MediaType.APPLICATION_JSON_VALUE)

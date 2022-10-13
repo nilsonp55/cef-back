@@ -1,8 +1,9 @@
-package com.ath.adminefectivo.dto;
+package com.ath.adminefectivo.dto.compuestos;
 
 import java.util.Date;
 import java.util.function.Function;
 
+import com.ath.adminefectivo.dto.ProgramadasNoConciliadasDTO;
 import com.ath.adminefectivo.entities.OperacionesProgramadas;
 import com.ath.adminefectivo.utils.UtilsObjects;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -21,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProgramadasNoConciliadasDTO {
+public class ProgramadasNoConciliadasNombresDTO {
 
 	@JsonProperty("idOperacion")
 	private Integer idOperacion;
@@ -29,14 +30,20 @@ public class ProgramadasNoConciliadasDTO {
 	@JsonProperty("codigoFondoTDV")
 	private Integer codigoFondoTDV;
 	
+	private String nombreFondoTDV;
+	
 	@JsonProperty("entradaSalida")
 	private String entradaSalida;
 	
 	@JsonProperty("codigoPuntoOrigen")
 	private Integer codigoPuntoOrigen;
 	
+	private String nombrePuntoOrigen;
+	
 	@JsonProperty("codigoPuntoDestino")
 	private Integer codigoPuntoDestino;
+	
+	private String nombrePuntoDestino;
 	
 	@JsonProperty("fechaProgramacion")
 	private Date fechaProgramacion;
@@ -96,33 +103,15 @@ public class ProgramadasNoConciliadasDTO {
 
 	private String bancoAVAL;
 	
-	private String nombreFondoTDV;
-	
-	private String nombrePuntoOrigen;
-	
-	private String nombrePuntoDestino;
-	
-	/**
-	 * Funcion que convierte el archivo DTO ProgramadasNoConciliadasDTO a Entity OperacionesProgramadas
-	 * @author cesar.castano
-	 */
-	public static final Function<ProgramadasNoConciliadasDTO, OperacionesProgramadas> CONVERTER_ENTITY = (ProgramadasNoConciliadasDTO t) -> {
-
-		var operacionesProgramadas = new OperacionesProgramadas();
-		UtilsObjects.copiarPropiedades(t, operacionesProgramadas);		
-
-		return operacionesProgramadas;
-	};
-	
 	/**
 	 * Funcion que convierte la entity OperacionesProgramadas a archivo DTO ProgramadasNoConciliadasDTO
 	 * @author cesar.castano
 	 */
-	public static final Function<OperacionesProgramadas, ProgramadasNoConciliadasDTO> CONVERTER_DTO = (OperacionesProgramadas t) -> {
+	public static final Function<ProgramadasNoConciliadasDTO, ProgramadasNoConciliadasNombresDTO> CONVERTER_NO_PROGRAMADAS_NOMBRES = (ProgramadasNoConciliadasDTO t) -> {
 
-		var operacionesProgramadasDto = new ProgramadasNoConciliadasDTO();
-		UtilsObjects.copiarPropiedades(t, operacionesProgramadasDto);		
+		var operacionesProgramadasNombresDto = new ProgramadasNoConciliadasNombresDTO();
+		UtilsObjects.copiarPropiedades(t, operacionesProgramadasNombresDto);		
 
-		return operacionesProgramadasDto;
+		return operacionesProgramadasNombresDto;
 	};
 }

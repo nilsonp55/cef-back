@@ -102,6 +102,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 				operaciones.get().setEstadoConciliacion(estado);
 				operaciones.get().setFechaModificacion(new Date());
 				operaciones.get().setUsuarioModificacion("user1");
+				operaciones.get().setConciliable(Constantes.SI);
 				operacionesCertificadasRepository.save(operaciones.get());
 			} catch (Exception e) {
 				e.getMessage();
@@ -123,6 +124,22 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 		 Integer cuentaCertificadas = operacionesCertificadasRepository
 				 					.countByEstadoConciliacionAndFechaEjecucionBetween(estado,
 				fechaConciliacion.getFechaConciliacionInicial(), fechaConciliacion.getFechaConciliacionFinal());
+		if(Objects.isNull(cuentaCertificadas)) {
+			throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getCode(),
+					ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getHttpStatus());
+		}
+		return cuentaCertificadas;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Integer numeroOperacionesPorEstadoFechaYConciliable(FechasConciliacionDTO fechaConciliacion, String estado) {
+		 Integer cuentaCertificadas = operacionesCertificadasRepository
+				 					.countByEstadoConciliacionAndFechaEjecucionBetweenAndConciliable(estado,
+				fechaConciliacion.getFechaConciliacionInicial(), fechaConciliacion.getFechaConciliacionFinal(), Constantes.SI);
 		if(Objects.isNull(cuentaCertificadas)) {
 			throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getDescription(),
@@ -329,6 +346,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 										Constantes.CAMPO_DETALLE_ARCHIVO_FECHAEJECUCION);
 		registro.setFechaEjecucion(fecha);
 		registro.setBanco_aval(fondo.getBancoAVAL());
+		registro.setCodigoDane(ciudad2);
 	}
 
 	/**
@@ -374,7 +392,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 			operaciones.setFechaModificacion(new Date());
 			operaciones.setIdArchivoCargado(elemento.getIdArchivo());
 			operaciones.setTipoOperacion(asignarTipoOperacion(entradaSalida, codigoPropio, 
-											registro.getTdv(), registro.getBanco_aval()));
+											registro.getTdv(), registro.getBanco_aval(), registro.getCodigoDane()));
 			operaciones.setTipoServicio(dominioService.valorTextoDominio(
 										Constantes.DOMINIO_TIPO_SERVICIO, tipoServicio));
 			operaciones.setUsuarioCreacion("user1");
@@ -428,7 +446,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 		if(asignarEntradaSalida(entradaSalida).equals(Constantes.NOMBRE_ENTRADA)) {
 			codigoPuntoDestino = registro.getCodigoPunto();
 			codigoPuntoOrigen = puntosCodigoTdvService.getCodigoPunto(codigoPropio, registro.getTdv(), 
-														registro.getBanco_aval());
+														registro.getBanco_aval(), registro.getCodigoDane());
 			certificadas = operacionesCertificadasRepository.
 					findByCodigoPuntoOrigenAndCodigoServicioTdvAndEntradaSalidaAndFechaEjecucion(
 							codigoPuntoOrigen, codigoServicio, Constantes.NOMBRE_ENTRADA, 
@@ -436,7 +454,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 		}else {
 			codigoPuntoOrigen = registro.getCodigoPunto();
 			codigoPuntoDestino = puntosCodigoTdvService.getCodigoPunto(codigoPropio, registro.getTdv(), 
-														registro.getBanco_aval());
+														registro.getBanco_aval(), registro.getCodigoDane());
 			certificadas = operacionesCertificadasRepository.
 					findByCodigoPuntoDestinoAndCodigoServicioTdvAndEntradaSalidaAndFechaEjecucion(
 							codigoPuntoDestino, codigoServicio, Constantes.NOMBRE_SALIDA, 
@@ -517,21 +535,27 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	 * @author cesar.castano
 	 */
 	private String asignarTipoOperacion(String entradaSalida, String codigoPropio, 
-												String tdv, Integer banco_aval) {
+												String tdv, Integer banco_aval, String codigoDane) {
 		
 		Integer codigoPunto = 0;
 		var tipoOperacion = "";
-		codigoPunto = puntosCodigoTdvService.getCodigoPunto(codigoPropio, tdv, banco_aval);
+		codigoPunto = puntosCodigoTdvService.getCodigoPunto(codigoPropio, tdv, banco_aval, codigoDane);
 		if (asignarEntradaSalida(entradaSalida).equals(Constantes.NOMBRE_SALIDA)) {
 			tipoOperacion = procesarProvisiones(codigoPunto);
 			if (tipoOperacion.isEmpty()) {
 				tipoOperacion = procesarConsignaciones(codigoPunto);
+				if(tipoOperacion.isEmpty()) {
+					this.procesarOperacionOtros(codigoPunto);
+				}
 			}
 		}else {
 			if (asignarEntradaSalida(entradaSalida).equals(Constantes.NOMBRE_ENTRADA)) {
 				tipoOperacion = procesarRecolleciones(codigoPunto);
 				if (tipoOperacion.isEmpty()) {
 					tipoOperacion = procesarRetiros(codigoPunto);
+					if(tipoOperacion.isEmpty()) {
+						this.procesarOperacionOtros(codigoPunto);
+					}
 				}
 			}
 		}
@@ -549,6 +573,11 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 		return tipoOperacion;
 	}
 	
+	private String procesarOperacionOtros(Integer codigoPunto) {
+		return "VENTA";
+		
+	}
+
 	/**
 	 * Metodo que asignar las provisiones
 	 * @param codigoPunto
@@ -831,6 +860,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 									Constantes.CAMPO_DETALLE_ARCHIVO_FECHAEMISION);
 				registro.setFechaEjecucion(fecha);
 				registro.setBanco_aval(fondo.getBancoAVAL());
+				registro.setCodigoDane(ciudad1);
 				break;
 			}
 			case 2: {

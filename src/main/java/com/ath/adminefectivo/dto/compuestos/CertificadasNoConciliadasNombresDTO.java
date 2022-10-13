@@ -1,10 +1,10 @@
-package com.ath.adminefectivo.dto;
+package com.ath.adminefectivo.dto.compuestos;
 
 import java.util.Date;
 import java.util.function.Function;
 
-import javax.persistence.Transient;
-
+import com.ath.adminefectivo.dto.CertificadasNoConciliadasDTO;
+import com.ath.adminefectivo.dto.ProgramadasNoConciliadasDTO;
 import com.ath.adminefectivo.entities.OperacionesCertificadas;
 import com.ath.adminefectivo.utils.UtilsObjects;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -23,13 +23,15 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CertificadasNoConciliadasDTO {
+public class CertificadasNoConciliadasNombresDTO {
 
 	@JsonProperty("idCertificacion")
 	private Integer idCertificacion;
 	
 	@JsonProperty("codigoFondoTDV")
 	private Integer codigoFondoTDV;
+	
+	private String nombreFondoTDV;
 	
 	@JsonProperty("codigoBanco")
 	private Integer codigoBanco;
@@ -40,8 +42,12 @@ public class CertificadasNoConciliadasDTO {
 	@JsonProperty("codigoPuntoOrigen")
 	private Integer codigoPuntoOrigen;
 	
+	private String nombrePuntoOrigen;
+	
 	@JsonProperty("codigoPuntoDestino")
 	private Integer codigoPuntoDestino;
+	
+	private String nombrePuntoDestino;
 	
 	@JsonProperty("tipoPuntoOrigen")
 	private String tipoPuntoOrigen;
@@ -92,33 +98,16 @@ public class CertificadasNoConciliadasDTO {
 
 	private String bancoAVAL;
 	
-	private String nombreFondoTDV;
-	
-	private String nombrePuntoOrigen;
-	
-	private String nombrePuntoDestino;
 	
 	/**
-	 * Funcion que convierte el archivo DTO ProgramadasNoConciliadasDTO a Entity OperacionesProgramadas
+	 * Funcion que convierte la entity OperacionesProgramadas a archivo DTO ProgramadasNoConciliadasNombresDTO
 	 * @author cesar.castano
 	 */
-	public static final Function<CertificadasNoConciliadasDTO, OperacionesCertificadas> CONVERTER_ENTITY = (CertificadasNoConciliadasDTO t) -> {
+	public static final Function<CertificadasNoConciliadasDTO, CertificadasNoConciliadasNombresDTO> CONVERTER_NO_PROGRAMADAS_NOMBRES = (CertificadasNoConciliadasDTO t) -> {
 
-		var operacionesCertificadas = new OperacionesCertificadas();
-		UtilsObjects.copiarPropiedades(t, operacionesCertificadas);		
+		var operacionesCertificadasNombresDto = new CertificadasNoConciliadasNombresDTO();
+		UtilsObjects.copiarPropiedades(t, operacionesCertificadasNombresDto);		
 
-		return operacionesCertificadas;
-	};
-	
-	/**
-	 * Funcion que convierte la entity OperacionesProgramadas a archivo DTO ProgramadasNoConciliadasDTO
-	 * @author cesar.castano
-	 */
-	public static final Function<OperacionesCertificadas, CertificadasNoConciliadasDTO> CONVERTER_DTO = (OperacionesCertificadas t) -> {
-
-		var certificadasNoConciliadasDTO = new CertificadasNoConciliadasDTO();
-		UtilsObjects.copiarPropiedades(t, certificadasNoConciliadasDTO);		
-
-		return certificadasNoConciliadasDTO;
+		return operacionesCertificadasNombresDto;
 	};
 }

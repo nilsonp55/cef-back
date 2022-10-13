@@ -46,6 +46,20 @@ public interface IOperacionesCertificadasRepository
 	 */
 	Integer countByEstadoConciliacionAndFechaEjecucionBetween(String estadoConciliacion, Date fechaInicial,
 			Date fechaFinal);
+	
+	/**
+	 * Retorna el numero de operaciones certificadas segun un estado de conciliacion
+	 * y un rango de fechas
+	 * 
+	 * @param estadoConciliacion
+	 * @param fechaInicial
+	 * @param fechaFinal
+	 * @param conciliable
+	 * @return Integer
+	 * @author cesar.castano
+	 */
+	Integer countByEstadoConciliacionAndFechaEjecucionBetweenAndConciliable(String estadoConciliacion, Date fechaInicial,
+			Date fechaFinal, String conciliable);
 
 	/**
 	 * Retorna una lista de operaciones certificadas segun el codigo del fondo y el estado de conciliacion
@@ -108,7 +122,7 @@ public interface IOperacionesCertificadasRepository
 			+ "(oc.valorTotal + oc.valorFaltante - oc.valorSobrante) = op.valorTotal AND "
 			+ "oc.codigoPuntoOrigen = op.codigoPuntoOrigen AND oc.codigoPuntoDestino = op.codigoPuntoDestino AND "
 			+ "oc.estadoConciliacion = op.estadoConciliacion "
-			+ "WHERE op.estadoConciliacion = ?1")
+			+ "WHERE op.estadoConciliacion = ?1 and oc.conciliable = 'SI'")
 	List<OperacionesCertificadas> conciliacionAutomatica(String estadoConciliacion);
 	
 	/**

@@ -63,4 +63,15 @@ public interface IOperacionesCertificadasService {
 	 * @author duvan.naranjo
 	 */
 	void validarNoConciliables(List<ArchivosCargados> archivosCargados);
+
+
+	/**
+	 * Servicio encargado de generar el numero de operaciones certificadas no
+	 * conciliadas por rango de fechas y que el campo conciliable sea SI
+	 * @return Integer
+	 * @author cesar.castano
+	 * @param fechaConciliacion
+	 * @param estado
+	 */
+	Integer numeroOperacionesPorEstadoFechaYConciliable(FechasConciliacionDTO fechaConciliacion, String estado);
 }

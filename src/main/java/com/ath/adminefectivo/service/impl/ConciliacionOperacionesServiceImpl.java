@@ -4,7 +4,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,8 +18,10 @@ import com.ath.adminefectivo.dto.ProgramadasNoConciliadasDTO;
 import com.ath.adminefectivo.dto.ResumenConciliacionesDTO;
 import com.ath.adminefectivo.dto.UpdateCertificadasFallidasDTO;
 import com.ath.adminefectivo.dto.UpdateProgramadasFallidasDTO;
+import com.ath.adminefectivo.dto.compuestos.CertificadasNoConciliadasNombresDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionesProgramadasNombresDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionespConciliadoDTO;
+import com.ath.adminefectivo.dto.compuestos.ProgramadasNoConciliadasNombresDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
@@ -106,7 +110,7 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	 */
 	@Override
 	public Page<ProgramadasNoConciliadasDTO> getProgramadaNoConcilliada(Predicate predicate, Pageable page) {
-
+		
 		Page<OperacionesProgramadas> archivos = operacionesProgramadasRepository.findAll(predicate, page);
 		if (archivos.isEmpty()) {
 			throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getCode(),
@@ -116,19 +120,51 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 		return consultarProgramasNoConciliadas(archivos, page);
 	}
 
+	private OperacionesProgramadas obtenerNombresProgramadasNoConciliadas(
+			OperacionesProgramadas programadaNoConciliadaNombre) {
+		
+		String nombreFondoTdv = puntosService.getPuntoById(programadaNoConciliadaNombre.getCodigoFondoTDV()).getNombrePunto();
+		programadaNoConciliadaNombre.setNombreFondoTDV(nombreFondoTdv);
+		
+
+		String nombrePuntoOrigen = puntosService.getPuntoById(programadaNoConciliadaNombre.getCodigoPuntoOrigen()).getNombrePunto();
+		programadaNoConciliadaNombre.setNombrePuntoOrigen(nombrePuntoOrigen);
+		
+		String nombrePuntoDestino = puntosService.getPuntoById(programadaNoConciliadaNombre.getCodigoPuntoDestino()).getNombrePunto();
+		programadaNoConciliadaNombre.setNombrePuntoDestino(nombrePuntoDestino);
+		
+		return programadaNoConciliadaNombre;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public Page<CertificadasNoConciliadasDTO> getCertificadaNoConciliada(Predicate predicate, Pageable page) {
-
 		Page<OperacionesCertificadas> archivos = operacionesCertificadasRepository.findAll(predicate, page);
 		if (archivos.isEmpty()) {
 			throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getDescription(),
 					ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getHttpStatus());
 		}
+	
 		return consultarCertificadasNoConciliadas(archivos, page);
+	}
+	
+	private OperacionesCertificadas obtenerNombresCertificadasNoConciliadas(
+			OperacionesCertificadas certificadasNoConciliadaNombre) {
+		
+		String nombreFondoTdv = puntosService.getPuntoById(certificadasNoConciliadaNombre.getCodigoFondoTDV()).getNombrePunto();
+		certificadasNoConciliadaNombre.setNombreFondoTDV(nombreFondoTdv);
+		
+
+		String nombrePuntoOrigen = puntosService.getPuntoById(certificadasNoConciliadaNombre.getCodigoPuntoOrigen()).getNombrePunto();
+		certificadasNoConciliadaNombre.setNombrePuntoOrigen(nombrePuntoOrigen);
+		
+		String nombrePuntoDestino = puntosService.getPuntoById(certificadasNoConciliadaNombre.getCodigoPuntoDestino()).getNombrePunto();
+		certificadasNoConciliadaNombre.setNombrePuntoDestino(nombrePuntoDestino);
+		
+		return certificadasNoConciliadaNombre;
 	}
 
 	/**
@@ -217,7 +253,7 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	public ResumenConciliacionesDTO consultaResumenConciliaciones(FechasConciliacionDTO fechaConciliacion) {
 		var resumenConciliaciones = new ResumenConciliacionesDTO();
 		resumenConciliaciones.setCertificadasNoConciliadas(operacionesCertificadasService
-				.numeroOperacionesPorEstadoyFecha(fechaConciliacion, dominioService.valorTextoDominio(
+				.numeroOperacionesPorEstadoFechaYConciliable(fechaConciliacion, dominioService.valorTextoDominio(
 						Constantes.DOMINIO_ESTADO_CONCILIACION, Dominios.ESTADO_CONCILIACION_NO_CONCILIADO)));
 		resumenConciliaciones.setConciliadas(conciliacionServicesService.
 				numeroOperacionesPorRangoFechas(
@@ -296,6 +332,7 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 						String transportadora = transportadorasService.getNombreTransportadora(
 							fondoService.getEntidadFondo(programadasNoConciliadasDTO.getCodigoFondoTDV()).getTdv());
 						entity.setTdv(transportadora);
+						entity = this.obtenerNombresProgramadasNoConciliadas(entity);
 						});		
 	
 		return new PageImpl<>(operacionesProgramadas.getContent().stream()
@@ -324,6 +361,7 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 						String transportadora = transportadorasService.getNombreTransportadora(
 								fondoService.getEntidadFondo(certificadasNoConciliadas.getCodigoFondoTDV()).getTdv());
 						entity.setTdv(transportadora);
+						entity = this.obtenerNombresCertificadasNoConciliadas(entity);
 						});
 		return new PageImpl<>(operacionesCertificadas.getContent().stream()
                 .map(CertificadasNoConciliadasDTO.CONVERTER_DTO).collect(Collectors.<CertificadasNoConciliadasDTO>toList()), page,
@@ -346,6 +384,7 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 			conciliado.setFechaOrigen(operacionesp.get(i).getFechaOrigen());
 			conciliado.setTipoOperacion(operacionesp.get(i).getTipoOperacion());
 			conciliado.setValorTotal(operacionesp.get(i).getValorTotal());
+			conciliado.setEntradaSalida(operacionesp.get(i).getEntradaSalida());
 
 			OperacionesCertificadas operaciones = operacionesc.stream().filter(puntoT ->
 			puntoT.getCodigoFondoTDV().equals(conciliado.getCodigoFondoTDV()) &&
@@ -355,7 +394,7 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 			 puntoT.getFechaEjecucion().equals(conciliado.getFechaDestino())) &&
 			puntoT.getValorTotal().equals(conciliado.getValorTotal()) &&
 			puntoT.getEstadoConciliacion().equals(conciliado.getEstadoConciliacion()) &&
-			puntoT.getTipoOperacion().equals(conciliado.getTipoOperacion()))
+			puntoT.getEntradaSalida().equals(conciliado.getEntradaSalida()))
 					.findFirst().orElse(null);
 
 			parametros.setIdOperacion(operacionesp.get(i).getIdOperacion());
