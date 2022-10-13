@@ -79,4 +79,13 @@ public interface IBancosService {
 	 */
 	BancosDTO validarPuntoBancoEsAval(int codigoPunto);
 
+	/**
+	 * Metodo encargado de obtener los bancos que sean aval o no
+	 * 
+	 * @param esAval
+	 * @return List<BancosDTO>
+	 * @author duvan.naranjo
+	 */
+	List<BancosDTO> getBancosPorAval(boolean esAval);
+
 }

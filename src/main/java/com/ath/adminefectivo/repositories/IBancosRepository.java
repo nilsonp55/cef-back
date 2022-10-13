@@ -1,5 +1,7 @@
 package com.ath.adminefectivo.repositories;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
@@ -31,5 +33,13 @@ public interface IBancosRepository extends JpaRepository<Bancos, Integer>, Query
 	 * @author cesar.castano
 	 */
 	Bancos findByCodigoPunto(Integer codigoPunto);
+
+	/**
+	 * Retorna el listado de bancos ya sea el valor recibido aval o no aval
+	 * @param esAval
+	 * @return List<Bancos>
+	 * @author duvan.naranjo
+	 */
+	List<Bancos> findByEsAVAL(boolean esAval);
 
 }

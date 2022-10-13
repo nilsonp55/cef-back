@@ -141,4 +141,17 @@ public class BancosServiceImpl implements IBancosService {
 			return null;
 		}
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<BancosDTO> getBancosPorAval(boolean esAval) {
+		List<Bancos> bancos = bancosRepository.findByEsAVAL(esAval);
+		List<BancosDTO> bancosDTO = new ArrayList<>();
+		bancos.forEach(banco ->{
+			bancosDTO.add(BancosDTO.CONVERTER_DTO.apply(banco));
+		});
+		return bancosDTO;
+	}
 }
