@@ -104,6 +104,15 @@ public class OperacionesCertificadas {
 	@Transient
 	private String bancoAVAL;
 	
+	@Transient
+	private String nombreFondoTDV;
+	
+	@Transient
+	private String nombrePuntoOrigen;
+	
+	@Transient
+	private String nombrePuntoDestino;
+	
 	@OneToMany(mappedBy = "operacionesCertificadas")
 	private List<ConciliacionServicios> conciliacionServicios;
 }

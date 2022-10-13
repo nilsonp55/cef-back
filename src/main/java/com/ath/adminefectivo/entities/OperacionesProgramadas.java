@@ -197,4 +197,8 @@ public class OperacionesProgramadas {
 	@Transient
 	private Date fechaEjecucion;
 	
+	@Transient
+	private String nombreFondoTDV;
+
+	
 }

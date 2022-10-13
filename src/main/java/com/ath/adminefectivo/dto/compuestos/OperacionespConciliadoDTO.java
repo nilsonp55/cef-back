@@ -33,5 +33,7 @@ public class OperacionespConciliadoDTO {
 	private Double valorTotal;
 
 	private String estadoConciliacion;
+	
+	private String entradaSalida;
 
 }

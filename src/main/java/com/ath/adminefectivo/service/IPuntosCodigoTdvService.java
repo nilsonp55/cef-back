@@ -36,7 +36,7 @@ public interface IPuntosCodigoTdvService {
 	 * @return Integer
 	 * @author cesar.castano
 	 */
-	Integer getCodigoPunto(String codigoPuntoTdv, String codigoTdv, Integer codigo_aval);
+	Integer getCodigoPunto(String codigoPuntoTdv, String codigoTdv, Integer codigo_aval, String codigoDane);
 	
 	/**
 	 * Servicio encargado de consultar la lista de todos los Puntos Codigos TDV filtrados

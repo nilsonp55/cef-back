@@ -1,5 +1,7 @@
 package com.ath.adminefectivo.repositories;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
@@ -34,6 +36,13 @@ public interface IPuntosCodigoTDVRepository
 	 * @param codigoPropioTdv
 	 * @return
 	 */
-	public PuntosCodigoTDV findByCodigoPropioTDVAndCodigoTDVAndBancos(String codigoPropioTdv, String codigoTdv, Bancos banco);
+	public List<PuntosCodigoTDV> findByCodigoPropioTDVAndCodigoTDVAndBancos(String codigoPropioTdv, String codigoTdv, Bancos banco);
+	
+	/**
+	 * Retorna el objeto PuntosCodigoTDV para un codigoPropioTDV
+	 * @param codigoPropioTdv
+	 * @return
+	 */
+	public PuntosCodigoTDV findByCodigoPropioTDVAndCodigoTDVAndBancosAndCiudadCodigo(String codigoPropioTdv, String codigoTdv, Bancos banco, String ciudadCodigo);
 
 }

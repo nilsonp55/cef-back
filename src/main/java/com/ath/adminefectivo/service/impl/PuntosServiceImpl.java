@@ -245,9 +245,10 @@ public class PuntosServiceImpl implements IPuntosService {
 	public Boolean getEntidadPuntoBanrep(String tipoPunto, Integer codigoPunto) {
 		var puntosOpt = puntosRepository.findByCodigoPuntoAndTipoPunto(codigoPunto, tipoPunto);
 		if (Objects.isNull(puntosOpt)) {
-			throw new AplicationException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription(),
-					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
+			return false;
+//			throw new AplicationException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
+//					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription(),
+//					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
 		} 
 		return true;
 	}
