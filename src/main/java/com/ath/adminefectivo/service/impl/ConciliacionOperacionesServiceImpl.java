@@ -361,6 +361,7 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 						String transportadora = transportadorasService.getNombreTransportadora(
 								fondoService.getEntidadFondo(certificadasNoConciliadas.getCodigoFondoTDV()).getTdv());
 						entity.setTdv(transportadora);
+						entity.setEntradaSalida(certificadasNoConciliadas.getEntradaSalida());
 						entity = this.obtenerNombresCertificadasNoConciliadas(entity);
 						});
 		return new PageImpl<>(operacionesCertificadas.getContent().stream()
