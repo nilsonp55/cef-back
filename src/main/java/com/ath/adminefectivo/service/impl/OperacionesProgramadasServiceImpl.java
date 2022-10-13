@@ -173,7 +173,14 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
 		this.getListados(predicate);
 		for (OperacionesProgramadas programadas : operacionesProgramadasList) {
-
+			
+			try {
+				programadas.getConciliacionServicios().get(0);
+			} catch (Exception e) {
+				throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_CONCILIADA_SIN_SERVICIOS.getCode(),
+						ApiResponseCode.ERROR_OPERACIONES_CONCILIADA_SIN_SERVICIOS.getDescription(),
+						ApiResponseCode.ERROR_OPERACIONES_CONCILIADA_SIN_SERVICIOS.getHttpStatus());
+			}
 			// Obtiene nombres de transportadora y Banco dueño del fondo
 			programadas.setNombreTransportadora(this.getNombreTransportadora(programadas.getCodigoFondoTDV()));
 			programadas.setNombreBanco(this.getNombreBanco(programadas.getCodigoFondoTDV()));
@@ -188,6 +195,10 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 			programadas.setTipoConciliacion(programadas.getConciliacionServicios().get(0).getTipoConciliacion());
 			programadas.setIdConciliacion(programadas.getConciliacionServicios().get(0).getIdConciliacion());
 			programadas.setTdv(programadas.getNombreTransportadora());
+			programadas.setEntradaSalida(programadas.getEntradaSalida());
+			programadas.setNombreFondoTDV(puntosService.getNombrePunto(dominioService.valorTextoDominio(
+									Constantes.DOMINIO_TIPOS_PUNTO, 
+									Dominios.TIPOS_PUNTO_FONDO), programadas.getCodigoFondoTDV()));;
 			programadas.setBancoAVAL(puntosService.getNombrePunto(dominioService.valorTextoDominio(
 									Constantes.DOMINIO_TIPOS_PUNTO, 
 									Dominios.TIPOS_PUNTO_BANCO),

@@ -63,6 +63,10 @@ public class OperacionesProgramadasNombresDTO {
 
 	private String bancoAVAL;
 	
+	private String entradaSalida;
+	
+	private String nombreFondoTDV;
+	
 	/**
 	 * Funcion que convierte el archivo DTO ProgramadasNoConciliadasDTO a Entity OperacionesProgramadas
 	 * @author cesar.castano

@@ -566,7 +566,13 @@ public enum ApiResponseCode {
 	 * Ocurrió un error al consultar la tabla Escalas o no fue encontrado
 	 */
 	ERROR_ESCALAS_NO_ENCONTRADO("E951", "Ocurrió un error al consultar la tabla de Escalas, no fue encontrado",
-			HttpStatus.PRECONDITION_FAILED);;
+			HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Ocurrió un error al consultar la conciliacion de la operacion que se encuantra conciliada
+	 */
+	ERROR_OPERACIONES_CONCILIADA_SIN_SERVICIOS("E908", "No se encuentra la operacion programada en conciliación servicios. ",
+			HttpStatus.PRECONDITION_FAILED);
 	
 	/**
 	 * Código asociado a la respuesta
