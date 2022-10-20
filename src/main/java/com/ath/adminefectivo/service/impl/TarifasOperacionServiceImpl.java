@@ -1,6 +1,7 @@
 package com.ath.adminefectivo.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -90,6 +91,17 @@ public class TarifasOperacionServiceImpl implements ITarifasOperacionService {
 		}else {
 			return false;
 		}
+	}
+
+	@Override
+	public List<TarifasOperacionDTO> getTarifasOperacionByCodigoBancoAndCodigoTdv(int codigoBanco, String codigoTdv,
+			Date fechaSistema) {
+		List<TarifasOperacion> tarifasOperacionEntity = tarifasOperacionRepository.findByBancoAndTransportadoraAndComisionAndFajado(codigoBanco, codigoTdv);
+		List<TarifasOperacionDTO> tarifasOperacionDTO = new ArrayList<>();
+		tarifasOperacionEntity.forEach(tarifaEntity -> {
+			tarifasOperacionDTO.add(TarifasOperacionDTO.CONVERTER_DTO.apply(tarifaEntity));
+		});
+		return tarifasOperacionDTO;
 	}
 
 	

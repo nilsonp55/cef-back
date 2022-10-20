@@ -5,15 +5,21 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ColumnResult;
+import javax.persistence.ConstructorResult;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
+
+import com.ath.adminefectivo.dto.compuestos.EstimadoClasificacionCostosDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,6 +31,25 @@ import lombok.NoArgsConstructor;
  * @author cesar.castano
  *
  */
+@NamedNativeQuery(name = "ParametrosLiquidacionCosto.consultaEstimadosCostos", 
+query = "SELECT "
+		+ "	plc.codigo_banco as bancoAval, "
+		+ "	plc.codigo_tdv as tdv, "
+		+ "	SUM(plc.numero_fajos) AS estimadaFajos, "
+		+ "	SUM(plc.numero_bolsas) AS estimadaBolsas "
+		+ "FROM "
+		+ "	public.parametros_liquidacion_costo plc "
+		+ "WHERE "
+		+ "	codigo_banco = :bancoAval AND "
+		+ "	plc.codigo_tdv = :transportadora AND "
+		+ "	plc.entrada_salida = 'ENTRADA' and "
+		+ "	extract(year from plc.fecha_ejecucion) = :anio and "
+		+ "	extract(month  from plc.fecha_ejecucion) = :mes "
+		+ "GROUP BY plc.codigo_banco, plc.codigo_tdv ", 
+resultSetMapping = "Mapping.EstimadoClasificacionCostosDTO")
+@SqlResultSetMapping(name = "Mapping.EstimadoClasificacionCostosDTO", classes = @ConstructorResult(targetClass = EstimadoClasificacionCostosDTO.class, columns = {
+@ColumnResult(name = "bancoAval"), @ColumnResult(name = "tdv"), @ColumnResult(name = "estimadaFajos", type = Long.class), @ColumnResult(name = "estimadaBolsas", type = Long.class) }))
+
 
 @Entity
 @Table(name = "PARAMETROS_LIQUIDACION_COSTO")

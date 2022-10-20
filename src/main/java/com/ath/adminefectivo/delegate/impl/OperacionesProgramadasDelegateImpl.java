@@ -79,6 +79,18 @@ public class OperacionesProgramadasDelegateImpl implements IOperacionesProgramad
 		return Constantes.MENSAJE_GENERO_OPERACIONES_PROGRAMADAS_CORRECTO;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String reabrirCierrePorAgrupador(String agrupador) {
+		return operacionesProgramadasService.reabrirCierrePorAgrupador(agrupador);
+	}
+	
+	/**
+	 * 
+	 * @param agrupador
+	 */
 	private void consultarEstadoLogProcesoDiario(String agrupador) {
 		LogProcesoDiario logProcesoDiario = null;
 		if(agrupador.equals(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_PRELIMINARES)) {
@@ -147,4 +159,6 @@ public class OperacionesProgramadasDelegateImpl implements IOperacionesProgramad
 						ApiResponseCode.ERROR_FALTAN_ARCHIVOS_POR_CARGAR.getHttpStatus());
 		}
 	}
+
+
 }

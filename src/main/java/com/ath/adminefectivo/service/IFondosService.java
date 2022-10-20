@@ -96,4 +96,13 @@ public interface IFondosService {
 	 * @author duvan.naranjo
 	 */
 	FondosDTO getFondoByCodigoPunto(Integer codigoPunto);
+	
+	/**
+	 * Servicio encargado de consultar el fondo por transportadora.
+	 * servicio lanza un error en caso de que la transportadora no tenga fondos
+	 * @param transportadora
+	 * @return List<FondosDTO>
+	 * @author duvan.naranjo
+	 */
+	List<FondosDTO> getFondoByTdvAndBanco(String transportadora, int bancoAval);
 }

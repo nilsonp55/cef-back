@@ -71,21 +71,6 @@ public class ClasificacionCostosDTO {
 	public static final Function<ClasificacionCostosDTO, ClasificacionCostos> CONVERTER_ENTITY = (ClasificacionCostosDTO t) -> {
 		var costosClasificacion = new ClasificacionCostos();
 		UtilsObjects.copiarPropiedades(t, costosClasificacion);
-//		if(!Objects.isNull(t.getBancosDTO())) {
-//			escalas.setBancos(BancosDTO.CONVERTER_ENTITY.apply(t.getBancosDTO()));
-//		}
-//		if(!Objects.isNull(t.getTransportadoraOrigenDTO())) {
-//			escalas.setTransportadoraOrigen(TransportadorasDTO.CONVERTER_ENTITY.apply(t.getTransportadoraOrigenDTO()));
-//		}
-//		if(!Objects.isNull(t.getCiudadOrigenDTO())) {
-//			escalas.setCiudadOrigen(CiudadesDTO.CONVERTER_ENTITY.apply(t.getCiudadOrigenDTO()));
-//		}
-//		if(!Objects.isNull(t.getTransportadoraDestinoDTO())) {
-//			escalas.setTransportadoraDestino(TransportadorasDTO.CONVERTER_ENTITY.apply(t.getTransportadoraDestinoDTO()));
-//		}
-//		if(!Objects.isNull(t.getCiudadDestinoDTO())) {
-//			escalas.setCiudadDestino(CiudadesDTO.CONVERTER_ENTITY.apply(t.getCiudadDestinoDTO()));
-//		}
 		return costosClasificacion;
 	};
 
@@ -95,22 +80,6 @@ public class ClasificacionCostosDTO {
 	public static final Function<ClasificacionCostos, ClasificacionCostosDTO> CONVERTER_DTO = (ClasificacionCostos t) -> {
 		var costosClasificacionDTO = new ClasificacionCostosDTO();
 		UtilsObjects.copiarPropiedades(t, costosClasificacionDTO);
-//		if(!Objects.isNull(t.getBancos())) {
-//			escalasDTO.setBancosDTO(BancosDTO.CONVERTER_DTO.apply(t.getBancos()));
-//		}
-//		if(!Objects.isNull(t.getTransportadoraOrigen())) {
-//			escalasDTO.setTransportadoraOrigenDTO(TransportadorasDTO.CONVERTER_DTO.apply(t.getTransportadoraOrigen()));
-//		}
-//		if(!Objects.isNull(t.getCiudadOrigen())) {
-//			escalasDTO.setCiudadOrigenDTO(CiudadesDTO.CONVERTER_DTO.apply(t.getCiudadOrigen()));
-//		}
-//		if(!Objects.isNull(t.getTransportadoraDestino())) {
-//			escalasDTO.setTransportadoraDestinoDTO(TransportadorasDTO.CONVERTER_DTO.apply(t.getTransportadoraDestino()));
-//		}
-//		if(!Objects.isNull(t.getCiudadDestino())) {
-//			escalasDTO.setCiudadDestinoDTO(CiudadesDTO.CONVERTER_DTO.apply(t.getCiudadDestino()));
-//		}
-
 		return costosClasificacionDTO;
 	};
 }

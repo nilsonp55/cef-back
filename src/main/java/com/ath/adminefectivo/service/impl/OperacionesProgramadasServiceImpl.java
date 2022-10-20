@@ -358,6 +358,21 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		});;
 		return listadoOperacionesProgramadasDTO;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String reabrirCierrePorAgrupador(String agrupador) {
+		if(agrupador.equals(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_CERTIFICACION)) {
+			return operacionesProgramadasRepository.reabrir_certificaciones();
+		}else if(agrupador.equals(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_DEFINITIVO)) {
+			return operacionesProgramadasRepository.reabrir_definitiva();
+		}else if(agrupador.equals(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_PRELIMINARES)) {
+			return operacionesProgramadasRepository.reabrir_preliminar();
+		}
+		return "Agrupador no existente. ";
+	}
 
 	/**
 	 * ------------------------------------------------- INICIO METODOS PRIVADOS --------------------------------------------------------------------
@@ -2056,4 +2071,6 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		            .equals(Constantes.CAMPO_DETALLE_ARCHIVO_VALOR))
 					.findFirst().orElse(null).getId().getNumeroCampo() - 1].trim();
 	}
+
+
 }

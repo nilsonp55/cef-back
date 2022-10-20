@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
 
@@ -211,6 +212,30 @@ public interface IOperacionesProgramadasRepository
 			+ "		 ec.transaccionInterna = ti.idTransaccionesInternas AND "
 			+ "		 ti.tipoProceso = ?1) ")
 	public List<OperacionesProgramadas> obtenerConErroresContables(String tipoContabilidad);
+
+	/**
+	 * Procedimiento encargado de ejecutar la repaertura del cierre certificaciones
+	 * @return String
+	 * @author duvan.naranjo
+	 */
+	@Procedure(name = "reabrir_certificaciones")
+	public String reabrir_certificaciones();
+	
+	/**
+	 * Procedimiento encargado de ejecutar la repaertura del cierre definitiva
+	 * @return String
+	 * @author duvan.naranjo
+	 */
+	@Procedure(name = "reabrir_definitiva")
+	public String reabrir_definitiva();
+	
+	/**
+	 * Procedimiento encargado de ejecutar la repaertura del cierre preliminar
+	 * @return String
+	 * @author duvan.naranjo
+	 */
+	@Procedure(name = "reabrir_preliminar")
+	public String reabrir_preliminar();
 	
 //	List<intradiaPruebaDTO> consultarOperacionesIntradiaSalida(@Param("fechaInicio") Date fechaInicio, @Param("fechaFin") Date fechaFin, @Param("entradaSalida") String entradaSalida, @Param("tipoOperacion") String tipoOperacion);
 	

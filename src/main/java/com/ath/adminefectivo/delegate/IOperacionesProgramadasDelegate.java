@@ -17,4 +17,13 @@ public interface IOperacionesProgramadasDelegate {
 	 */
 	String generarOperacionesProgramadas(String idArchivo);
 
+	/**
+	 * Delegate encargado de ejecutar el servicio de reapertura de cierre
+	 * 
+	 * @param agrupador
+	 * @return String
+	 * @author duvan.naranjo
+	 */
+	String reabrirCierrePorAgrupador(String agrupador);
+
 }

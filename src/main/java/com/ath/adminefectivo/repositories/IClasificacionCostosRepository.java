@@ -4,10 +4,12 @@ package com.ath.adminefectivo.repositories;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.stereotype.Repository;
 
 import com.ath.adminefectivo.dto.ClasificacionCostosDTO;
+import com.ath.adminefectivo.dto.compuestos.EstimadoClasificacionCostosDTO;
 import com.ath.adminefectivo.entities.ClasificacionCostos;
 import com.ath.adminefectivo.entities.Escalas;
 
@@ -29,7 +31,9 @@ public interface IClasificacionCostosRepository extends JpaRepository<Clasificac
 	 * @return List<ClasificacionCostosDTO>
 	 * @author duvan.naranjo
 	 */
-	List<ClasificacionCostosDTO> findByTransportadoraAndMesAnio(String transportadora, String mesAnio);
+	List<ClasificacionCostos> findByTransportadoraAndMesAnio(String transportadora, String mesAnio);
+
+	
 
 
 }

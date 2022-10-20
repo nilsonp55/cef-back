@@ -124,4 +124,24 @@ public class FondosServiceImpl implements IFondosService {
 		}
 		return fondo;
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<FondosDTO> getFondoByTdvAndBanco(String transportadora, int banco) {
+		List<FondosDTO> fondosDTO = new ArrayList<>();
+		List<Fondos> fondosEntity = fondosRepository.findByTdvAndBancoAVAL(transportadora, banco);
+		if (Objects.isNull(fondosEntity)) {
+			throw new NegocioException(ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO_TDV_AVAL.getCode(),
+					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO_TDV_AVAL.getDescription()+" TRANSPORTADORA = "+transportadora+" Banco Aval = "+banco,
+					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO_TDV_AVAL.getHttpStatus());
+
+		}else {
+			fondosEntity.forEach(fondo ->{
+				fondosDTO.add(FondosDTO.CONVERTER_DTO.apply(fondo));
+			});
+		}
+		return fondosDTO;
+	}
 }
