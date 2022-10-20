@@ -32,7 +32,8 @@ import lombok.NoArgsConstructor;
 public class Escalas {
 
 	@Id
-	@Column(name= "id_escalas")
+	@Column(name = "id_escalas")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int idEscala;
 
 	@ManyToOne

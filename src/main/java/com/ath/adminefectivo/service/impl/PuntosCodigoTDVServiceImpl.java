@@ -123,7 +123,8 @@ public class PuntosCodigoTDVServiceImpl implements IPuntosCodigoTdvService {
 	@Override
 	public PuntosCodigoTdvDTO guardarPuntosCodigoTdv(PuntosCodigoTdvDTO puntosCodigoTdvDTO) {
 		PuntosCodigoTDV puntosCodigoTdvEntity = PuntosCodigoTdvDTO.CONVERTER_ENTITY.apply(puntosCodigoTdvDTO);
-		return PuntosCodigoTdvDTO.CONVERTER_DTO.apply(puntosCodigoTDVRepository.save(puntosCodigoTdvEntity));
+		var response = puntosCodigoTDVRepository.save(puntosCodigoTdvEntity);
+		return PuntosCodigoTdvDTO.CONVERTER_DTO.apply(response);
 	}
 
 	/**

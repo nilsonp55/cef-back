@@ -55,7 +55,7 @@ public class PuntosCostosController {
 	 * @return ResponseEntity<ApiResponseADE<PuntosCostosDTO>>
 	 * @author duvan.naranjo
 	 */
-	@PostMapping(value = "${endpoints.PuntosCostos.guardar}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, 
+	@PostMapping(value = "${endpoints.PuntosCostos.guardar}", consumes = MediaType.APPLICATION_JSON_VALUE, 
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<PuntosCostosDTO>> guardarPuntosCostos(@RequestBody PuntosCostosDTO puntosCostosDTO) {
 
