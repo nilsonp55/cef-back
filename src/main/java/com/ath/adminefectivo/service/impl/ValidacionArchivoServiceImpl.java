@@ -490,9 +490,11 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 			List<String[]> contenido) {
 		List<ValidacionLineasDTO> listadoValidacionLineasDTO = new ArrayList<>();
 		for (int i = 0; i < contenido.size(); i++) {
-			var validacionArchivoDTO = obtenerCampos(contenido.get(i), i);
-			this.obtenerTipoRegistro(maestroDefinicion, validacionArchivoDTO);
-			listadoValidacionLineasDTO.add(validacionArchivoDTO);
+			if (!Objects.isNull(contenido.get(i)) && contenido.get(i).length != 0 ) {
+				var validacionArchivoDTO = obtenerCampos(contenido.get(i), i);
+				this.obtenerTipoRegistro(maestroDefinicion, validacionArchivoDTO);
+				listadoValidacionLineasDTO.add(validacionArchivoDTO);
+			}
 		}
 		return listadoValidacionLineasDTO;
 	}
@@ -693,7 +695,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 	 */
 	private void obtenerTipoRegistro(MaestrosDefinicionArchivoDTO maestroDefinicion,
 			ValidacionLineasDTO validacionLineasDTO) {
-		System.out.println("validacionLineasDTO.getContenido().get(maestroDefinicion.getCampoMultiformato())" +validacionLineasDTO.getContenido().get(maestroDefinicion.getCampoMultiformato()));
+		
 		if (maestroDefinicion.isMultiformato()) {
 			try {
 				Integer tipo = Integer

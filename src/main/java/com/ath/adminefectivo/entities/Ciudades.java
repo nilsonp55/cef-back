@@ -32,4 +32,7 @@ public class Ciudades {
 	@Column(name = "NOMBRE_CIUDAD")
 	private String nombreCiudad;
 	
+	@Column(name = "NOMBRE_CIUDAD_FISERV")
+	private String nombreCiudadFiserv;
+	
 }
