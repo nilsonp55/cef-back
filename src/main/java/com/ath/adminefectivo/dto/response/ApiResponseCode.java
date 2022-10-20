@@ -571,7 +571,19 @@ public enum ApiResponseCode {
 	/**
 	 * Ocurrió un error al consultar la conciliacion de la operacion que se encuantra conciliada
 	 */
-	ERROR_OPERACIONES_CONCILIADA_SIN_SERVICIOS("E908", "No se encuentra la operacion programada en conciliación servicios. ",
+	ERROR_OPERACIONES_CONCILIADA_SIN_SERVICIOS("E952", "No se encuentra la operacion programada en conciliación servicios. ",
+			HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Ocurrió un error al consultar la table de fondos
+	 */
+	ERROR_FONDOS_NO_ENCONTRADO_TDV_AVAL("E953", "Ocurrió un error al consultar la tabla de fondos, no existe un fondo para la transportadora y el banco aval. ",
+			HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Ocurrió un error al consultar la table de fondos
+	 */
+	ERROR_LIQUIDACION_DIA_MES_NO_ENCONTRADA("E954", "Ocurrió un error al consultar la tabla parametros liquidacion costos, no existen registros para el mes y año enviado. ",
 			HttpStatus.PRECONDITION_FAILED);
 	
 	/**

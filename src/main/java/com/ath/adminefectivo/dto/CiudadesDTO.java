@@ -25,6 +25,8 @@ public class CiudadesDTO {
 	
 	private String nombreCiudad;
 	
+	private String nombreCiudadFiserv;
+	
 	/**
 	 * Función encargada de recibir un DTO y retornar un objeto con los mismos datos
 	 */

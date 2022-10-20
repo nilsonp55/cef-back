@@ -149,7 +149,7 @@ public class OperacionesProgramadas {
 	@OneToMany(mappedBy = "operacionesProgramadas")
 	private List<ConciliacionServicios> conciliacionServicios;
 
-	@OneToMany(mappedBy = "operacionesProgramadas", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "operacionesProgramadas", cascade = CascadeType.PERSIST)
 	private List<DetalleOperacionesProgramadas> detalleOperacionesProgramadas;
 	
 	@Column(name = "COMISION_BR")

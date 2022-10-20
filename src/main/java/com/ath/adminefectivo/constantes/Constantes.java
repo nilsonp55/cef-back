@@ -43,7 +43,7 @@ public final class Constantes {
 	public static final Integer HORA_TIPO_SERVICIO_PROGRAMADA = 18;
 	public static final String NUMERO_MINIMO_ARCHIVOS_PARA_CIERRE = "NUMERO_MINIMO_ARCHIVOS";
 	public static final Integer NUMERO_ARCHIVOS_CARGADOS_PRELIMINAR = 1;
-	public static final Integer NUMERO_ARCHIVOS_CARGADOS_DEFINITIVA = 2;
+	public static final Integer NUMERO_ARCHIVOS_CARGADOS_DEFINITIVA = 1;
 	public static final String FECHA_DIA_PROCESO = "FECHA_DIA_PROCESO";
 
 
@@ -561,6 +561,38 @@ public final class Constantes {
 	 */
 	public static final String CAMPO_DETALLE_ARCHIVO_CODIGOPUNTO_TIPO_5 = "CODIGOPUNTO";
 	
+public static final String DELETE_SEPARADORES = "";
+	
+	/**
+	 * Nombre de archivos generados xls 
+	 */
+	public static final String CTB_BBOG_Manana = "CTB_BBOG_Manana";
+	public static final String CTB_BBOG_Tarde = "CTB_BBOG_Tarde";
+	public static final String CTB_BOCC_Manana = "CTB_BOCC_Manana";
+	public static final String CTB_BOCC_Tarde = "CTB_BOCC_Tarde";
+	public static final String CTB_BPOP_Manana = "CTB_BPOP_Manana";
+	public static final String CTB_BPOP_Tarde = "CTB_BPOP_Tarde";
+	public static final String CTB_BAVV_Manana = "CTB_BAVV_Manana";
+	public static final String CTB_BAVV_Tarde = "CTB_BAVV_Tarde";
+	
+	public static final String EXTENSION_ARCHIVO_XLS = ".xls";
+	
+	/**
+	 * URL en la cual se almacenaran los archivos generados de contabilidad
+	 */
+	public static final String URL_ARCHIVOS_CONTABLES_S3 = "CEfectivo/Contabilidad/";
+	
+	/**
+	 * Separador del tipo de mes año en el proceso de liquidacion 
+	 * de la clasificacion de costos
+	 */
+	public static final String SEPARADOR_COSTOS_CLASIFICACION_MES_ANIO = "-";
+	
+	public static final String COMISION_APLICAR_CLASIFICACION_DETERIORADO = "CLASIFICACION DETERIORADO";
+	public static final String COMISION_APLICAR_CLASIFICACION_FAJADO = "CLASIFICACION FAJADO";
+	public static final String COMISION_APLICAR_CLASIFICACION_MONEDA = "CLASIFICACION MONEDA";
+	
+	
 	//////////////////////////////////////// MENSAJES ///////////////////////////////////////////
 	/**
 	 * Mensaje de campo requerido 
@@ -592,24 +624,11 @@ public final class Constantes {
 	 */
 	public static final String MENSAJE_GENERO_OPERACIONES_PROGRAMADAS_CORRECTO = "Se han generado las operaciones programadas de forma correcta.";
 	
-	public static final String DELETE_SEPARADORES = "";
 	
 	/**
-	 * Nombre de archivos generados xls 
+	 * Se generaron las clasificacion de costos de forma exitosa.
 	 */
-	public static final String CTB_BBOG_Manana = "CTB_BBOG_Manana";
-	public static final String CTB_BBOG_Tarde = "CTB_BBOG_Tarde";
-	public static final String CTB_BOCC_Manana = "CTB_BOCC_Manana";
-	public static final String CTB_BOCC_Tarde = "CTB_BOCC_Tarde";
-	public static final String CTB_BPOP_Manana = "CTB_BPOP_Manana";
-	public static final String CTB_BPOP_Tarde = "CTB_BPOP_Tarde";
-	public static final String CTB_BAVV_Manana = "CTB_BAVV_Manana";
-	public static final String CTB_BAVV_Tarde = "CTB_BAVV_Tarde";
+	public static final String MENSAJE_GENERO_CLASIFICACION_COSTOS_CORRECTO = "Se ha generado la clasificación de costos de forma correcta.";
+	public static final String MENSAJE_GENERO_CLASIFICACION_COSTOS_ERRONEO = "No se ha generó ninguna clasificación de costos.";
 	
-	public static final String EXTENSION_ARCHIVO_XLS = ".xls";
-	
-	/**
-	 * URL en la cual se almacenaran los archivos generados de contabilidad
-	 */
-	public static final String URL_ARCHIVOS_CONTABLES_S3 = "CEfectivo/Contabilidad/";
 }

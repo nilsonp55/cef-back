@@ -26,6 +26,8 @@ public class CostosMensualesClasificacionDTO {
 	
 	private String nombreBanco;
 	
+	private String codigoTdv;
+	
 	private int cantidadEstimadaFajos;
 	
 	private int cantidadAsignadaFajos;

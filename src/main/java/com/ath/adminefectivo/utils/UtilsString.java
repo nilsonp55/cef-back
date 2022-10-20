@@ -223,4 +223,29 @@ public class UtilsString {
 		calendar.add(Calendar.DAY_OF_YEAR, dias);
 		return calendar.getTime();
 	}
+	
+	/**     
+	 * Retorna valor Date si la cadena de texto corresponde a una fecha con horas, 
+	 * y minutos recibe una lista de formatos de fecha validos.  Si no cumple el formato     
+	 * retorna nulo    
+	 *       
+	 * @param str    
+	 * @param listFormato     
+	 * @return boolean     
+	 * @author rparra     
+	 */    
+	public static Date ToDateWithHours(String str, List<String> listFormato) {
+        String[] strArray;
+        if (listFormato.isEmpty()) {
+            strArray = new String[] { Constantes.FECHA_HORA_PATTERN_DD_MM_YYYY_HH_MM_SS };
+        } else {
+            strArray = new String[listFormato.size()];
+            strArray = listFormato.toArray(strArray);
+        }
+        try {
+        	return DateUtils.parseDate(str, strArray);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

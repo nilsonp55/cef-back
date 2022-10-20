@@ -40,6 +40,7 @@ import com.ath.adminefectivo.entities.Fondos;
 import com.ath.adminefectivo.entities.OperacionesProgramadas;
 import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.exception.NegocioException;
+import com.ath.adminefectivo.repositories.ICiudadesRepository;
 import com.ath.adminefectivo.repositories.IOperacionesProgramadasRepository;
 import com.ath.adminefectivo.service.IArchivosCargadosService;
 import com.ath.adminefectivo.service.IBancosService;
@@ -131,6 +132,9 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	
 	@Autowired
 	ILogProcesoDiarioService logProcesoDiarioService;
+	
+	@Autowired
+	ICiudadesRepository ciudadesRepository;
 
 	private OperacionesProgramadasDTO operaciones;
 	private List<OperacionesProgramadas> operacionesp;
@@ -357,6 +361,21 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 			listadoOperacionesProgramadasDTO.add(OperacionesProgramadasDTO.CONVERTER_DTO.apply(operacion));
 		});;
 		return listadoOperacionesProgramadasDTO;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String reabrirCierrePorAgrupador(String agrupador) {
+		if(agrupador.equals(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_CERTIFICACION)) {
+			return operacionesProgramadasRepository.reabrir_certificaciones();
+		}else if(agrupador.equals(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_DEFINITIVO)) {
+			return operacionesProgramadasRepository.reabrir_definitiva();
+		}else if(agrupador.equals(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_PRELIMINARES)) {
+			return operacionesProgramadasRepository.reabrir_preliminar();
+		}
+		return "Agrupador no existente. ";
 	}
 
 	/**
@@ -1383,14 +1402,17 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 										Constantes.CAMPO_DETALLE_ARCHIVO_TRANSPORTADORA);
 				String ciudad = determinarCiudad(contenido, detalleArchivo, 
 										Constantes.CAMPO_DETALLE_ARCHIVO_CIUDAD);
-				System.out.println("/// transportadora "+ transportadora + "determinarCodigoCompensacion(contenido, detalleArchivo) "+determinarCodigoCompensacion(contenido, detalleArchivo)+" ciudad "+ciudad);
+				System.out.println("ciudad "+ciudad);
+				ciudad = ciudadesRepository.findByNombreCiudadFiserv(ciudad).getNombreCiudad();
+				int codigoCompensacion = determinarCodigoCompensacion(contenido, detalleArchivo);
+				System.out.println("/// transportadora "+ transportadora + "determinarCodigoCompensacion(contenido, detalleArchivo) "+codigoCompensacion+" ciudad "+ciudad);
 				
-				Fondos codigoFondoTDV = fondosService.getCodigoFondo(transportadora, determinarCodigoCompensacion(contenido, detalleArchivo), ciudad);
+				Fondos codigoFondoTDV = fondosService.getCodigoFondo(transportadora, codigoCompensacion, ciudad);
 				if(!Objects.isNull(codigoFondoTDV)) {
 					operaciones.setCodigoFondoTDV(codigoFondoTDV.getCodigoPunto());
 				}else {
 					throw new NegocioException(ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getCode(),
-							ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getDescription(),
+							ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getDescription() + "transportadora = "+transportadora+ " codigoCompensacion = "+codigoCompensacion+" ciudad = "+ciudad,
 							ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getHttpStatus());
 				}
 				
@@ -1616,6 +1638,17 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		}
 		return fecha;
 	}
+	/**
+     * Metodo encargado de asignar la fecha
+     * @param fila
+     * @return Date
+     * @author cesar.castano
+     */
+	private Date asignarFechaHora(String contenido) {
+		List<String> listadoFechas = dominioService.consultaListValoresPorDominio(Constantes.DOMINIO_FORMATO_FECHA_HORA);
+		return UtilsString.ToDateWithHours(contenido, listadoFechas);
+		
+	}
 
 	/**
      * Metodo encargado de asignar el estado de la oepracion
@@ -1749,7 +1782,8 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	private String asignarTipoServicio(String fila) {
 		Date fecha = null;
 		var tipoServicio = "";
-		fecha = asignarFecha(fila);
+		fecha = asignarFechaHora(fila);
+		System.out.println("FECHA "+fecha+ " - FILA = "+fila);
 		Date fechaDiaAnterior = this.sumarRestarDiasFecha(fecha, -1);
 		if (Integer.parseInt(fechaDiaAnterior.toString().
 					substring(12, 13)) <= Constantes.HORA_TIPO_SERVICIO_PROGRAMADA) {
@@ -1802,6 +1836,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		String nombreBanco = determinarNombreBanco(contenido, detalleArchivo);
 		String ciudad = determinarCiudad(contenido, detalleArchivo, 
 								Constantes.CAMPO_DETALLE_ARCHIVO_CIUDAD);
+		ciudad = ciudadesRepository.findByNombreCiudadFiserv(ciudad).getNombreCiudad();
 		operaciones.setCodigoFondoTDV(fondosService.getCodigoFondo(
 											transportadora, 
 											dominioService.valorTextoDominio(Constantes.DOMINIO_TIPOS_PUNTO, 
@@ -2056,4 +2091,6 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		            .equals(Constantes.CAMPO_DETALLE_ARCHIVO_VALOR))
 					.findFirst().orElse(null).getId().getNumeroCampo() - 1].trim();
 	}
+
+
 }

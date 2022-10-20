@@ -117,4 +117,14 @@ public interface IOperacionesProgramadasService {
 	 */
 	List<OperacionesProgramadasDTO> obtenerOperacionesProgramadasConErroresContables(String tipoContabilidad);
 
+	/**
+	 * Servicio encargado de ejecutar un procedimiento para reabrir el cierre
+	 * segun el agrupador recibido 
+	 * 
+	 * @param agrupador
+	 * @return String
+	 * @author duvan.naranjo
+	 */
+	String reabrirCierrePorAgrupador(String agrupador);
+
 }

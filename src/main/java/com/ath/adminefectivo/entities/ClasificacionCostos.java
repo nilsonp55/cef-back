@@ -3,10 +3,19 @@ package com.ath.adminefectivo.entities;
 import java.util.Date;
 
 import javax.persistence.Column;
+import javax.persistence.ColumnResult;
+import javax.persistence.ConstructorResult;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQuery;
+import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
+
+import com.ath.adminefectivo.dto.compuestos.EstimadoClasificacionCostosDTO;
+import com.ath.adminefectivo.dto.compuestos.OperacionIntradiaDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,10 +23,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Entidad encargada de manejar la logica de la tabla Saldos Fondos
+ * Entidad encargada de manejar la logica de la tabla ClasificacionCostos
  * @author duvan.naranjo
  *
  */
+
 @Entity
 @Table(name = "COSTOS_CLASIFICACION")
 @Data
@@ -29,6 +39,7 @@ public class ClasificacionCostos {
 
 	@Id
 	@Column(name= "id_costos_clasificacion")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int idCostosClasificacion;
 	
 	@Column(name= "banco_aval")

@@ -1,5 +1,6 @@
 package com.ath.adminefectivo.service;
 
+import java.util.Date;
 import java.util.List;
 
 import com.ath.adminefectivo.dto.TarifasOperacionDTO;
@@ -54,6 +55,19 @@ public interface ITarifasOperacionService {
 	 * @author duvan.naranjo
 	 */
 	boolean eliminarTarifasOperacion(Integer idTarifaOperacion);
+
+	/**
+	 * Metodo encargado de consultar las tarifas de las operaciones 
+	 * de clasificacion de costos 
+	 * 
+	 * @param codigoBanco
+	 * @param codigoTdv
+	 * @param fechaSistema
+	 * @return List<TarifasOperacionDTO>
+	 * @author duvan.naranjo
+	 */
+	List<TarifasOperacionDTO> getTarifasOperacionByCodigoBancoAndCodigoTdv(int codigoBanco, String codigoTdv,
+			Date fechaSistema);
 
 	
 

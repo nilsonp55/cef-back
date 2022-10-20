@@ -30,7 +30,7 @@ public class OperacionesProgramadasController {
 	 * Metodo encargado de realizar la generación de operaciones programadas para el
 	 * proceso de programación preliminar
 	 * 
-	 * @return ResponseEntity<ApiResponseADE<List<BancosDTO>>>
+	 * @return ResponseEntity<ApiResponseADE<String>>
 	 * @author duvan.naranjo
 	 */
 	@GetMapping(value = "${endpoints.OperacionesProgramadas.procesar}")
@@ -40,6 +40,24 @@ public class OperacionesProgramadasController {
 		
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(resultadoOperacionProgramadas,
+						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+								.description(ApiResponseCode.SUCCESS.getDescription()).build()));
+	}
+	
+	/**
+	 * Metodo encargado de realizar la reapertura de los cierres
+	 * (Cierre Definitivo, Cierre Preliminar, Cierre Certificaciones)
+	 *  
+	 * @return ResponseEntity<ApiResponseADE<List<String>>>
+	 * @author duvan.naranjo
+	 */
+	@GetMapping(value = "${endpoints.OperacionesProgramadas.reabrir}")
+	public ResponseEntity<ApiResponseADE<String>> reabrirCierrePorAgrupador(
+									@RequestParam("agrupador") String agrupador) {
+		var resultadoProcedimientoReabrir = operacionesProgramadasDelegate.reabrirCierrePorAgrupador(agrupador);
+		
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ApiResponseADE<>(resultadoProcedimientoReabrir,
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 								.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}

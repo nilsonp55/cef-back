@@ -1,5 +1,7 @@
 package com.ath.adminefectivo.repositories;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
@@ -27,7 +29,9 @@ public interface IFondosRepository extends JpaRepository<Fondos, Integer>, Query
 	 * @return Fondos
 	 * @author cesar.castano
 	 */
-	Fondos findByTdv(String tdv);
+	List<Fondos> findByTdvAndBancoAVAL(String tdv, int bancoAval);
+	
+	
 	
 	/**
 	 * Retorna el objeto Fondos con base en la transportadora, codigo compensacion y codigo ciudad
