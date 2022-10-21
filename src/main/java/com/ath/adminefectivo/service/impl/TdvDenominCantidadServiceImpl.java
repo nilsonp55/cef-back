@@ -12,6 +12,7 @@ import com.ath.adminefectivo.dto.TdvDenominCantidadDTO;
 
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.TdvDenominCantidad;
+import com.ath.adminefectivo.exception.ConflictException;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.ITdvDenominCantidadRepository;
 import com.ath.adminefectivo.service.ITdvDenominCantidadService;
@@ -55,8 +56,15 @@ public class TdvDenominCantidadServiceImpl implements ITdvDenominCantidadService
 	 */
 	@Override
 	public TdvDenominCantidadDTO guardarTdvDenominCantidad(TdvDenominCantidadDTO tdvDenominCantidadDTO) {
-		TdvDenominCantidad tdvDenominCantidadEntity = TdvDenominCantidadDTO.CONVERTER_ENTITY.apply(tdvDenominCantidadDTO);
-		return TdvDenominCantidadDTO.CONVERTER_DTO.apply(tdvDenominCantidadRepository.save(tdvDenominCantidadEntity));
+		if (tdvDenominCantidadDTO.getIdTdvDenCant() != null && tdvDenominCantidadRepository
+				.existsById(tdvDenominCantidadDTO.getIdTdvDenCant())) {		
+			throw new ConflictException(ApiResponseCode.ERROR_DENOMINACION_CANTIDAD_EXIST.getDescription());		
+		}
+		
+		TdvDenominCantidad tdvDenominCantidadEntity = TdvDenominCantidadDTO.CONVERTER_ENTITY.
+				apply(tdvDenominCantidadDTO);
+		return TdvDenominCantidadDTO.CONVERTER_DTO.apply(tdvDenominCantidadRepository.
+				save(tdvDenominCantidadEntity));
 	}
 
 	/**
@@ -64,15 +72,23 @@ public class TdvDenominCantidadServiceImpl implements ITdvDenominCantidadService
 	 */
 	@Override
 	public TdvDenominCantidadDTO actualizarTdvDenominCantidad(TdvDenominCantidadDTO tdvDenominCantidadDTO) {
-		return this.guardarTdvDenominCantidad(tdvDenominCantidadDTO);
-	}
+		if (tdvDenominCantidadDTO.getIdTdvDenCant() == null && !tdvDenominCantidadRepository
+				.existsById(tdvDenominCantidadDTO.getIdTdvDenCant())) {		
+			throw new ConflictException(ApiResponseCode.ERROR_DENOMINACION_CANTIDAD_NO_EXIST.getDescription());		
+		}
+
+		TdvDenominCantidad tdvDenominCantidadEntity = TdvDenominCantidadDTO.CONVERTER_ENTITY.
+				apply(tdvDenominCantidadDTO);
+		return TdvDenominCantidadDTO.CONVERTER_DTO.apply(tdvDenominCantidadRepository.
+				save(tdvDenominCantidadEntity));	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public boolean eliminarTdvDenominCantidad(Integer idTdvDenominCantidad) {
-		TdvDenominCantidad tdvDenominCantidadEntity = tdvDenominCantidadRepository.findById(idTdvDenominCantidad).get();
+		TdvDenominCantidad tdvDenominCantidadEntity = tdvDenominCantidadRepository.
+				findById(idTdvDenominCantidad).get();
 		
 		tdvDenominCantidadEntity.setEstado(Dominios.ESTADO_GENERAL_ELIMINADO);
 		TdvDenominCantidad tdvDenominCantidadActualizado = tdvDenominCantidadRepository.save(tdvDenominCantidadEntity);
