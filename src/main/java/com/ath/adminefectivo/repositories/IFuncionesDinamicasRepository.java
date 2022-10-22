@@ -35,6 +35,6 @@ public interface IFuncionesDinamicasRepository extends JpaRepository<FuncionesDi
 	 * @return
 	 */
 	@Procedure(name = "ejecutar_procedimiento")
-	List<String> ejecutar_procedimiento(@Param("nombreproc") int idFuncion,@Param("parametros") List<String> parametros);
+	List<String[]> ejecutar_procedimiento(@Param("idfuncion") int idFuncion,@Param("parametros") String parametros);
 
 }

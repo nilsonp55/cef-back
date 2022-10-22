@@ -3,6 +3,7 @@ package com.ath.adminefectivo.service.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -59,7 +60,17 @@ public class LecturaArchivoServiceImpl implements ILecturaArchivoService {
 		CSVParser parser = new CSVParserBuilder().withSeparator(delimitador.charAt(0)).withIgnoreQuotations(true).build();
 		
 		try (CSVReader csvReader = new CSVReaderBuilder(new InputStreamReader(archivo)).withCSVParser(parser).build()) {
-			return csvReader.readAll();
+			
+			List<String[]> resultadoSinValidar = csvReader.readAll();
+			List<String[]> resultadoValidado = new ArrayList<String[]>();
+			resultadoSinValidar.forEach(linea ->{
+				System.out.println("csvReader.readAll(); "+ linea.length);
+				if(linea.length > 2) {
+					resultadoValidado.add(linea);
+				}
+			});
+			
+			return resultadoValidado;
 		} catch (Exception e) {
 			throw new NegocioException(ApiResponseCode.ERROR_LECTURA_DOCUMENTO.getCode(),
 					ApiResponseCode.ERROR_LECTURA_DOCUMENTO.getDescription(),

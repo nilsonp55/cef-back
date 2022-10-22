@@ -698,6 +698,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 		
 		if (maestroDefinicion.isMultiformato()) {
 			try {
+				System.out.println("validacionLineasDTO.getContenido().get(maestroDefinicion.getCampoMultiformato()) "+validacionLineasDTO.getContenido().get(maestroDefinicion.getCampoMultiformato()));
 				Integer tipo = Integer
 						.valueOf(validacionLineasDTO.getContenido().get(maestroDefinicion.getCampoMultiformato()));
 				validacionLineasDTO.setTipo(tipo);

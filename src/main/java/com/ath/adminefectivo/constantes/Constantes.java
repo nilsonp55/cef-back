@@ -43,7 +43,7 @@ public final class Constantes {
 	public static final Integer HORA_TIPO_SERVICIO_PROGRAMADA = 18;
 	public static final String NUMERO_MINIMO_ARCHIVOS_PARA_CIERRE = "NUMERO_MINIMO_ARCHIVOS";
 	public static final Integer NUMERO_ARCHIVOS_CARGADOS_PRELIMINAR = 1;
-	public static final Integer NUMERO_ARCHIVOS_CARGADOS_DEFINITIVA = 1;
+	public static final Integer NUMERO_ARCHIVOS_CARGADOS_DEFINITIVA = 2;
 	public static final String FECHA_DIA_PROCESO = "FECHA_DIA_PROCESO";
 
 
@@ -560,6 +560,11 @@ public final class Constantes {
 	 * Constante para indicar el CODIGOPUNTO en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
 	 */
 	public static final String CAMPO_DETALLE_ARCHIVO_CODIGOPUNTO_TIPO_5 = "CODIGOPUNTO";
+	
+	/**
+	 * Constante para indicar el CODIGOPUNTO en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_NOMBREPUNTO_TIPO_5 = "NOMBREPUNTO";
 	
 public static final String DELETE_SEPARADORES = "";
 	
