@@ -20,11 +20,15 @@ public class SobrantesFaltantesDTO {
 
 	private String tipoAjuste;
 	
-	private String codigoServicio;
+	private String nombrePunto;
 	
 	private Double valor;
 	
 	private Date fecha;
 	
 	private boolean esBrinks;
+	
+	private int codigoBanco;
+	
+	private String tdv;
 }

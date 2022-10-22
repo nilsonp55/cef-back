@@ -36,7 +36,7 @@ public class FuncionesDinamicasServiceImpl implements IFuncionesDinamicasService
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<String> ejecutarFuncionDinamica(int idFuncion, List<String> parametros) {
+	public List<String[]> ejecutarFuncionDinamica(int idFuncion, String parametros) {
 		return funcionesDinamicasRepository.ejecutar_procedimiento(idFuncion, parametros);
 	}
 
