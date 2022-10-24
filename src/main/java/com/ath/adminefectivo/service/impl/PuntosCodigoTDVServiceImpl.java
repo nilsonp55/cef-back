@@ -77,9 +77,13 @@ public class PuntosCodigoTDVServiceImpl implements IPuntosCodigoTdvService {
                 if (puntosCodigoTDVList.size() > 1 ) {
                     System.out.println("Codigo Punto TDV se encuentra mas de una vez. "+codigoPuntoTdv.trim() +" - "+ codigoTdv);
                     return puntosService.getEntidadPunto(banco_aval).getCodigoPunto();
-                }       
-                else {
-                    return puntosCodigoTDVList.get(0).getCodigoPunto();
+                }                       else {
+                    if (puntosCodigoTDVList.size() == 1) {
+                        return puntosCodigoTDVList.get(0).getCodigoPunto();
+                    }
+                    else {
+                        return puntosService.getEntidadPunto(banco_aval).getCodigoPunto();
+                    }
                 }
             }
             else {

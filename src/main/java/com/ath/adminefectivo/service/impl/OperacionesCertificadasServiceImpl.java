@@ -768,7 +768,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	 */
 	private void actualizarValorSobranteNoBrinks(String nombrePunto, Double valor, Date fecha, String tdv,
 			int codigoBanco) {
-		Integer codigoPunto = puntosCodigoTdvService.getCodigoPunto(nombrePunto, tdv, codigoBanco, null);
+		Integer codigoPunto = puntosCodigoTdvService.getCodigoPunto(nombrePunto, tdv, codigoBanco, "100");
 
 		if (!Objects.isNull(codigoPunto)) {
 			List<OperacionesCertificadas> ocertificadas = operacionesCertificadasRepository
@@ -805,7 +805,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	 */
 	private void actualizarValorFaltanteNoBrinks(String nombrePunto, Double valor, Date fecha, String tdv,
 			int codigoBanco) {
-		Integer codigoPunto = puntosCodigoTdvService.getCodigoPunto(nombrePunto, tdv, codigoBanco, null);
+		Integer codigoPunto = puntosCodigoTdvService.getCodigoPunto(nombrePunto, tdv, codigoBanco, "100");
 		
 		if (!Objects.isNull(codigoPunto)) {
 			List<OperacionesCertificadas> ocertificadas = operacionesCertificadasRepository
