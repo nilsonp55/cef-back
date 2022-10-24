@@ -67,30 +67,31 @@ public class PuntosCodigoTDVServiceImpl implements IPuntosCodigoTdvService {
 	 */
 	@Override
 	public Integer getCodigoPunto(String codigoPuntoTdv, String codigoTdv, Integer banco_aval, String codigoDane) {
-		
-		BancosDTO bancoAval = bancoService.findBancoByCodigoPunto(banco_aval);
-		
-		
-		var puntosCodigoTDV = puntosCodigoTDVRepository.findByCodigoPropioTDVAndCodigoTDVAndBancosAndCiudadCodigo(
-				codigoPuntoTdv.trim(), codigoTdv, BancosDTO.CONVERTER_ENTITY.apply(bancoAval), codigoDane);
-				
-		if (Objects.isNull(puntosCodigoTDV)) {
-			List<PuntosCodigoTDV> puntosCodigoTDVList = puntosCodigoTDVRepository.findByCodigoPropioTDVAndCodigoTDVAndBancos(
-					codigoPuntoTdv.trim(), codigoTdv, BancosDTO.CONVERTER_ENTITY.apply(bancoAval));
-			if (puntosCodigoTDVList.size() > 1 || Objects.isNull(puntosCodigoTDV)) {
-				if(puntosCodigoTDVList.size() > 1) {
-					System.out.println("Codigo Punto TDV se encuentra más de una vez. "+codigoPuntoTdv.trim() +" - "+ codigoTdv);
-				}
-				
-				return puntosService.getEntidadPunto(banco_aval).getCodigoPunto();
-			}else {
-				return puntosCodigoTDVList.get(0).getCodigoPunto();
-			}
-		} 
-		
-		return puntosCodigoTDV.getCodigoPunto();
-		
-	}
+        BancosDTO bancoAval = bancoService.findBancoByCodigoPunto(banco_aval);
+        var puntosCodigoTDV = puntosCodigoTDVRepository.findByCodigoPropioTDVAndCodigoTDVAndBancosAndCiudadCodigo(
+                codigoPuntoTdv.trim(), codigoTdv, BancosDTO.CONVERTER_ENTITY.apply(bancoAval), codigoDane);
+        if (Objects.isNull(puntosCodigoTDV)) {
+            List<PuntosCodigoTDV> puntosCodigoTDVList = puntosCodigoTDVRepository.findByCodigoPropioTDVAndCodigoTDVAndBancos(
+                    codigoPuntoTdv.trim(), codigoTdv, BancosDTO.CONVERTER_ENTITY.apply(bancoAval));
+            if (!Objects.isNull(puntosCodigoTDVList) ) {
+                if (puntosCodigoTDVList.size() > 1 ) {
+                    System.out.println("Codigo Punto TDV se encuentra mas de una vez. "+codigoPuntoTdv.trim() +" - "+ codigoTdv);
+                    return puntosService.getEntidadPunto(banco_aval).getCodigoPunto();
+                }                       else {
+                    if (puntosCodigoTDVList.size() == 1) {
+                        return puntosCodigoTDVList.get(0).getCodigoPunto();
+                    }
+                    else {
+                        return puntosService.getEntidadPunto(banco_aval).getCodigoPunto();
+                    }
+                }
+            }
+            else {
+                return puntosService.getEntidadPunto(banco_aval).getCodigoPunto();
+            }
+        } 
+        return puntosCodigoTDV.getCodigoPunto();
+    }
 	
 	/**
 	 * {@inheritDoc}
