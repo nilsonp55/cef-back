@@ -581,10 +581,26 @@ public enum ApiResponseCode {
 			HttpStatus.PRECONDITION_FAILED),
 	
 	/**
+	* Ocurrió un error al consultar denominacion
+	*/
+	ERROR_DENOMINACION_CANTIDAD("E955", "Ocurrió un error al consultar la table de Denominacion cantidad.  ", HttpStatus.CONFLICT),
+	
+	/**
+	 * Error denominacion ya existentes
+	 */
+	ERROR_DENOMINACION_CANTIDAD_EXIST("E956", "Denominacion cantidad ya existente.  ", HttpStatus.CONFLICT),
+	
+	/**
+	 * Error denominacion no existentes
+	 */
+	ERROR_DENOMINACION_CANTIDAD_NO_EXIST("E957", "Denominacion cantidad no existente.  ", HttpStatus.CONFLICT),
+	
+	/**
 	 * Ocurrió un error al consultar la table de fondos
 	 */
 	ERROR_LIQUIDACION_DIA_MES_NO_ENCONTRADA("E954", "Ocurrió un error al consultar la tabla parametros liquidacion costos, no existen registros para el mes y año enviado. ",
 			HttpStatus.PRECONDITION_FAILED);
+	
 	
 	/**
 	 * Código asociado a la respuesta
