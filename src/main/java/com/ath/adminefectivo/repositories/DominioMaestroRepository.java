@@ -23,4 +23,5 @@ public interface DominioMaestroRepository extends JpaRepository<DominioMaestro, 
 	 * @author Bayron Andres Perez
 	 */
 	public List<DominioMaestro> findByEstado(String estado);
+	
 }

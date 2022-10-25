@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ath.adminefectivo.delegate.IDominioMaestroDelegate;
@@ -42,11 +43,19 @@ public class DominiosMaestroController {
 	 * @return ResponseEntity<ApiResponseADE<List<DominioMaestroDto>>>
 	 * @author Bayron Andres Perez Muñoz
 	 */
-	@GetMapping(value = "${endpoints.DominiosMaestro.obtener-todos}/{estado}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "${endpoints.DominiosMaestro.obtener-todos}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<List<DominioMaestroDto>>> obtenerDominiosMaestro(
-			@PathVariable("estado") String estado) {
+			@RequestParam("estado") String estado) {
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<List<DominioMaestroDto>>(dominioMaestroDelegate.obtenerDominiosMaestro(estado),
+						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+								.description(ApiResponseCode.SUCCESS.getDescription()).build()));
+	}
+
+	@GetMapping(value = "${endpoints.DominiosMaestro.obtener}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ApiResponseADE<List<DominioMaestroDto>>> obtenerTodosDominiosMaestro() {
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ApiResponseADE<List<DominioMaestroDto>>(dominioMaestroDelegate.obtenerTodosDominiosMaestro(),
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 								.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
@@ -74,8 +83,7 @@ public class DominiosMaestroController {
 	 * @return ResponseEntity<ApiResponseADE<Boolean>>
 	 * @author Bayron Andres Perez Muñoz
 	 */
-	@PostMapping(value = "${endpoints.DominiosMaestro.guardar}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, 
-			produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "${endpoints.DominiosMaestro.guardar}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<DominioMaestroDto>> persistirDominioMaestro(@RequestBody DominioMaestroDto dominioMaestroDto) {
 
 		return ResponseEntity.status(HttpStatus.OK)
@@ -91,12 +99,11 @@ public class DominiosMaestroController {
 	 * @return ResponseEntity<ApiResponseADE<Boolean>>
 	 * @author Bayron Andres Perez Muñoz
 	 */
-	@PutMapping(value = "${endpoints.DominiosMaestro.guardar}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, 
-			produces = MediaType.APPLICATION_JSON_VALUE)
+	@PutMapping(value = "${endpoints.DominiosMaestro.actualizar}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<DominioMaestroDto>> actualizarDominioMaestro(@RequestBody DominioMaestroDto dominioMaestroDto) {
 
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ApiResponseADE<DominioMaestroDto>(dominioMaestroDelegate.persistirDominioMaestro(dominioMaestroDto),
+				.body(new ApiResponseADE<DominioMaestroDto>(dominioMaestroDelegate.actualizarDominioMaestro(dominioMaestroDto),
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 								.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
