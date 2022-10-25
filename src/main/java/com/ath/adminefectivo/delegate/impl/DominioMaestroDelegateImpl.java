@@ -24,6 +24,11 @@ public class DominioMaestroDelegateImpl implements IDominioMaestroDelegate {
 		return dominioMaestroService.obtenerDominiosMaestro(estado);
 	}
 
+	@Override
+	public List<DominioMaestroDto> obtenerTodosDominiosMaestro() {
+		return dominioMaestroService.obtenerTodosDominiosMaestro();
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -55,5 +60,7 @@ public class DominioMaestroDelegateImpl implements IDominioMaestroDelegate {
 	public Boolean eliminarDominioMaestro(String id) {
 		return dominioMaestroService.eliminarDominioMaestro(id);
 	}
+
+
 
 }

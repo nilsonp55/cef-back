@@ -34,6 +34,17 @@ public class DominioMaestroServiceImpl implements IDominioMaestroService {
 				.apply(entity)));
 		return listDominioMaestroDto;
 	}
+	
+	@Override
+	public List<DominioMaestroDto> obtenerTodosDominiosMaestro() {
+		List<DominioMaestro> dominioMaestroResponse = dominioMaestroRepository.findAll();
+		List<DominioMaestroDto> listDominioMaestroDto = new ArrayList<>();
+		dominioMaestroResponse.forEach(entity -> listDominioMaestroDto.add(DominioMaestroDto.CONVERTER_DTO
+				.apply(entity)));
+		return listDominioMaestroDto;
+	}
+
+	
 
 	/**
 	 * {@inheritDoc}

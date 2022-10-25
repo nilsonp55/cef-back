@@ -59,7 +59,13 @@ public class DominioDTO {
 	 */
 	public static final Function<Dominio, DominioDTO> CONVERTER_DTO = (Dominio t) -> {
 		DominioDTO dominioDTO = new DominioDTO();
+		DominioPK dominioPK = new DominioPK();
+		dominioPK.setCodigo(t.getDominioPK().getCodigo());
+		dominioPK.setDominio(t.getDominioPK().getDominio());
 		UtilsObjects.copiarPropiedades(t, dominioDTO);
+		dominioDTO.setId(dominioPK);
 		return dominioDTO;
 	};
+
+
 }

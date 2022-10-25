@@ -3,6 +3,7 @@ package com.ath.adminefectivo.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -12,11 +13,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ath.adminefectivo.dto.DominioDTO;
 import com.ath.adminefectivo.dto.DominioMaestroDto;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
+import com.ath.adminefectivo.entities.Dominio;
 import com.ath.adminefectivo.service.impl.DominioServiceImpl;
+import com.querydsl.core.types.Predicate;
 
 /**
  * Controlador responsable de los unicos servicios de dominios que exiisten 
@@ -45,4 +49,18 @@ public class DominioFuncionalController {
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 								.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
+
+
+	//getDominios
+	@GetMapping(value = "${endpoints.DominioFuncional.consultarXDominio}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ApiResponseADE<List<DominioDTO>>> getDominios(
+			@QuerydslPredicate(root = Dominio.class) Predicate predicate) {
+
+		var consulta1 = dominioServiceImpl.getDominios(predicate);
+
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ApiResponseADE<>(consulta1, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
+	}
+
 }
