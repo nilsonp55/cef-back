@@ -616,9 +616,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 			bancoDestino = this.consultarPuntoPorDetalle(contenido, detalleArchivo,
 					Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_DESTINO);
 		}
-//		BancosDTO bancoDestino = this.consultarBancoPorDetalle(contenido, detalleArchivo,
-//				Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_DESTINO);
-		
+
 
 		if (!Objects.isNull(puntoFondoOrigen)
 				&& !puntoFondoOrigen.getTipoPunto().toUpperCase().trim().equals(Constantes.PUNTO_FONDO)) {
@@ -794,12 +792,15 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 				}else {
 					operacionesProgramadasIntercambio1 = this.generarOperacionIntercambioSalida(contenido,
 							detallesArchivo, archivo, false);
+					operacionesProgramadasRepository
+							.save(OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(operacionesProgramadasIntercambio1));
 				}
 			}else {
 				//SI EL BANCO DESTINO ES AVAL Y EL ORIGEN NO ES AVAL
 				operacionesProgramadasIntercambio1 = this
 						.generarOperacionIntercambioEntrada(contenido, detallesArchivo, archivo, false);
-				
+				operacionesProgramadasRepository
+						.save(OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(operacionesProgramadasIntercambio1));
 			}
 		}
 
@@ -837,7 +838,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
 		operacionesProgramadasRepository
 				.save(OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(operacionesProgramadasTraslado1));
-
+		
 		return operacionesProgramadasTraslado1;
 	}
 
@@ -860,9 +861,6 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
 		PuntosDTO puntoFondoDestino = this.consultarPuntoPorDetalle(contenido, detallesArchivo,
 				Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO);
-
-		BancosDTO bancoOrigen = this.consultarBancoPorDetalle(contenido, detallesArchivo,
-				Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_ORIGEN);
 
 		if (!Objects.isNull(puntoFondoOrigen)
 				&& !puntoFondoOrigen.getTipoPunto().toUpperCase().trim().equals(Constantes.PUNTO_FONDO)) {
@@ -899,22 +897,16 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 			List<DetallesDefinicionArchivoDTO> detallesArchivo, ArchivosCargadosDTO archivo) {
 
 		OperacionesProgramadasDTO operacionesProgramadasDTO = null;
+		PuntosDTO puntoFondoOrigen = this.consultarPuntoPorDetalle(contenido, detallesArchivo,
+				Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN);
+
 		PuntosDTO puntoFondoDestino = this.consultarPuntoPorDetalle(contenido, detallesArchivo,
 				Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO);
 
-		BancosDTO bancoOrigen = this.consultarBancoPorDetalle(contenido, detallesArchivo,
-				Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_ORIGEN);
-
-		if (!Objects.isNull(puntoFondoDestino)
-				&& !puntoFondoDestino.getTipoPunto().toUpperCase().trim().equals(Constantes.PUNTO_FONDO)) {
-			throw new AplicationException(ApiResponseCode.ERROR_NO_ES_FONDO.getCode(),
-					ApiResponseCode.ERROR_NO_ES_FONDO.getDescription(),
-					ApiResponseCode.ERROR_NO_ES_FONDO.getHttpStatus());
-		}
-
 		operacionesProgramadasDTO = OperacionesProgramadasDTO.builder()
 				.codigoFondoTDV(puntoFondoDestino.getCodigoPunto()).entradaSalida(Constantes.VALOR_ENTRADA)
-				.codigoPuntoOrigen(puntoFondoDestino.getCodigoPunto()).codigoPuntoDestino(bancoOrigen.getCodigoPunto())
+				.codigoPuntoOrigen(puntoFondoDestino.getCodigoPunto())
+				.codigoPuntoDestino(puntoFondoOrigen.getCodigoPunto())
 				.idArchivoCargado(Math.toIntExact(archivo.getIdArchivo())).build();
 
 		OperacionesProgramadas traslado = operacionesProgramadasRepository
@@ -1197,11 +1189,10 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	 */
 	private PuntosDTO consultarPuntoPorDetalle(String[] contenido, List<DetallesDefinicionArchivoDTO> detallesArchivo,
 			String nombreCampo) {
-		System.out.println("CONTENIDO "+ contenido+ " nombreCampo "+nombreCampo);
+	
 		DetallesDefinicionArchivoDTO detalle = detallesArchivo.stream()
 				.filter(deta -> deta.getNombreCampo().toUpperCase().equals(nombreCampo)).findFirst().orElse(null);
 		if (!Objects.isNull(detalle)) {
-			System.out.println("contenido[detalle.getId().getNumeroCampo() - 1].trim() "+contenido[detalle.getId().getNumeroCampo() - 1].trim());
 			return puntosService.getPuntoByNombrePunto(contenido[detalle.getId().getNumeroCampo() - 1].trim());
 		}
 		return null;

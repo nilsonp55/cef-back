@@ -7,6 +7,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.dto.ConciliacionDTO;
 import com.ath.adminefectivo.dto.FechasConciliacionDTO;
 import com.ath.adminefectivo.dto.ParametrosConciliacionDTO;
@@ -17,6 +18,7 @@ import com.ath.adminefectivo.service.IConciliacionServiciosService;
 import com.ath.adminefectivo.service.IDominioService;
 import com.ath.adminefectivo.service.IOperacionesCertificadasService;
 import com.ath.adminefectivo.service.IOperacionesProgramadasService;
+import com.ath.adminefectivo.service.IParametroService;
 
 @Service
 public class ConciliacionServiciosServiceImpl implements IConciliacionServiciosService {
@@ -32,6 +34,9 @@ public class ConciliacionServiciosServiceImpl implements IConciliacionServiciosS
 
 	@Autowired
 	IOperacionesCertificadasService operacionesCertificadasService;
+	
+	@Autowired
+	IParametroService parametroService;
 	
 	/**
 	 * {@inheritDoc}
@@ -60,8 +65,9 @@ public class ConciliacionServiciosServiceImpl implements IConciliacionServiciosS
 	@Override
 	public Boolean crearRegistroConciliacion(ParametrosConciliacionDTO elemento) {
 		try {
+			Date fechaSistema = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
 			var conciliacion = new ConciliacionDTO();
-			conciliacion.setFechaConciliacion(new Date());
+			conciliacion.setFechaConciliacion(fechaSistema);
 			conciliacion.setFechaModificacion(new Date());
 			conciliacion.setIdCertificacion(elemento.getIdCertificacion());
 			conciliacion.setIdOperacion(elemento.getIdOperacion());
