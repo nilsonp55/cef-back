@@ -441,14 +441,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		} else if (archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IPPSV)
 				&& tipoServicio.toUpperCase().trim().contains(Dominios.TIPO_OPERA_VENTA)) {
 			operacionProgramada = this.generarOperacionVenta(contenido, detalleArchivo, archivo);
-		} else if (archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IPPSV)
-				&& tipoServicio.toUpperCase().trim().startsWith(Dominios.TIPO_OPERA_CAMBIO)) {
-			operacionProgramada = this.generarOperacionCambio(contenido, detalleArchivo, archivo);
-		} else if (archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IPPSV)
-				&& tipoServicio.toUpperCase().trim().contains(Dominios.TIPO_OPERA_INTERCAMBIO)) {
-			operacionProgramada = this.generarOperacionIntercambio(contenido, detalleArchivo, archivo);
-		
-		} else if (archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_ISTRC)
+		}  else if (archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_ISTRC)
 				&& tipoServicio.toUpperCase().trim().contains(Dominios.TIPO_OPERA_INTERCAMBIO)) {
 			operacionProgramada = this.generarOperacionIntercambio(contenido, detalleArchivo, archivo);
 		} else if (archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_ISTRC)
@@ -457,11 +450,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		} else if (archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_ISTRC)
 				&& tipoServicio.toUpperCase().trim().startsWith(Dominios.TIPO_OPERA_CAMBIO)) {
 			operacionProgramada = this.generarOperacionCambio(contenido, detalleArchivo, archivo);
-		} else if (archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_ISTRC)
-				&& tipoServicio.toUpperCase().trim().contains(Dominios.TIPO_OPERA_VENTA)) {
-			operacionProgramada = this.generarOperacionVenta(contenido, detalleArchivo, archivo);
-			
-		} else if (archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_ISRPO)){
+		}  else if (archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_ISRPO)){
 			operacionProgramada = this.procesarArchivoOficinas(contenido, detalleArchivo, archivo);
 		} else if (archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_ISRPC)) {
 			operacionProgramada = this.procesarArchivoCajeros(contenido, detalleArchivo, archivo);
@@ -905,8 +894,8 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
 		operacionesProgramadasDTO = OperacionesProgramadasDTO.builder()
 				.codigoFondoTDV(puntoFondoDestino.getCodigoPunto()).entradaSalida(Constantes.VALOR_ENTRADA)
-				.codigoPuntoOrigen(puntoFondoDestino.getCodigoPunto())
-				.codigoPuntoDestino(puntoFondoOrigen.getCodigoPunto())
+				.codigoPuntoOrigen(puntoFondoOrigen.getCodigoPunto())
+				.codigoPuntoDestino(puntoFondoDestino.getCodigoPunto())
 				.idArchivoCargado(Math.toIntExact(archivo.getIdArchivo())).build();
 
 		OperacionesProgramadas traslado = operacionesProgramadasRepository

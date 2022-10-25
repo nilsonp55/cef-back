@@ -303,6 +303,9 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 				Constantes.CAMPO_DETALLE_ARCHIVO_CODIGOPUNTO);
 		String tipoServicio = determinarCampo(fila, detalleArchivo, tipoRegistro,
 				Constantes.CAMPO_DETALLE_ARCHIVO_TIPOSERVICIOF);
+		if(Objects.isNull(codigoServicio) || codigoServicio.isEmpty()) {
+			codigoServicio = "SIN_CODIGO_SERVICIO";
+		}
 		procesarOperacionTransporte(fila, registro, elemento, codigoServicio, entradaSalida.toUpperCase(), codigoPunto,
 				tipoServicio);
 	}
