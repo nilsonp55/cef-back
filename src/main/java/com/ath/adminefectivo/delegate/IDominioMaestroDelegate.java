@@ -17,6 +17,8 @@ public interface IDominioMaestroDelegate {
 	 * @author Bayron Andres Perez Muñoz
 	 */
 	List<DominioMaestroDto> obtenerDominiosMaestro(@RequestParam("estado") String estado);
+
+	List<DominioMaestroDto> obtenerTodosDominiosMaestro();
 	
 	/**
 	 * Retorna un dominio segun su identificador unico
