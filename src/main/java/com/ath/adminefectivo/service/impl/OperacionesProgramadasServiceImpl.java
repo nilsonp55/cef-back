@@ -994,13 +994,14 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 			codigoPuntoDestino = puntoFondoOrigen.getCodigoPunto();
 		}else {
 			puntoFondoOrigen = puntoFondoDestino;
-			codigoPuntoOrigen = puntoFondoDestino.getCodigoPunto();
+			codigoPuntoDestino = puntoFondoDestino.getCodigoPunto();
+			
 			
 			
 			PuntosDTO puntoEntidadOrigen = this.consultarPuntoPorDetalle(contenido, detallesArchivo,
 					Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_ORIGEN);
 			if(!Objects.isNull(puntoEntidadOrigen)) {
-				codigoPuntoDestino = puntoEntidadOrigen.getCodigoPunto();
+				codigoPuntoOrigen = puntoEntidadOrigen.getCodigoPunto();
 				
 			}else {
 				throw new NegocioException(ApiResponseCode.ERROR_BANCO_EXTERNO_NO_ENCONTRADO.getCode(),
