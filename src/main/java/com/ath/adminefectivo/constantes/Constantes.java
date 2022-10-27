@@ -479,7 +479,7 @@ public final class Constantes {
 	/**
 	 * Constante para indicar el FECHAEMISION en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
 	 */
-	public static final String CAMPO_DETALLE_ARCHIVO_FECHAEJECUCION = "FECHAEMISION";
+	public static final String CAMPO_DETALLE_ARCHIVO_FECHAEJECUCION = "FECHAOPERACION";
 
 	/**
 	 * Constante para indicar el CODIGOSERVICIO en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)

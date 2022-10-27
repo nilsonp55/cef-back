@@ -30,7 +30,7 @@ public interface IFuncionesDinamicasService {
 	 * @return List<String>
 	 * @author duvan.naranjo
 	 */
-	List<String[]> ejecutarFuncionDinamica(int idFuncion, String parametros);
+	List<String> ejecutarFuncionDinamica(int idFuncion, String parametros);
 
 
 
