@@ -92,7 +92,6 @@ public class ClasificacionCostosServiceImpl implements IClasificacionCostosServi
 				listadoClasificacionCostos.forEach(dato ->{
 					clasificacionCostosRepository.delete(dato);
 				});
-				System.out.println(bancosAval.size());
 				bancosAval.forEach(bancoAval -> {
 					ClasificacionCostos clasificacionCosto = new ClasificacionCostos();
 					clasificacionCosto.setMesAnio(mesAnio);
@@ -145,8 +144,7 @@ public class ClasificacionCostosServiceImpl implements IClasificacionCostosServi
 		int anioI = Integer.parseInt(mesAnioA[1]);
 		Integer fajosEstimados = 0;
 		Integer bolsasEstimados = 0;
-		
-		System.out.println("mesI = "+mesI + " anioI = "+anioI);
+
 		EstimadoClasificacionCostosDTO estimadoBanco = parametrosLiquidacionCostosService.consultaEstimadosCostos(transportadora,clasificacionCosto.getBancoAval(), mesI, anioI);
 		if(!Objects.isNull(estimadoBanco)) {
 			fajosEstimados = Math.toIntExact(estimadoBanco.getEstimadaFajos());
