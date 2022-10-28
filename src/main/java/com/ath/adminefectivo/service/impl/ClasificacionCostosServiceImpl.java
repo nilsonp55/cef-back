@@ -66,11 +66,13 @@ public class ClasificacionCostosServiceImpl implements IClasificacionCostosServi
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<CostosMensualesClasificacionDTO> getClasificacionMensualCostos(String transportadora, String mesAnio) {
+	public List<CostosMensualesClasificacionDTO> getClasificacionMensualCostos(String transportadora) {
 		
 		List<CostosMensualesClasificacionDTO> costosMensualesClasificacion = new ArrayList();
-		
 		Date fechaSistema = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
+		String fechaSistemaS = parametroService.valorParametro(Constantes.FECHA_DIA_PROCESO);
+		String[] diaMesAnio = fechaSistemaS.split("/");
+		String mesAnio = diaMesAnio[1]+"-"+diaMesAnio[2];
 		List<ClasificacionCostos> listadoClasificacionCostos = clasificacionCostosRepository.findByTransportadoraAndMesAnio(transportadora, mesAnio);
 		List<BancosDTO> bancosAval = bancosService.getBancosPorAval(true);
 		if(!Objects.isNull(listadoClasificacionCostos) && listadoClasificacionCostos.size()>3) {

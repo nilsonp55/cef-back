@@ -3,10 +3,12 @@ package com.ath.adminefectivo.repositories;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
 
+import com.ath.adminefectivo.dto.compuestos.ResultadoFuncionDinamicaDTO;
 import com.ath.adminefectivo.entities.FuncionesDinamicas;
 
 /**
@@ -34,7 +36,7 @@ public interface IFuncionesDinamicasRepository extends JpaRepository<FuncionesDi
 	 * @param parametros
 	 * @return
 	 */
-	@Procedure(name = "ejecutar_procedimiento")
-	List<String[]> ejecutar_procedimiento(@Param("idfuncion") int idFuncion,@Param("parametros") String parametros);
+	@Query(nativeQuery = true)
+	List<ResultadoFuncionDinamicaDTO> ejecutar_procedimiento(@Param("idfuncion") int idfuncion,@Param("parametros") String parametros);
 
 }

@@ -62,9 +62,9 @@ public class FuncionesDinamicasController {
 	 */
 	@PostMapping(value = "${endpoints.FuncionesDinamicas.ejecutar}", consumes = MediaType.APPLICATION_JSON_VALUE, 
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponseADE<List<String[]>>> ejecutarFuncionDinamica(@RequestBody RequestFuncionesDinamicasDTO requestFuncionesDinamicasDTO) {
+	public ResponseEntity<ApiResponseADE<List<String>>> ejecutarFuncionDinamica(@RequestBody RequestFuncionesDinamicasDTO requestFuncionesDinamicasDTO) {
 		
-		List<String[]> consulta = funcionesDinamicasDelegate.ejecutarFuncionDinamica(requestFuncionesDinamicasDTO.getIdFuncion(), requestFuncionesDinamicasDTO.getParametros());
+		List<String> consulta = funcionesDinamicasDelegate.ejecutarFuncionDinamica(requestFuncionesDinamicasDTO.getIdFuncion(), requestFuncionesDinamicasDTO.getParametros());
 		
 		return ResponseEntity.status(HttpStatus.OK)	
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())

@@ -5,15 +5,22 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ColumnResult;
+import javax.persistence.ConstructorResult;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import com.ath.adminefectivo.dto.compuestos.ResultadoErroresContablesDTO;
+import com.ath.adminefectivo.dto.compuestos.ResultadoFuncionDinamicaDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,6 +32,11 @@ import lombok.NoArgsConstructor;
  * @author duvan.naranjo
  *
  */
+@NamedNativeQuery(name = "FuncionesDinamicas.ejecutar_procedimiento", 
+query = "SELECT * from ejecutar_procedimiento(:idfuncion, :parametros)", 
+resultSetMapping = "Mapping.ResultadoFuncionDinamicaDTO")
+@SqlResultSetMapping(name = "Mapping.ResultadoFuncionDinamicaDTO", classes = @ConstructorResult(targetClass = ResultadoFuncionDinamicaDTO.class, columns = {
+		@ColumnResult(name = "id_funcion"),	@ColumnResult(name = "consecutivo"),	@ColumnResult(name = "resultado") }))
 @Entity
 @Table(name = "FUNCIONES_DINAMICAS")
 @Data

@@ -16,10 +16,9 @@ public class ClasificacionCostosDelegateImpl implements IClasificacionCostosDele
 	IClasificacionCostosService clasificacionCostosService;
 
 	@Override
-	public List<CostosMensualesClasificacionDTO> getClasificacionMensualCostos(String transportadora,
-			String mesAnio) {
+	public List<CostosMensualesClasificacionDTO> getClasificacionMensualCostos(String transportadora) {
 		
-		return clasificacionCostosService.getClasificacionMensualCostos(transportadora, mesAnio);
+		return clasificacionCostosService.getClasificacionMensualCostos(transportadora);
 	}
 
 	@Override

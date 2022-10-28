@@ -44,9 +44,8 @@ public class ClasificacionCostosController {
 	 * @author duvan.naranjo
 	 */
 	@GetMapping(value = "${endpoints.ClasificacionMensual.consultar}")
-	public ResponseEntity<ApiResponseADE<List<CostosMensualesClasificacionDTO>>> getClasificacionMensualPorBanco(@RequestParam("transportadora") String transportadora, 
-			@RequestParam("mesAnio") String mesAnio) {
-		List<CostosMensualesClasificacionDTO> consulta = clasificacionCostosDelegate.getClasificacionMensualCostos(transportadora, mesAnio);
+	public ResponseEntity<ApiResponseADE<List<CostosMensualesClasificacionDTO>>> getClasificacionMensualPorBanco(@RequestParam("transportadora") String transportadora) {
+		List<CostosMensualesClasificacionDTO> consulta = clasificacionCostosDelegate.getClasificacionMensualCostos(transportadora);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
@@ -58,7 +57,7 @@ public class ClasificacionCostosController {
 	 * @return ResponseEntity<ApiResponseADE<List<CostosMensualesClasificacionDTO>>>
 	 * @author duvan.naranjo
 	 */
-	@GetMapping(value = "${endpoints.ClasificacionMensual.liquidar}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, 
+	@PostMapping(value = "${endpoints.ClasificacionMensual.liquidar}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, 
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<List<CostosMensualesClasificacionDTO>>> liquidarClasificacionCostos(@RequestBody List<CostosMensualesClasificacionDTO> listadoCostosMensuales) {
 

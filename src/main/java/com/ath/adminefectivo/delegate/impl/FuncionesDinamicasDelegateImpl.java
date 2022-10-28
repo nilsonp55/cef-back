@@ -27,7 +27,7 @@ public class FuncionesDinamicasDelegateImpl implements IFuncionesDinamicasDelega
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<String[]> ejecutarFuncionDinamica(int idFuncion, String parametros) {
+	public List<String> ejecutarFuncionDinamica(int idFuncion, String parametros) {
 		return funcionesDinamicasService.ejecutarFuncionDinamica(idFuncion, parametros);
 	}
 	
