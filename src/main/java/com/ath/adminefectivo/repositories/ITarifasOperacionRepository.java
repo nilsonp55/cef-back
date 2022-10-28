@@ -20,7 +20,7 @@ public interface ITarifasOperacionRepository extends JpaRepository<TarifasOperac
 	@Query(value ="SELECT x.* FROM ctrefc.public.tarifas_operacion x "
 			+ "WHERE 	x.fajado IS NULL AND "
 			+ "		x.comision_aplicar IN ('CLASIFICACION DETERIORADO','CLASIFICACION FAJADO','CLASIFICACION MONEDA') AND "
-			+ "		codigo_banco ?1 AND "
+			+ "		codigo_banco = ?1 AND "
 			+ "		codigo_tdv = ?2",nativeQuery=true)
 	List<TarifasOperacion> findByBancoAndTransportadoraAndComisionAndFajado(int codigoBanco, String codigoTdv);
 

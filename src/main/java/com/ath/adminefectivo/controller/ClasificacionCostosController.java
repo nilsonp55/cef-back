@@ -57,7 +57,7 @@ public class ClasificacionCostosController {
 	 * @return ResponseEntity<ApiResponseADE<List<CostosMensualesClasificacionDTO>>>
 	 * @author duvan.naranjo
 	 */
-	@PostMapping(value = "${endpoints.ClasificacionMensual.liquidar}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, 
+	@PostMapping(value = "${endpoints.ClasificacionMensual.liquidar}", consumes = MediaType.APPLICATION_JSON_VALUE, 
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<List<CostosMensualesClasificacionDTO>>> liquidarClasificacionCostos(@RequestBody List<CostosMensualesClasificacionDTO> listadoCostosMensuales) {
 
@@ -77,7 +77,7 @@ public class ClasificacionCostosController {
 	 * @return ResponseEntity<ApiResponseADE<String>>
 	 * @author duvan.naranjo
 	 */
-	@PostMapping(value = "${endpoints.ClasificacionMensual.guardar}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, 
+	@PostMapping(value = "${endpoints.ClasificacionMensual.guardar}", consumes = MediaType.APPLICATION_JSON_VALUE, 
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<String>> guardarClasificacionCostosMensuales(@RequestBody List<CostosMensualesClasificacionDTO> listadoCostosMensuales) {
 
