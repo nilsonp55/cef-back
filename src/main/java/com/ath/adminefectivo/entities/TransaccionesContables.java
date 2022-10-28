@@ -71,7 +71,7 @@ resultSetMapping = "Mapping.RespuestaContableDTO")
 		@ColumnResult(name = "bancoAval"), @ColumnResult(name = "nombreBancoAval"), @ColumnResult(name = "abreviaturaBancoAval"),
 		@ColumnResult(name = "naturalezaContable"),	@ColumnResult(name = "cuentaMayor"),	
 		@ColumnResult(name = "subAuxiliar"),	@ColumnResult(name = "tipoIdentificacion"),	@ColumnResult(name = "codigoMoneda"),
-		@ColumnResult(name = "valor"),	@ColumnResult(name = "centroCosto"),@ColumnResult(name = "centroBeneficio"),	
+		@ColumnResult(name = "valor", type = Long.class),	@ColumnResult(name = "centroCosto"),@ColumnResult(name = "centroBeneficio"),	
 		@ColumnResult(name = "ordenCo"),	@ColumnResult(name = "areaFuncional"),	@ColumnResult(name = "identificador"),	
 		@ColumnResult(name = "descripcionTransaccion"),	@ColumnResult(name = "terceroGL"),	@ColumnResult(name = "nombreTerceroGL"),	
 		@ColumnResult(name = "fechaConversion"),	@ColumnResult(name = "claveReferencia1"),	@ColumnResult(name = "claveReferencia2") }))
