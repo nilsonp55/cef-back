@@ -17,7 +17,7 @@ public interface IClasificacionCostosDelegate {
 	 * @param mesAnio
 	 * @return
 	 */
-	List<CostosMensualesClasificacionDTO> getClasificacionMensualCostos(String transportadora, String mesAnio);
+	List<CostosMensualesClasificacionDTO> getClasificacionMensualCostos(String transportadora);
 
 	/**
 	 * 

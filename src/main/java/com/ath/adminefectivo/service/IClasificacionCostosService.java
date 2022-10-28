@@ -19,7 +19,7 @@ public interface IClasificacionCostosService {
 	 * @return List<CostosMensualesClasificacionDTO>
 	 * @author duvan.naranjo
 	 */
-	List<CostosMensualesClasificacionDTO> getClasificacionMensualCostos(String transportadora, String mesAnio);
+	List<CostosMensualesClasificacionDTO> getClasificacionMensualCostos(String transportadora);
 
 	/**
 	 * Metodo encargado de generar la liquidacion de costos mensual
