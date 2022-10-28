@@ -30,7 +30,7 @@ public class RespuestaContableDTO {
 	
 	private String codigoMoneda;
 	
-	private Integer valor;
+	private Long valor;
 	
 	private String centroCosto;
 	
