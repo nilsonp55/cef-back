@@ -96,6 +96,7 @@ public class TarifasOperacionServiceImpl implements ITarifasOperacionService {
 	@Override
 	public List<TarifasOperacionDTO> getTarifasOperacionByCodigoBancoAndCodigoTdv(int codigoBanco, String codigoTdv,
 			Date fechaSistema) {
+		System.out.println("codigoBanco = "+codigoBanco+" codigoTdv = "+codigoTdv);
 		List<TarifasOperacion> tarifasOperacionEntity = tarifasOperacionRepository.findByBancoAndTransportadoraAndComisionAndFajado(codigoBanco, codigoTdv);
 		List<TarifasOperacionDTO> tarifasOperacionDTO = new ArrayList<>();
 		tarifasOperacionEntity.forEach(tarifaEntity -> {
