@@ -115,6 +115,7 @@ public final class Dominios {
 	public static final String AGRUPADOR_DEFINICION_ARCHIVOS_CERTIFICACION = "CERTI";
 	public static final String AGRUPADOR_DEFINICION_ARCHIVOS_PRELIMINARES = "IPP";
 	public static final String AGRUPADOR_DEFINICION_ARCHIVOS_DEFINITIVO = "DEFIN";
+	public static final String AGRUPADOR_DEFINICION_ARCHIVOS_CONCILIACION = "CONCI";
 	
 	/**
 	 * Dominios estados de los procesos del dia

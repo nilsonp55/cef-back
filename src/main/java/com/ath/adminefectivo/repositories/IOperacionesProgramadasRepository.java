@@ -236,6 +236,14 @@ public interface IOperacionesProgramadasRepository
 	@Procedure(name = "reabrir_preliminar")
 	public String reabrir_preliminar();
 	
+	/**
+	 * Procedimiento encargado de ejecutar la repaertura del cierre preliminar
+	 * @return String
+	 * @author duvan.naranjo
+	 */
+	@Procedure(name = "reabrir_conciliaciones")
+	public String reabrir_conciliaciones();
+	
 //	List<intradiaPruebaDTO> consultarOperacionesIntradiaSalida(@Param("fechaInicio") Date fechaInicio, @Param("fechaFin") Date fechaFin, @Param("entradaSalida") String entradaSalida, @Param("tipoOperacion") String tipoOperacion);
 	
 

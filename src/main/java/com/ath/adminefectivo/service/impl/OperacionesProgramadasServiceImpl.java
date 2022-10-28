@@ -374,6 +374,8 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 			return operacionesProgramadasRepository.reabrir_definitiva();
 		}else if(agrupador.equals(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_PRELIMINARES)) {
 			return operacionesProgramadasRepository.reabrir_preliminar();
+		}else if(agrupador.equals(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_CONCILIACION)) {
+			return operacionesProgramadasRepository.reabrir_conciliaciones();
 		}
 		return "Agrupador no existente. ";
 	}
