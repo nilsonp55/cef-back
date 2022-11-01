@@ -3,6 +3,7 @@ package com.ath.adminefectivo.repositories;
 import java.util.Date;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
 /**
@@ -28,5 +29,14 @@ public interface IConciliacionOperacionesRepository
 	 * @author cesar.castano
 	 */
 	Integer countByFechaConciliacionBetween(Date fechaInicial, Date fechaFinal);
+
+	/**
+	 * Metodo encargado de ejecutar la validacion para cierre de conciliacion
+	 * 
+	 * @return String
+	 * @author rafael.parra
+	 */
+	@Procedure(name = "validarcierreconciliacion")
+	String validarcierreconciliacion();
 	
 }

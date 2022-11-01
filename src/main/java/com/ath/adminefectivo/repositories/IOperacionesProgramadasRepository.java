@@ -114,7 +114,7 @@ public interface IOperacionesProgramadasRepository
 	 * @return List<OperacionesProgramadas>
 	 * @author duvan.naranjo
 	 */
-	List<OperacionesProgramadas> findByTipoOperacionAndFechaProgramacionBetweenAndEsCambio(String tipoOperacion, Date start, Date end, boolean esCambio);
+	List<OperacionesProgramadas> findByTipoOperacionAndFechaOrigenBetweenAndEsCambio(String tipoOperacion, Date start, Date end, boolean esCambio);
 
 	/**
 	 * Retorna una lista de operaciones programadas por tipo operacion, fechas y si es cambio o no, ademas valida 
@@ -126,7 +126,7 @@ public interface IOperacionesProgramadasRepository
 	 * @return List<OperacionesProgramadas>
 	 * @author duvan.naranjo
 	 */
-	List<OperacionesProgramadas> findByTipoOperacionAndFechaProgramacionBetweenAndEsCambioAndEstadoConciliacion(String tipoOperacion, Date start, Date end, boolean esCambio, String estadoConciliacion );
+	List<OperacionesProgramadas> findByTipoOperacionAndFechaOrigenBetweenAndEsCambioAndEstadoConciliacion(String tipoOperacion, Date start, Date end, boolean esCambio, String estadoConciliacion );
 
 	
 	/**

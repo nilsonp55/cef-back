@@ -126,9 +126,7 @@ public class OperacionesProgramadasDTO {
 		operacionesProgramadas.setValorTotal(t.getValorTotal());
 
 		if(!Objects.isNull(t.getDetalleOperacionesProgramadasDTO())) {
-			
 			List<DetalleOperacionesProgramadas> listDetalleOperaciones = new ArrayList<>();
-			
 			t.getDetalleOperacionesProgramadasDTO().forEach(detalle -> {
 				DetalleOperacionesProgramadas detalleEntidad = 
 					DetalleOperacionesDTO.CONVERTER_ENTITY.apply(detalle);
@@ -147,7 +145,12 @@ public class OperacionesProgramadasDTO {
 
 		var operacionesProgramadasDTO = new OperacionesProgramadasDTO();
 		UtilsObjects.copiarPropiedades(t, operacionesProgramadasDTO);		
-
+		if(!Objects.isNull(t.getDetalleOperacionesProgramadas())){
+			List<DetalleOperacionesDTO> detalleOperacionDTO = new ArrayList();
+			t.getDetalleOperacionesProgramadas().forEach(detalle ->{
+				detalleOperacionDTO.add(DetalleOperacionesDTO.CONVERTER_DTO.apply(detalle));
+			});
+		}
 		return operacionesProgramadasDTO;
 	};
 
