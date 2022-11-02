@@ -122,7 +122,7 @@ public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService{
 				return valoresLiquidadosDTO;
 			} catch (Exception e) {
 				throw new NegocioException(ApiResponseCode.ERROR_PROCESO_CONSTO_VALORES_LIQUIDADOS.getCode(),
-						ApiResponseCode.ERROR_PROCESO_CONSTO_VALORES_LIQUIDADOS.getDescription(),
+						ApiResponseCode.ERROR_PROCESO_CONSTO_VALORES_LIQUIDADOS.getDescription()+ "  "+e,
 						ApiResponseCode.ERROR_PROCESO_CONSTO_VALORES_LIQUIDADOS.getHttpStatus());
 			}
 		}
