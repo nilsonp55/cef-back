@@ -36,11 +36,13 @@ import com.ath.adminefectivo.dto.compuestos.DetalleOperacionesDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionIntradiaDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionesProgramadasNombresDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
+import com.ath.adminefectivo.entities.DetalleOperacionesProgramadas;
 import com.ath.adminefectivo.entities.Fondos;
 import com.ath.adminefectivo.entities.OperacionesProgramadas;
 import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.ICiudadesRepository;
+import com.ath.adminefectivo.repositories.IDetalleOperacionesProgramadasRepository;
 import com.ath.adminefectivo.repositories.IOperacionesProgramadasRepository;
 import com.ath.adminefectivo.service.IArchivosCargadosService;
 import com.ath.adminefectivo.service.IBancosService;
@@ -99,6 +101,10 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
 	@Autowired
 	IDetalleDefinicionArchivoService detalleDefinicionArchivoService;
+	
+
+	@Autowired
+	IDetalleOperacionesProgramadasRepository detalleOperacionesProgramadasRepository;
 
 	@Autowired
 	IMaestroDefinicionArchivoService maestroDefinicionArchivoService;
@@ -292,36 +298,36 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	public List<OperacionesProgramadasDTO> getOperacionesProgramadasPorFechas(String tipoContabilidad, Date fechaInicio, Date fechaFin) {
 		List<OperacionesProgramadas> listaOperacionesProgramadas = new ArrayList<>();
 		if(tipoContabilidad.equals("PM")) {
-			listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaProgramacionBetweenAndEsCambio(Dominios.TIPO_OPERA_CONSIGNACION, fechaInicio,
+			listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaOrigenBetweenAndEsCambio(Dominios.TIPO_OPERA_CONSIGNACION, fechaInicio,
 					fechaFin, false));
-			listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaProgramacionBetweenAndEsCambio(Dominios.TIPO_OPERA_RETIRO, fechaInicio,
+			listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaOrigenBetweenAndEsCambio(Dominios.TIPO_OPERA_RETIRO, fechaInicio,
 					fechaFin, false));
-			listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaProgramacionBetweenAndEsCambio(Dominios.TIPO_OPERA_VENTA, fechaInicio,
+			listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaOrigenBetweenAndEsCambio(Dominios.TIPO_OPERA_VENTA, fechaInicio,
 					fechaFin, false));
 		}else if(tipoContabilidad.equals("AM")) {
 			Date fechaProceso = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
 			LogProcesoDiarioDTO logProcesoDiarioDTO = logProcesoDiarioService.obtenerEntidadLogProcesoDiarioByCodigoAndFecha(Dominios.CODIGO_PROCESO_LOG_CONCILIACION, fechaProceso);
 			if(!Objects.isNull(logProcesoDiarioDTO) && logProcesoDiarioDTO.getEstadoProceso().equals(Dominios.ESTADO_PROCESO_DIA_COMPLETO)){
 				//CONFORMAN UN CAMBIO (RETIRO Y CONSIGNACION ESCAMBIO=TRUE) conciliada
-				listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaProgramacionBetweenAndEsCambioAndEstadoConciliacion(Dominios.TIPO_OPERA_CONSIGNACION, fechaInicio,
+				listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaOrigenBetweenAndEsCambioAndEstadoConciliacion(Dominios.TIPO_OPERA_CONSIGNACION, fechaInicio,
 						fechaFin, true, Dominios.ESTADO_CONCILIACION_CONCILIADO));
-				listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaProgramacionBetweenAndEsCambioAndEstadoConciliacion(Dominios.TIPO_OPERA_RETIRO, fechaInicio,
+				listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaOrigenBetweenAndEsCambioAndEstadoConciliacion(Dominios.TIPO_OPERA_RETIRO, fechaInicio,
 						fechaFin, true, Dominios.ESTADO_CONCILIACION_CONCILIADO));
 				
 				//CONFORMAN UN CAMBIO (RETIRO Y CONSIGNACION ESCAMBIO=TRUE) pospuesta
-				listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaProgramacionBetweenAndEsCambioAndEstadoConciliacion(Dominios.TIPO_OPERA_CONSIGNACION, fechaInicio,
+				listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaOrigenBetweenAndEsCambioAndEstadoConciliacion(Dominios.TIPO_OPERA_CONSIGNACION, fechaInicio,
 						fechaFin, true, Dominios.ESTADO_CONCILIACION_POSPUESTA));
-				listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaProgramacionBetweenAndEsCambioAndEstadoConciliacion(Dominios.TIPO_OPERA_RETIRO, fechaInicio,
+				listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaOrigenBetweenAndEsCambioAndEstadoConciliacion(Dominios.TIPO_OPERA_RETIRO, fechaInicio,
 						fechaFin, true, Dominios.ESTADO_CONCILIACION_POSPUESTA));
 				
-				listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaProgramacionBetweenAndEsCambioAndEstadoConciliacion(Dominios.TIPO_OPERA_TRASLADO, fechaInicio,
+				listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaOrigenBetweenAndEsCambioAndEstadoConciliacion(Dominios.TIPO_OPERA_TRASLADO, fechaInicio,
 						fechaFin, false, Dominios.ESTADO_CONCILIACION_CONCILIADO));
-				listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaProgramacionBetweenAndEsCambioAndEstadoConciliacion(Dominios.TIPO_OPERA_TRASLADO, fechaInicio,
+				listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaOrigenBetweenAndEsCambioAndEstadoConciliacion(Dominios.TIPO_OPERA_TRASLADO, fechaInicio,
 						fechaFin, false, Dominios.ESTADO_CONCILIACION_POSPUESTA));
 				
-				listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaProgramacionBetweenAndEsCambioAndEstadoConciliacion(Dominios.TIPO_OPERA_INTERCAMBIO, fechaInicio,
+				listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaOrigenBetweenAndEsCambioAndEstadoConciliacion(Dominios.TIPO_OPERA_INTERCAMBIO, fechaInicio,
 						fechaFin, false, Dominios.ESTADO_CONCILIACION_CONCILIADO));
-				listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaProgramacionBetweenAndEsCambioAndEstadoConciliacion(Dominios.TIPO_OPERA_INTERCAMBIO, fechaInicio,
+				listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaOrigenBetweenAndEsCambioAndEstadoConciliacion(Dominios.TIPO_OPERA_INTERCAMBIO, fechaInicio,
 						fechaFin, false, Dominios.ESTADO_CONCILIACION_POSPUESTA));
 			}else {
 				throw new NegocioException(ApiResponseCode.ERROR_LOGPROCESODIARIO_NO_ENCONTRADO.getCode(),
@@ -374,6 +380,8 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 			return operacionesProgramadasRepository.reabrir_definitiva();
 		}else if(agrupador.equals(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_PRELIMINARES)) {
 			return operacionesProgramadasRepository.reabrir_preliminar();
+		}else if(agrupador.equals(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_CONCILIACION)) {
+			return operacionesProgramadasRepository.reabrir_conciliaciones();
 		}
 		return "Agrupador no existente. ";
 	}
@@ -410,7 +418,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 							registroCargado.getContenido().split(delimitador), listadoDetalleArchivo, archivo)));
 			
 			if(archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_ISRPO)) {
-				actualizarValorTotalOficinas(archivo.getIdArchivo().intValue());
+				//actualizarValorTotalOficinas(archivo.getIdArchivo().intValue());
 			}
 		}
 		return listadoOperacionesProgramadas;
@@ -1424,10 +1432,18 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 				operaciones.setUsuarioModificacion("User1");
 				operaciones.setValorTotal(asignarValorTotal(shipIn, shipOut));
 				operaciones.setIdServicio(orderId);
+				operaciones.setEsCambio(false);
 				operaciones = crearDetalleOperacionesProgramadas(contenido, idOperacion, detalleArchivo);
+				OperacionesProgramadas op =  OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(operaciones);
+				
+				
 				var operacionesP = operacionesProgramadasRepository.save(
 						OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(operaciones));
 				idOperacion = operacionesP.getIdOperacion();
+				op.getDetalleOperacionesProgramadas().forEach(detalle -> {
+					detalle.setOperacionesProgramadas(operacionesP);
+					detalleOperacionesProgramadasRepository.save(detalle);
+			});
 				operacionesP.getDetalleOperacionesProgramadas().forEach(operacion ->{
 					operacion.setOperacionesProgramadas(operacionesP);
 				});
@@ -1435,9 +1451,21 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		}else {
 			if (Long.parseLong(shipIn) + Long.parseLong(shipOut) != 0){
 				operaciones = OperacionesProgramadasDTO.CONVERTER_DTO.apply(operacionesProg);
+				operaciones.setValorTotal(operaciones.getValorTotal() + asignarValorTotal(shipIn, shipOut));
+                idOperacion = operacionesProg.getIdOperacion();
 				operaciones = crearDetalleOperacionesProgramadas(contenido, idOperacion, detalleArchivo);
-				var operacionesP = operacionesProgramadasRepository.save(
-						OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(operaciones));
+				
+				OperacionesProgramadas op =  OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(operaciones);
+				
+				op.getDetalleOperacionesProgramadas().forEach(detalle -> {
+						detalle.setOperacionesProgramadas(op);
+						detalleOperacionesProgramadasRepository.save(detalle);
+				});
+				System.out.println("PASO ");
+//				operaciones.getDetalleOperacionesProgramadasDTO().forEach(detalleDTO -> {
+//					reposit
+//				})
+				var operacionesP = operacionesProgramadasRepository.save(op);
 				operacionesP.getDetalleOperacionesProgramadas().forEach(operacion ->{
 					operacion.setOperacionesProgramadas(operacionesP);
 				});
@@ -1708,7 +1736,6 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	private OperacionesProgramadasDTO crearDetalleOperacionesProgramadas(String[] contenido, 
 			Integer idOperacion, List<DetallesDefinicionArchivoDTO> detalleArchivo) {
 		
-		List<DetalleOperacionesDTO> listDetalleOperaciones = new ArrayList<>();
 		String shipIn = determinarShipIn(contenido, detalleArchivo);
 		String shipOut = determinarShipOut(contenido, detalleArchivo);
 		String[] fila1 = contenido[detalleArchivo.stream()
@@ -1716,7 +1743,6 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		            .equals(Constantes.CAMPO_DETALLE_ARCHIVO_DENOMINACION))
 					.findFirst().orElse(null).getId().getNumeroCampo() - 1].trim().split(" - ");
 		var detalleOperacionesDTO = new DetalleOperacionesDTO();
-		detalleOperacionesDTO.setIdOperacion(idOperacion);
 		if (fila1.length > 1) {
 			detalleOperacionesDTO.setFamilia(fila1[1].trim());
 		} else {
@@ -1729,9 +1755,14 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		detalleOperacionesDTO.setFechaModificacion(new Date());
 		detalleOperacionesDTO.setUsuarioCreacion("User ATH");
 		detalleOperacionesDTO.setUsuarioModificacion("User ATH");
-		listDetalleOperaciones.add(detalleOperacionesDTO);
-		operaciones.setDetalleOperacionesProgramadasDTO(listDetalleOperaciones);
-				
+		
+//		DetalleOperacionesProgramadas detalle = detalleOperacionesProgramadasRepository.save(DetalleOperacionesDTO.CONVERTER_ENTITY.apply(detalleOperacionesDTO));
+//		detalleOperacionesDTO.setIdDetalleOperacion(detalle.getIdDetalleOperacion());
+		if(Objects.isNull(operaciones.getDetalleOperacionesProgramadasDTO())) {
+			operaciones.setDetalleOperacionesProgramadasDTO(new ArrayList<>());
+		}
+		
+		operaciones.getDetalleOperacionesProgramadasDTO().add(detalleOperacionesDTO);		
 		
 		
 		

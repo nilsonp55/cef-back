@@ -235,7 +235,6 @@ public class PuntosServiceImpl implements IPuntosService {
 	 * {@inheritDoc}
 	 */
 	public Puntos getPuntoById(Integer idPunto) {
-		System.out.println("getPuntoById " + idPunto);
 		try {
 			return puntosRepository.findById(idPunto).get();
 		} catch (Exception e) {
@@ -254,9 +253,6 @@ public class PuntosServiceImpl implements IPuntosService {
 		var puntosOpt = puntosRepository.findByCodigoPuntoAndTipoPunto(codigoPunto, tipoPunto);
 		if (Objects.isNull(puntosOpt)) {
 			return false;
-//			throw new AplicationException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
-//					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription(),
-//					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
 		} 
 		return true;
 	}

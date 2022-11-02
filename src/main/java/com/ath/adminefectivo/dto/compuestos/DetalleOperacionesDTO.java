@@ -2,10 +2,17 @@ package com.ath.adminefectivo.dto.compuestos;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 
+import com.ath.adminefectivo.dto.BancosDTO;
+import com.ath.adminefectivo.dto.CiudadesDTO;
+import com.ath.adminefectivo.dto.EscalasDTO;
+import com.ath.adminefectivo.dto.OperacionesProgramadasDTO;
+import com.ath.adminefectivo.dto.TransportadorasDTO;
 import com.ath.adminefectivo.entities.ConciliacionServicios;
 import com.ath.adminefectivo.entities.DetalleOperacionesProgramadas;
+import com.ath.adminefectivo.entities.Escalas;
 import com.ath.adminefectivo.utils.UtilsObjects;
 
 import lombok.AllArgsConstructor;
@@ -27,7 +34,9 @@ import lombok.Setter;
 @NoArgsConstructor
 public class DetalleOperacionesDTO {
 
-	private Integer idOperacion;
+	private Integer idDetalleOperacion;
+	
+	private OperacionesProgramadasDTO operacionProgramada;
 	
 	private String denominacion;
 	
@@ -56,5 +65,15 @@ public class DetalleOperacionesDTO {
 		UtilsObjects.copiarPropiedades(t, detalle);		
 
 		return detalle;
+	};
+	
+	/**
+	 * Función encargada de recibir un DTO y retornar un objeto con los mismos datos
+	 */
+	public static final Function<DetalleOperacionesProgramadas, DetalleOperacionesDTO> CONVERTER_DTO = (DetalleOperacionesProgramadas t) -> {
+		DetalleOperacionesDTO detalleOperacionesDTO = new DetalleOperacionesDTO();
+		UtilsObjects.copiarPropiedades(t, detalleOperacionesDTO);
+
+		return detalleOperacionesDTO;
 	};
 }

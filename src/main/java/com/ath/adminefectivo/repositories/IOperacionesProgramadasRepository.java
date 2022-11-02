@@ -114,7 +114,7 @@ public interface IOperacionesProgramadasRepository
 	 * @return List<OperacionesProgramadas>
 	 * @author duvan.naranjo
 	 */
-	List<OperacionesProgramadas> findByTipoOperacionAndFechaProgramacionBetweenAndEsCambio(String tipoOperacion, Date start, Date end, boolean esCambio);
+	List<OperacionesProgramadas> findByTipoOperacionAndFechaOrigenBetweenAndEsCambio(String tipoOperacion, Date start, Date end, boolean esCambio);
 
 	/**
 	 * Retorna una lista de operaciones programadas por tipo operacion, fechas y si es cambio o no, ademas valida 
@@ -126,7 +126,7 @@ public interface IOperacionesProgramadasRepository
 	 * @return List<OperacionesProgramadas>
 	 * @author duvan.naranjo
 	 */
-	List<OperacionesProgramadas> findByTipoOperacionAndFechaProgramacionBetweenAndEsCambioAndEstadoConciliacion(String tipoOperacion, Date start, Date end, boolean esCambio, String estadoConciliacion );
+	List<OperacionesProgramadas> findByTipoOperacionAndFechaOrigenBetweenAndEsCambioAndEstadoConciliacion(String tipoOperacion, Date start, Date end, boolean esCambio, String estadoConciliacion );
 
 	
 	/**
@@ -235,6 +235,14 @@ public interface IOperacionesProgramadasRepository
 	 */
 	@Procedure(name = "reabrir_preliminar")
 	public String reabrir_preliminar();
+	
+	/**
+	 * Procedimiento encargado de ejecutar la repaertura del cierre preliminar
+	 * @return String
+	 * @author duvan.naranjo
+	 */
+	@Procedure(name = "reabrir_conciliaciones")
+	public String reabrir_conciliaciones();
 	
 //	List<intradiaPruebaDTO> consultarOperacionesIntradiaSalida(@Param("fechaInicio") Date fechaInicio, @Param("fechaFin") Date fechaFin, @Param("entradaSalida") String entradaSalida, @Param("tipoOperacion") String tipoOperacion);
 	
