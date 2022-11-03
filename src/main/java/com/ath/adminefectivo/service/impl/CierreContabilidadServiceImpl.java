@@ -32,7 +32,7 @@ public class CierreContabilidadServiceImpl implements ICierreContabilidadService
 		//String cierrePre;
 		if(tipoContabilidad.equals("PM")) {
 			//aqui se valida que la carga preliminar este cerrada
-			cierrePre = logProceso.obtenerEntidadLogProcesoDiario("CARG_PRELIMINAR");
+			cierrePre = logProceso.obtenerEntidadLogProcesoDiario(Dominios.CODIGO_PROCESO_LOG_PRELIMINAR);
 			
 			if(!cierrePre.getEstadoProceso().equals(Dominios.ESTADO_PROCESO_DIA_COMPLETO)) {
 				throw new NegocioException(ApiResponseCode.ERROR_ESTADO_CARGA_PRELIMINAR.getCode(),
@@ -40,7 +40,7 @@ public class CierreContabilidadServiceImpl implements ICierreContabilidadService
                         ApiResponseCode.ERROR_ESTADO_CARGA_PRELIMINAR.getHttpStatus());
 				
 			}else {
-				LogProcesoDiario cierreContabilidad = logProceso.obtenerEntidadLogProcesoDiario("CONTABILIDAD_PM");
+				LogProcesoDiario cierreContabilidad = logProceso.obtenerEntidadLogProcesoDiario(Dominios.CODIGO_PROCESO_LOG_CONTABILIDAD_PM);
 				if(cierreContabilidad.getEstadoProceso().equals(Dominios.ESTADO_PROCESO_DIA_COMPLETO)) {
 					throw new NegocioException(ApiResponseCode.PROCESO_CONTABILIDAD_CERRADA.getCode(),
 		                    ApiResponseCode.PROCESO_CONTABILIDAD_CERRADA.getDescription(),
@@ -59,7 +59,7 @@ public class CierreContabilidadServiceImpl implements ICierreContabilidadService
 		                        ApiResponseCode.ERROR_ESTADO_CARGA_CONCILIACION.getHttpStatus());
 						
 					}else {
-						LogProcesoDiario cierreContabilidad = logProceso.obtenerEntidadLogProcesoDiario("CONTABILIDAD_AM");
+						LogProcesoDiario cierreContabilidad = logProceso.obtenerEntidadLogProcesoDiario(Dominios.CODIGO_PROCESO_LOG_CONTABILIDAD_AM);
 						if(cierreContabilidad.getEstadoProceso().equals(Dominios.ESTADO_PROCESO_DIA_COMPLETO)) {
 							throw new NegocioException(ApiResponseCode.PROCESO_CONTABILIDAD_CERRADA.getCode(),
 				                    ApiResponseCode.PROCESO_CONTABILIDAD_CERRADA.getDescription(),

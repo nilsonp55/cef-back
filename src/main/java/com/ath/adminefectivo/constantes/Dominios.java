@@ -99,7 +99,19 @@ public final class Dominios {
 	public static final String CARACTER_INVALIDO_TX_C2 = "C2";
 	public static final String CARACTER_INVALIDO_TX_C3 = "C3";
 	
-	public static final String COSTO_FLETE_CHARTER = "CHARTER";
+	public static final String ESCALA_INTERURBANO_2 = "INTERURBANO 2";
+	public static final String ESCALA_AEREO_CHARTER = "AEREO CHARTER";
+	public static final String ESCALA_INTERURBANO_6 = "INTERURBANO 6";
+	public static final String ESCALA_2 = "2";
+	public static final String ESCALA_URBANO = "URBANO";
+	public static final String ESCALA_INTERURBANO_3 = "INTERURBANO 3";
+	public static final String ESCALA_INTERURBANO_5 = "INTERURBANO 5";
+	public static final String ESCALA_INTERURBANO = "INTERURBANO";
+	public static final String ESCALA_AEREO_COMERCIAL = "AEREO COMERCIAL";
+	public static final String ESCALA_AEREO_2 = "AEREO 2";
+	public static final String ESCALA_INTERURBANO_4 = "INTERURBANO 4";
+	public static final String ESCALA_INTERURBANO_1 = "INTERURBANO 1";
+	public static final String ESCALA_1 = "1";
 	
 	/**
 	 * Estados de los registros cargados
@@ -158,6 +170,8 @@ public final class Dominios {
 	public static final String CODIGO_PROCESO_LOG_CERTIFICACION = "CARG_CERTIFICACION";
 	public static final String CODIGO_PROCESO_LOG_CONCILIACION = "CONCILIACION";
 	public static final String CODIGO_PROCESO_LOG_LIQUIDACION = "LIQUIDACION";
+	public static final String CODIGO_PROCESO_LOG_CONTABILIDAD_PM = "CONTABILIDAD_PM";
+	public static final String CODIGO_PROCESO_LOG_CONTABILIDAD_AM = "CONTABILIDAD_AM";
 	
 	
 	/**

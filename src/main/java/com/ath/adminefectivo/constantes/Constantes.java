@@ -228,6 +228,11 @@ public final class Constantes {
 	public static final String DOMINIO_ESTADO_GENERAL = "ESTADO_GENERAL";
 	
 	/**
+	 * Constante del agrupador de los dominios  de los escalas
+	 */
+	public static final String DOMINIO_ESCALAS = "ESCALA";
+	
+	/**
 	 * Delimintadores de los archivos
 	 */
 	public static final String DELIMITADOR_OTROS = "O";

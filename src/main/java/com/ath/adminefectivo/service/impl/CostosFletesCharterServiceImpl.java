@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.ParametrosLiquidacionCostoDTO;
 import com.ath.adminefectivo.dto.compuestos.costosCharterDTO;
@@ -14,6 +15,8 @@ import com.ath.adminefectivo.entities.ParametrosLiquidacionCosto;
 import com.ath.adminefectivo.repositories.ICostosFletesCharterRepository;
 import com.ath.adminefectivo.service.IBancosService;
 import com.ath.adminefectivo.service.ICostosFleteCharterService;
+import com.ath.adminefectivo.service.IDominioService;
+import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.IPuntosService;
 import com.ath.adminefectivo.service.ITransportadorasService;
 import com.ath.adminefectivo.service.IValoresLiquidadosService;
@@ -36,13 +39,19 @@ public class CostosFletesCharterServiceImpl implements ICostosFleteCharterServic
 	@Autowired
 	IPuntosService puntosService;
 	
+	@Autowired
+	IParametroService parametroService;
+	
+	@Autowired
+	IDominioService dominioService;
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public List<ParametrosLiquidacionCostoDTO> ConsultarCostosFleteCharter(Date fechaInicial, Date fechaFinal) {
 
-		String escala = Dominios.COSTO_FLETE_CHARTER;
+		String escala = dominioService.valorTextoDominio(Constantes.DOMINIO_ESCALAS, Dominios.ESCALA_AEREO_CHARTER);
 		List<ParametrosLiquidacionCostoDTO> listCostosCharter = new ArrayList<>();
 
 		List<ParametrosLiquidacionCosto> costoCharter = costosFletesCharterRepository

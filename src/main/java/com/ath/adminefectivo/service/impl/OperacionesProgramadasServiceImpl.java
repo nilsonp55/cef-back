@@ -307,7 +307,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		}else if(tipoContabilidad.equals("AM")) {
 			Date fechaProceso = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
 			LogProcesoDiarioDTO logProcesoDiarioDTO = logProcesoDiarioService.obtenerEntidadLogProcesoDiarioByCodigoAndFecha(Dominios.CODIGO_PROCESO_LOG_CONCILIACION, fechaProceso);
-			if(!Objects.isNull(logProcesoDiarioDTO) && logProcesoDiarioDTO.getEstadoProceso().equals(Dominios.ESTADO_PROCESO_DIA_COMPLETO)){
+			if(!Objects.isNull(logProcesoDiarioDTO)){
 				//CONFORMAN UN CAMBIO (RETIRO Y CONSIGNACION ESCAMBIO=TRUE) conciliada
 				listaOperacionesProgramadas.addAll(operacionesProgramadasRepository.findByTipoOperacionAndFechaOrigenBetweenAndEsCambioAndEstadoConciliacion(Dominios.TIPO_OPERA_CONSIGNACION, fechaInicio,
 						fechaFin, true, Dominios.ESTADO_CONCILIACION_CONCILIADO));

@@ -22,8 +22,10 @@ import com.ath.adminefectivo.dto.compuestos.ProcesoErroresContablesDTO;
 import com.ath.adminefectivo.dto.compuestos.ResultadoErroresContablesDTO;
 import com.ath.adminefectivo.dto.compuestos.ContabilidadDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
+import com.ath.adminefectivo.entities.LogProcesoDiario;
 import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.exception.NegocioException;
+import com.ath.adminefectivo.service.ICierreContabilidadService;
 import com.ath.adminefectivo.service.IContabilidadService;
 import com.ath.adminefectivo.service.IDominioService;
 import com.ath.adminefectivo.service.IErroresContablesService;
@@ -31,6 +33,7 @@ import com.ath.adminefectivo.service.IFestivosNacionalesService;
 import com.ath.adminefectivo.service.IOperacionesProgramadasService;
 import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.ITransaccionesInternasService;
+import com.ath.adminefectivo.service.impl.LogProcesoDiarioImpl;
 import com.ath.adminefectivo.utils.UtilsString;
 
 import antlr.Utils;
@@ -59,6 +62,12 @@ public class ContabilidadDelegateImpl implements IContabilidadDelegate {
 	@Autowired
 	IErroresContablesService erroresContablesService;
 	
+	@Autowired
+	LogProcesoDiarioImpl logProceso;
+	
+	@Autowired
+	ICierreContabilidadService cierreContabilidadService;
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -76,8 +85,8 @@ public class ContabilidadDelegateImpl implements IContabilidadDelegate {
 		System.out.println("fechaProcesoFin "+fechaProcesoFin);
 		
 		var operacionesProgramadas = operacionesProgramadasService.getOperacionesProgramadasPorFechas(tipoContabilidad, fechaProcesoInicial,fechaProcesoFin);
-				
-		if(!operacionesProgramadas.isEmpty()) {
+		
+		if(!operacionesProgramadas.isEmpty()&& cierreContabilidadService.validacionTipoContabilidad(tipoContabilidad)) {
 			
 			contabilidadService.procesoEliminarExistentes(tipoContabilidad, operacionesProgramadas, fechaSistema, fechaSistema);
 			
@@ -203,8 +212,6 @@ public class ContabilidadDelegateImpl implements IContabilidadDelegate {
 		}
 		return null;
 	}
-
-
 
 
 
