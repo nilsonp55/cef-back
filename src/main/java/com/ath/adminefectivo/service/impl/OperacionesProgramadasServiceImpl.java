@@ -204,16 +204,11 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 			// Obtiene datos de la tabla de Conciliacion Servicios
 			programadas.setTipoConciliacion(programadas.getConciliacionServicios().get(0).getTipoConciliacion());
 			programadas.setIdConciliacion(programadas.getConciliacionServicios().get(0).getIdConciliacion());
-			programadas.setTdv(programadas.getNombreTransportadora());
 			programadas.setEntradaSalida(programadas.getEntradaSalida());
 			programadas.setNombreFondoTDV(puntosService.getNombrePunto(dominioService.valorTextoDominio(
 									Constantes.DOMINIO_TIPOS_PUNTO, 
 									Dominios.TIPOS_PUNTO_FONDO), programadas.getCodigoFondoTDV()));;
-			programadas.setBancoAVAL(puntosService.getNombrePunto(dominioService.valorTextoDominio(
-									Constantes.DOMINIO_TIPOS_PUNTO, 
-									Dominios.TIPOS_PUNTO_BANCO),
-									fondosService.getEntidadFondo(
-									programadas.getCodigoFondoTDV()).getBancoAVAL()));
+
 		}
 		return new PageImpl<>(operacionesProgramadasList.getContent().stream()
                 .map(OperacionesProgramadasNombresDTO.CONVERTER_DTO)

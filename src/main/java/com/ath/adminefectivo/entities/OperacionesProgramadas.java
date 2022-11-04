@@ -164,11 +164,17 @@ public class OperacionesProgramadas {
 	@Column(name = "CODIGO_MONEDA")
 	private String codigoMoneda;
 	
-	@Transient
+	@Column(name = "NOMBRE_TDV")
 	private String tdv;
 
-	@Transient
+	@Column(name = "NOMBRE_BANCO_AVAL")
 	private String bancoAVAL;
+	
+	@Column(name = "TIPO_PUNTO_ORIGEN")
+	private String tipoPuntoOrigen;
+	
+	@Column(name = "TIPO_PUNTO_DESTINO")
+	private String tipoPuntoDestino;
 	
 	@Transient
 	private String nombreBanco;

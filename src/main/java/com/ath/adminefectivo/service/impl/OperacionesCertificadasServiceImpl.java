@@ -135,11 +135,11 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Integer numeroOperacionesPorEstadoFechaYConciliable(FechasConciliacionDTO fechaConciliacion, String estado) {
+	public Integer numeroOperacionesPorEstadoFechaYConciliable(FechasConciliacionDTO fechaConciliacion, String estado, String conciliable) {
 		Integer cuentaCertificadas = operacionesCertificadasRepository
 				.countByEstadoConciliacionAndFechaEjecucionBetweenAndConciliable(estado,
 						fechaConciliacion.getFechaConciliacionInicial(), fechaConciliacion.getFechaConciliacionFinal(),
-						Constantes.SI);
+						conciliable);
 		if (Objects.isNull(cuentaCertificadas)) {
 			throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getDescription(),

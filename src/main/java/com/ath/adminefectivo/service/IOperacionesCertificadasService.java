@@ -73,5 +73,5 @@ public interface IOperacionesCertificadasService {
 	 * @param fechaConciliacion
 	 * @param estado
 	 */
-	Integer numeroOperacionesPorEstadoFechaYConciliable(FechasConciliacionDTO fechaConciliacion, String estado);
+	Integer numeroOperacionesPorEstadoFechaYConciliable(FechasConciliacionDTO fechaConciliacion, String estado, String conciliable);
 }

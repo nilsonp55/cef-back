@@ -102,6 +102,10 @@ public class ProgramadasNoConciliadasDTO {
 	
 	private String nombrePuntoDestino;
 	
+	private String tipoPuntoOrigen;
+	
+	private String tipoPuntoDestino;
+	
 	/**
 	 * Funcion que convierte el archivo DTO ProgramadasNoConciliadasDTO a Entity OperacionesProgramadas
 	 * @author cesar.castano
