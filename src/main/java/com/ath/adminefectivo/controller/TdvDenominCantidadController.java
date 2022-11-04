@@ -55,8 +55,7 @@ public class TdvDenominCantidadController {
 	 * @return ResponseEntity<ApiResponseADE<TdvDenominCantidadDTO>>
 	 * @author duvan.naranjo
 	 */
-	@PostMapping(value = "${endpoints.TdvDenominCantidad.guardar}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, 
-			produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "${endpoints.TdvDenominCantidad.guardar}")
 	public ResponseEntity<ApiResponseADE<TdvDenominCantidadDTO>> guardarTdvDenominCantidad(@RequestBody TdvDenominCantidadDTO tdvDenominCantidadDTO) {
 
 		return ResponseEntity.status(HttpStatus.OK)

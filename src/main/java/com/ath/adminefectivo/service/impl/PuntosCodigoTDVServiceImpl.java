@@ -66,7 +66,7 @@ public class PuntosCodigoTDVServiceImpl implements IPuntosCodigoTdvService {
 	 * {@inheritDoc}
 	 */
     @Override
-    public Integer getCodigoPunto(String codigoPuntoTdv, String codigoTdv, Integer banco_aval, String codigoDane) {
+	public Integer getCodigoPunto(String codigoPuntoTdv, String codigoTdv, Integer banco_aval, String codigoDane) {
         BancosDTO bancoAval = bancoService.findBancoByCodigoPunto(banco_aval);
         var puntosCodigoTDV = puntosCodigoTDVRepository.findByCodigoPropioTDVAndCodigoTDVAndBancosAndCiudadCodigo(
                 codigoPuntoTdv.trim(), codigoTdv, BancosDTO.CONVERTER_ENTITY.apply(bancoAval), codigoDane);
@@ -77,9 +77,13 @@ public class PuntosCodigoTDVServiceImpl implements IPuntosCodigoTdvService {
                 if (puntosCodigoTDVList.size() > 1 ) {
                     System.out.println("Codigo Punto TDV se encuentra mas de una vez. "+codigoPuntoTdv.trim() +" - "+ codigoTdv);
                     return puntosService.getEntidadPunto(banco_aval).getCodigoPunto();
-                }       
-                else {
-                    return puntosCodigoTDVList.get(0).getCodigoPunto();
+                }                       else {
+                    if (puntosCodigoTDVList.size() == 1) {
+                        return puntosCodigoTDVList.get(0).getCodigoPunto();
+                    }
+                    else {
+                        return puntosService.getEntidadPunto(banco_aval).getCodigoPunto();
+                    }
                 }
             }
             else {
