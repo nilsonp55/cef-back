@@ -22,6 +22,8 @@ public class ResumenConciliacionesDTO {
 	
 	private Integer certificadasNoConciliadas;
 	
+	private Integer certificadasNoConciliables;
+	
 	private Integer conciliacionesFallidas;
 	
 	private Integer conciliacionesCanceladas;

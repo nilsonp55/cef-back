@@ -348,7 +348,9 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 			
 			if(Integer.valueOf(operacionProgramada.getTasaNegociacion()) > 0) {
 				TransaccionesInternasDTO transaccionInternaDTOVenta11 = generarTransaccionInterna(tipoProceso, 21, operacionProgramada, operacionProgramada.getCodigoFondoTDV());
-				long valorComision = (operacionProgramada.getValorTotal().intValue() * Double.valueOf(operacionProgramada.getTasaNegociacion()).intValue()) / 100;
+
+				Double valorComisionDouble = (operacionProgramada.getValorTotal() * Double.valueOf(operacionProgramada.getTasaNegociacion()).intValue()) / 100;
+				long valorComision = valorComisionDouble.longValue();
 				transaccionInternaDTOVenta11.setValor(valorComision);
 				transaccionInternaDTOVenta11.setTasaNegociacion(operacionProgramada.getTasaNegociacion());
 				transaccionInternaDTOVenta11.setCodigoPuntoBancoExt(puntoDestino);
@@ -384,10 +386,12 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 			transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTOVenta20);
 
 			if (Integer.valueOf(operacionProgramada.getTasaNegociacion()) > 0) {
+
 				TransaccionesInternasDTO transaccionInternaDTOVenta21 = generarTransaccionInterna(tipoProceso, 11,
 						operacionProgramada, operacionProgramada.getCodigoFondoTDV());
 				transaccionInternaDTOVenta21.setTasaNegociacion(operacionProgramada.getTasaNegociacion());
-				long valorComision = (operacionProgramada.getValorTotal().intValue() * Integer.valueOf(operacionProgramada.getTasaNegociacion())) / 100;
+				Double valorComisionDouble = (operacionProgramada.getValorTotal() * Integer.valueOf(operacionProgramada.getTasaNegociacion())) / 100;
+				long valorComision = valorComisionDouble.longValue();
 				transaccionInternaDTOVenta21.setValor(valorComision);
 				transaccionInternaDTOVenta21.setCodigoComision(Integer.valueOf(Dominios.COMISION_2));
 				transaccionInternaDTOVenta21.setCodigoPuntoBancoExt(puntoOrigen);
@@ -568,7 +572,7 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 	 */
 	private TransaccionesInternasDTO generarTransaccionInternaIntradia(String tipoProceso, Integer tipoTransaccion,
 			OperacionIntradiaDTO transaccionIntradia) {
-
+		System.out.println("generarTransaccionInternaIntradia"+ dominioService.valorNumericoDominio(Constantes.DOMINIO_COMISIONES, Dominios.COMISION_3).longValue());
 		TransaccionesInternasDTO transaccionInternaDTO = TransaccionesInternasDTO.builder().idOperacion(null)
 				.idGenerico(null).consecutivoDia(String.valueOf(consecutivoDia)).codigoMoneda("COP")
 				.valor(dominioService.valorNumericoDominio(Constantes.DOMINIO_COMISIONES, Dominios.COMISION_3).longValue())

@@ -258,8 +258,12 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 		var resumenConciliaciones = new ResumenConciliacionesDTO();
 		resumenConciliaciones.setCertificadasNoConciliadas(operacionesCertificadasService
 				.numeroOperacionesPorEstadoFechaYConciliable(fechaConciliacion, dominioService.valorTextoDominio(
-						Constantes.DOMINIO_ESTADO_CONCILIACION, Dominios.ESTADO_CONCILIACION_NO_CONCILIADO)));
-		System.out.println("fechaConciliacion.getFechaConciliacionInicial() = "+fechaConciliacion.getFechaConciliacionInicial()+ " fechaConciliacion.getFechaConciliacionFinal()= "+fechaConciliacion.getFechaConciliacionFinal());
+						Constantes.DOMINIO_ESTADO_CONCILIACION, Dominios.ESTADO_CONCILIACION_NO_CONCILIADO), Constantes.SI));
+		
+		resumenConciliaciones.setCertificadasNoConciliables(operacionesCertificadasService
+				.numeroOperacionesPorEstadoFechaYConciliable(fechaConciliacion, dominioService.valorTextoDominio(
+						Constantes.DOMINIO_ESTADO_CONCILIACION, Dominios.ESTADO_CONCILIACION_NO_CONCILIADO), Constantes.NO));
+		
 		resumenConciliaciones.setConciliadas(operacionesProgramadasRepository.countByEstadoConciliacionAndFechaOrigenBetween
                 (dominioService.valorTextoDominio(Constantes.DOMINIO_ESTADO_CONCILIACION, Dominios.ESTADO_CONCILIACION_CONCILIADO),
                         fechaConciliacion.getFechaConciliacionInicial(), fechaConciliacion.getFechaConciliacionFinal() ));
@@ -335,15 +339,7 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 		operacionesProgramadas.forEach(entity -> {
 						var programadasNoConciliadasDTO = new ProgramadasNoConciliadasDTO();
 						programadasNoConciliadasDTO = ProgramadasNoConciliadasDTO.CONVERTER_DTO.apply(entity);
-						String banco = puntosService.getNombrePunto(dominioService.valorTextoDominio(
-					  												Constantes.DOMINIO_TIPOS_PUNTO, 
-					  												Dominios.TIPOS_PUNTO_BANCO),
-							  			fondoService.getEntidadFondo(
-							  					programadasNoConciliadasDTO.getCodigoFondoTDV()).getBancoAVAL());
-						entity.setBancoAVAL(banco);
-						String transportadora = transportadorasService.getNombreTransportadora(
-							fondoService.getEntidadFondo(programadasNoConciliadasDTO.getCodigoFondoTDV()).getTdv());
-						entity.setTdv(transportadora);
+						
 						entity = this.obtenerNombresProgramadasNoConciliadas(entity);
 						});		
 	
@@ -364,15 +360,7 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 		operacionesCertificadas.forEach(entity -> {
 						var certificadasNoConciliadas = new CertificadasNoConciliadasDTO();
 						certificadasNoConciliadas = CertificadasNoConciliadasDTO.CONVERTER_DTO.apply(entity);
-						String banco = puntosService.getNombrePunto(dominioService.valorTextoDominio(
-																	Constantes.DOMINIO_TIPOS_PUNTO, 
-																	Dominios.TIPOS_PUNTO_BANCO),
-										fondoService.getEntidadFondo(
-										certificadasNoConciliadas.getCodigoFondoTDV()).getBancoAVAL());
-						entity.setBancoAVAL(banco);
-						String transportadora = transportadorasService.getNombreTransportadora(
-								fondoService.getEntidadFondo(certificadasNoConciliadas.getCodigoFondoTDV()).getTdv());
-						entity.setTdv(transportadora);
+						
 						entity.setEntradaSalida(certificadasNoConciliadas.getEntradaSalida());
 						entity = this.obtenerNombresCertificadasNoConciliadas(entity);
 						});

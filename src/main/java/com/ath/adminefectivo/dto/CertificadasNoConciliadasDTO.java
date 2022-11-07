@@ -100,6 +100,7 @@ public class CertificadasNoConciliadasDTO {
 	
 	private String entradaSalida;
 	
+	
 	/**
 	 * Funcion que convierte el archivo DTO ProgramadasNoConciliadasDTO a Entity OperacionesProgramadas
 	 * @author cesar.castano

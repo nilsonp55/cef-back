@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
+import javax.persistence.Column;
+
 import com.ath.adminefectivo.dto.compuestos.DetalleOperacionesDTO;
 import com.ath.adminefectivo.entities.ConciliacionServicios;
 import com.ath.adminefectivo.entities.DetalleOperacionesProgramadas;
@@ -90,40 +92,21 @@ public class OperacionesProgramadasDTO {
 	
 	private List<DetalleOperacionesDTO> detalleOperacionesProgramadasDTO;
 	
+	private String tdv;
+
+	private String bancoAVAL;
+	
+	private String tipoPuntoOrigen;
+	
+	private String tipoPuntoDestino;
+	
 	/**
 	 * Funcion que convierte el archivo DTO ProgramadasNoConciliadasDTO a Entity OperacionesProgramadas
 	 * @author cesar.castano
 	 */
 	public static final Function<OperacionesProgramadasDTO, OperacionesProgramadas> CONVERTER_ENTITY = (OperacionesProgramadasDTO t) -> {
 		var operacionesProgramadas = new OperacionesProgramadas();
-		operacionesProgramadas.setCodigoFondoTDV(t.getCodigoFondoTDV());
-		operacionesProgramadas.setCodigoMoneda(t.getCodigoMoneda());
-		operacionesProgramadas.setCodigoPuntoDestino(t.getCodigoPuntoDestino());
-		operacionesProgramadas.setCodigoPuntoOrigen(t.getCodigoPuntoOrigen());
-		operacionesProgramadas.setComisionBR(t.getComisionBR());
-		operacionesProgramadas.setEntradaSalida(t.getEntradaSalida());
-		operacionesProgramadas.setEsCambio(t.isEsCambio());
-		operacionesProgramadas.setEsEntrada(t.getEsEntrada());
-		operacionesProgramadas.setEstadoConciliacion(t.getEstadoConciliacion());
-		operacionesProgramadas.setEstadoOperacion(t.getEstadoOperacion());
-		operacionesProgramadas.setFechaCreacion(t.getFechaCreacion());
-		operacionesProgramadas.setFechaDestino(t.getFechaDestino());
-		operacionesProgramadas.setFechaModificacion(t.getFechaModificacion());
-		operacionesProgramadas.setFechaOrigen(t.getFechaOrigen());
-		operacionesProgramadas.setFechaProgramacion(t.getFechaProgramacion());
-		operacionesProgramadas.setIdArchivoCargado(t.getIdArchivoCargado());
-		operacionesProgramadas.setIdNegociacion(t.getIdNegociacion());
-		operacionesProgramadas.setIdOperacion(t.getIdOperacion());
-		operacionesProgramadas.setIdOperacionRelac(t.getIdOperacionRelac());
-		operacionesProgramadas.setIdOrdenTDV(t.getIdOrdenTDV());
-		operacionesProgramadas.setIdServicio(t.getIdServicio());
-		operacionesProgramadas.setTasaNegociacion(t.getTasaNegociacion());
-		operacionesProgramadas.setTipoOperacion(t.getTipoOperacion());
-		operacionesProgramadas.setTipoServicio(t.getTipoServicio());
-		operacionesProgramadas.setTipoTransporte(t.getTipoTransporte());
-		operacionesProgramadas.setUsuarioCreacion(t.getUsuarioCreacion());
-		operacionesProgramadas.setUsuarioModificacion(t.getUsuarioModificacion());
-		operacionesProgramadas.setValorTotal(t.getValorTotal());
+		UtilsObjects.copiarPropiedades(t, operacionesProgramadas);
 
 		if(!Objects.isNull(t.getDetalleOperacionesProgramadasDTO())) {
 			List<DetalleOperacionesProgramadas> listDetalleOperaciones = new ArrayList<>();

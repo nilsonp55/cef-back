@@ -3,6 +3,8 @@ package com.ath.adminefectivo.dto.compuestos;
 import java.util.Date;
 import java.util.function.Function;
 
+import javax.persistence.Column;
+
 import com.ath.adminefectivo.entities.OperacionesProgramadas;
 import com.ath.adminefectivo.utils.UtilsObjects;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -62,6 +64,10 @@ public class OperacionesProgramadasNombresDTO {
 	private String tdv;
 
 	private String bancoAVAL;
+	
+	private String tipoPuntoOrigen;
+	
+	private String tipoPuntoDestino;
 	
 	private String entradaSalida;
 	
