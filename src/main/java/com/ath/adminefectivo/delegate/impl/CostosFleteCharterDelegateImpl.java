@@ -30,7 +30,7 @@ public class CostosFleteCharterDelegateImpl implements ICostosFleteCharterDelega
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Boolean grabarCostosFleteCharter(List<costosCharterDTO> costosCharter) {
+	public Boolean grabarCostosFleteCharter(costosCharterDTO costosCharter) {
 
 		return ICostosFleteCharterService.GrabarCostosFleteCharter(costosCharter);
 	}

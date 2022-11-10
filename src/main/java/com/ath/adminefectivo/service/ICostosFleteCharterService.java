@@ -24,5 +24,5 @@ public interface ICostosFleteCharterService {
 	 * @return Boolean
 	 * @author prv_ccastano
 	 */
-	Boolean GrabarCostosFleteCharter(List<costosCharterDTO> costosCharter);
+	Boolean GrabarCostosFleteCharter(costosCharterDTO costosCharter);
 }

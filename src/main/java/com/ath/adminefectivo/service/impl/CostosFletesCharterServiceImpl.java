@@ -75,12 +75,8 @@ public class CostosFletesCharterServiceImpl implements ICostosFleteCharterServic
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Boolean GrabarCostosFleteCharter(List<costosCharterDTO> costosCharter) {
-		
-		for (costosCharterDTO costos : costosCharter) {
-			
-			valoresLiquidadosService.ActualizaCostosFletesCharter(costos);
-		}
+	public Boolean GrabarCostosFleteCharter(costosCharterDTO costosCharter) {		
+			valoresLiquidadosService.ActualizaCostosFletesCharter(costosCharter);
 		return true;
 	}
 
