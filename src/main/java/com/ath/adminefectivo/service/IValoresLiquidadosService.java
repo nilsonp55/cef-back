@@ -1,6 +1,7 @@
 package com.ath.adminefectivo.service;
 
 import com.ath.adminefectivo.dto.ValoresLiquidadosDTO;
+import com.ath.adminefectivo.dto.compuestos.RespuestaLiquidarCostosDTO;
 import com.ath.adminefectivo.dto.compuestos.costosCharterDTO;
 
 public interface IValoresLiquidadosService {

@@ -75,8 +75,10 @@ public class ClasificacionCostosServiceImpl implements IClasificacionCostosServi
 		String mesAnio = diaMesAnio[1]+"-"+diaMesAnio[2];
 		List<ClasificacionCostos> listadoClasificacionCostos = clasificacionCostosRepository.findByTransportadoraAndMesAnio(transportadora, mesAnio);
 		List<BancosDTO> bancosAval = bancosService.getBancosPorAval(true);
-		if(!Objects.isNull(listadoClasificacionCostos) && listadoClasificacionCostos.size()>3) {
+		
+		if(!listadoClasificacionCostos.isEmpty() && listadoClasificacionCostos.size()>3) {
 			listadoClasificacionCostos.forEach(clasificacionCosto ->{
+				clasificacionCostosRepository.delete(clasificacionCosto);
 				int bancoBanco = clasificacionCosto.getBancoAval(); 
 				ClasificacionCostosDTO clasificacionCostoDTO =  this.procesarClasificacionCostosPorBanco(clasificacionCosto, transportadora);
 				clasificacionCostoDTO .setMesAnio(mesAnio);
@@ -88,10 +90,7 @@ public class ClasificacionCostosServiceImpl implements IClasificacionCostosServi
 				costosMensualesClasificacion.add(this.generarClasificacionMensualesDTO(clasificacionCostoDTO, fechaSistema,nombreBanco, transportadora));
 			});
 		}else {
-			if(!Objects.isNull(listadoClasificacionCostos)) {
-				listadoClasificacionCostos.forEach(dato ->{
-					clasificacionCostosRepository.delete(dato);
-				});
+			
 				bancosAval.forEach(bancoAval -> {
 					ClasificacionCostos clasificacionCosto = new ClasificacionCostos();
 					clasificacionCosto.setMesAnio(mesAnio);
@@ -105,7 +104,7 @@ public class ClasificacionCostosServiceImpl implements IClasificacionCostosServi
 					}
 					
 				});
-			}
+			
 		}
 		
 		
@@ -147,8 +146,14 @@ public class ClasificacionCostosServiceImpl implements IClasificacionCostosServi
 
 		EstimadoClasificacionCostosDTO estimadoBanco = parametrosLiquidacionCostosService.consultaEstimadosCostos(transportadora,clasificacionCosto.getBancoAval(), mesI, anioI);
 		if(!Objects.isNull(estimadoBanco)) {
-			fajosEstimados = Math.toIntExact(estimadoBanco.getEstimadaFajos());
-			bolsasEstimados = Math.toIntExact(estimadoBanco.getEstimadaBolsas());
+			if(!Objects.isNull(estimadoBanco.getEstimadaFajos())) {
+				fajosEstimados = Math.toIntExact(estimadoBanco.getEstimadaFajos());
+				bolsasEstimados = Math.toIntExact(estimadoBanco.getEstimadaBolsas());
+			}else {
+				fajosEstimados = 0;
+				bolsasEstimados = 0;
+			}
+			
 
 		}
 

@@ -343,7 +343,7 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 
 			TransaccionesInternasDTO transaccionInternaDTOVenta10 = generarTransaccionInterna(tipoProceso, 20,
 					operacionProgramada, operacionProgramada.getCodigoFondoTDV());
-			transaccionInternaDTOVenta10.setCodigoPuntoBancoExt(puntoDestino);
+			transaccionInternaDTOVenta10.setCodigoPuntoBancoExt(PuntoconsultarBancoAval(puntoDestino));
 			transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTOVenta10);
 			
 			if(Integer.valueOf(operacionProgramada.getTasaNegociacion()) > 0) {
@@ -353,7 +353,7 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 				long valorComision = valorComisionDouble.longValue();
 				transaccionInternaDTOVenta11.setValor(valorComision);
 				transaccionInternaDTOVenta11.setTasaNegociacion(operacionProgramada.getTasaNegociacion());
-				transaccionInternaDTOVenta11.setCodigoPuntoBancoExt(puntoDestino);
+				transaccionInternaDTOVenta11.setCodigoPuntoBancoExt(PuntoconsultarBancoAval(puntoDestino));
 				transaccionInternaDTOVenta11.setCodigoComision(Integer.valueOf(Dominios.COMISION_2));
 				transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTOVenta11);
 
@@ -394,7 +394,7 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 				long valorComision = valorComisionDouble.longValue();
 				transaccionInternaDTOVenta21.setValor(valorComision);
 				transaccionInternaDTOVenta21.setCodigoComision(Integer.valueOf(Dominios.COMISION_2));
-				transaccionInternaDTOVenta21.setCodigoPuntoBancoExt(puntoOrigen);
+				transaccionInternaDTOVenta21.setCodigoPuntoBancoExt(PuntoconsultarBancoAval(puntoOrigen));
 				transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTOVenta21);
 
 				FondosDTO fondoOrigenDTO = fondosService.getFondoByCodigoPunto(puntoOrigen.getCodigoPunto());
@@ -591,10 +591,20 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 		BancosDTO bancoDestino = bancosService.findBancoByCodigoPunto(transaccionIntradia.getCodigoPunto());
 		PuntosDTO puntoBancoDestino = PuntosDTO.CONVERTER_DTO
 				.apply(puntosService.getPuntoById(bancoDestino.getCodigoPunto()));
-		transaccionInternaDTO.setCodigoPuntoBancoExt(puntoBancoDestino);
+		transaccionInternaDTO.setCodigoPuntoBancoExt(PuntoconsultarBancoAval(puntoBancoDestino));
 		consecutivoDia++;
 		return TransaccionesInternasDTO.CONVERTER_DTO
 				.apply(transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTO));
+	}
+	
+	private PuntosDTO PuntoconsultarBancoAval(PuntosDTO punto) {
+		if(punto.getTipoPunto().equals(dominioService.valorTextoDominio(Constantes.DOMINIO_TIPOS_PUNTO, Dominios.TIPOS_PUNTO_FONDO))){
+			Integer idBanco = fondosService.getEntidadFondo(punto.getCodigoPunto()).getBancoAVAL();
+			return PuntosDTO.CONVERTER_DTO.apply(puntosService.getPuntoById(idBanco));
+		}
+		
+		return punto;
+		
 	}
 
 
