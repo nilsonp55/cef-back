@@ -60,7 +60,7 @@ public class CostosFleteCharterController {
 	 */
 	@GetMapping(value = "${endpoints.CostosFleteCharter.grabar}", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<Boolean>> grabarCostosFleteCharter(
-			@RequestBody(required = true) List<costosCharterDTO> costosCharter) {
+			@RequestBody(required = true) costosCharterDTO costosCharter) {
 		
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<Boolean>(
