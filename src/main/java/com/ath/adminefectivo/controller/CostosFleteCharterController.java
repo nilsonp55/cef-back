@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -58,7 +59,7 @@ public class CostosFleteCharterController {
 	 * @return ResponseEntity<ApiResponseADE<Boolean>>
 	 * @author cesar.castano
 	 */
-	@GetMapping(value = "${endpoints.CostosFleteCharter.grabar}", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "${endpoints.CostosFleteCharter.grabar}", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<Boolean>> grabarCostosFleteCharter(
 			@RequestBody(required = true) costosCharterDTO costosCharter) {
 		

@@ -7,6 +7,7 @@ import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
@@ -208,13 +209,18 @@ public class ClasificacionCostosServiceImpl implements IClasificacionCostosServi
 	 */
 	@Override
 	public String guardarClasificacionCostosMensuales(List<CostosMensualesClasificacionDTO> listadoCostosMensuales) {
-		List<ClasificacionCostosDTO> listadoClasificacionCostosDTO = new ArrayList<>();
-		listadoCostosMensuales.forEach(costoMensual -> {
-			listadoClasificacionCostosDTO.add(this.generarClasificacionCosto(costoMensual));
-		});
-		if(listadoClasificacionCostosDTO.size() > 0) {
-			return Constantes.MENSAJE_GENERO_CLASIFICACION_COSTOS_CORRECTO;
+		if(!listadoCostosMensuales.isEmpty()) {
+			this.eliminarExistentesMesAnio(listadoCostosMensuales.get(0).getMesAnio(), listadoCostosMensuales.get(0).getCodigoTdv());
+			List<ClasificacionCostosDTO> listadoClasificacionCostosDTO = new ArrayList<>();
+			
+			listadoCostosMensuales.forEach(costoMensual -> {
+				listadoClasificacionCostosDTO.add(this.generarClasificacionCosto(costoMensual));
+			});
+			if(listadoClasificacionCostosDTO.size() > 0) {
+				return Constantes.MENSAJE_GENERO_CLASIFICACION_COSTOS_CORRECTO;
+			}
 		}
+		
 		return Constantes.MENSAJE_GENERO_CLASIFICACION_COSTOS_ERRONEO;
 	}
 
@@ -226,7 +232,11 @@ public class ClasificacionCostosServiceImpl implements IClasificacionCostosServi
 	 * @return ClasificacionCostosDTO
 	 * @author duvan.naranjo
 	 */
+	@Transactional
 	private ClasificacionCostosDTO generarClasificacionCosto(CostosMensualesClasificacionDTO costoMensual) {
+		
+		
+		
 		ClasificacionCostos costoClasificacion = new ClasificacionCostos();
 		costoClasificacion.setBancoAval(costoMensual.getCodigoBanco());
 		costoClasificacion.setBolsasEstimadas(costoMensual.getCantidadEstimadaBolsas());
@@ -244,6 +254,17 @@ public class ClasificacionCostosServiceImpl implements IClasificacionCostosServi
 		costoClasificacion.setValorClasifRem(Math.toIntExact(costoMensual.getValorLiquidadoRem()));
 		
 		return ClasificacionCostosDTO.CONVERTER_DTO.apply(clasificacionCostosRepository.save(costoClasificacion));
+	}
+
+	private void eliminarExistentesMesAnio(String mesAnio, String transportadora) {
+		List<ClasificacionCostos> existentesClasificacionCostos = clasificacionCostosRepository.findByTransportadoraAndMesAnio(transportadora, mesAnio);
+		if(!existentesClasificacionCostos.isEmpty()) {
+			existentesClasificacionCostos.forEach(clasifCosto ->{
+				clasificacionCostosRepository.delete(clasifCosto);
+			});
+		}
+		
+		
 	}
 
 
