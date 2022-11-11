@@ -131,7 +131,7 @@ public class ParametrosLiquidacionCosto {
 	@OneToMany(mappedBy = "parametrosLiquidacionCosto", cascade = CascadeType.PERSIST)
 	private List<DetallesLiquidacionCosto> detallesLiquidacionCosto;
 	
-	@OneToOne
-	@JoinColumn(name = "ID_LIQUIDACION")
+	@OneToOne(mappedBy = "parametrosLiquidacionCosto", cascade = CascadeType.PERSIST)
 	private ValoresLiquidados valoresLiquidados;
+
 }
