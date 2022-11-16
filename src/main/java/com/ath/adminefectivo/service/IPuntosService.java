@@ -46,6 +46,17 @@ public interface IPuntosService {
 	String getNombrePunto(String tipoPunto, Integer codigoPunto);
 	
 	/**
+	 * Servicio encargado de consultar el nombre del Punto por codigo y tipo. Este
+	 * servicio lanza un error en caso de que el punto no exista
+	 * 
+	 * @param codigoPunto
+	 * @param tipoPunto
+	 * @return String
+	 * @author cesar.castano
+	 */
+	String getNombrePunto(Integer codigoPunto);
+	
+	/**
 	 * Servicio encargado de consultar el punto por nombre del punto
 	 * 
 	 * @param nombrePunto

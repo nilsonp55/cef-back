@@ -94,7 +94,6 @@ public class PuntosServiceImpl implements IPuntosService {
 	 */
 	@Override
 	public String getNombrePunto(Integer codigoPunto) {
-		System.out.println("String tipoPunto, Integer codigoPunto = "+tipoPunto+ "  "+codigoPunto);
 		var puntosOpt = puntosRepository.findByCodigoPunto(codigoPunto);
 		if (Objects.isNull(puntosOpt)) { 
 			throw new AplicationException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
