@@ -3,14 +3,13 @@ package com.ath.adminefectivo.delegate.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.delegate.IEscalasDelegate;
-import com.ath.adminefectivo.delegate.ITarifasOperacionDelegate;
 import com.ath.adminefectivo.dto.EscalasDTO;
-import com.ath.adminefectivo.dto.TarifasOperacionDTO;
 import com.ath.adminefectivo.service.IEscalasService;
-import com.ath.adminefectivo.service.ITarifasOperacionService;
 import com.querydsl.core.types.Predicate;
 
 @Service
@@ -23,8 +22,8 @@ public class EscalasDelegateImpl implements IEscalasDelegate{
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<EscalasDTO> getEscalas(Predicate predicate) {
-		return escalasService.getEscalas(predicate);
+	public Page<EscalasDTO> getEscalas(Predicate predicate, Pageable pageable) {
+		return escalasService.getEscalas(predicate, pageable);
 	}
 
 	/**

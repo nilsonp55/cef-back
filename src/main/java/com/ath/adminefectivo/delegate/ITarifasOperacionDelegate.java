@@ -1,6 +1,6 @@
 package com.ath.adminefectivo.delegate;
-
-import java.util.List;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 
 import com.ath.adminefectivo.dto.TarifasOperacionDTO;
 import com.querydsl.core.types.Predicate;
@@ -19,7 +19,7 @@ public interface ITarifasOperacionDelegate {
 	 * @return TarifasOperacionDTO
 	 * @author duvan.naranjo
 	 */
-	List<TarifasOperacionDTO> getTarifasOperacion(Predicate predicate);
+	Page<TarifasOperacionDTO> getTarifasOperacion(Predicate predicate, Pageable pageable);
 	
 	/**
 	 * Delegate encargado de contener la union con el servicio para obtener 

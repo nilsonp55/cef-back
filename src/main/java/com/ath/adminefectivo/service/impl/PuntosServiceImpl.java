@@ -93,6 +93,20 @@ public class PuntosServiceImpl implements IPuntosService {
 	 * {@inheritDoc}
 	 */
 	@Override
+	public String getNombrePunto(Integer codigoPunto) {
+		var puntosOpt = puntosRepository.findByCodigoPunto(codigoPunto);
+		if (Objects.isNull(puntosOpt)) { 
+			throw new AplicationException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
+					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
+		} 
+		return puntosOpt.getNombrePunto();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public Integer getcodigoPunto(String tipoPunto, String nombrePunto) {
 		var puntosOpt = puntosRepository.findByTipoPuntoAndNombrePunto(tipoPunto, nombrePunto);
 		if (Objects.isNull(puntosOpt)) {

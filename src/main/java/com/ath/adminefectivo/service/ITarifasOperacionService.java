@@ -6,6 +6,9 @@ import java.util.List;
 import com.ath.adminefectivo.dto.TarifasOperacionDTO;
 import com.querydsl.core.types.Predicate;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
+
 public interface ITarifasOperacionService {
 
 	/**
@@ -16,7 +19,7 @@ public interface ITarifasOperacionService {
 	 * @return List<TarifasOperacionDTO>
 	 * @author duvan.naranjo
 	 */
-	List<TarifasOperacionDTO> getTarifasOperacion(Predicate predicate);
+	Page<TarifasOperacionDTO> getTarifasOperacion(Predicate predicate, Pageable pageable);
 
 	/**
 	 * Servicio encargado de contener la logica para consultar una

@@ -62,10 +62,8 @@ public class CostosFletesCharterServiceImpl implements ICostosFleteCharterServic
 			parametrosDTO.setNombreBanco(bancosService.getAbreviatura(parametros.getCodigoBanco()));
 			parametrosDTO.setNombreTdv(transportadorasService.getNombreTransportadora(
 					parametros.getCodigoTdv()));
-			parametrosDTO.setNombrePuntoOrigen(puntosService.getNombrePunto(
-					parametros.getTipoPunto(), parametros.getPuntoOrigen()));
-			parametrosDTO.setNombrePuntoDestino(puntosService.getNombrePunto(
-					parametros.getTipoPunto(), parametros.getPuntoDestino()));
+			parametrosDTO.setNombrePuntoOrigen(puntosService.getNombrePunto(parametros.getPuntoOrigen()));
+			parametrosDTO.setNombrePuntoDestino(puntosService.getNombrePunto(parametros.getPuntoDestino()));
 			listCostosCharter.add(parametrosDTO);
 		}
 		return listCostosCharter;

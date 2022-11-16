@@ -1,6 +1,7 @@
 package com.ath.adminefectivo.delegate;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.ath.adminefectivo.dto.EscalasDTO;
 import com.querydsl.core.types.Predicate;
@@ -19,7 +20,7 @@ public interface IEscalasDelegate {
 	 * @return PuntosCostosDTO
 	 * @author duvan.naranjo
 	 */
-	List<EscalasDTO> getEscalas(Predicate predicate);
+	Page<EscalasDTO> getEscalas(Predicate predicate, Pageable pageable);
 	
 	/**
 	 * Delegate encargado de contener la union con el servicio para obtener 

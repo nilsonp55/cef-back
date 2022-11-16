@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.http.MediaType;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import com.ath.adminefectivo.delegate.ITarifasOperacionDelegate;
 import com.ath.adminefectivo.dto.TarifasOperacionDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
@@ -42,8 +43,8 @@ public class TarifasOperacionController {
 	 * @author duvan.naranjo
 	 */
 	@GetMapping(value = "${endpoints.TarifasOperacion.consultar}")
-	public ResponseEntity<ApiResponseADE<List<TarifasOperacionDTO>>> getTarifasOperacion(@QuerydslPredicate(root = TarifasOperacion.class) Predicate predicate) {
-		List<TarifasOperacionDTO> consulta = tarifasOperacionDelegate.getTarifasOperacion(predicate);
+	public ResponseEntity<ApiResponseADE<Page<TarifasOperacionDTO>>> getTarifasOperacion(@QuerydslPredicate(root = TarifasOperacion.class) Predicate predicate, Pageable page) {
+		Page<TarifasOperacionDTO> consulta = tarifasOperacionDelegate.getTarifasOperacion(predicate, page);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));

@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 
 import com.ath.adminefectivo.delegate.ITarifasOperacionDelegate;
 import com.ath.adminefectivo.dto.TarifasOperacionDTO;
@@ -20,8 +22,8 @@ public class TarifasOperacionDelegateImpl implements ITarifasOperacionDelegate{
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<TarifasOperacionDTO> getTarifasOperacion(Predicate predicate) {
-		return tarifasOperacionService.getTarifasOperacion(predicate);
+	public Page<TarifasOperacionDTO> getTarifasOperacion(Predicate predicate, Pageable pageable) {
+		return tarifasOperacionService.getTarifasOperacion(predicate, pageable);
 	}
 
 	/**
