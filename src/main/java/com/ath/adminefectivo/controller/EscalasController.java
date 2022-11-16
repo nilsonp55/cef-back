@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.http.MediaType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.ath.adminefectivo.delegate.IEscalasDelegate;
 import com.ath.adminefectivo.dto.EscalasDTO;
@@ -42,8 +44,8 @@ public class EscalasController {
 	 * @author duvan.naranjo
 	 */
 	@GetMapping(value = "${endpoints.Escalas.consultar}")
-	public ResponseEntity<ApiResponseADE<List<EscalasDTO>>> getEscalas(@QuerydslPredicate(root = Escalas.class) Predicate predicate) {
-		List<EscalasDTO> consulta = escalasDelegate.getEscalas(predicate);
+	public ResponseEntity<ApiResponseADE<Page<EscalasDTO>>> getEscalas(@QuerydslPredicate(root = Escalas.class) Predicate predicate, Pageable page) {
+		Page<EscalasDTO> consulta = escalasDelegate.getEscalas(predicate, page);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
