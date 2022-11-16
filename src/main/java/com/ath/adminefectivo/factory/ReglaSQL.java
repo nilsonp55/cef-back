@@ -19,7 +19,6 @@ import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.ITipoReglaInterface;
 
 @Service
-@RequestScope
 public class ReglaSQL implements ITipoReglaInterface {
 
 	@Autowired
