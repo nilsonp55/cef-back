@@ -97,10 +97,16 @@ public class TransaccionesContablesServiceImpl implements ITransaccionesContable
 			if(codBanco == 0) {
 				listadoTransaccionContables = transaccionesContablesRepository
 						.cierreContableAllBancos(fecha,tipoContabilidad, 1);
+				listadoTransaccionContables.forEach(transaccion ->{
+					transaccion.setFechaConversion(null);
+				});
 			}else if(codBanco > 0)
 			{
 				listadoTransaccionContables = transaccionesContablesRepository
 						.cierreContablebyBanco(fecha,tipoContabilidad,codBanco,1 );
+				listadoTransaccionContables.forEach(transaccion ->{
+					transaccion.setFechaConversion(null);
+				});
 			}
 
 		return listadoTransaccionContables;
