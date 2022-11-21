@@ -25,6 +25,15 @@ public interface IPuntosRepository extends JpaRepository<Puntos, Integer>, Query
 	public Puntos findByCodigoPuntoAndTipoPunto(Integer codigoPunto, String tipoPunto);
 
 	/**
+	 * Retorna el objeto Puntos para un codigo de punto
+	 * 
+	 * @param codigoPunto
+	 * @return Punto
+	 * @author cesar.castano
+	 */
+	public Puntos findByCodigoPunto(Integer codigoPunto);
+
+	/**
 	 * Retorna el objeto Puntos consultado por nombrePunto
 	 * 
 	 * @param nombrePunto

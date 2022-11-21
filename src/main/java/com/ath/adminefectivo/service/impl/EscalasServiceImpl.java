@@ -1,28 +1,20 @@
 package com.ath.adminefectivo.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.constantes.Dominios;
-import com.ath.adminefectivo.dto.FuncionesDinamicasDTO;
 import com.ath.adminefectivo.dto.EscalasDTO;
-import com.ath.adminefectivo.dto.TarifasOperacionDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
-import com.ath.adminefectivo.entities.FuncionesDinamicas;
 import com.ath.adminefectivo.entities.Escalas;
-import com.ath.adminefectivo.entities.TarifasOperacion;
 import com.ath.adminefectivo.exception.NegocioException;
-import com.ath.adminefectivo.repositories.IBancosRepository;
-import com.ath.adminefectivo.repositories.IFuncionesDinamicasRepository;
 import com.ath.adminefectivo.repositories.IEscalasRepository;
-import com.ath.adminefectivo.repositories.ITarifasOperacionRepository;
 import com.ath.adminefectivo.service.IEscalasService;
-import com.ath.adminefectivo.service.IFuncionesDinamicasService;
-import com.ath.adminefectivo.service.ITarifasOperacionService;
 import com.querydsl.core.types.Predicate;
 
 @Service
@@ -35,13 +27,15 @@ public class EscalasServiceImpl implements IEscalasService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<EscalasDTO> getEscalas(Predicate predicate) {
-		var escalasEntity = escalasRepository.findAll(predicate);
-		List<EscalasDTO> escalasDTO = new ArrayList<>();
-		escalasEntity.forEach(escala ->{
-			escalasDTO.add(EscalasDTO.CONVERTER_DTO.apply(escala));
-		});
-		return escalasDTO;
+	public Page<EscalasDTO> getEscalas(Predicate predicate, Pageable pageable) {
+
+		Page<Escalas> escala = escalasRepository.findAll(predicate, pageable);
+		
+		return new PageImpl<>(escala.getContent().stream().map(EscalasDTO
+		.CONVERTER_DTO).toList(), escala.getPageable(), escala.getTotalElements());
+
+
+		
 	}
 	
 	/**

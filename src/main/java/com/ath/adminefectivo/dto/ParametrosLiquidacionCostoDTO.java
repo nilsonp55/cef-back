@@ -2,6 +2,7 @@ package com.ath.adminefectivo.dto;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 
 import com.ath.adminefectivo.entities.DetallesLiquidacionCosto;
@@ -75,7 +76,7 @@ public class ParametrosLiquidacionCostoDTO {
 	@JsonIgnore
 	private List<DetallesLiquidacionCosto> detallesLiquidacionCosto;
 	
-	private ValoresLiquidados valoresLiquidados;
+	private ValorLiquidadoDTO valoresLiquidadosDTO;
 	
 	private String nombreBanco;
 	
@@ -93,7 +94,10 @@ public class ParametrosLiquidacionCostoDTO {
 									CONVERTER_ENTITY = (ParametrosLiquidacionCostoDTO t) -> {
 
 		ParametrosLiquidacionCosto parametrosLiquidacionCosto = new ParametrosLiquidacionCosto();
-		UtilsObjects.copiarPropiedades(t, parametrosLiquidacionCosto);		
+		UtilsObjects.copiarPropiedades(t, parametrosLiquidacionCosto);
+		if(!Objects.isNull(t.getValoresLiquidadosDTO())) {
+			parametrosLiquidacionCosto.setValoresLiquidados(ValorLiquidadoDTO.CONVERTER_ENTITY.apply(t.getValoresLiquidadosDTO()));
+		}
 
 		return parametrosLiquidacionCosto;
 	};
@@ -107,7 +111,9 @@ public class ParametrosLiquidacionCostoDTO {
 
 		ParametrosLiquidacionCostoDTO parametrosLiquidacionCostoDTO = new ParametrosLiquidacionCostoDTO();
 		UtilsObjects.copiarPropiedades(t, parametrosLiquidacionCostoDTO);		
-
+		if(!Objects.isNull(t.getValoresLiquidados())) {
+			parametrosLiquidacionCostoDTO.setValoresLiquidadosDTO((ValorLiquidadoDTO.CONVERTER_DTO.apply(t.getValoresLiquidados())));
+		}
 		return parametrosLiquidacionCostoDTO;
 	};
 }

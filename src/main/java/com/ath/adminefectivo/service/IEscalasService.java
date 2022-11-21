@@ -2,6 +2,9 @@ package com.ath.adminefectivo.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.ath.adminefectivo.dto.EscalasDTO;
 import com.querydsl.core.types.Predicate;
 
@@ -15,7 +18,7 @@ public interface IEscalasService {
 	 * @return List<EscalasDTO>
 	 * @author duvan.naranjo
 	 */
-	List<EscalasDTO> getEscalas(Predicate predicate);
+	Page<EscalasDTO> getEscalas(Predicate predicate, Pageable pageable);
 
 	/**
 	 * Servicio encargado de contener la logica para consultar

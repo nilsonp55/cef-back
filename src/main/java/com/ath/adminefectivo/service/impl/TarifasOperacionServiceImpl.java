@@ -7,18 +7,16 @@ import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 
 import com.ath.adminefectivo.constantes.Dominios;
-import com.ath.adminefectivo.dto.FuncionesDinamicasDTO;
 import com.ath.adminefectivo.dto.TarifasOperacionDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
-import com.ath.adminefectivo.entities.FuncionesDinamicas;
 import com.ath.adminefectivo.entities.TarifasOperacion;
 import com.ath.adminefectivo.exception.NegocioException;
-import com.ath.adminefectivo.repositories.IBancosRepository;
-import com.ath.adminefectivo.repositories.IFuncionesDinamicasRepository;
 import com.ath.adminefectivo.repositories.ITarifasOperacionRepository;
-import com.ath.adminefectivo.service.IFuncionesDinamicasService;
 import com.ath.adminefectivo.service.ITarifasOperacionService;
 import com.querydsl.core.types.Predicate;
 
@@ -32,13 +30,13 @@ public class TarifasOperacionServiceImpl implements ITarifasOperacionService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<TarifasOperacionDTO> getTarifasOperacion(Predicate predicate) {
-		var tarifasOperacionesEntity = tarifasOperacionRepository.findAll(predicate);
-		List<TarifasOperacionDTO> tarifasOperacionesDTO = new ArrayList<>();
-		tarifasOperacionesEntity.forEach(tarifaOperacion ->{
-			tarifasOperacionesDTO.add(TarifasOperacionDTO.CONVERTER_DTO.apply(tarifaOperacion));
-		});
-		return tarifasOperacionesDTO;
+	public Page<TarifasOperacionDTO> getTarifasOperacion(Predicate predicate, Pageable pageable) {
+
+		Page<TarifasOperacion> tarifaOperacion = tarifasOperacionRepository.findAll(predicate, pageable);
+		
+		return new PageImpl<>(tarifaOperacion.getContent().stream().map(TarifasOperacionDTO
+		.CONVERTER_DTO).toList(), tarifaOperacion.getPageable(), tarifaOperacion.getTotalElements());
+
 	}
 	
 	/**
