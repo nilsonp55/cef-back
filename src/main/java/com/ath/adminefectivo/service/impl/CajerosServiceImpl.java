@@ -42,7 +42,7 @@ public class CajerosServiceImpl implements ICajerosService{
 		var cajeros = cajerosRepository.findByCodigoATM(codigoCajero);
 		if (Objects.isNull(cajeros)) {
 			throw new NegocioException(ApiResponseCode.ERROR_CAJEROS_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_CAJEROS_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_CAJEROS_NO_ENCONTRADO.getDescription()+ " Cajero no encontrado con codigo = "+codigoCajero,
 					ApiResponseCode.ERROR_CAJEROS_NO_ENCONTRADO.getHttpStatus());
 		} else {
 			return cajeros.getCodigoPunto();

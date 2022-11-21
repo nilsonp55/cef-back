@@ -55,7 +55,7 @@ public class PuntosCodigoTDVServiceImpl implements IPuntosCodigoTdvService {
 		var puntosCodigoTDV = puntosCodigoTDVRepository.findByCodigoTDV(codigo);
 		if (Objects.isNull(puntosCodigoTDV)) {
 			throw new AplicationException(ApiResponseCode.ERROR_PUNTOS_CODIGO_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_PUNTOS_CODIGO_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_PUNTOS_CODIGO_NO_ENCONTRADO.getDescription() + "Codigo no encontrado = "+codigo,
 					ApiResponseCode.ERROR_PUNTOS_CODIGO_NO_ENCONTRADO.getHttpStatus());
 		} else {
 			return puntosCodigoTDV;
@@ -112,7 +112,7 @@ public class PuntosCodigoTDVServiceImpl implements IPuntosCodigoTdvService {
 		PuntosCodigoTDV puntosCodigoTdvEntity = puntosCodigoTDVRepository.findById(idPuntoCodigoTdv).get();
 		if(Objects.isNull(puntosCodigoTdvEntity)) {
 			throw new NegocioException(ApiResponseCode.ERROR_PUNTOS_CODIGO_TDV_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_PUNTOS_CODIGO_TDV_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_PUNTOS_CODIGO_TDV_NO_ENCONTRADO.getDescription()+ " codigo punto TDV con codigo = "+idPuntoCodigoTdv,
 					ApiResponseCode.ERROR_PUNTOS_CODIGO_TDV_NO_ENCONTRADO.getHttpStatus());
 		}
 		return PuntosCodigoTdvDTO.CONVERTER_DTO.apply(puntosCodigoTdvEntity);

@@ -67,7 +67,7 @@ public class PuntosServiceImpl implements IPuntosService {
 		var puntosOpt = puntosRepository.findByCodigoPuntoAndTipoPunto(codigoPunto, tipoPunto);
 		if (Objects.isNull(puntosOpt)) {
 			throw new AplicationException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription()+ " punto no encontrado para tipoPunto = "+tipoPunto+" codigoPunto = "+codigoPunto,
 					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
 		} 
 		return puntosOpt;
@@ -83,7 +83,7 @@ public class PuntosServiceImpl implements IPuntosService {
 		var puntosOpt = puntosRepository.findByCodigoPuntoAndTipoPunto(codigoPunto, tipoPunto);
 		if (Objects.isNull(puntosOpt)) { 
 			throw new AplicationException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription()+ " punto no encontrado para tipoPunto = "+tipoPunto+" codigoPunto = "+codigoPunto,
 					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
 		} 
 		return puntosOpt.getNombrePunto();
@@ -97,7 +97,7 @@ public class PuntosServiceImpl implements IPuntosService {
 		var puntosOpt = puntosRepository.findByCodigoPunto(codigoPunto);
 		if (Objects.isNull(puntosOpt)) { 
 			throw new AplicationException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription()+ " punto no encontrado para codigoPunto = "+codigoPunto,
 					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
 		} 
 		return puntosOpt.getNombrePunto();
@@ -111,7 +111,7 @@ public class PuntosServiceImpl implements IPuntosService {
 		var puntosOpt = puntosRepository.findByTipoPuntoAndNombrePunto(tipoPunto, nombrePunto);
 		if (Objects.isNull(puntosOpt)) {
 			throw new AplicationException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription()+ " punto no encontrado para tipoPunto = "+tipoPunto+" nombrePunto = "+nombrePunto,
 					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
 		} 
 		return puntosOpt.getCodigoPunto();
@@ -254,7 +254,7 @@ public class PuntosServiceImpl implements IPuntosService {
 			return puntosRepository.findById(idPunto).get();
 		} catch (Exception e) {
 			throw new AplicationException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription()+" idPunto "+idPunto,
+					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription()+" no encontrado para idPunto = "+idPunto,
 					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
 		}
 		 
@@ -280,7 +280,7 @@ public class PuntosServiceImpl implements IPuntosService {
 		Puntos puntos = puntosRepository.obtenerCodigoPunto(codigo_banco_aval);
 		if (Objects.isNull(puntos)) {
 			throw new NegocioException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription() +" no encontrado para codigoBancoAval = "+codigo_banco_aval,
 					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
 		} else
 			return puntos;

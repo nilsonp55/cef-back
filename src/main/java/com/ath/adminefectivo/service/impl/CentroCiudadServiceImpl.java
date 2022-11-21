@@ -41,7 +41,7 @@ public class CentroCiudadServiceImpl implements ICentroCiudadService {
 		var cuentas = centroCiudadRepository.findById(idCentroCiudad);
 		if (Objects.isNull(cuentas)) {
 			throw new AplicationException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription()+ " no encontrado para Centro Ciudad = "+idCentroCiudad,
 					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
 		} 
 		return CentroCiudadDTO.CONVERTER_DTO.apply(cuentas.get());

@@ -500,12 +500,12 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
 		if (!puntoFondoOrigen.getTipoPunto().toUpperCase().trim().equals(Constantes.PUNTO_FONDO)) {
 			throw new NegocioException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription()+ " no encontrado para fondo origen = "+contenido,
 					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
 		} else if (!esCambio
 				&& !puntoBancoDestino.getTipoPunto().toUpperCase().trim().equals(Constantes.PUNTO_BANC_REP)) {
 			throw new NegocioException(ApiResponseCode.ERROR_NO_ES_BANREP.getCode(),
-					ApiResponseCode.ERROR_NO_ES_BANREP.getDescription(),
+					ApiResponseCode.ERROR_NO_ES_BANREP.getDescription() + " no encontrado para fondo destino = "+contenido,
 					ApiResponseCode.ERROR_NO_ES_BANREP.getHttpStatus());
 		}
 		
@@ -1268,13 +1268,13 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 					.findFirst().orElse(null);
 			if (Objects.isNull(punto)) {
 				throw new NegocioException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
-						ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription(),
+						ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription()+ "Punto no encontrado para tipo banco, es un punto = "+ punto.getNombrePunto(),
 						ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
 			}
 			return punto.getNombrePunto();
 		} else {
 			throw new NegocioException(ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getDescription()+" Fondo no encontrado para codigo fondo = "+codigoFondoTDV,
 					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getHttpStatus());
 		}
 	}
@@ -1302,7 +1302,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 			}
 		} else {
 			throw new NegocioException(ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getDescription() + " fondo no encontrado para fondo = "+codigoFondoTDV,
 					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getHttpStatus());
 		}
 	}
@@ -1322,7 +1322,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 			return puntos.getNombrePunto();
 		} else {
 			throw new NegocioException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription()+ " Punto no encontrado con codigo punto = "+codigoPunto,
 					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
 		}
 	}
@@ -1350,7 +1350,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 			}
 		} else {
 			throw new NegocioException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription() + " Punto no encontrado para codigoPunto = "+codigoPunto,
 					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
 		}
 	}
@@ -1396,7 +1396,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 					operaciones.setCodigoFondoTDV(codigoFondoTDV.getCodigoPunto());
 				}else {
 					throw new NegocioException(ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getCode(),
-							ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getDescription() + "transportadora = "+transportadora+ " codigoCompensacion = "+codigoCompensacion+" ciudad = "+ciudad,
+							ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getDescription() + " no encontrado para transportadora = "+transportadora+ " codigoCompensacion = "+codigoCompensacion+" ciudad = "+ciudad,
 							ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getHttpStatus());
 				}
 				
