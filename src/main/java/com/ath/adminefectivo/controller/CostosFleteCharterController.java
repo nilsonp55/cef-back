@@ -44,7 +44,8 @@ public class CostosFleteCharterController {
 	public ResponseEntity<ApiResponseADE<List<ParametrosLiquidacionCostoDTO>>> consultarCostosFleteCharter(
 					@RequestParam("fechaInicial") Date fechaInicial, 
 					@RequestParam("fechaFinal") Date fechaFinal) {
-		
+		System.out.println("fechaInicial "+fechaInicial);
+		System.out.println("fechaFinal "+fechaFinal);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<List<ParametrosLiquidacionCostoDTO>>(
 						costosFleteCharterDelegate.consultarCostosFleteCharter(fechaInicial, fechaFinal),
