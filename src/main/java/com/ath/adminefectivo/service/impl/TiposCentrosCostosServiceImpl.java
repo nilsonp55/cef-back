@@ -41,7 +41,7 @@ public class TiposCentrosCostosServiceImpl implements ITiposCentrosCostosService
 		var centros = tiposCentrosCostosRepository.findById(idTiposCentrosCostos);
 		if (Objects.isNull(centros)) {
 			throw new AplicationException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription()+ "no encontrado para tipos centros costos con id = "+idTiposCentrosCostos,
 					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
 		} 
 		return TiposCentrosCostosDTO.CONVERTER_DTO.apply(centros.get());

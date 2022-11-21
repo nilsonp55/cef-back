@@ -63,7 +63,7 @@ public class BancosServiceImpl implements IBancosService {
 			return bancoOpt.get().getAbreviatura();
 		} else {
 			throw new NegocioException(ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getDescription()+ " banco no encontrado ="+codigo,
 					ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getHttpStatus());
 		}
 	}
@@ -76,7 +76,7 @@ public class BancosServiceImpl implements IBancosService {
 		var bancoOpt = bancosRepository.findByCodigoCompensacion(codigoCompensacion);
 		if (bancoOpt == null) {
 			throw new NegocioException(ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getDescription()+" Banco no encontrado para codigo = "+codigoCompensacion,
 					ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getHttpStatus());
 		} else {
 			return bancoOpt.getCodigoPunto();
@@ -94,7 +94,7 @@ public class BancosServiceImpl implements IBancosService {
 			return BancosDTO.CONVERTER_DTO.apply(bancoOpt);
 		} else {
 			throw new NegocioException(ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getDescription() +" Banco no encontrado para codigo = "+codigoPunto,
 					ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getHttpStatus());
 		}
 	}

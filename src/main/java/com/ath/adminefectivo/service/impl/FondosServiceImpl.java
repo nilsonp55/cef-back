@@ -46,7 +46,7 @@ public class FondosServiceImpl implements IFondosService {
 				puntosCodigoTdvService.getEntidadPuntoCodigoTDV(codigoFondo).getCodigoPunto());
 		if (Objects.isNull(fondo)) {
 			throw new NegocioException(ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getDescription() + "Codigo Fondo no encontrado = "+codigoFondo,
 					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getHttpStatus());
 
 		}
@@ -103,7 +103,7 @@ public class FondosServiceImpl implements IFondosService {
 		var fondo = fondosRepository.findByCodigoPunto(codigoPunto);
 		if (Objects.isNull(fondo)) {
 			throw new NegocioException(ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getDescription()+ "Codigo Fondo no encontrado = "+codigoPunto,
 					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getHttpStatus());
 
 		}
@@ -118,7 +118,7 @@ public class FondosServiceImpl implements IFondosService {
 		var fondo = fondosRepository.findByCodigoPunto(codigoPunto);
 		if (Objects.isNull(fondo)) {
 			throw new NegocioException(ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getDescription()+ "Codigo Fondo no encontrado = "+codigoPunto,
 					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getHttpStatus());
 
 		}

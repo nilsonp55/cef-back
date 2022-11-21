@@ -337,47 +337,51 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 				.apply(puntosService.getPuntoById(operacionProgramada.getCodigoPuntoOrigen()));
 		PuntosDTO puntoDestino = PuntosDTO.CONVERTER_DTO
 				.apply(puntosService.getPuntoById(operacionProgramada.getCodigoPuntoDestino()));
-		
+		long valorComision;
+		long valorImpuesto = 0;
+		long valorPago;
+		PuntosDTO  puntoBancoExterno = null;
 		if (operacionProgramada.getEntradaSalida().equals("ENTRADA")) {
+			puntoBancoExterno = puntoConsultarBancoAval(puntoOrigen);
 			TransaccionesInternasDTO transaccionInternaDTOVenta10 = generarTransaccionInterna(tipoProceso, 20,
 					operacionProgramada, operacionProgramada.getCodigoFondoTDV());
-			transaccionInternaDTOVenta10.setCodigoPuntoBancoExt(PuntoconsultarBancoAval(puntoOrigen));
+			transaccionInternaDTOVenta10.setCodigoPuntoBancoExt(puntoBancoExterno);
 			transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTOVenta10);
 			
 			if(Integer.valueOf(operacionProgramada.getTasaNegociacion()) > 0) {
 				TransaccionesInternasDTO transaccionInternaDTOVenta11 = generarTransaccionInterna(tipoProceso, 21, operacionProgramada, operacionProgramada.getCodigoFondoTDV());
 
 				Double valorComisionDouble = (operacionProgramada.getValorTotal() * Double.valueOf(operacionProgramada.getTasaNegociacion()).intValue()) / 100;
-				long valorComision = valorComisionDouble.longValue();
+				valorComision = valorComisionDouble.longValue();
 				transaccionInternaDTOVenta11.setValor(valorComision);
 				transaccionInternaDTOVenta11.setTasaNegociacion(operacionProgramada.getTasaNegociacion());
-				transaccionInternaDTOVenta11.setCodigoPuntoBancoExt(PuntoconsultarBancoAval(puntoOrigen));
+				transaccionInternaDTOVenta11.setCodigoPuntoBancoExt(puntoBancoExterno);
 				transaccionInternaDTOVenta11.setCodigoComision(Integer.valueOf(Dominios.COMISION_2));
 				transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTOVenta11);
 
-				FondosDTO fondoDestinoDTO = fondosService.getFondoByCodigoPunto(puntoDestino.getCodigoPunto());
-				BancosDTO bancoDestinoDTO = bancosService.validarPuntoBancoEsAval(fondoDestinoDTO.getBancoAVAL());
+				BancosDTO bancoDestinoDTO = bancosService.validarPuntoBancoEsAval(puntoBancoExterno.getCodigoPunto());
 				if (Objects.isNull(bancoDestinoDTO)) {
 					TransaccionesInternasDTO transaccionInternaDTOVenta12 = generarTransaccionInterna(tipoProceso, 22,
 							operacionProgramada, operacionProgramada.getCodigoFondoTDV());
-					valorComision = this.calcularValorConImpuesto(valorComision, Dominios.IMPUESTO_IVA);
-					transaccionInternaDTOVenta12.setValor(valorComision);
+					valorImpuesto = this.calcularValorConImpuesto(valorComision, Dominios.IMPUESTO_IVA);
+					transaccionInternaDTOVenta12.setValor(valorImpuesto);
 					transaccionInternaDTOVenta12.setTipoImpuesto(Integer.valueOf(Dominios.IMPUESTO_IVA));
 					transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTOVenta12);
 				}
 									
 				TransaccionesInternasDTO transaccionInternaDTOVenta13 = generarTransaccionInterna(tipoProceso, 23, operacionProgramada, operacionProgramada.getCodigoFondoTDV());
-				long valorD = transaccionInternaDTOVenta11.getValor() + valorComision;
-				transaccionInternaDTOVenta13.setValor(valorD);
+				valorPago = transaccionInternaDTOVenta11.getValor() + valorImpuesto;
+				transaccionInternaDTOVenta13.setValor(valorPago);
 				transaccionInternaDTOVenta13.setMedioPago(Dominios.MEDIOS_PAGO_ABONO);
 				transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTOVenta13);
 
 			}
 
 		} else if (operacionProgramada.getEntradaSalida().equals("SALIDA")) {
+			puntoBancoExterno = puntoConsultarBancoAval(puntoDestino);
 			TransaccionesInternasDTO transaccionInternaDTOVenta20 = generarTransaccionInterna(tipoProceso, 10,
 					operacionProgramada, operacionProgramada.getCodigoFondoTDV());
-			transaccionInternaDTOVenta20.setCodigoPuntoBancoExt(PuntoconsultarBancoAval(puntoDestino));
+			transaccionInternaDTOVenta20.setCodigoPuntoBancoExt(puntoBancoExterno);
 			transaccionInternaDTOVenta20.setTasaNegociacion(operacionProgramada.getTasaNegociacion());
 			transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTOVenta20);
 
@@ -387,27 +391,26 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 						operacionProgramada, operacionProgramada.getCodigoFondoTDV());
 				transaccionInternaDTOVenta21.setTasaNegociacion(operacionProgramada.getTasaNegociacion());
 				Double valorComisionDouble = (operacionProgramada.getValorTotal() * Integer.valueOf(operacionProgramada.getTasaNegociacion())) / 100;
-				long valorComision = valorComisionDouble.longValue();
+				valorComision = valorComisionDouble.longValue();
 				transaccionInternaDTOVenta21.setValor(valorComision);
 				transaccionInternaDTOVenta21.setCodigoComision(Integer.valueOf(Dominios.COMISION_2));
-				transaccionInternaDTOVenta21.setCodigoPuntoBancoExt(PuntoconsultarBancoAval(puntoDestino));
+				transaccionInternaDTOVenta21.setCodigoPuntoBancoExt(puntoBancoExterno);
 				transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTOVenta21);
 
-				FondosDTO fondoOrigenDTO = fondosService.getFondoByCodigoPunto(puntoOrigen.getCodigoPunto());
-				BancosDTO bancoOrigenDTO = bancosService.validarPuntoBancoEsAval(fondoOrigenDTO.getBancoAVAL());
-				if (Objects.isNull(bancoOrigenDTO)) {
+				BancosDTO bancoDestinoDTO = bancosService.validarPuntoBancoEsAval(puntoBancoExterno.getCodigoPunto());
+				if (Objects.isNull(bancoDestinoDTO)) {
 					TransaccionesInternasDTO transaccionInternaDTOVenta22 = generarTransaccionInterna(tipoProceso, 12,
 							operacionProgramada, operacionProgramada.getCodigoFondoTDV());
-					valorComision = this.calcularValorConImpuesto(valorComision, Dominios.IMPUESTO_IVA);
-					transaccionInternaDTOVenta22.setValor(valorComision);
+					valorImpuesto = this.calcularValorConImpuesto(valorComision, Dominios.IMPUESTO_IVA);
+					transaccionInternaDTOVenta22.setValor(valorImpuesto);
 					transaccionInternaDTOVenta22.setCodigoComision(Integer.valueOf(Dominios.COMISION_2));
 					transaccionInternaDTOVenta22.setTipoImpuesto(Integer.valueOf(Dominios.IMPUESTO_IVA));
 					transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTOVenta22);
 				}
 				
 				TransaccionesInternasDTO transaccionInternaDTOVenta23 = generarTransaccionInterna(tipoProceso, 13, operacionProgramada, operacionProgramada.getCodigoFondoTDV());
-				long valorD = transaccionInternaDTOVenta21.getValor() +  valorComision;
-				transaccionInternaDTOVenta23.setValor(valorD);
+				valorPago = transaccionInternaDTOVenta21.getValor() +  valorImpuesto;
+				transaccionInternaDTOVenta23.setValor(valorPago);
 				transaccionInternaDTOVenta23.setMedioPago(Dominios.MEDIOS_PAGO_DESCUENTO);
 				transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTOVenta23);
 			}
@@ -554,7 +557,7 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 
 	private long calcularValorConImpuesto(long long1, String impuesto) {
 		Integer valorImpuesto = dominioService.valorNumericoDominio(Constantes.DOMINIO_IMPUESTOS, impuesto).intValue();
-		return (long1 * valorImpuesto) / 100;
+		return ((long1/10000) * valorImpuesto) / 100;
 	}
 
 	/**
@@ -586,13 +589,13 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 		BancosDTO bancoDestino = bancosService.findBancoByCodigoPunto(transaccionIntradia.getCodigoPunto());
 		PuntosDTO puntoBancoDestino = PuntosDTO.CONVERTER_DTO
 				.apply(puntosService.getPuntoById(bancoDestino.getCodigoPunto()));
-		transaccionInternaDTO.setCodigoPuntoBancoExt(PuntoconsultarBancoAval(puntoBancoDestino));
+		transaccionInternaDTO.setCodigoPuntoBancoExt(puntoConsultarBancoAval(puntoBancoDestino));
 		consecutivoDia++;
 		return TransaccionesInternasDTO.CONVERTER_DTO
 				.apply(transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTO));
 	}
 	
-	private PuntosDTO PuntoconsultarBancoAval(PuntosDTO punto) {
+	private PuntosDTO puntoConsultarBancoAval(PuntosDTO punto) {
 		if(punto.getTipoPunto().equals(dominioService.valorTextoDominio(Constantes.DOMINIO_TIPOS_PUNTO, Dominios.TIPOS_PUNTO_FONDO))){
 			Integer idBanco = fondosService.getEntidadFondo(punto.getCodigoPunto()).getBancoAVAL();
 			return PuntosDTO.CONVERTER_DTO.apply(puntosService.getPuntoById(idBanco));

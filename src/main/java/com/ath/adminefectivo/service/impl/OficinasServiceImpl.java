@@ -39,7 +39,7 @@ public class OficinasServiceImpl implements IOficinasService {
 		var oficinaOpt = oficinasRepository.findByCodigoOficinaAndBancoAval(codigoOficina, codigoBancoAVAL);
 		if (Objects.isNull(oficinaOpt)) {
 			throw new AplicationException(ApiResponseCode.ERROR_OFICINAS_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_OFICINAS_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_OFICINAS_NO_ENCONTRADO.getDescription()+ " con el codigo oficina = "+codigoBancoAVAL+" con banco Aval codigo = "+codigoBancoAVAL,
 					ApiResponseCode.ERROR_OFICINAS_NO_ENCONTRADO.getHttpStatus());
 		} else {
 			return oficinaOpt.getCodigoPunto();

@@ -40,7 +40,7 @@ public class TiposCuentasServiceImpl implements ITiposCuentasService {
 		var cuentas = tiposCuentasRepository.findById(idTipoCuentas);
 		if (Objects.isNull(cuentas)) {
 			throw new AplicationException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription()+" TipoCuenta no encontrada para id = "+idTipoCuentas,
 					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
 		} 
 		return TiposCuentasDTO.CONVERTER_DTO.apply(cuentas.get());
