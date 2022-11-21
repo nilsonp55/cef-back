@@ -29,7 +29,7 @@ public class Encriptar  {
 	public PrivateKey  readPrivate() throws Exception {
 		File privateKeyFile = new File("privateRSA.key");
 		byte[] privateKeyBytes = Files.readAllBytes(privateKeyFile.toPath());
-		KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+		KeyFactory keyFactory = KeyFactory.getInstance("RSA/ECB/OAEPWithMD5AndMGF1Padding");
 		PKCS8EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(privateKeyBytes);       
 		
 		return	keyFactory.generatePrivate(privateKeySpec);	
@@ -37,7 +37,7 @@ public class Encriptar  {
 	
 	public String encriptar(String texto) throws Exception {
 		PrivateKey pk = this.readPrivate();
-		Cipher encryptCipher = Cipher.getInstance("RSA");
+		Cipher encryptCipher = Cipher.getInstance("RSA/ECB/OAEPWithMD5AndMGF1Padding");
 		encryptCipher.init(Cipher.ENCRYPT_MODE, pk);
 		byte[] encript =   encryptCipher.doFinal(texto.getBytes());
 		String encoded = DatatypeConverter.printBase64Binary(encript);
@@ -48,7 +48,7 @@ public class Encriptar  {
 	
 	public String desencriptar(String texto) throws Exception {
 		PrivateKey pk = this.readPrivate();
-		Cipher encryptCipher = Cipher.getInstance("RSA");
+		Cipher encryptCipher = Cipher.getInstance("RSA/ECB/OAEPWithMD5AndMGF1Padding");
 		encryptCipher.init(Cipher.DECRYPT_MODE, pk);
 		byte[] decript =   encryptCipher.doFinal(texto.getBytes());
 		String decoded = DatatypeConverter.printBase64Binary(decript);
