@@ -102,6 +102,8 @@ public class RespuestaLiquidarCostosDTO {
 	
 	private Double costoCharter;
 	
+	private Integer idSeqGrupo;
+	
 	
 	
 	

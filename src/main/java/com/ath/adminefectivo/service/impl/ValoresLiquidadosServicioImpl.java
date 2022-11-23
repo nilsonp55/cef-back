@@ -190,6 +190,7 @@ public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService 
 			liquidarCostosDTO.setCostoPaqueteo(valorLiquidado.getCostoPaqueteo());
 			liquidarCostosDTO.setTasaAeroportuaria(valorLiquidado.getTasaAeroportuaria());
 			liquidarCostosDTO.setCostoCharter(valorLiquidado.getCostoCharter());
+			liquidarCostosDTO.setIdSeqGrupo(valorLiquidado.getIdSeqGrupo());
 
 			liquidarCostosDTO
 					.setFechaLiquidacion(parametroServiceImpl.valorParametroDate(Constantes.FECHA_DIA_PROCESO));
