@@ -11,10 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.constantes.Constantes;
+import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.MaestrosDefinicionArchivoDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.service.IDominioService;
+import com.ath.adminefectivo.service.IEncriptarService;
 import com.ath.adminefectivo.service.ILecturaArchivoService;
 import com.opencsv.CSVParser;
 import com.opencsv.CSVParserBuilder;
@@ -29,6 +31,9 @@ public class LecturaArchivoServiceImpl implements ILecturaArchivoService {
 
 	@Autowired
 	IDominioService dominioService;
+	
+	@Autowired
+	IEncriptarService encriptarService;
 
 	@Override
 	public String obtenerDelimitadorArchivo(MaestrosDefinicionArchivoDTO maestroDefinicion) {
@@ -55,27 +60,49 @@ public class LecturaArchivoServiceImpl implements ILecturaArchivoService {
 	}
 
 	@Override
-	public List<String[]> leerArchivo(InputStream archivo, String delimitador) {
+	public List<String[]> leerArchivo(InputStream archivo, String delimitador, String tipoEncriptado) {
 
-		CSVParser parser = new CSVParserBuilder().withSeparator(delimitador.charAt(0)).withIgnoreQuotations(true).build();
+		String algoritmoEncriptado = this.validarEncriptado(tipoEncriptado);
 		
-		try (CSVReader csvReader = new CSVReaderBuilder(new InputStreamReader(archivo)).withCSVParser(parser).build()) {
+		if(algoritmoEncriptado.equals(dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_ENCRIPTADO, Dominios.TIPO_ENCRIPTADO_NA))) {
 			
-			List<String[]> resultadoSinValidar = csvReader.readAll();
+			CSVParser parser = new CSVParserBuilder().withSeparator(delimitador.charAt(0)).withIgnoreQuotations(true).build();
+			
 			List<String[]> resultadoValidado = new ArrayList<String[]>();
-			resultadoSinValidar.forEach(linea ->{
-				System.out.println("csvReader.readAll(); "+ linea.length);
-				if(linea.length > 2) {
-					resultadoValidado.add(linea);
-				}
-			});
+			try (CSVReader csvReader = new CSVReaderBuilder(new InputStreamReader(archivo)).withCSVParser(parser).build()) {
+				List<String[]> resultadoSinValidar = csvReader.readAll();
+					resultadoSinValidar.forEach(linea ->{
+					System.out.println("csvReader.readAll(); "+ linea.length);
+					if(linea.length > 2) {
+						resultadoValidado.add(linea);
+					}}
+					);
+					return resultadoValidado;
+			} catch (Exception e) {
+				throw new NegocioException(ApiResponseCode.ERROR_LECTURA_DOCUMENTO.getCode(),
+						ApiResponseCode.ERROR_LECTURA_DOCUMENTO.getDescription(),
+						ApiResponseCode.ERROR_LECTURA_DOCUMENTO.getHttpStatus());
+			}
 			
-			return resultadoValidado;
-		} catch (Exception e) {
-			throw new NegocioException(ApiResponseCode.ERROR_LECTURA_DOCUMENTO.getCode(),
-					ApiResponseCode.ERROR_LECTURA_DOCUMENTO.getDescription(),
-					ApiResponseCode.ERROR_LECTURA_DOCUMENTO.getHttpStatus());
+			
+		}else {
+			return encriptarService.desencriptarArchivoPorAlgoritmo(algoritmoEncriptado, archivo,delimitador );
 		}
+		
+		
+		
+		
+	}
+
+	private String validarEncriptado(String tipoEncriptado) {
+		String valorEncriptado = dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_ENCRIPTADO, tipoEncriptado);
+		if(Objects.isNull(valorEncriptado)) {
+			throw new NegocioException(ApiResponseCode.ERROR_DOMINIO_TIPO_ENCRIPTADO.getCode(),
+					ApiResponseCode.ERROR_DOMINIO_TIPO_ENCRIPTADO.getDescription(),
+					ApiResponseCode.ERROR_DOMINIO_TIPO_ENCRIPTADO.getHttpStatus());
+		}
+		
+		return valorEncriptado;
 	}
 
 }

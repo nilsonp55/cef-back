@@ -40,7 +40,7 @@ public class PuntosCodigoTDV {
 	@Column(name = "CODIGO_TDV")
 	private String codigoTDV;
 	
-	@Column(name = "CODIGO_PROPIO_TDV")
+	@Column(name = "CODIGO_PROPIO_TDV", nullable = false)
 	private String codigoPropioTDV;
 	
 	@ManyToOne

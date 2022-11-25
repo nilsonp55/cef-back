@@ -45,6 +45,10 @@ public final class Constantes {
 	public static final Integer NUMERO_ARCHIVOS_CARGADOS_PRELIMINAR = 1;
 	public static final Integer NUMERO_ARCHIVOS_CARGADOS_DEFINITIVA = 2;
 	public static final String FECHA_DIA_PROCESO = "FECHA_DIA_PROCESO";
+	public static final String PARAMETRO_PRIVATE_KEY_RSA = "PRIVATE_KEY_RSA";
+	public static final String PARAMETRO_PUBLIC_KEY_RSA = "PUBLIC_KEY_RSA";
+	public static final String INSTANCIA_RSA = "INSTANCIA_RSA";
+	public static final String BYTES_RSA = "BYTES_RSA";
 
 
 	/**
@@ -231,6 +235,11 @@ public final class Constantes {
 	 * Constante del agrupador de los dominios  de los escalas
 	 */
 	public static final String DOMINIO_ESCALAS = "ESCALA";
+	
+	/**
+	 * Constante del tipo de encriptado en dominios
+	 */
+	public static final String DOMINIO_TIPO_ENCRIPTADO = "TIPO_ENCRIPTADO";
 	
 	/**
 	 * Delimintadores de los archivos

@@ -17,7 +17,7 @@ public class GenerarRSA  {
 
 	public void generarClaves(int size) throws NoSuchAlgorithmException {
 		System.out.println("Generando claves de "+size+" bits. ");
-		KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
+		KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA/ECB/OAEPWithMD5AndMGF1Padding");
 		generator.initialize(size);
 		KeyPair pair = generator.generateKeyPair();
 		this.keyPair = pair;

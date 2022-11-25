@@ -429,8 +429,10 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 		var codigoPuntoOrigenDestino = new CodigoPuntoOrigenDestinoDTO();
 		Integer codigoPuntoOrigen = 0;
 		Integer codigoPuntoDestino = 0;
+		
 		System.out.println("---------- codigoPropio = " + codigoPropio + " registro.getTdv() = " + registro.getTdv()
 				+ "registro.getBanco_aval() = " + registro.getBanco_aval());
+		
 		if (asignarEntradaSalida(entradaSalida).equals(Constantes.NOMBRE_ENTRADA)) {
 			codigoPuntoDestino = registro.getCodigoPunto();
 			codigoPuntoOrigen = puntosCodigoTdvService.getCodigoPunto(codigoPropio, registro.getTdv(),
@@ -558,7 +560,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	}
 
 	private String procesarOperacionOtros(Integer codigoPunto) {
-		return "VENTA";
+		return "TRASLADO";
 
 	}
 
