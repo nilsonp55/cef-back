@@ -234,7 +234,7 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 		
 		// Validaciones de arcihvo	
 		String delimitador = lecturaArchivoService.obtenerDelimitadorArchivo(maestroDefinicion);
-		List<String[]> contenido = lecturaArchivoService.leerArchivo(dowloadFile.getFile(), delimitador);
+		List<String[]> contenido = lecturaArchivoService.leerArchivo(dowloadFile.getFile(), delimitador, maestroDefinicion.getTipoDeEncriptado());
 		
 		Date fechaActual = parametrosService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
 		Date fechaAnteriorHabil = festivosNacionalesService.consultarAnteriorHabil(fechaActual);

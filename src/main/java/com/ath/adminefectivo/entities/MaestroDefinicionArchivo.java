@@ -106,4 +106,7 @@ public class MaestroDefinicionArchivo {
 	@Temporal(TemporalType.DATE)
 	@Column(name = "FECHA_MODIFICACION")
 	private Date fechaModificacion;
+	
+	@Column(name = "TIPO_ENCRIPTADO")
+	private String tipoDeEncriptado;
 }

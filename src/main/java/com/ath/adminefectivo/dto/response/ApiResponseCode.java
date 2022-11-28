@@ -599,8 +599,25 @@ public enum ApiResponseCode {
 	 * Ocurrió un error al consultar la table de fondos
 	 */
 	ERROR_LIQUIDACION_DIA_MES_NO_ENCONTRADA("E954", "Ocurrió un error al consultar la tabla parametros liquidacion costos, no existen registros para el mes y año enviado. ",
-			HttpStatus.PRECONDITION_FAILED);
+			HttpStatus.PRECONDITION_FAILED),
 	
+	/**
+	 * Ocurrió un error al consultar el dominio para tipo de encriptado
+	 */
+	ERROR_DOMINIO_TIPO_ENCRIPTADO("E958", "Ocurrió un error al consultar la tabla Dominios, el dominio tipo encriptado no existe. ",
+			HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Ocurrió un error al desencriptar un string
+	 */
+	ERROR_DESENCRIPTANDO_CADENA("E959", "Ocurrió un error al realizar la desencriptación de una cadena ",
+			HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Ocurrió un error al desencriptar un string
+	 */
+	ERROR_ENCRIPTANDO_CADENA("E960", "Ocurrió un error al realizar la encriptación de una cadena ",
+			HttpStatus.PRECONDITION_FAILED);
 	
 	/**
 	 * Código asociado a la respuesta

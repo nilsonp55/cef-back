@@ -209,4 +209,10 @@ public final class Dominios {
 	public static final int ESTADO_GENERAL_CORREGIDO = 4;
 	public static final int ESTADO_GENERAL_ELIMINADO = 5;
 	
+	/**
+	 * Dominios de tipos de encriptado
+	 */
+	public static final String TIPO_ENCRIPTADO_NA = "0";
+	public static final String TIPO_ENCRIPTADO_RSA = "1";
+	public static final String TIPO_ENCRIPTADO_BC = "2";
 }

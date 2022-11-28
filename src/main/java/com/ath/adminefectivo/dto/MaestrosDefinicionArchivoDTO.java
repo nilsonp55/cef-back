@@ -78,6 +78,8 @@ public class MaestrosDefinicionArchivoDTO {
 	private int numeroCantidadMinima;
 
 	private String agrupador;
+	
+	private String tipoDeEncriptado;
 
 	/**
 	 * Funcion que convierte el archivo DTO MaestrosDefinicionArchivoDTO a Entity

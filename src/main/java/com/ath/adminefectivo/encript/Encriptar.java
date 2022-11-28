@@ -25,7 +25,14 @@ public class Encriptar  {
 		 return keyPair.getPublic();
 	}
 	
-
+	public PublicKey  readPublic() throws Exception  {
+		File publicKeyFile = new File("key.public");
+		byte[] publicKeyBytes = Files.readAllBytes(publicKeyFile.toPath());
+		KeyFactory keyFactory = KeyFactory.getInstance("RSA/ECB/OAEPWithMD5AndMGF1Padding");
+		EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(publicKeyBytes);
+		return	keyFactory.generatePublic(publicKeySpec);
+}
+	
 	public PrivateKey  readPrivate() throws Exception {
 		File privateKeyFile = new File("privateRSA.key");
 		byte[] privateKeyBytes = Files.readAllBytes(privateKeyFile.toPath());
@@ -36,10 +43,11 @@ public class Encriptar  {
 	}
 	
 	public String encriptar(String texto) throws Exception {
-		PrivateKey pk = this.readPrivate();
+		PublicKey pk = this.readPublic();
 		Cipher encryptCipher = Cipher.getInstance("RSA/ECB/OAEPWithMD5AndMGF1Padding");
 		encryptCipher.init(Cipher.ENCRYPT_MODE, pk);
 		byte[] encript =   encryptCipher.doFinal(texto.getBytes());
+		
 		String encoded = DatatypeConverter.printBase64Binary(encript);
 		System.out.println("Texto cifrado:");
 		System.out.println(encoded);

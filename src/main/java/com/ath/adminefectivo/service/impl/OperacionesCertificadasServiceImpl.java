@@ -300,7 +300,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 		String entradaSalida = determinarCampo(fila, detalleArchivo, tipoRegistro,
 				Constantes.CAMPO_DETALLE_ARCHIVO_ENTRADASALIDA);
 		String codigoPunto = determinarCampo(fila, detalleArchivo, tipoRegistro,
-				Constantes.CAMPO_DETALLE_ARCHIVO_CODIGOPUNTO);
+				Constantes.CAMPO_DETALLE_ARCHIVO_CODIGOPUNTO).trim();
 		String tipoServicio = determinarCampo(fila, detalleArchivo, tipoRegistro,
 				Constantes.CAMPO_DETALLE_ARCHIVO_TIPOSERVICIOF);
 		if(Objects.isNull(codigoServicio) || codigoServicio.isEmpty()) {
@@ -429,22 +429,31 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 		var codigoPuntoOrigenDestino = new CodigoPuntoOrigenDestinoDTO();
 		Integer codigoPuntoOrigen = 0;
 		Integer codigoPuntoDestino = 0;
-		System.out.println("---------- codigoPropio = " + codigoPropio + " registro.getTdv() = " + registro.getTdv()
-				+ "registro.getBanco_aval() = " + registro.getBanco_aval());
+		certificadas = null;
+		
+		
 		if (asignarEntradaSalida(entradaSalida).equals(Constantes.NOMBRE_ENTRADA)) {
 			codigoPuntoDestino = registro.getCodigoPunto();
 			codigoPuntoOrigen = puntosCodigoTdvService.getCodigoPunto(codigoPropio, registro.getTdv(),
 					registro.getBanco_aval(), registro.getCodigoDane());
-			certificadas = operacionesCertificadasRepository
-					.findByCodigoPuntoOrigenAndCodigoServicioTdvAndEntradaSalidaAndFechaEjecucion(codigoPuntoOrigen,
-							codigoServicio, Constantes.NOMBRE_ENTRADA, registro.getFechaEjecucion());
+			if(!codigoServicio.equals("SIN_CODIGO_SERVICIO")) {
+				certificadas = operacionesCertificadasRepository
+						.findByCodigoFondoTDVAndCodigoPuntoOrigenAndCodigoPuntoDestinoAndCodigoServicioTdvAndEntradaSalidaAndFechaEjecucion(codigoPuntoDestino, codigoPuntoOrigen,
+								codigoPuntoDestino, codigoServicio, Constantes.NOMBRE_ENTRADA, registro.getFechaEjecucion());
+			}
+			
 		} else {
+			
 			codigoPuntoOrigen = registro.getCodigoPunto();
 			codigoPuntoDestino = puntosCodigoTdvService.getCodigoPunto(codigoPropio, registro.getTdv(),
 					registro.getBanco_aval(), registro.getCodigoDane());
-			certificadas = operacionesCertificadasRepository
-					.findByCodigoPuntoDestinoAndCodigoServicioTdvAndEntradaSalidaAndFechaEjecucion(codigoPuntoDestino,
-							codigoServicio, Constantes.NOMBRE_SALIDA, registro.getFechaEjecucion());
+			
+			if(!codigoServicio.equals("SIN_CODIGO_SERVICIO")) {
+				certificadas = operacionesCertificadasRepository
+						.findByCodigoFondoTDVAndCodigoPuntoOrigenAndCodigoPuntoDestinoAndCodigoServicioTdvAndEntradaSalidaAndFechaEjecucion(codigoPuntoOrigen, codigoPuntoDestino,
+								codigoPuntoOrigen, codigoServicio, Constantes.NOMBRE_SALIDA, registro.getFechaEjecucion());	
+			}
+			
 		}
 		codigoPuntoOrigenDestino.setCertificadas(certificadas);
 		codigoPuntoOrigenDestino.setCodigoPuntoDestino(codigoPuntoDestino);
@@ -558,7 +567,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	}
 
 	private String procesarOperacionOtros(Integer codigoPunto) {
-		return "VENTA";
+		return "TRASLADO";
 
 	}
 
@@ -879,7 +888,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 				String entradaSalida = determinarCampo(fila, detalleArchivo, Integer.parseInt(tipoRegistro),
 						Constantes.CAMPO_DETALLE_ARCHIVO_ENTRADAOSALIDA);
 				String codigoPunto = determinarCampo(fila, detalleArchivo, Integer.parseInt(tipoRegistro),
-						Constantes.CAMPO_DETALLE_ARCHIVO_CODIGOPUNTO);
+						Constantes.CAMPO_DETALLE_ARCHIVO_CODIGOPUNTO).trim();
 				String tipoServicio = determinarCampo(fila, detalleArchivo, Integer.parseInt(tipoRegistro),
 						Constantes.CAMPO_DETALLE_ARCHIVO_TIPOSERVICIOF);
 				procesarOperacionTransporte(fila, registro, elemento, codigoServicio, entradaSalida.toUpperCase(),
