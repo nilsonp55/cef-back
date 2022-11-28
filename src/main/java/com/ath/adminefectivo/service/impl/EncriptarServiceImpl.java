@@ -38,7 +38,7 @@ public class EncriptarServiceImpl implements IEncriptarService {
 	@Autowired
 	IParametroService parametroService;
 	
-	RSA rsa = new RSA(parametroService);
+	
 			
 	@Override
 	public String encriptarArchivo(String path, String nombreArchivo) {
@@ -49,7 +49,7 @@ public class EncriptarServiceImpl implements IEncriptarService {
 
 			String bfRead;
 			String textoEncriptado = "";
-			
+			RSA rsa = new RSA(parametroService);
 	        try{
 	        	while ((bfRead = bf.readLine()) != null) {
 					if(!textoEncriptado.equals("")) {
@@ -76,6 +76,7 @@ public class EncriptarServiceImpl implements IEncriptarService {
 			BufferedReader bf = new BufferedReader(new FileReader(path+nombreArchivo));
 			String bfRead;
 			String textoDesencriptado;
+			RSA rsa = new RSA(parametroService);
 			while ((bfRead = bf.readLine()) != null) {
 					
 					textoDesencriptado = rsa.decrypt(bfRead);
@@ -112,6 +113,7 @@ public class EncriptarServiceImpl implements IEncriptarService {
 		List<String[]> resultado = new ArrayList<>();
 		BufferedReader br = new BufferedReader(new InputStreamReader(archivo));
 		String textoEncriptado;
+		RSA rsa = new RSA(parametroService);
 		
 		try {
 			while ((textoEncriptado = br.readLine()) != null) {

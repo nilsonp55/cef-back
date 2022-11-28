@@ -105,8 +105,10 @@ public interface IOperacionesCertificadasRepository
 	 * @author cesar.castano
 	 */
 	OperacionesCertificadas 
-	findByCodigoPuntoDestinoAndCodigoServicioTdvAndEntradaSalidaAndFechaEjecucion(Integer codigoPuntoDestino,
-			String codigoServicio, String entradaSalida, Date fechaEjecucion);
+	findByCodigoFondoTDVAndCodigoPuntoOrigenAndCodigoPuntoDestinoAndCodigoServicioTdvAndEntradaSalidaAndFechaEjecucion(Integer codigoFondoTDV, Integer codigoPuntoOrigen,
+			Integer codigoPuntoDestino, String codigoServicio, String entradaSalida, Date fechaEjecucion);
+	
+	
 
 	/**
 	 * Retorna el objeto OperacionesCertificadas con las operaciones candidatas a conciliacion automatica
