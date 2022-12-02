@@ -39,7 +39,9 @@ public class EncriptarServiceImpl implements IEncriptarService {
 	IParametroService parametroService;
 	
 	
-			
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String encriptarArchivo(String path, String nombreArchivo) {
 		try {
@@ -70,6 +72,9 @@ public class EncriptarServiceImpl implements IEncriptarService {
 		return "Se encripto el archivo exitosamente";
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String desencriptarArchivo(String path, String nombreArchivo) {
 		try {
@@ -95,6 +100,9 @@ public class EncriptarServiceImpl implements IEncriptarService {
 		return "Se desencripto el archivo exitosamente";
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public List<String[]> desencriptarArchivoPorAlgoritmo(String algoritmoEncriptado,
 			InputStream archivo, String delimitador) {
@@ -107,7 +115,17 @@ public class EncriptarServiceImpl implements IEncriptarService {
 		}
 		return null;
 	}
-
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String generarLlaves() {
+		RSA rsa = new RSA(parametroService);
+		rsa.createKeys();
+		return "Se crearon las llaves de forma exitosa";
+	}
+	
 	private List<String[]> desencriptarArchivoAlgoritmoRSA(InputStream archivo, String delimitador) {
 		
 		List<String[]> resultado = new ArrayList<>();
@@ -134,6 +152,8 @@ public class EncriptarServiceImpl implements IEncriptarService {
 		}
 		return null;
 	}
+
+
 	
 	
 	
