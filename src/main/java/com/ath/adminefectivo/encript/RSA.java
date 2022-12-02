@@ -4,6 +4,8 @@ import javax.crypto.Cipher;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.ath.adminefectivo.constantes.Constantes;
+import com.ath.adminefectivo.dto.response.ApiResponseCode;
+import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.impl.ParametroServiceImpl;
 
@@ -60,6 +62,13 @@ public class RSA {
 		return false;
 	}
 
+    /**
+     * Metodo encargado de realizar la creación de las llaves 
+     * tanto publicas como privadas, las cuales se crean con los bytes
+     * que este parametro se encuentra en la tabla parametros.
+     * 
+     * @author prv_dnaranjo
+     */
 	public void createKeys() {
     	try {
     		KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
@@ -73,7 +82,7 @@ public class RSA {
             this.privateKey = privateKey;
             this.publicKey = publicKey;
             
-            this.saveKeysInBD();
+            this.saveKeys();
             			
             
     	}catch(Exception e){
@@ -83,16 +92,27 @@ public class RSA {
 		
 	}
 
-	private void saveKeysInBD() {
+	/**
+	 * metodo encargado de realizar el guardado de las llaves generadas en el metodo createKeys()
+	 * en el presente metodo, se encarga de almacenar las llaves en la base de datos y en 
+	 * un archivo el cual se crea en la raiz del proyecto.
+	 * 
+	 * @author prv_dnaranjo
+	 */
+	private void saveKeys() {
 		String privateKeyS = this.getPrivateKeyString();
 		String publicKeysS = this.getPublicKeyString();
 		
 		if(!parametroService.actualizarValorParametro(Constantes.PARAMETRO_PRIVATE_KEY_RSA, privateKeyS)) {
-			System.err.println("Ocurrio un fallo al insertar la llave privada de RSA");
+			throw new NegocioException(ApiResponseCode.ERROR_INSERTANDO_LLAVE_PRIVADA_RSA.getCode(),
+					ApiResponseCode.ERROR_INSERTANDO_LLAVE_PRIVADA_RSA.getDescription(),
+					ApiResponseCode.ERROR_INSERTANDO_LLAVE_PRIVADA_RSA.getHttpStatus());
 		}
 		
 		if(!parametroService.actualizarValorParametro(Constantes.PARAMETRO_PUBLIC_KEY_RSA, publicKeysS)) {
-			System.err.println("Ocurrio un fallo al insertar la llave publica de RSA");
+			throw new NegocioException(ApiResponseCode.ERROR_INSERTANDO_LLAVE_PUBLICA_RSA.getCode(),
+					ApiResponseCode.ERROR_INSERTANDO_LLAVE_PUBLICA_RSA.getDescription(),
+					ApiResponseCode.ERROR_INSERTANDO_LLAVE_PUBLICA_RSA.getHttpStatus());
 		}
 		String nombreArchivoLLavePublica = parametroService.valorParametro(Constantes.NAME_PUBLIC_KEY_RSA);
 		String nombreArchivoLLavePrivada = parametroService.valorParametro(Constantes.NAME_PRIVATE_KEY_RSA);
@@ -115,6 +135,16 @@ public class RSA {
 		
 	}
 
+	/**
+	 * Metodo encargado de realizar la encriptacion de un texto basado en un 
+	 * algoritmo que se encuentra alojado en base de datos en la tabla parametros 
+	 * ademas de utilizar la llave privada creada anteriormente
+	 * 
+	 * @param message
+	 * @return
+	 * @throws Exception
+	 * @author prv_dnaranjo
+	 */
 	public String encrypt(String message) throws Exception{
         byte[] messageToBytes = message.getBytes();
         Cipher cipher = Cipher.getInstance(instanceAlgorith);
@@ -126,6 +156,16 @@ public class RSA {
         return Base64.getEncoder().encodeToString(data);
     }
 
+    /**
+	 * Metodo encargado de realizar la desencriptacion de un texto encriptado basado en un 
+	 * algoritmo que se encuentra alojado en base de datos en la tabla parametros 
+	 * ademas de utilizar la llave privada creada anteriormente
+	 * 
+	 * @param message
+	 * @return
+	 * @throws Exception
+	 * @author prv_dnaranjo
+	 */
     public String decrypt(String encryptedMessage) throws Exception{
         byte[] encryptedBytes = decode(encryptedMessage);
         Cipher cipher = Cipher.getInstance(instanceAlgorith);
@@ -151,9 +191,7 @@ public class RSA {
     private void getKeys(){
     	String privateKeyString = parametroService.valorParametro("privateKeyRSA");
     	String publicKeyString = parametroService.valorParametro("publicKeyRSA");
-    	
-    	//String privada = privateKey.getEncoded();	
-    	
+    	    	
     }
     
     public String getPrivateKeyString() {

@@ -53,4 +53,13 @@ public class EncriptarController {
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
+	
+	
+	@GetMapping(value = "${endpoints.Encriptar.generarLlaves}")
+	public ResponseEntity<ApiResponseADE<String>> generarLlaves() {
+		String consulta = encriptarDelegate.generarLlaves();
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
+	}
 }

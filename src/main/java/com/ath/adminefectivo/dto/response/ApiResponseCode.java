@@ -617,6 +617,18 @@ public enum ApiResponseCode {
 	 * Ocurrió un error al desencriptar un string
 	 */
 	ERROR_ENCRIPTANDO_CADENA("E960", "Ocurrió un error al realizar la encriptación de una cadena ",
+			HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Ocurrió un error al insertar llave privada rsa
+	 */
+	ERROR_INSERTANDO_LLAVE_PRIVADA_RSA("E961", "Ocurrio un fallo al insertar la llave privada de RSA ",
+			HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Ocurrió un error al insertar llave privada rsa
+	 */
+	ERROR_INSERTANDO_LLAVE_PUBLICA_RSA("E962", "Ocurrio un fallo al insertar la llave publica de RSA ",
 			HttpStatus.PRECONDITION_FAILED);
 	
 	/**

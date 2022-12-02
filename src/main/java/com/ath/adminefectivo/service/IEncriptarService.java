@@ -44,6 +44,15 @@ public interface IEncriptarService {
 	public List<String[]> desencriptarArchivoPorAlgoritmo(String algoritmoEncriptado,
 			InputStream archivo, String delimitador);
 
+	/**
+	 * Servicio encargado de realizar el llamado a la creacion de la 
+	 * llave publica y privada del algoritmo RSA de encriptación
+	 * 
+	 * @return String
+	 * @author prv_dnaranjo
+	 */
+	public String generarLlaves();
+
 	
 
 }
