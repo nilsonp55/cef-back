@@ -78,7 +78,7 @@ public class EncriptarServiceImpl implements IEncriptarService {
 			String textoDesencriptado;
 			RSA rsa = new RSA(parametroService);
 			while ((bfRead = bf.readLine()) != null) {
-					
+				System.err.println("TEXTO ENCRIPTADO " +bfRead);
 					textoDesencriptado = rsa.decrypt(bfRead);
 					System.err.println(textoDesencriptado);
 			}

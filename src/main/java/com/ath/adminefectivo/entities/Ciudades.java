@@ -35,4 +35,7 @@ public class Ciudades {
 	@Column(name = "NOMBRE_CIUDAD_FISERV")
 	private String nombreCiudadFiserv;
 	
+	@Column(name = "CODIGO_BRINKS", nullable = true)
+	private Integer codigoBrinks;
+	
 }

@@ -49,6 +49,8 @@ public final class Constantes {
 	public static final String PARAMETRO_PUBLIC_KEY_RSA = "PUBLIC_KEY_RSA";
 	public static final String INSTANCIA_RSA = "INSTANCIA_RSA";
 	public static final String BYTES_RSA = "BYTES_RSA";
+	public static final String NAME_PUBLIC_KEY_RSA = "NAME_PUBLIC_KEY";
+	public static final String NAME_PRIVATE_KEY_RSA = "NAME_PRIVATE_KEY";
 
 
 	/**

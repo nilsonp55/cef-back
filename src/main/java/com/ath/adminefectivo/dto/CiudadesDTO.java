@@ -27,6 +27,8 @@ public class CiudadesDTO {
 	
 	private String nombreCiudadFiserv;
 	
+	private Integer codigoBrinks;
+	
 	/**
 	 * Función encargada de recibir un DTO y retornar un objeto con los mismos datos
 	 */
