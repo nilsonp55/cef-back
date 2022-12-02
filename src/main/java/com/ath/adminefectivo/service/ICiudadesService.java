@@ -45,4 +45,14 @@ public interface ICiudadesService {
 	 * @author duvan.naranjo
 	 */
 	CiudadesDTO getCiudadPorCodigoDane(String codigo);
+
+	
+	/**
+	 * Servicio encargado de consultar la ciudad por un codigo brinks 
+	 * 
+	 * @param codigoBrinks
+	 * @return CiudadesDTO
+	 * @author duvan.naranjo
+	 */
+	CiudadesDTO getCiudadPorCodigoDaneOrCodigoBrinks(String ciudad1);
 }

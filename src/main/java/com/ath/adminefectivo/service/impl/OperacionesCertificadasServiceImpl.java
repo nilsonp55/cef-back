@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
+import com.ath.adminefectivo.dto.CiudadesDTO;
 import com.ath.adminefectivo.dto.DetallesDefinicionArchivoDTO;
 import com.ath.adminefectivo.dto.FechasConciliacionDTO;
 import com.ath.adminefectivo.dto.OperacionesCertificadasDTO;
@@ -27,6 +28,7 @@ import com.ath.adminefectivo.dto.compuestos.RegistroTipo1ArchivosFondosDTO;
 import com.ath.adminefectivo.dto.compuestos.SobrantesFaltantesDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.ArchivosCargados;
+import com.ath.adminefectivo.entities.Ciudades;
 import com.ath.adminefectivo.entities.Fondos;
 import com.ath.adminefectivo.entities.OperacionesCertificadas;
 import com.ath.adminefectivo.entities.RegistrosCargados;
@@ -35,6 +37,7 @@ import com.ath.adminefectivo.repositories.IOperacionesCertificadasRepository;
 import com.ath.adminefectivo.service.IArchivosCargadosService;
 import com.ath.adminefectivo.service.IBancosService;
 import com.ath.adminefectivo.service.ICajerosService;
+import com.ath.adminefectivo.service.ICiudadesService;
 import com.ath.adminefectivo.service.IClientesCorporativosService;
 import com.ath.adminefectivo.service.IDetalleDefinicionArchivoService;
 import com.ath.adminefectivo.service.IDominioService;
@@ -83,6 +86,9 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 
 	@Autowired
 	IArchivosCargadosService archivosCargadosService;
+	
+	@Autowired
+	ICiudadesService ciudadesService;
 
 	private List<SobrantesFaltantesDTO> listaAjustesValor = new ArrayList<>();
 	private OperacionesCertificadas certificadas;
@@ -301,13 +307,15 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 				Constantes.CAMPO_DETALLE_ARCHIVO_ENTRADASALIDA);
 		String codigoPunto = determinarCampo(fila, detalleArchivo, tipoRegistro,
 				Constantes.CAMPO_DETALLE_ARCHIVO_CODIGOPUNTO).trim();
+		String nombrePunto = determinarCampo(fila, detalleArchivo, tipoRegistro,
+				Constantes.CAMPO_DETALLE_ARCHIVO_NOMBREPUNTO).trim();
 		String tipoServicio = determinarCampo(fila, detalleArchivo, tipoRegistro,
 				Constantes.CAMPO_DETALLE_ARCHIVO_TIPOSERVICIOF);
 		if(Objects.isNull(codigoServicio) || codigoServicio.isEmpty()) {
 			codigoServicio = "SIN_CODIGO_SERVICIO";
 		}
-		procesarOperacionTransporte(fila, registro, elemento, codigoServicio, entradaSalida.toUpperCase(), codigoPunto,
-				tipoServicio);
+		procesarOperacionTransporte(fila, registro, elemento, codigoServicio, entradaSalida.toUpperCase(), 
+										codigoPunto + nombrePunto , tipoServicio);
 	}
 
 	/**
@@ -326,7 +334,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 		String nitbanco = nit.substring(0, 9);
 		String ciudad = determinarCampo(fila, detalleArchivo, tipoRegistro,
 				Constantes.CAMPO_DETALLE_ARCHIVO_CODIGOCIUDAD);
-		String ciudad2 = ciudad.valueOf(Integer.parseInt(ciudad.trim()));
+		String ciudad2 = ciudad.valueOf(Integer.parseInt(ciudad.trim()));	
 		Fondos fondo = asignarFondo(tdv, nitbanco, ciudad2);
 		registro.setTdv(fondo.getTdv());
 		registro.setCodigoPunto(fondo.getCodigoPunto());
@@ -869,6 +877,9 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 				String ciudad = determinarCampo(fila, detalleArchivo, Integer.parseInt(tipoRegistro),
 						Constantes.CAMPO_DETALLE_ARCHIVO_CODIGODANE);
 				String ciudad1 = String.valueOf(Integer.parseInt(ciudad.trim()));
+				
+				String codigoDaneCiudad = ciudadesService.getCiudadPorCodigoDaneOrCodigoBrinks(ciudad1).getCodigoDANE();
+				
 				Fondos fondo = asignarFondo(tdv, nitbanco, ciudad1);
 				registro.setTdv(fondo.getTdv());
 				registro.setCodigoPunto(fondo.getCodigoPunto());
@@ -876,7 +887,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 						Constantes.CAMPO_DETALLE_ARCHIVO_FECHAEMISION);
 				registro.setFechaEjecucion(fecha);
 				registro.setBanco_aval(fondo.getBancoAVAL());
-				registro.setCodigoDane(ciudad1);
+				registro.setCodigoDane(codigoDaneCiudad);
 				break;
 			}
 			case 2: {
@@ -889,10 +900,12 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 						Constantes.CAMPO_DETALLE_ARCHIVO_ENTRADAOSALIDA);
 				String codigoPunto = determinarCampo(fila, detalleArchivo, Integer.parseInt(tipoRegistro),
 						Constantes.CAMPO_DETALLE_ARCHIVO_CODIGOPUNTO).trim();
+				String nombrePunto = determinarCampo(fila, detalleArchivo, Integer.parseInt(tipoRegistro),
+						Constantes.CAMPO_DETALLE_ARCHIVO_NOMBREPUNTO).trim();
 				String tipoServicio = determinarCampo(fila, detalleArchivo, Integer.parseInt(tipoRegistro),
 						Constantes.CAMPO_DETALLE_ARCHIVO_TIPOSERVICIOF);
 				procesarOperacionTransporte(fila, registro, elemento, codigoServicio, entradaSalida.toUpperCase(),
-						codigoPunto, tipoServicio);
+									codigoPunto + nombrePunto, tipoServicio);
 				break;
 			}
 			case 4: {

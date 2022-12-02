@@ -45,4 +45,13 @@ public interface ICiudadesRepository extends JpaRepository<Ciudades, String>, Qu
 	 * @author rafael.parra
 	 */
 	public Ciudades findByNombreCiudadFiserv(String nombreCiudadFiserv);
+
+	/**
+	 * Retorna el objeto Ciudades con base en el codigo Brinks
+	 * 
+	 * @param codigo
+	 * @return Ciudades
+	 * @author duvan.naranjo
+	 */
+	public Ciudades findByCodigoBrinks(String codigo);
 }

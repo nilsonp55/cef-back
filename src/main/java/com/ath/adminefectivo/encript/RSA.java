@@ -8,8 +8,10 @@ import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.impl.ParametroServiceImpl;
 
 import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.math.BigInteger;
 import java.security.KeyFactory;
@@ -51,8 +53,6 @@ public class RSA {
     public RSA(IParametroService parametroService) {
         this.parametroService = parametroService;
         this.setKeys();
-        System.out.println("PRIVATE KEY "+this.privateKey);
-        System.out.println("PUBLIC KEY "+this.publicKey);
     }
 
     private boolean existsKeys() {
@@ -93,6 +93,24 @@ public class RSA {
 		
 		if(!parametroService.actualizarValorParametro(Constantes.PARAMETRO_PUBLIC_KEY_RSA, publicKeysS)) {
 			System.err.println("Ocurrio un fallo al insertar la llave publica de RSA");
+		}
+		String nombreArchivoLLavePublica = parametroService.valorParametro(Constantes.NAME_PUBLIC_KEY_RSA);
+		String nombreArchivoLLavePrivada = parametroService.valorParametro(Constantes.NAME_PRIVATE_KEY_RSA);
+		try {
+			BufferedWriter archivoPublico = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(nombreArchivoLLavePublica)));
+			BufferedWriter archivoPrivado = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(nombreArchivoLLavePrivada)));
+			
+			archivoPublico.write(publicKeysS);
+			archivoPrivado.write(privateKeyS);
+			
+			archivoPublico.close();
+			archivoPrivado.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 	}

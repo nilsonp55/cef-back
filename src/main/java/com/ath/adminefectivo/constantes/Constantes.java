@@ -49,6 +49,8 @@ public final class Constantes {
 	public static final String PARAMETRO_PUBLIC_KEY_RSA = "PUBLIC_KEY_RSA";
 	public static final String INSTANCIA_RSA = "INSTANCIA_RSA";
 	public static final String BYTES_RSA = "BYTES_RSA";
+	public static final String NAME_PUBLIC_KEY_RSA = "NAME_PUBLIC_KEY";
+	public static final String NAME_PRIVATE_KEY_RSA = "NAME_PRIVATE_KEY";
 
 
 	/**
@@ -509,6 +511,11 @@ public final class Constantes {
 	 * Constante para indicar el CODIGOPUNTO en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
 	 */
 	public static final String CAMPO_DETALLE_ARCHIVO_CODIGOPUNTO = "DESCRIPCIONPUNTO";
+	
+	/**
+     * Constante para indicar el CODIGOPUNTO en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
+     */
+    public static final String CAMPO_DETALLE_ARCHIVO_NOMBREPUNTO = "DESCRIPCIONPUNTO";
 
 	/**
 	 * Constante para indicar el TIPOSERVICIO en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
