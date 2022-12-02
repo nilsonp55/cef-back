@@ -11,6 +11,7 @@ import com.ath.adminefectivo.dto.CiudadesDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.Ciudades;
 import com.ath.adminefectivo.exception.AplicationException;
+import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.ICiudadesRepository;
 import com.ath.adminefectivo.service.ICiudadesService;
 import com.querydsl.core.types.Predicate;
@@ -68,10 +69,31 @@ public class CiudadServiceImpl implements ICiudadesService{
 		Ciudades ciudadOpt = ciudadesRepository.findByCodigoDANE(codigo);
 		if (Objects.isNull(ciudadOpt)) {
 			throw new AplicationException(ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getDescription()  + "Ciudad con codigoDane = "+codigo+" No existe. ",
 					ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getHttpStatus());
 		} else {
 			return CiudadesDTO.CONVERTER_DTO.apply(ciudadOpt);
 		}
+	}
+
+	@Override
+	public CiudadesDTO getCiudadPorCodigoDaneOrCodigoBrinks(String codigo) {
+		Ciudades ciudadOpt = ciudadesRepository.findByCodigoDANE(codigo);
+		if (Objects.isNull(ciudadOpt)) {
+			Ciudades ciudadBrinks = ciudadesRepository.findByCodigoBrinks(codigo);
+			if (Objects.isNull(ciudadBrinks)) {
+				throw new NegocioException(ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getCode(),
+						ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getDescription() + "Ciudad con codigoDane o CodigoBrinks = "+codigo+" No existe. ",
+						ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getHttpStatus());
+			}else {
+				return CiudadesDTO.CONVERTER_DTO.apply(ciudadBrinks);
+			}
+		} else {
+			return CiudadesDTO.CONVERTER_DTO.apply(ciudadOpt);
+		}
+		
+		
+		
+		
 	}
 }
