@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -130,11 +131,21 @@ public class ParametrosLiquidacionCosto {
 	@Column(name = "VALOR_TOTAL")
 	private Double valorTotal;
 	
-	@OneToMany(mappedBy = "parametrosLiquidacionCosto", cascade = CascadeType.PERSIST)
+	
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "ID_LIQUIDACION", nullable = false)
+//	private List<DetallesLiquidacionCosto> detallesLiquidacionCosto;
+//	
+//	@OneToOne(cascade = CascadeType.PERSIST)
+//	@JoinColumn(name = "ID_LIQUIDACION")
+//	private ValoresLiquidados valoresLiquidados;
+	
+	@OneToMany(mappedBy = "parametrosLiquidacionCosto", cascade = {CascadeType.ALL}, orphanRemoval = true)
 	private List<DetallesLiquidacionCosto> detallesLiquidacionCosto;
 	
-	@JsonIgnore
-	@OneToOne(mappedBy = "parametrosLiquidacionCosto", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+	@OneToOne(mappedBy = "parametrosLiquidacionCosto", cascade = {CascadeType.ALL}, orphanRemoval = true)
 	private ValoresLiquidados valoresLiquidados;
+	
+	
 
 }
