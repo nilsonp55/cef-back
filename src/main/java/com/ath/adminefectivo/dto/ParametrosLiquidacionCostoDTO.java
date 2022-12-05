@@ -76,6 +76,7 @@ public class ParametrosLiquidacionCostoDTO {
 	@JsonIgnore
 	private List<DetallesLiquidacionCosto> detallesLiquidacionCosto;
 	
+	@JsonIgnore
 	private ValorLiquidadoDTO valoresLiquidadosDTO;
 	
 	private String nombreBanco;

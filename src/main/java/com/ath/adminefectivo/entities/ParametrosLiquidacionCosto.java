@@ -21,6 +21,7 @@ import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
 
 import com.ath.adminefectivo.dto.compuestos.EstimadoClasificacionCostosDTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -132,6 +133,7 @@ public class ParametrosLiquidacionCosto {
 	@OneToMany(mappedBy = "parametrosLiquidacionCosto", cascade = CascadeType.PERSIST)
 	private List<DetallesLiquidacionCosto> detallesLiquidacionCosto;
 	
+	@JsonIgnore
 	@OneToOne(mappedBy = "parametrosLiquidacionCosto", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
 	private ValoresLiquidados valoresLiquidados;
 
