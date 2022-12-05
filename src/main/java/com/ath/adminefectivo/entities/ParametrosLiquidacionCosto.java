@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.ColumnResult;
 import javax.persistence.ConstructorResult;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -131,7 +132,7 @@ public class ParametrosLiquidacionCosto {
 	@OneToMany(mappedBy = "parametrosLiquidacionCosto", cascade = CascadeType.PERSIST)
 	private List<DetallesLiquidacionCosto> detallesLiquidacionCosto;
 	
-	@OneToOne(mappedBy = "parametrosLiquidacionCosto", cascade = CascadeType.PERSIST)
+	@OneToOne(mappedBy = "parametrosLiquidacionCosto", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
 	private ValoresLiquidados valoresLiquidados;
 
 }
