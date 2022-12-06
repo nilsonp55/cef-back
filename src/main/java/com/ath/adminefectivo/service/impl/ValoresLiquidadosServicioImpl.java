@@ -140,6 +140,7 @@ public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService 
 					valoresLiquidadosDTO.setRespuestaLiquidarCostos(respuestaLiquidarCostosDTO);
 					valoresLiquidadosDTO.setCantidadOperacionesLiquidadas(Integer.parseInt(cantidad1));
 					valoresLiquidadosDTO.setRegistrosConError(Integer.parseInt(cantidad2));
+					System.out.println("TERMINO DE SETEAR EL DTO valoresLiquidadosDTO ");
 
 				} else {
 					throw new NegocioException(
