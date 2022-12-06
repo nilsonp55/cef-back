@@ -108,9 +108,12 @@ public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService 
 				List<RespuestaLiquidarCostosDTO> respuestaLiquidarCostosDTO = new ArrayList<>();
 
 				// Se ejecutan procedimientos
+				System.out.println("INICIA EL PROCESO DE LLAMADO ");
 				String parametro = valoresLiquidadosRepository.armar_parametros_liquida(fecha);
+				System.out.println("CONSULTA DE PARAMETRO A armar_parametros_liquida(fecha) = "+parametro);
 				if (Integer.parseInt(parametro) > 0) {
 					String resultado = valoresLiquidadosRepository.liquidar_costos(Integer.parseInt(parametro));
+					System.out.println("CONSULTA DE PARAMETRO A liquidar_costos(Integer.parseInt(parametro)) = "+resultado);
 					// Sacamos los dos cumero de la cadena de texto
 					String cantidad1 = "";
 					String cantidad2 = "";
@@ -127,15 +130,17 @@ public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService 
 							cantidad2 += item;
 						}
 					}
+					System.out.println("TERMINO FOR CON CHAR AT cantidad1 "+cantidad1 +" cantidad2 "+cantidad2+" separador = "+separador);
 					// Se obtienen los valores liquidados por el proceso
 					List<ValoresLiquidados> valoresLiquidados = valoresLiquidadosRepository
 							.findByIdSeqGrupo(Integer.parseInt(parametro));
-
+					System.out.println("CONSULTA DE PARAMETRO A findByIdSeqGrupo(Integer.parseInt(parametro)) = "+valoresLiquidados.size());
 					respuestaLiquidarCostosDTO = this.generarRespuestaLiquidacionCostos(valoresLiquidados);
 
 					valoresLiquidadosDTO.setRespuestaLiquidarCostos(respuestaLiquidarCostosDTO);
 					valoresLiquidadosDTO.setCantidadOperacionesLiquidadas(Integer.parseInt(cantidad1));
 					valoresLiquidadosDTO.setRegistrosConError(Integer.parseInt(cantidad2));
+					System.out.println("TERMINO DE SETEAR EL DTO valoresLiquidadosDTO ");
 
 				} else {
 					throw new NegocioException(
@@ -160,6 +165,7 @@ public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService 
 	private List<RespuestaLiquidarCostosDTO> generarRespuestaLiquidacionCostos(
 			List<ValoresLiquidados> valoresLiquidados) {
 		List<RespuestaLiquidarCostosDTO> respuestaLiquidarCostosDTO = new ArrayList<>();
+		System.out.println("INICIA FOREACH Y SETEO EN generarRespuestaLiquidacionCostos");
 		valoresLiquidados.forEach(valorLiquidado -> {
 			RespuestaLiquidarCostosDTO liquidarCostosDTO = new RespuestaLiquidarCostosDTO();
 			liquidarCostosDTO.setFechaEjecucion(valorLiquidado.getParametrosLiquidacionCosto().getFechaEjecucion());
@@ -211,11 +217,11 @@ public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService 
 			liquidarCostosDTO.setNombrePuntoDestino(puntoDestino.getNombrePunto());
 			liquidarCostosDTO
 					.setNombreCiudadPuntoDestino(ciudadesService.getNombreCiudad(puntoDestino.getCodigoCiudad()));
-
+			System.out.println("FINALIZA EL SETEO DE UN COSTO LIQUIDADO "+liquidarCostosDTO.getIdSeqGrupo());
 			respuestaLiquidarCostosDTO.add(liquidarCostosDTO);
 
 		});
-
+		System.out.println("FINALIZA FOR EACH CON CANTIDAD DE REGIISTROS = "+respuestaLiquidarCostosDTO.size());
 		return respuestaLiquidarCostosDTO;
 	}
 }

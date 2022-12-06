@@ -8,10 +8,12 @@ import javax.persistence.Column;
 import javax.persistence.ColumnResult;
 import javax.persistence.ConstructorResult;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -20,6 +22,7 @@ import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
 
 import com.ath.adminefectivo.dto.compuestos.EstimadoClasificacionCostosDTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -128,10 +131,21 @@ public class ParametrosLiquidacionCosto {
 	@Column(name = "VALOR_TOTAL")
 	private Double valorTotal;
 	
-	@OneToMany(mappedBy = "parametrosLiquidacionCosto", cascade = CascadeType.PERSIST)
+	
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "ID_LIQUIDACION", nullable = false)
+//	private List<DetallesLiquidacionCosto> detallesLiquidacionCosto;
+//	
+//	@OneToOne(cascade = CascadeType.PERSIST)
+//	@JoinColumn(name = "ID_LIQUIDACION")
+//	private ValoresLiquidados valoresLiquidados;
+	
+	@OneToMany(mappedBy = "parametrosLiquidacionCosto", cascade = {CascadeType.ALL}, orphanRemoval = true)
 	private List<DetallesLiquidacionCosto> detallesLiquidacionCosto;
 	
-	@OneToOne(mappedBy = "parametrosLiquidacionCosto", cascade = CascadeType.PERSIST)
+	@OneToOne(mappedBy = "parametrosLiquidacionCosto", cascade = {CascadeType.ALL}, orphanRemoval = true)
 	private ValoresLiquidados valoresLiquidados;
+	
+	
 
 }
