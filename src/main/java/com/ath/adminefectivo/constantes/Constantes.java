@@ -397,6 +397,11 @@ public final class Constantes {
 	public static final String VALOR_ENTRADA = "ENTRADA";
 	
 	/**
+	 * Constante para indicar el valor Currency en el archivo de OFICINAS (PROG. DEFINTIVA)
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_MONEDA = "CURRENCY";
+	
+	/**
 	 * PROGRAMACION DEFINITIVA OFICINAS
 	 */
 	/**

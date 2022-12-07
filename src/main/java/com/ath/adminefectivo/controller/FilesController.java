@@ -141,9 +141,8 @@ public class FilesController {
 	 * @author CamiloBenavides
 	 */
 	@PostMapping(value = "/guardar")
-	public ResponseEntity<ApiResponseADE<Boolean>> persistirArchvoCargado(@RequestParam("file") MultipartFile file) {
+	public ResponseEntity<ApiResponseADE<Boolean>> persistirArchvoCargado(@RequestPart("file") MultipartFile file, @RequestPart("tipoCargue") String tipoCargue) {
 
-		String tipoCargue = file.getName();
 		try {
 			s3Utils utils = new s3Utils();
 			if(tipoCargue.equals("IPP")) {

@@ -97,7 +97,6 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	/**
 	 * {@inheritDoc}
 	 */
-	@Transactional
 	@Override
 	public Boolean actualizarEstadoEnCertificadas(Integer idCertificacion, String estado) {
 
@@ -238,7 +237,6 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 			});
 
 			String[] fila = registrosOrdenados.get(i).getContenido().split(", ");
-			System.out.println("************ FILA posicion I = " + fila);
 			String tipoRegistro = determinarTipoRegistro(fila, detalleArchivo);
 			switch (Integer.parseInt(tipoRegistro)) {
 			case 1: {
@@ -521,7 +519,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 		Date fecha = null;
 		try {
 			DateFormat formato = new SimpleDateFormat(
-					dominioService.valorTextoDominio(Constantes.DOMINIO_FORMATO_FECHA_F1, Dominios.FORMATO_FECHA_F1));
+					dominioService.valorTextoDominio(Constantes.DOMINIO_FORMATO_FECHA, Dominios.FORMATO_FECHA_F1));
 			fecha = formato.parse(fila);
 		} catch (ParseException e) {
 			e.getMessage();

@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ath.adminefectivo.dto.ProgramadasNoConciliadasDTO;
 import com.ath.adminefectivo.dto.ResumenConciliacionesDTO;
@@ -224,6 +225,7 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	 * {@inheritDoc}
 	 */
 	@Override
+	@Transactional			   
 	public Boolean conciliacionManual(List<ParametrosConciliacionDTO> conciliacionManualDTO) {
 
 		for (ParametrosConciliacionDTO elemento : conciliacionManualDTO) {
@@ -303,6 +305,7 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	 * {@inheritDoc}
 	 */
 	@Override
+	@Transactional			   
 	public Boolean cierreConciliaciones() {
 		String resultado = conciliacionOperacionesRepository.validarcierreconciliacion();
 		
