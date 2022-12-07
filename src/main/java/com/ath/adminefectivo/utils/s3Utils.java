@@ -3,6 +3,7 @@ package com.ath.adminefectivo.utils;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
@@ -286,6 +287,39 @@ public class s3Utils {
 					ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getHttpStatus());
 		}
 		
+	}
+	
+	public void convertAndSaveArchivoEnBytes(MultipartFile archivo, String key, String nombreArchivo) {
+
+		PutObjectResult result;
+		try {
+			conexionS3(bucketName);
+			String pathArchivo = key+nombreArchivo;
+
+			byte[] bytearr = archivo.getBytes();
+			System.out.print("byte length: " + bytearr.length);
+			System.out.print("Size : " + archivo.getSize());
+
+			File file = new File(pathArchivo);
+			file.createNewFile();
+			FileOutputStream fos = new FileOutputStream(file);
+			fos.write(archivo.getBytes());
+			fos.close();
+			//FileUtils.copyInputStreamToFile(initialStream, file);      
+			result = s3.putObject(bucketName, pathArchivo, file);
+			
+		} catch (AmazonServiceException e) {
+			LOGGER.error(e.getMessage(), e);
+			throw new NegocioException(ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getCode(),
+					ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getDescription(),
+					ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getHttpStatus());
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage(), e);
+			throw new NegocioException(ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getCode(),
+					ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getDescription(),
+					ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getHttpStatus());
+		}
+
 	}
 
 }

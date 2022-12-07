@@ -1,5 +1,6 @@
 package com.ath.adminefectivo.controller;
 
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 import javax.transaction.RollbackException;
@@ -19,16 +20,23 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ath.adminefectivo.constantes.Constantes;
+import com.ath.adminefectivo.constantes.Parametros;
 import com.ath.adminefectivo.constantes.SwaggerConstants;
 import com.ath.adminefectivo.controller.endpoints.FilesEndpoint;
 import com.ath.adminefectivo.delegate.IFilesDelegate;
 import com.ath.adminefectivo.dto.ArchivosCargadosDTO;
 import com.ath.adminefectivo.dto.DownloadDTO;
+import com.ath.adminefectivo.dto.MaestrosDefinicionArchivoDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
+import com.ath.adminefectivo.exception.NegocioException;
+import com.ath.adminefectivo.service.IMaestroDefinicionArchivoService;
+import com.ath.adminefectivo.service.IParametroService;
+import com.ath.adminefectivo.utils.s3Utils;
 
 import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
@@ -44,7 +52,12 @@ public class FilesController {
 
 	@Autowired
 	IFilesDelegate filesDelegate;
+	
+	@Autowired
+	IMaestroDefinicionArchivoService maestroDefinicionArchivoService;
 
+	@Autowired
+	IParametroService parametroService;
 	/**
 	 * Servicio encargado de ejecutar la prueba de concepto de la lectura y
 	 * persistencia de archivos En este servicio no se ve reflejado el manejo de
@@ -127,11 +140,40 @@ public class FilesController {
 	 * @return ResponseEntity<ApiResponseADE<Boolean>>
 	 * @author CamiloBenavides
 	 */
-	@PostMapping(value = "/guardar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponseADE<Boolean>> persistirArchvoCargado(@RequestPart("file") MultipartFile file) {
+	@PostMapping(value = "/guardar")
+	public ResponseEntity<ApiResponseADE<Boolean>> persistirArchvoCargado(@RequestParam("file") MultipartFile file) {
 
+		String tipoCargue = file.getName();
+		try {
+			s3Utils utils = new s3Utils();
+			if(tipoCargue.equals("IPP")) {
+				List<MaestrosDefinicionArchivoDTO> agrup = maestroDefinicionArchivoService
+						.consultarDefinicionArchivoByAgrupador(Constantes.ESTADO_MAESTRO_DEFINICION_ACTIVO, "IPP");
+				String param = parametroService.valorParametro(Parametros.RUTA_ARCHIVOS_PENDIENTES);
+				String ubicacion = agrup.get(0).getUbicacion() + param;
+				utils.convertAndSaveArchivoEnBytes(file, ubicacion, file.getOriginalFilename());
+			}
+			if(tipoCargue.equals("CERTI")) {
+				List<MaestrosDefinicionArchivoDTO> agrup = maestroDefinicionArchivoService
+						.consultarDefinicionArchivoByAgrupador(Constantes.ESTADO_MAESTRO_DEFINICION_ACTIVO, "CERTI");
+				String param = parametroService.valorParametro(Parametros.RUTA_ARCHIVOS_PENDIENTES);
+				String ubicacion = agrup.get(0).getUbicacion() + param;
+				utils.convertAndSaveArchivoEnBytes(file, ubicacion, file.getOriginalFilename());
+			}
+			if(tipoCargue.equals("DEFIN")) {
+				List<MaestrosDefinicionArchivoDTO> agrup = maestroDefinicionArchivoService
+						.consultarDefinicionArchivoByAgrupador(Constantes.ESTADO_MAESTRO_DEFINICION_ACTIVO, "DEFIN");
+				String param = parametroService.valorParametro(Parametros.RUTA_ARCHIVOS_PENDIENTES);
+				String ubicacion = agrup.get(0).getUbicacion() + param;
+				utils.convertAndSaveArchivoEnBytes(file, ubicacion, file.getOriginalFilename());
+			}
+		} catch (Exception e) {
+			throw new NegocioException(ApiResponseCode.GENERIC_ERROR.getCode(),
+					ApiResponseCode.GENERIC_ERROR.getDescription(),
+					ApiResponseCode.GENERIC_ERROR.getHttpStatus());		
+		}
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ApiResponseADE<Boolean>(filesDelegate.persistirArchvoCargado(file),
+				.body(new ApiResponseADE<Boolean>(true,
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 								.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
