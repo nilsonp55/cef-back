@@ -30,7 +30,7 @@ public interface ILecturaArchivoService {
 	 * @return List<String[]>
 	 * @author CamiloBenavides
 	 */
-	List<String[]> leerArchivo(InputStream archivo, String delimitador, String tipoEncriptado);
+	List<String[]> leerArchivo(InputStream archivo, String delimitador, MaestrosDefinicionArchivoDTO tipoEncriptado);
 
 		
 }
