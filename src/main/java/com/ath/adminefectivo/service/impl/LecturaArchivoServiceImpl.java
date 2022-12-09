@@ -3,6 +3,7 @@ package com.ath.adminefectivo.service.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -60,16 +61,23 @@ public class LecturaArchivoServiceImpl implements ILecturaArchivoService {
 	}
 
 	@Override
-	public List<String[]> leerArchivo(InputStream archivo, String delimitador, String tipoEncriptado) {
+	public List<String[]> leerArchivo(InputStream archivo, String delimitador, MaestrosDefinicionArchivoDTO maestroDefinicion) {
 
-		String algoritmoEncriptado = this.validarEncriptado(tipoEncriptado);
+		String algoritmoEncriptado = this.validarEncriptado(maestroDefinicion.getTipoDeEncriptado());
 		
 		if(algoritmoEncriptado.equals(dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_ENCRIPTADO, Dominios.TIPO_ENCRIPTADO_NA))) {
 			
 			CSVParser parser = new CSVParserBuilder().withSeparator(delimitador.charAt(0)).withIgnoreQuotations(true).build();
 			
 			List<String[]> resultadoValidado = new ArrayList<String[]>();
-			try (CSVReader csvReader = new CSVReaderBuilder(new InputStreamReader(archivo)).withCSVParser(parser).build()) {
+			try {
+					CSVReader csvReader;
+				if(maestroDefinicion.getIdMaestroDefinicionArchivo().equals(Dominios.TIPO_ARCHIVO_ISRPO)) {
+					csvReader = new CSVReaderBuilder(new InputStreamReader(archivo, Charset.forName("UTF-16"))).withCSVParser(parser).build();
+				}else {
+					csvReader = new CSVReaderBuilder(new InputStreamReader(archivo)).withCSVParser(parser).build();
+				}
+				
 				List<String[]> resultadoSinValidar = csvReader.readAll();
 					resultadoSinValidar.forEach(linea ->{
 					System.out.println("csvReader.readAll(); "+ linea.length);
