@@ -80,7 +80,7 @@ public class CiudadServiceImpl implements ICiudadesService{
 	public CiudadesDTO getCiudadPorCodigoDaneOrCodigoBrinks(String codigo) {
 		Ciudades ciudadOpt = ciudadesRepository.findByCodigoDANE(codigo);
 		if (Objects.isNull(ciudadOpt)) {
-			Ciudades ciudadBrinks = ciudadesRepository.findByCodigoBrinks(codigo);
+			Ciudades ciudadBrinks = ciudadesRepository.findByCodigoBrinks(Integer.parseInt(codigo));
 			if (Objects.isNull(ciudadBrinks)) {
 				throw new NegocioException(ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getCode(),
 						ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getDescription() + "Ciudad con codigoDane o CodigoBrinks = "+codigo+" No existe. ",

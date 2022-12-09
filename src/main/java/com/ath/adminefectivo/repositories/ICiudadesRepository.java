@@ -53,5 +53,5 @@ public interface ICiudadesRepository extends JpaRepository<Ciudades, String>, Qu
 	 * @return Ciudades
 	 * @author duvan.naranjo
 	 */
-	public Ciudades findByCodigoBrinks(String codigo);
+	public Ciudades findByCodigoBrinks(Integer codigo);
 }
