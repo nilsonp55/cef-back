@@ -1095,7 +1095,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 				.findFirst().orElse(null).getId().getNumeroCampo() - 1].trim();
 
 		List<String> listaDominioFecha = new ArrayList<String>();
-		listaDominioFecha.add("MM/DD/YYYY");
+		listaDominioFecha.add("MM/dd/yyyy");
 		
 		operacionesProgramadasDTO.setFechaProgramacion(UtilsString.convertirFecha(fechaProgramacion,listaDominioFecha));
 		operacionesProgramadasDTO.setFechaOrigen(UtilsString.convertirFecha(fechaOrigen, listaDominioFecha));
