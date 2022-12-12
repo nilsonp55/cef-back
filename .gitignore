@@ -78,3 +78,6 @@ Thumbs.db
 *.flv
 *.mov
 *.wmv
+
+archivos/
+*.ath
