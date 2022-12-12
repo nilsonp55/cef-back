@@ -515,7 +515,7 @@ public final class Constantes {
 	/**
 	 * Constante para indicar el CODIGOPUNTO en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
 	 */
-	public static final String CAMPO_DETALLE_ARCHIVO_CODIGOPUNTO = "DESCRIPCIONPUNTO";
+	public static final String CAMPO_DETALLE_ARCHIVO_CODIGOPUNTO = "CODIGOPUNTO";
 	
 	/**
      * Constante para indicar el CODIGOPUNTO en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
