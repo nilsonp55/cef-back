@@ -80,7 +80,7 @@ public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService 
 	 * {@inheritDoc}
 	 */
 	@Override
-	public ValoresLiquidadosDTO procesarPackageCostos() {
+	public String procesarPackageCostos() {
 		// Se obtiene fecha sistema para validaciones
 		Date fecha = parametroServiceImpl.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
 
@@ -104,8 +104,8 @@ public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService 
 		;
 		if (procesoDiarioConciliacionCerrad && procesoDiarioLiquidacionPendiente) {
 			try {
-				ValoresLiquidadosDTO valoresLiquidadosDTO = new ValoresLiquidadosDTO();
-				List<RespuestaLiquidarCostosDTO> respuestaLiquidarCostosDTO = new ArrayList<>();
+				
+				
 
 				// Se ejecutan procedimientos
 				System.out.println("INICIA EL PROCESO DE LLAMADO ");
@@ -114,33 +114,16 @@ public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService 
 				if (Integer.parseInt(parametro) > 0) {
 					String resultado = valoresLiquidadosRepository.liquidar_costos(Integer.parseInt(parametro));
 					System.out.println("CONSULTA DE PARAMETRO A liquidar_costos(Integer.parseInt(parametro)) = "+resultado);
-					// Sacamos los dos cumero de la cadena de texto
-					String cantidad1 = "";
-					String cantidad2 = "";
-					boolean separador = false;
-					for (int i = 0; i < resultado.length(); i++) {
-						char item = resultado.charAt(i);
-						if (item != '-' && separador == false) {
-							cantidad1 += item;
-						}
-						if (item == '-') {
-							separador = true;
-						}
-						if (item != '-' && separador == true) {
-							cantidad2 += item;
-						}
-					}
-					System.out.println("TERMINO FOR CON CHAR AT cantidad1 "+cantidad1 +" cantidad2 "+cantidad2+" separador = "+separador);
 					// Se obtienen los valores liquidados por el proceso
-					List<ValoresLiquidados> valoresLiquidados = valoresLiquidadosRepository
-							.findByIdSeqGrupo(Integer.parseInt(parametro));
-					System.out.println("CONSULTA DE PARAMETRO A findByIdSeqGrupo(Integer.parseInt(parametro)) = "+valoresLiquidados.size());
-					respuestaLiquidarCostosDTO = this.generarRespuestaLiquidacionCostos(valoresLiquidados);
-
-					valoresLiquidadosDTO.setRespuestaLiquidarCostos(respuestaLiquidarCostosDTO);
-					valoresLiquidadosDTO.setCantidadOperacionesLiquidadas(Integer.parseInt(cantidad1));
-					valoresLiquidadosDTO.setRegistrosConError(Integer.parseInt(cantidad2));
-					System.out.println("TERMINO DE SETEAR EL DTO valoresLiquidadosDTO ");
+//					List<ValoresLiquidados> valoresLiquidados = valoresLiquidadosRepository
+//							.findByIdSeqGrupo(Integer.parseInt(parametro));
+//					System.out.println("CONSULTA DE PARAMETRO A findByIdSeqGrupo(Integer.parseInt(parametro)) = "+valoresLiquidados.size());
+//					respuestaLiquidarCostosDTO = this.generarRespuestaLiquidacionCostos(valoresLiquidados);
+//
+//					valoresLiquidadosDTO.setRespuestaLiquidarCostos(respuestaLiquidarCostosDTO);
+//					valoresLiquidadosDTO.setCantidadOperacionesLiquidadas(Integer.parseInt(cantidad1));
+//					valoresLiquidadosDTO.setRegistrosConError(Integer.parseInt(cantidad2));
+//					System.out.println("TERMINO DE SETEAR EL DTO valoresLiquidadosDTO ");
 
 				} else {
 					throw new NegocioException(
@@ -148,7 +131,7 @@ public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService 
 							ApiResponseCode.ERROR_PROCESO_CONSTO_VALORES_LIQUIDADOS_SIN_PARAM.getDescription(),
 							ApiResponseCode.ERROR_PROCESO_CONSTO_VALORES_LIQUIDADOS_SIN_PARAM.getHttpStatus());
 				}
-				return valoresLiquidadosDTO;
+				return "Se proceso con exito";
 			} catch (Exception e) {
 				throw new NegocioException(ApiResponseCode.ERROR_PROCESO_CONSTO_VALORES_LIQUIDADOS.getCode(),
 						ApiResponseCode.ERROR_PROCESO_CONSTO_VALORES_LIQUIDADOS.getDescription() + "  " + e,
@@ -161,6 +144,51 @@ public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService 
 					ApiResponseCode.ERROR_PROCESO_VALIDACION_CIERRE_CONSTO_VALORES_LIQUIDADOS.getHttpStatus());
 		}
 	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	@Override
+	public ValoresLiquidadosDTO consultarLiquidacionCostos() {
+		int idSeq = valoresLiquidadosRepository.obtenerUltimoIdSeq();
+		List<ValoresLiquidados> valoresLiquidados = valoresLiquidadosRepository
+				.findByIdSeqGrupo(idSeq);
+		System.out.println("CONSULTA DE PARAMETRO A findByIdSeqGrupo(Integer.parseInt(parametro)) = "+valoresLiquidados.size());
+		List<RespuestaLiquidarCostosDTO> respuestaLiquidarCostosDTO = this.generarRespuestaLiquidacionCostos(valoresLiquidados);
+		ValoresLiquidadosDTO valoresLiquidadosDTO = new ValoresLiquidadosDTO();
+		// Sacamos los dos cumero de la cadena de texto
+		String cantidad1 = "0";
+		String cantidad2 = "0";
+		boolean separador = false;
+//		for (int i = 0; i < resultado.length(); i++) {
+//			char item = resultado.charAt(i);
+//			if (item != '-' && separador == false) {
+//				cantidad1 += item;
+//			}
+//			if (item == '-') {
+//				separador = true;
+//			}
+//			if (item != '-' && separador == true) {
+//				cantidad2 += item;
+//			}
+//		}
+		System.out.println("TERMINO FOR CON CHAR AT cantidad1 "+cantidad1 +" cantidad2 "+cantidad2+" separador = "+separador);
+		
+		valoresLiquidadosDTO.setRespuestaLiquidarCostos(respuestaLiquidarCostosDTO);
+		valoresLiquidadosDTO.setCantidadOperacionesLiquidadas(Integer.parseInt(cantidad1));
+		valoresLiquidadosDTO.setRegistrosConError(Integer.parseInt(cantidad2));
+		System.out.println("TERMINO DE SETEAR EL DTO valoresLiquidadosDTO ");
+		return valoresLiquidadosDTO;
+		
+	}
+	
+	/**
+	 * 
+	 *
+	 * @param valoresLiquidados
+	 * @return
+	 */
 
 	private List<RespuestaLiquidarCostosDTO> generarRespuestaLiquidacionCostos(
 			List<ValoresLiquidados> valoresLiquidados) {
