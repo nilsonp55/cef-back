@@ -18,5 +18,11 @@ public interface IValoresLiquidadosService {
 	 * Servicio que ejecuta los procesos de costos
 	 * @author bayron.perez
 	 */
-	ValoresLiquidadosDTO procesarPackageCostos();
+	String procesarPackageCostos();
+
+	/**
+	 * 
+	 * @return
+	 */
+	ValoresLiquidadosDTO consultarLiquidacionCostos();
 }

@@ -37,15 +37,30 @@ public class ValoresLiquidadosController {
 	 * @return ResponseEntity<Ok>
 	 * @author Bayron Andres Perez M
 	 */
-	@GetMapping(value = "${endpoints.ValoresLiquidacion.costos}", 
-			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponseADE<ValoresLiquidadosDTO>> procesarCostos() {
+	@GetMapping(value = "${endpoints.ValoresLiquidacion.costos}")
+	public ResponseEntity<ApiResponseADE<String>> procesarCostos() {
 		
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ApiResponseADE<ValoresLiquidadosDTO>(valoresLiquidadosServicioImpl.procesarPackageCostos(),
+				.body(new ApiResponseADE<String>(valoresLiquidadosServicioImpl.procesarPackageCostos(),
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 								.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 
 	}
 	
+	/**
+	 * Servicio encargado de realizar la operacionde costos
+	 * 
+	 * @return ResponseEntity<Ok>
+	 * @author Bayron Andres Perez M
+	 */
+	@GetMapping(value = "${endpoints.ValoresLiquidacion.consultar}", 
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ApiResponseADE<ValoresLiquidadosDTO>> consultarCostos() {
+		
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ApiResponseADE<ValoresLiquidadosDTO>(valoresLiquidadosServicioImpl.consultarLiquidacionCostos(),
+						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+								.description(ApiResponseCode.SUCCESS.getDescription()).build()));
+
+	}
 }
