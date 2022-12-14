@@ -110,7 +110,6 @@ public class OperacionesCertificadas {
 	@Column(name = "TIPO_PUNTO_DESTINO")
 	private String tipoPuntoDestino;
 	
-	@Transient
 	private String nombreFondoTDV;
 	
 	@Transient
