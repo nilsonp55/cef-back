@@ -83,6 +83,7 @@ public class CuentasPucDTO {
 		
 		BancosDTO bancos = new BancosDTO();
 		bancos.setCodigoPunto(t.getBancoAval().getCodigoPunto());
+		bancos.setAbreviatura(t.getBancoAval().getAbreviatura());
 		cuentasPuc.setBancoAval(bancos);
 		
 		cuentasPuc.setNombreCuenta(t.getNombreCuenta());
