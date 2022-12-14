@@ -114,16 +114,6 @@ public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService 
 				if (Integer.parseInt(parametro) > 0) {
 					String resultado = valoresLiquidadosRepository.liquidar_costos(Integer.parseInt(parametro));
 					System.out.println("CONSULTA DE PARAMETRO A liquidar_costos(Integer.parseInt(parametro)) = "+resultado);
-					// Se obtienen los valores liquidados por el proceso
-//					List<ValoresLiquidados> valoresLiquidados = valoresLiquidadosRepository
-//							.findByIdSeqGrupo(Integer.parseInt(parametro));
-//					System.out.println("CONSULTA DE PARAMETRO A findByIdSeqGrupo(Integer.parseInt(parametro)) = "+valoresLiquidados.size());
-//					respuestaLiquidarCostosDTO = this.generarRespuestaLiquidacionCostos(valoresLiquidados);
-//
-//					valoresLiquidadosDTO.setRespuestaLiquidarCostos(respuestaLiquidarCostosDTO);
-//					valoresLiquidadosDTO.setCantidadOperacionesLiquidadas(Integer.parseInt(cantidad1));
-//					valoresLiquidadosDTO.setRegistrosConError(Integer.parseInt(cantidad2));
-//					System.out.println("TERMINO DE SETEAR EL DTO valoresLiquidadosDTO ");
 
 				} else {
 					throw new NegocioException(
@@ -158,26 +148,14 @@ public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService 
 		List<RespuestaLiquidarCostosDTO> respuestaLiquidarCostosDTO = this.generarRespuestaLiquidacionCostos(valoresLiquidados);
 		ValoresLiquidadosDTO valoresLiquidadosDTO = new ValoresLiquidadosDTO();
 		// Sacamos los dos cumero de la cadena de texto
-		String cantidad1 = "0";
-		String cantidad2 = "0";
-		boolean separador = false;
-//		for (int i = 0; i < resultado.length(); i++) {
-//			char item = resultado.charAt(i);
-//			if (item != '-' && separador == false) {
-//				cantidad1 += item;
-//			}
-//			if (item == '-') {
-//				separador = true;
-//			}
-//			if (item != '-' && separador == true) {
-//				cantidad2 += item;
-//			}
-//		}
-		System.out.println("TERMINO FOR CON CHAR AT cantidad1 "+cantidad1 +" cantidad2 "+cantidad2+" separador = "+separador);
+		Integer cantidad1 = valoresLiquidadosRepository.consultarCantidadValoresLiquidadosByIdSeqGrupo(idSeq);
+		Integer cantidad2 = valoresLiquidadosRepository.consultarCantidadErroresValoresLiquidadosByIdSeqGrupo(idSeq);
+
+		System.out.println("TERMINO FOR CON CHAR AT cantidad1 "+cantidad1 +" cantidad2 "+cantidad2);
 		
 		valoresLiquidadosDTO.setRespuestaLiquidarCostos(respuestaLiquidarCostosDTO);
-		valoresLiquidadosDTO.setCantidadOperacionesLiquidadas(Integer.parseInt(cantidad1));
-		valoresLiquidadosDTO.setRegistrosConError(Integer.parseInt(cantidad2));
+		valoresLiquidadosDTO.setCantidadOperacionesLiquidadas(cantidad1);
+		valoresLiquidadosDTO.setRegistrosConError(cantidad2);
 		System.out.println("TERMINO DE SETEAR EL DTO valoresLiquidadosDTO ");
 		return valoresLiquidadosDTO;
 		

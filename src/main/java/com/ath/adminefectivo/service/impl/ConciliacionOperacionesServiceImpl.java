@@ -341,9 +341,10 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 
 		operacionesProgramadas.forEach(entity -> {
 						var programadasNoConciliadasDTO = new ProgramadasNoConciliadasDTO();
+						entity = this.obtenerNombresProgramadasNoConciliadas(entity);
 						programadasNoConciliadasDTO = ProgramadasNoConciliadasDTO.CONVERTER_DTO.apply(entity);
 						
-						entity = this.obtenerNombresProgramadasNoConciliadas(entity);
+						
 						});		
 	
 		return new PageImpl<>(operacionesProgramadas.getContent().stream()
