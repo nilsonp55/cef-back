@@ -57,7 +57,8 @@ public class TiposCentrosCostosDTO {
 		TiposCentrosCostosDTO tiposCentrosCostos = new TiposCentrosCostosDTO();
 		tiposCentrosCostos.setTipoCentro(t.getTipoCentro());
 		BancosDTO bancoAval = new BancosDTO();
-		bancoAval.setCodigoPunto(bancoAval.getCodigoPunto());
+		bancoAval.setCodigoPunto(t.getBancoAval().getCodigoPunto());
+		bancoAval.setAbreviatura(t.getBancoAval().getAbreviatura());
 		tiposCentrosCostos.setBancoAval(bancoAval);
 		tiposCentrosCostos.setNombreCentro(t.getNombreCentro());
 		tiposCentrosCostos.setCodigoCentro(t.getCodigoCentro());
