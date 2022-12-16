@@ -3,10 +3,12 @@ package com.ath.adminefectivo.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.dto.DominioDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.Dominio;
@@ -83,6 +85,29 @@ public class DominioServiceImpl implements IDominioService {
 	public List<Double> consultaListValoresNumPorDominio(String dominio) {
 		var dominios = dominioRepository.findByDominioPKDominio(dominio);
 		return dominios.stream().filter(x -> Objects.nonNull(x.getValorTexto())).map(Dominio::getValorNumero).toList();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String persistirDominio(DominioDTO dominioDto) {
+		if(!Objects.isNull(dominioRepository.save(DominioDTO.CONVERTER_ENTITY.apply(dominioDto)))) {
+			return "Dominio Creado con éxito";
+		}
+		return "No se pudo insertar el dominio";
+	}
+
+	@Override
+	public Boolean eliminarDominio(DominioPK dominioPK) {
+		Dominio dominioEliminar = dominioRepository.findById(dominioPK).get();
+		if(!Objects.isNull(dominioEliminar)) {
+			dominioEliminar.setEstado(Constantes.ESTADO_REGISTRO_INACTIVO.toString());
+			dominioRepository.save(dominioEliminar);
+			return true;
+		}
+		return false;
+		
 	}
 
 }

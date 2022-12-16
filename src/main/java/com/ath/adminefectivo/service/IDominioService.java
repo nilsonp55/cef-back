@@ -3,6 +3,7 @@ package com.ath.adminefectivo.service;
 import java.util.List;
 
 import com.ath.adminefectivo.dto.DominioDTO;
+import com.ath.adminefectivo.entities.id.DominioPK;
 import com.querydsl.core.types.Predicate;
 
 /**
@@ -63,5 +64,22 @@ public interface IDominioService {
 	 * @author CamiloBenavides
 	 */
 	List<Double> consultaListValoresNumPorDominio(String dominio);
+
+	/**
+	 * Servicio encargado de realizar la logica de persistir un dominio
+	 * 
+	 * @param dominioDto
+	 * @return String
+	 * @author duvan.naranjo
+	 */
+	String persistirDominio(DominioDTO dominioDto);
+	
+	/**
+	 * Metodo encargado de realizar la eliminacion 
+	 * @param dominioPK
+	 * @return
+	 */
+	Boolean eliminarDominio(DominioPK dominioPK);
+	
 
 }

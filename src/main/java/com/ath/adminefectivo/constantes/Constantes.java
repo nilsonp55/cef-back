@@ -51,6 +51,8 @@ public final class Constantes {
 	public static final String BYTES_RSA = "BYTES_RSA";
 	public static final String NAME_PUBLIC_KEY_RSA = "NAME_PUBLIC_KEY";
 	public static final String NAME_PRIVATE_KEY_RSA = "NAME_PRIVATE_KEY";
+	public static final Integer ESTADO_REGISTRO_ACTIVO = 1;
+	public static final Integer ESTADO_REGISTRO_INACTIVO = 2;
 
 
 	/**

@@ -7,8 +7,12 @@ import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +23,7 @@ import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
 import com.ath.adminefectivo.entities.Dominio;
+import com.ath.adminefectivo.entities.id.DominioPK;
 import com.ath.adminefectivo.service.impl.DominioServiceImpl;
 import com.querydsl.core.types.Predicate;
 
@@ -60,6 +65,57 @@ public class DominioFuncionalController {
 
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta1, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
+	}
+		
+	/**
+	 * Servicio encargado de persistir un dominio para ser parametrizado en DB 
+	 * 
+	 * @param files
+	 * @return ResponseEntity<ApiResponseADE<Boolean>>
+	 * @author Bayron Andres Perez Muñoz
+	 */
+	@PostMapping(value = "${endpoints.DominioFuncional.guardar}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, 
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ApiResponseADE<String>> persistirDominio(@RequestBody DominioDTO dominioDto) {
+
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ApiResponseADE<String>(dominioServiceImpl.persistirDominio(dominioDto),
+						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+								.description(ApiResponseCode.SUCCESS.getDescription()).build()));
+	}
+	
+	/**
+	 * Servicio encargado de actualizar un dominio para ser parametrizado en DB 
+	 * 
+	 * @param files
+	 * @return ResponseEntity<ApiResponseADE<Boolean>>
+	 * @author Bayron Andres Perez Muñoz
+	 */
+	@PutMapping(value = "${endpoints.DominioFuncional.guardar}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, 
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ApiResponseADE<String>> actualizarDominio(@RequestBody DominioDTO dominioDto) {
+
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ApiResponseADE<String>(dominioServiceImpl.persistirDominio(dominioDto),
+						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+								.description(ApiResponseCode.SUCCESS.getDescription()).build()));
+	}
+	
+	
+	/**
+	 * Servicio encargado de eliminar un dominio por su codigo indentificador
+	 * 
+	 * @param idDominio
+	 * @return ResponseEntity<ApiResponseADE<Boolean>>
+	 * @author Bayron Andres Perez Muñoz
+	 */
+	@DeleteMapping(value = "${endpoints.DominioFuncional.eliminar}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ApiResponseADE<Boolean>> eliminarDominioIdentificador(@RequestParam("dominio") String dominio, @RequestParam("codigo") String codigo) {
+
+		var dominioEliminado = dominioServiceImpl.eliminarDominio(new DominioPK(dominio, codigo));
+		return ResponseEntity.status(HttpStatus.OK).body(
+				new ApiResponseADE<>(dominioEliminado, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
 
