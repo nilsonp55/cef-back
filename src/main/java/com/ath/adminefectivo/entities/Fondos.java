@@ -40,7 +40,7 @@ public class Fondos {
 	@Column(name = "NOMBRE_FONDO")
 	private String nombreFondo;
 	
-	//@ManyToOne
-	//@JoinColumn(name = "COD_PUNTO", nullable = false)
-	//private Puntos puntos;
+	@ManyToOne
+	@JoinColumn(name = "COD_PUNTO", nullable = false)
+	private Puntos puntos;
 }
