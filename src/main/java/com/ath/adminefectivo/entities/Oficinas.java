@@ -54,8 +54,8 @@ public class Oficinas {
 	private Double tarifaVerificacion;
 	
 	
-	//@ManyToOne
-	//@JoinColumn(name = "COD_PUNTO", nullable = false)
-	//private Puntos puntos;
+	@ManyToOne
+	@JoinColumn(name = "COD_PUNTO", nullable = false)
+	private Puntos puntos;
 	
 }

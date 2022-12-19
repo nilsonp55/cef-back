@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -45,24 +47,28 @@ public class Puntos {
 	@Column(name = "CODIGO_CIUDAD")
 	private String codigoCiudad;
 	
+//	@ManyToOne
+//	@JoinColumn(name = "CODIGO_CIUDAD", insertable = false, updatable = false)
+//	private Ciudades ciudades;
+	
 	@Column(name = "ESTADO")
 	private String estado;
 	
-	//@OneToMany(mappedBy = "puntos", cascade = {CascadeType.ALL}, orphanRemoval = true)
-	//private List<Oficinas> oficinas;
+	@OneToMany(mappedBy = "puntos", cascade = {CascadeType.ALL}, orphanRemoval = true)
+	private List<Oficinas> oficinas;
 	
-	//@OneToMany(mappedBy = "puntos", cascade = {CascadeType.ALL}, orphanRemoval = true)
-	//private List<SitiosClientes> sitiosClientes;
+	@OneToMany(mappedBy = "puntos", cascade = {CascadeType.ALL}, orphanRemoval = true)
+	private List<SitiosClientes> sitiosClientes;
 	
-	//@OneToMany(mappedBy = "puntos", cascade = {CascadeType.ALL}, orphanRemoval = true)
-	//private List<PuntosCodigoTDV> puntosCodigoTDV;
+	@OneToMany(mappedBy = "puntos", cascade = {CascadeType.ALL}, orphanRemoval = true)
+	private List<PuntosCodigoTDV> puntosCodigoTDV;
 	
-	//@OneToMany(mappedBy = "puntos", cascade = {CascadeType.ALL}, orphanRemoval = true)
-	//private List<Fondos> fondos;
+	@OneToMany(mappedBy = "puntos", cascade = {CascadeType.ALL}, orphanRemoval = true)
+	private List<Fondos> fondos;
 	
-	//@OneToMany(mappedBy = "puntos", cascade = {CascadeType.ALL}, orphanRemoval = true)
-	//private List<CajerosATM> cajeroATM;
+	@OneToMany(mappedBy = "puntos", cascade = {CascadeType.ALL}, orphanRemoval = true)
+	private List<CajerosATM> cajeroATM;
 	
-	//@OneToMany(mappedBy = "puntos", cascade = {CascadeType.ALL}, orphanRemoval = true)
-	//private List<Bancos> bancos;
+	@OneToMany(mappedBy = "puntos", cascade = {CascadeType.ALL}, orphanRemoval = true)
+	private List<Bancos> bancos;
 }

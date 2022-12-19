@@ -44,8 +44,8 @@ public class CajerosATM {
 	@Column(name = "TARIFA_VERIFICACION")
 	private Double tarifaVerificacion;
 	
-	//@ManyToOne
-	//@JoinColumn(name = "COD_PUNTO", nullable = false)
-	//private Puntos puntos;
+	@ManyToOne
+	@JoinColumn(name = "COD_PUNTO", nullable = false)
+	private Puntos puntos;
 	
 }
