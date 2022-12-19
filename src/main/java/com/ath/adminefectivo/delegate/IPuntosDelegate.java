@@ -2,6 +2,9 @@ package com.ath.adminefectivo.delegate;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.ath.adminefectivo.dto.CreatePuntosDTO;
 import com.ath.adminefectivo.dto.PuntosDTO;
 import com.querydsl.core.types.Predicate;
@@ -18,7 +21,7 @@ public interface IPuntosDelegate {
 	 * @return List<PuntosDTO>
 	 * @author cesar.castano
 	 */
-	List<PuntosDTO> getPuntos(Predicate predicate);
+	Page<PuntosDTO> getPuntos(Predicate predicate, Pageable page);
 	
 	/**
 	 * Delegate encargado de la persistencia de los puntos

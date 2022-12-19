@@ -3,7 +3,10 @@ package com.ath.adminefectivo.delegate.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import org.springframework.data.domain.Page;
 
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.delegate.IPuntosDelegate;
@@ -32,8 +35,8 @@ public class PuntosDelegateImpl implements IPuntosDelegate{
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<PuntosDTO> getPuntos(Predicate predicate) {
-		return puntosService.getPuntos(predicate);
+	public Page<PuntosDTO> getPuntos(Predicate predicate, Pageable page) {
+		return puntosService.getPuntos(predicate, page);
 	}
 
 	/**
