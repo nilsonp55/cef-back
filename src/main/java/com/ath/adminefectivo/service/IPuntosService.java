@@ -2,6 +2,9 @@ package com.ath.adminefectivo.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
+
 import com.ath.adminefectivo.dto.PuntosDTO;
 import com.ath.adminefectivo.entities.Bancos;
 import com.ath.adminefectivo.entities.CajerosATM;
@@ -13,6 +16,16 @@ import com.querydsl.core.types.Predicate;
 
 public interface IPuntosService {
 
+	/**
+	 * Servicio encargado de consultar la lista de todos los Puntos filtrados
+	 * con el predicado
+	 * 
+	 * @param predicate
+	 * @return List<PuntosDTO>
+	 * @author cesar.castano
+	 */
+	Page<PuntosDTO> getPuntos(Predicate predicate, Pageable page);
+	
 	/**
 	 * Servicio encargado de consultar la lista de todos los Puntos filtrados
 	 * con el predicado
