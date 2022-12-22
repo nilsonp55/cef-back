@@ -58,8 +58,6 @@ public class EncriptarServiceImpl implements IEncriptarService {
 						bw.newLine();
 					}						
 					textoEncriptado =rsa.encrypt(bfRead); 
-					System.err.println("encriptado ---------------- " +textoEncriptado);
-					System.err.println("desencriptador ------------------ "+rsa.decrypt(textoEncriptado));
 					bw.write(textoEncriptado);
 			}
 			bw.close();
@@ -83,9 +81,7 @@ public class EncriptarServiceImpl implements IEncriptarService {
 			String textoDesencriptado;
 			RSA rsa = new RSA(parametroService);
 			while ((bfRead = bf.readLine()) != null) {
-				System.err.println("TEXTO ENCRIPTADO " +bfRead);
 					textoDesencriptado = rsa.decrypt(bfRead);
-					System.err.println(textoDesencriptado);
 			}
 		} catch (BadPaddingException e) {
 			throw new NegocioException(ApiResponseCode.ERROR_DESENCRIPTANDO_CADENA.getCode(),

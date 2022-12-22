@@ -1,5 +1,6 @@
 package com.ath.adminefectivo.dto;
 
+import java.util.Objects;
 import java.util.function.Function;
 import com.ath.adminefectivo.entities.Bancos;
 import com.ath.adminefectivo.entities.Puntos;
@@ -25,7 +26,7 @@ public class ConfContableEntidadesDTO {
 
 	private Long consecutivo;
 	
-	private Bancos bancoAval;
+	private BancosDTO bancoAval;
 	
 	private Integer tipoTransaccion;
 	
@@ -37,9 +38,9 @@ public class ConfContableEntidadesDTO {
 	
 	private String medioPago;
 	
-	private Puntos codigoPuntoBancoExt;
+	private PuntosDTO codigoPuntoBancoExt;
 	
-	private Transportadoras transportadora;
+	private TransportadorasDTO transportadora;
 	
 	private Boolean esCambio;
 
@@ -54,6 +55,19 @@ public class ConfContableEntidadesDTO {
 	public static final Function<ConfContableEntidadesDTO, ConfContableEntidades> CONVERTER_ENTITY = (ConfContableEntidadesDTO t) -> {
 		ConfContableEntidades confContableEntidades = new ConfContableEntidades();
 		UtilsObjects.copiarPropiedades(t, confContableEntidades);
+		
+		if(!Objects.isNull(t.getBancoAval())) {
+			confContableEntidades.setBancoAval(BancosDTO.CONVERTER_ENTITY.apply(t.getBancoAval()));
+		}
+		
+		if(!Objects.isNull(t.getCodigoPuntoBancoExt())) {
+			confContableEntidades.setCodigoPuntoBancoExt(PuntosDTO.CONVERTER_ENTITY.apply(t.getCodigoPuntoBancoExt()));
+		}
+		
+		if(!Objects.isNull(t.getTransportadora())) {
+			confContableEntidades.setTransportadora(TransportadorasDTO.CONVERTER_ENTITY.apply(t.getTransportadora()));
+		}
+		
 		return confContableEntidades;
 	};
 
@@ -64,6 +78,19 @@ public class ConfContableEntidadesDTO {
 	public static final Function<ConfContableEntidades, ConfContableEntidadesDTO> CONVERTER_DTO = (ConfContableEntidades t) -> {
 		ConfContableEntidadesDTO confContableEntidadesDTO = new ConfContableEntidadesDTO();
 		UtilsObjects.copiarPropiedades(t, confContableEntidadesDTO);
+		
+		if(!Objects.isNull(t.getBancoAval())) {
+			confContableEntidadesDTO.setBancoAval(BancosDTO.CONVERTER_DTO.apply(t.getBancoAval()));
+		}
+		
+		if(!Objects.isNull(t.getCodigoPuntoBancoExt())) {
+			confContableEntidadesDTO.setCodigoPuntoBancoExt(PuntosDTO.CONVERTER_DTO.apply(t.getCodigoPuntoBancoExt()));
+		}
+		
+		if(!Objects.isNull(t.getTransportadora())) {
+			confContableEntidadesDTO.setTransportadora(TransportadorasDTO.CONVERTER_DTO.apply(t.getTransportadora()));
+		}
+		
 		return confContableEntidadesDTO;
 	};
 	
