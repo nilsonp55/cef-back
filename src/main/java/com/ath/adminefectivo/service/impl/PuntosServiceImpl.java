@@ -4,13 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ath.adminefectivo.dto.EscalasDTO;
 import com.ath.adminefectivo.dto.PuntosDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.Bancos;
 import com.ath.adminefectivo.entities.CajerosATM;
+import com.ath.adminefectivo.entities.Escalas;
 import com.ath.adminefectivo.entities.Fondos;
 import com.ath.adminefectivo.entities.Oficinas;
 import com.ath.adminefectivo.entities.Puntos;
@@ -48,6 +53,18 @@ public class PuntosServiceImpl implements IPuntosService {
 	@Autowired
 	IFondosRepository fondosRepository;
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Page<PuntosDTO> getPuntos(Predicate predicate, Pageable page) {
+		
+		Page<Puntos> puntos = puntosRepository.findAll(predicate, page);
+		
+		return new PageImpl<>(puntos.getContent().stream().map(PuntosDTO
+		.CONVERTER_DTO).toList(), puntos.getPageable(), puntos.getTotalElements());
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */

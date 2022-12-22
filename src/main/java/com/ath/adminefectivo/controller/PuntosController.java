@@ -3,6 +3,8 @@ package com.ath.adminefectivo.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,8 +43,8 @@ public class PuntosController {
 	 * @author cesar.castano
 	 */
 	@GetMapping(value = "${endpoints.Puntos.consultar}")
-	public ResponseEntity<ApiResponseADE<List<PuntosDTO>>> getPuntos(@QuerydslPredicate(root = Puntos.class) Predicate predicate) {
-		List<PuntosDTO> consulta = puntosDelegate.getPuntos(predicate);
+	public ResponseEntity<ApiResponseADE<Page<PuntosDTO>>> getPuntos(@QuerydslPredicate(root = Puntos.class) Predicate predicate, Pageable page) {
+		Page<PuntosDTO> consulta = puntosDelegate.getPuntos(predicate, page);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
