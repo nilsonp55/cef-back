@@ -183,8 +183,6 @@ public class RSA {
             String encryptedMessage = rsa.encrypt("Hello World");
             String decryptedMessage = rsa.decrypt(encryptedMessage);
 
-            System.err.println("Encrypted:\n"+encryptedMessage);
-            System.err.println("Decrypted:\n"+decryptedMessage);
         }catch (Exception ingored){}
     }
     
