@@ -3,6 +3,8 @@ package com.ath.adminefectivo.service;
 import java.util.Date;
 import java.util.List;
 
+import com.ath.adminefectivo.entities.FestivosNacionales;
+
 /**
  * Interfaz de los servicios referentes a los Festivos Nacionales
  *
@@ -41,5 +43,16 @@ public interface IFestivosNacionalesService {
 	Date consultarSiguienteHabil(Date fechaReferencia);
 
 	Date consultarAnteriorHabil(Date fechaArchivo);
+	
+	/**
+	 * Persiste un festivo nacional con su descripción
+	 */
+	public FestivosNacionales saveFestivosNacionales(FestivosNacionales festivosNacionales);
 
+	/**
+	 * eliminar un festivo nacional con su descripción
+	 */
+	boolean eliminarFestivosNacionales(Date idFestivoNacional);
+	
+	List<FestivosNacionales> consultarFestivosNacionales();
 }
