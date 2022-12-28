@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ath.adminefectivo.dto.EscalasDTO;
+import com.ath.adminefectivo.dto.FestivosNacionalesDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
@@ -59,9 +60,10 @@ public class FestivosNacionalesController {
 	 * @param idEscalas
 	 * @return
 	 */
-	@DeleteMapping(value = "${endpoints.FestivosNacionales.eliminar}")
-	public ResponseEntity<ApiResponseADE<Boolean>> eliminar(@RequestParam("id") Date idFestivoNacional) {
-		boolean consulta = festivosNacionalesService.eliminarFestivosNacionales(idFestivoNacional);
+	@PostMapping(value = "${endpoints.FestivosNacionales.eliminar}", consumes = MediaType.APPLICATION_JSON_VALUE, 
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ApiResponseADE<Boolean>> eliminar(@RequestBody FestivosNacionalesDTO festivosNacionales) {
+		boolean consulta = festivosNacionalesService.eliminarFestivosNacionales(FestivosNacionalesDTO.CONVERTER_ENTITY.apply(festivosNacionales));
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
