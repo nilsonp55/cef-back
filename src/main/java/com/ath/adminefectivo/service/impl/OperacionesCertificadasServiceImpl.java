@@ -44,6 +44,7 @@ import com.ath.adminefectivo.service.IDominioService;
 import com.ath.adminefectivo.service.IFondosService;
 import com.ath.adminefectivo.service.IOficinasService;
 import com.ath.adminefectivo.service.IOperacionesCertificadasService;
+import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.IPuntosCodigoTdvService;
 import com.ath.adminefectivo.service.IPuntosService;
 import com.ath.adminefectivo.service.ITransportadorasService;
@@ -89,6 +90,9 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	
 	@Autowired
 	ICiudadesService ciudadesService;
+	
+	@Autowired
+	IParametroService parametroService;
 
 	private List<SobrantesFaltantesDTO> listaAjustesValor = new ArrayList<>();
 	private OperacionesCertificadas certificadas;
@@ -660,10 +664,19 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	 */
 	private Double asignarValorTotal(String[] fila, Integer numeroInicia, Integer longitud) {
 		Double valorAcumulado = 0.0;
+		boolean esPesos = true;
+		int menorDenominacionCop = parametroService.valorParametroEntero(Constantes.MIN_DENOM_COP);
+		
+		
+		
 		for (var i = numeroInicia; i < longitud; i = i + 2) {
-
+			if (numeroInicia.compareTo(Constantes.INICIA_DENOMINACION_BRINKS) == 0 ) {
+				// determinar si la moneda es diferente a COP
+				dominioService.valorTextoDominio(Constantes.DOMINIO_DIVISAS, Dominios.PESOS);
+				esPesos = fila[i + 1].trim().equals(dominioService.valorTextoDominio(Constantes.DOMINIO_DIVISAS, Dominios.PESOS));
+			}
 			Double denonimacion = Double.parseDouble(fila[i].trim());
-			if (denonimacion >= 50 || numeroInicia.compareTo(Constantes.INICIA_DENOMINACION_BRINKS) != 0) {
+			if (denonimacion >= menorDenominacionCop || !esPesos ) {
 				valorAcumulado = valorAcumulado + (denonimacion * Double.parseDouble(fila[i + 1].trim()));
 			}
 
