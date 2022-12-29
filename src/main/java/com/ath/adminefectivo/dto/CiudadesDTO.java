@@ -29,6 +29,8 @@ public class CiudadesDTO {
 	
 	private Integer codigoBrinks;
 	
+	private Boolean cobroIva;
+	
 	/**
 	 * Función encargada de recibir un DTO y retornar un objeto con los mismos datos
 	 */

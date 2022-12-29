@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -54,21 +55,21 @@ public class Puntos {
 	@Column(name = "ESTADO")
 	private String estado;
 	
-	@OneToMany(mappedBy = "puntos", cascade = {CascadeType.ALL}, orphanRemoval = true)
-	private List<Oficinas> oficinas;
+	@OneToOne(mappedBy = "puntos", cascade = {CascadeType.ALL}, orphanRemoval = true)
+	private Oficinas oficinas;
 	
-	@OneToMany(mappedBy = "puntos", cascade = {CascadeType.ALL}, orphanRemoval = true)
-	private List<SitiosClientes> sitiosClientes;
+	@OneToOne(mappedBy = "puntos", cascade = {CascadeType.ALL}, orphanRemoval = true)
+	private SitiosClientes sitiosClientes;
 	
 	@OneToMany(mappedBy = "puntos", cascade = {CascadeType.ALL}, orphanRemoval = true)
 	private List<PuntosCodigoTDV> puntosCodigoTDV;
 	
-	@OneToMany(mappedBy = "puntos", cascade = {CascadeType.ALL}, orphanRemoval = true)
-	private List<Fondos> fondos;
+	@OneToOne(mappedBy = "puntos", cascade = {CascadeType.ALL}, orphanRemoval = true)
+	private Fondos fondos;
 	
-	@OneToMany(mappedBy = "puntos", cascade = {CascadeType.ALL}, orphanRemoval = true)
-	private List<CajerosATM> cajeroATM;
+	@OneToOne(mappedBy = "puntos", cascade = {CascadeType.ALL}, orphanRemoval = true)
+	private CajerosATM cajeroATM;
 	
-	@OneToMany(mappedBy = "puntos", cascade = {CascadeType.ALL}, orphanRemoval = true)
-	private List<Bancos> bancos;
+	@OneToOne(mappedBy = "puntos", cascade = {CascadeType.ALL}, orphanRemoval = true)
+	private Bancos bancos;
 }

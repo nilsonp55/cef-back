@@ -6,6 +6,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Entity;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -44,7 +45,7 @@ public class CajerosATM {
 	@Column(name = "TARIFA_VERIFICACION")
 	private Double tarifaVerificacion;
 	
-	@ManyToOne
+	@OneToOne
 	@JoinColumn(name = "COD_PUNTO", nullable = false)
 	private Puntos puntos;
 	

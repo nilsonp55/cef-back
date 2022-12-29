@@ -6,6 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -54,8 +55,8 @@ public class Oficinas {
 	private Double tarifaVerificacion;
 	
 	
-	@ManyToOne
-	@JoinColumn(name = "COD_PUNTO", nullable = false)
+	@OneToOne
+	@JoinColumn(name = "CODIGO_PUNTO", nullable = false)
 	private Puntos puntos;
 	
 }
