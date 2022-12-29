@@ -39,6 +39,6 @@ public class SitiosClientes {
 	private Boolean fajado;
 	
 	@ManyToOne
-	@JoinColumn(name = "COD_PUNTO", nullable = false)
+	@JoinColumn(name = "COD_PUNTO", nullable = true)
 	private Puntos puntos;
 }

@@ -50,7 +50,8 @@ public class PuntosDelegateImpl implements IPuntosDelegate{
 		punto.setNombrePunto(createPuntosDTO.getNombrePunto());
 		punto.setCodigoCiudad(createPuntosDTO.getCodigoCiudad());
 		
-		Puntos puntoResponse = null;
+		Puntos puntoResponse = puntosService.crearPunto(punto);
+		
 		
 		//Se genera logica para decidir que tipo de punto se crea
 		if(createPuntosDTO.getTipoPunto().equals(Constantes.PUNTO_BANCO)) {
@@ -77,8 +78,10 @@ public class PuntosDelegateImpl implements IPuntosDelegate{
 		
 		if(createPuntosDTO.getTipoPunto().equals(Constantes.PUNTO_SITIO_CLIENTE)) {
 			SitiosClientes sitiosClientes = new SitiosClientes();
+			sitiosClientes.setCodigoPunto(puntoResponse.getCodigoPunto());
 			sitiosClientes.setCodigoCliente(createPuntosDTO.getCodigoCliente());
 			sitiosClientes.setFajado(createPuntosDTO.getFajado());
+			sitiosClientes.setPuntos(puntoResponse);
 			
 			puntoResponse = puntosService.guardarPuntoSitioCliente(punto, sitiosClientes);
 		}
