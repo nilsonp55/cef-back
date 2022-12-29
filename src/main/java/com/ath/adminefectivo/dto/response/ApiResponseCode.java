@@ -629,6 +629,42 @@ public enum ApiResponseCode {
 	 * Ocurrió un error al insertar llave privada rsa
 	 */
 	ERROR_INSERTANDO_LLAVE_PUBLICA_RSA("E962", "Ocurrio un fallo al insertar la llave publica de RSA ",
+			HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Ocurrió un error al consultar un log proceso mensual 
+	 */
+	ERROR_LOG_MENSUAL_NO_EXISTE("E963", "Ocurrio un error, no existe un log proceso mensual con estado pendiente ",
+			HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Ocurrió un error no existen liquidacion costos diaria para alguna fecha
+	 */
+	ERROR_LIQUIDACION_DIARIO_NO_EXISTE("E964", "Ocurrio un error, no existe algun costo liquidacion para un dia habil.  ",
+			HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Ocurrió un error no existen costos clasificacion para el mes tal y anio tal
+	 */
+	ERROR_COSTOS_CLASIFICACION_NO_EXISTE("E965", "Ocurrio un error, no existe registros en costos clasificacion para el mes y anio actual ",
+			HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Ocurrió un error mensaje de que aun no se han cerrado ciertos procesos del mes 
+	 */
+	ERROR_LOG_PROCESOS_NO_CERRADOS("E966", "Ocurrio un error, existen logs procesos diarios para la fecha sin cerrar. ",
+			HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Ocurrió un error porque la fecha del sistema no es igual a la ultima fecha habil del mes
+	 */
+	ERROR_FECHA_NO_FINAL("E967", "Ocurrio un error, la fecha del sistema aún no es la ultima habil del mes. ",
+			HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Ocurrió un error al consultar un log proceso mensual ya que existen más de un proceso pendiente para el proceso filtrado
+	 */
+	ERROR_MAS_DE_UN_LOG_MENSUAL("E968", "Ocurrio un error, existe mas de un log proceso mensual ",
 			HttpStatus.PRECONDITION_FAILED);
 	
 	/**

@@ -165,7 +165,7 @@ public final class Dominios {
 	public static final String TIPO_ARCHIVO_IPRCS = "IPRCS";
 	
 	/**
-	 * Codigo Proceso 
+	 * Codigo Proceso diario
 	 */
 	public static final String CODIGO_PROCESO_LOG_PRELIMINAR = "CARG_PRELIMINAR";
 	public static final String CODIGO_PROCESO_LOG_DEFINITIVO = "CARG_DEFINITIVO";
@@ -174,6 +174,11 @@ public final class Dominios {
 	public static final String CODIGO_PROCESO_LOG_LIQUIDACION = "LIQUIDACION";
 	public static final String CODIGO_PROCESO_LOG_CONTABILIDAD_PM = "CONTABILIDAD_PM";
 	public static final String CODIGO_PROCESO_LOG_CONTABILIDAD_AM = "CONTABILIDAD_AM";
+	
+	/**
+	 * Codigo Proceso mensual
+	 */
+	public static final String LOG_MENSUAL_LIQUIDACION = "LIQUIDACION MENSUAL";
 	
 	
 	/**
@@ -217,4 +222,10 @@ public final class Dominios {
 	public static final String TIPO_ENCRIPTADO_NA = "0";
 	public static final String TIPO_ENCRIPTADO_RSA = "1";
 	public static final String TIPO_ENCRIPTADO_BC = "2";
+	
+	//Valores de dominio DIVISAS
+	public static final String PESOS = "1";
+	public static final String DOLAR = "3";
+	public static final String DOLAR_CANADIENSE = "4";
+	public static final String EURO = "24";
 }

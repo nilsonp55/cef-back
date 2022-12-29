@@ -6,6 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -38,7 +39,7 @@ public class SitiosClientes {
 	@Column(name = "FAJADO")
 	private Boolean fajado;
 	
-	@ManyToOne
-	@JoinColumn(name = "COD_PUNTO", nullable = true)
+	@OneToOne
+	@JoinColumn(name = "COD_PUNTO", nullable = false)
 	private Puntos puntos;
 }

@@ -6,6 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -40,7 +41,7 @@ public class Fondos {
 	@Column(name = "NOMBRE_FONDO")
 	private String nombreFondo;
 	
-	@ManyToOne
+	@OneToOne
 	@JoinColumn(name = "COD_PUNTO", nullable = false)
 	private Puntos puntos;
 }

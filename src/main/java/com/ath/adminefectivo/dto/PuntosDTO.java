@@ -38,17 +38,17 @@ public class PuntosDTO {
 	
 	private String codigoCiudad;
 	
-	private List<OficinasDTO> oficinas;
+	private OficinasDTO oficinas;
 
-	private List<SitiosClientesDTO> sitiosClientes;
+	private SitiosClientesDTO sitiosClientes;
 
-	private List<PuntosCodigoTdvDTO> puntosCodigoTDV;
+	private PuntosCodigoTdvDTO puntosCodigoTDV;
 
-	private List<FondosDTO> fondos;
+	private FondosDTO fondos;
 
-	private List<CajerosATMDTO> cajeroATM;
+	private CajerosATMDTO cajeroATM;
 
-	private List<BancosDTO> bancos;
+	private BancosDTO bancos;
 
 	/**
 	 * Función encargada de recibir un DTO y retornar un objeto con los mismos datos
@@ -57,55 +57,30 @@ public class PuntosDTO {
 		var puntosDTO = new PuntosDTO();
 		UtilsObjects.copiarPropiedades(t, puntosDTO);
 		
-		List<OficinasDTO> oficinasDTO = new ArrayList();
-		if(!t.getOficinas().isEmpty()) {
-			t.getOficinas().forEach(oficina ->{
-				oficinasDTO.add(OficinasDTO.CONVERTER_DTO.apply(oficina));
-			});
+		if(!Objects.isNull(t.getOficinas())) {
+			puntosDTO.setOficinas(OficinasDTO.CONVERTER_DTO.apply(t.getOficinas()));
 		}
-		puntosDTO.setOficinas(oficinasDTO);
-		
-		List<SitiosClientesDTO> sitiosClienteDTO = new ArrayList();
-		if(!t.getSitiosClientes().isEmpty()) {
-			t.getSitiosClientes().forEach(sitiosCliente ->{
-				sitiosClienteDTO.add(SitiosClientesDTO.CONVERTER_DTO.apply(sitiosCliente));
-			});
+
+		if(!Objects.isNull(t.getSitiosClientes())) {
+			puntosDTO.setSitiosClientes(SitiosClientesDTO.CONVERTER_DTO.apply(t.getSitiosClientes()));
 		}
-		puntosDTO.setSitiosClientes(sitiosClienteDTO);
 		
-		List<PuntosCodigoTdvDTO> puntosCodigpoTdvDTO = new ArrayList();
-//		if(!t.getPuntosCodigoTDV().isEmpty()) {
-//			t.getPuntosCodigoTDV().forEach(puntoCodigo ->{
-//				puntosCodigpoTdvDTO.add(PuntosCodigoTdvDTO.CONVERTER_DTO.apply(puntoCodigo));
-//			});
+//		if(!Objects.isNull(t.getPuntosCodigoTDV())) {
+//			puntosDTO.setPuntosCodigoTDV(PuntosCodigoTdvDTO.CONVERTER_DTO.apply(t.getPuntosCodigoTDV()));
 //		}
-		puntosDTO.setPuntosCodigoTDV(puntosCodigpoTdvDTO);
-		
-		List<FondosDTO> fondosDTO = new ArrayList();
-		if(!t.getFondos().isEmpty()) {
-			t.getFondos().forEach(fondo ->{
-				fondosDTO.add(FondosDTO.CONVERTER_DTO.apply(fondo));
-			});
+			
+		if(!Objects.isNull(t.getFondos())) {
+			puntosDTO.setFondos(FondosDTO.CONVERTER_DTO.apply(t.getFondos()));
 		}
-		puntosDTO.setFondos(fondosDTO);
 		
-		List<CajerosATMDTO> cajerosDTO = new ArrayList();
-		if(!t.getCajeroATM().isEmpty()) {
-			t.getCajeroATM().forEach(cajero ->{
-				cajerosDTO.add(CajerosATMDTO.CONVERTER_DTO.apply(cajero));
-			});
+		if(!Objects.isNull(t.getCajeroATM())) {
+				puntosDTO.setCajeroATM(CajerosATMDTO.CONVERTER_DTO.apply(t.getCajeroATM()));
 		}
-		puntosDTO.setCajeroATM(cajerosDTO);
 		
-		List<BancosDTO> bancosDTO = new ArrayList();
-		if(!t.getBancos().isEmpty()) {
-			t.getBancos().forEach(banco ->{
-				bancosDTO.add(BancosDTO.CONVERTER_DTO.apply(banco));
-			});
+		if(!Objects.isNull(t.getBancos())) {
+			puntosDTO.setBancos(BancosDTO.CONVERTER_DTO.apply(t.getBancos()));
 		}
-		puntosDTO.setBancos(bancosDTO);
-		
-		
+
 		return puntosDTO;
 	};
 	
@@ -116,53 +91,30 @@ public class PuntosDTO {
 		var puntos = new Puntos();
 		UtilsObjects.copiarPropiedades(t, puntos);
 		
-		List<Oficinas> oficinas = new ArrayList();
-		if(!t.getOficinas().isEmpty()) {
-			t.getOficinas().forEach(oficina ->{
-				oficinas.add(OficinasDTO.CONVERTER_ENTITY.apply(oficina));
-			});
+		if(!Objects.isNull(t.getOficinas())) {
+			puntos.setOficinas(OficinasDTO.CONVERTER_ENTITY.apply(t.getOficinas()));
 		}
-		puntos.setOficinas(oficinas);
-		
-		List<SitiosClientes> sitiosCliente = new ArrayList();
-		if(!t.getSitiosClientes().isEmpty()) {
-			t.getSitiosClientes().forEach(sitioCliente ->{
-				sitiosCliente.add(SitiosClientesDTO.CONVERTER_ENTITY.apply(sitioCliente));
-			});
+
+		if(!Objects.isNull(t.getSitiosClientes())) {
+			puntos.setSitiosClientes(SitiosClientesDTO.CONVERTER_ENTITY.apply(t.getSitiosClientes()));
 		}
-		puntos.setSitiosClientes(sitiosCliente);
 		
-		List<PuntosCodigoTDV> puntosCodigpoTdv = new ArrayList();
-//		if(!t.getPuntosCodigoTDV().isEmpty()) {
-//			t.getPuntosCodigoTDV().forEach(puntoCodigo ->{
-//				puntosCodigpoTdv.add(PuntosCodigoTdvDTO.CONVERTER_ENTITY.apply(puntoCodigo));
-//			});
+//		if(!Objects.isNull(t.getPuntosCodigoTDV())) {
+//			puntosDTO.setPuntosCodigoTDV(PuntosCodigoTdvDTO.CONVERTER_DTO.apply(t.getPuntosCodigoTDV()));
 //		}
-		puntos.setPuntosCodigoTDV(puntosCodigpoTdv);
-		
-		List<Fondos> fondos = new ArrayList();
-		if(!t.getFondos().isEmpty()) {
-			t.getFondos().forEach(fondo ->{
-				fondos.add(FondosDTO.CONVERTER_ENTITY.apply(fondo));
-			});
+			
+		if(!Objects.isNull(t.getFondos())) {
+			puntos.setFondos(FondosDTO.CONVERTER_ENTITY.apply(t.getFondos()));
 		}
-		puntos.setFondos(fondos);
 		
-		List<CajerosATM> cajeros = new ArrayList();
-		if(!t.getCajeroATM().isEmpty()) {
-			t.getCajeroATM().forEach(cajero ->{
-				cajeros.add(CajerosATMDTO.CONVERTER_ENTITY.apply(cajero));
-			});
+		if(!Objects.isNull(t.getCajeroATM())) {
+			puntos.setCajeroATM(CajerosATMDTO.CONVERTER_ENTITY.apply(t.getCajeroATM()));
 		}
-		puntos.setCajeroATM(cajeros);
 		
-		List<Bancos> bancos = new ArrayList();
-		if(!t.getBancos().isEmpty()) {
-			t.getBancos().forEach(banco ->{
-				bancos.add(BancosDTO.CONVERTER_ENTITY.apply(banco));
-			});
+		if(!Objects.isNull(t.getBancos())) {
+			puntos.setBancos(BancosDTO.CONVERTER_ENTITY.apply(t.getBancos()));
 		}
-		puntos.setBancos(bancos);
+		
 		
 		return puntos;
 	};
