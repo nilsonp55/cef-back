@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ath.adminefectivo.dto.CreatePuntosDTO;
 import com.ath.adminefectivo.dto.EscalasDTO;
@@ -217,8 +218,9 @@ public class PuntosServiceImpl implements IPuntosService {
 		return null;
 	}
 
+	
 	public Puntos guardarPuntoSitioCliente(Puntos punto, SitiosClientes sitiosClientes) {
-		if (punto.getCodigoPunto() != null && puntosRepository.existsById(punto.getCodigoPunto())) {
+		if (punto.getCodigoPunto() != null && !puntosRepository.existsById(punto.getCodigoPunto())) {
 			throw new ConflictException(ApiResponseCode.ERROR_PUNTO_EXIST.getDescription());
 		}
 		Puntos puntoResponse = puntosRepository.save(punto);

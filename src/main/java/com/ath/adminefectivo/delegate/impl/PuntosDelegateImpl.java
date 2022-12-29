@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
 
 import com.ath.adminefectivo.constantes.Constantes;
@@ -43,6 +43,7 @@ public class PuntosDelegateImpl implements IPuntosDelegate{
 	 * {@inheritDoc}
 	 */
 	@Override
+	@Transactional
 	public PuntosDTO guardarPunto(CreatePuntosDTO createPuntosDTO) {
 		//Se crea instanca para persistir el punto
 		Puntos punto = new Puntos();
