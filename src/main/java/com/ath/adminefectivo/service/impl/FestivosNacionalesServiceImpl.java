@@ -8,11 +8,12 @@ import java.util.Objects;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
+import com.ath.adminefectivo.entities.FestivosNacionales;
 import com.ath.adminefectivo.exception.AplicationException;
+import com.ath.adminefectivo.exception.ConflictException;
 import com.ath.adminefectivo.repositories.FestivosNacionalesRepository;
 import com.ath.adminefectivo.service.IDominioService;
 import com.ath.adminefectivo.service.IFestivosNacionalesService;
@@ -68,6 +69,7 @@ public class FestivosNacionalesServiceImpl implements IFestivosNacionalesService
 				ApiResponseCode.ERROR_CALCULO_DIA_HABIL.getHttpStatus());
 
 	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -92,5 +94,40 @@ public class FestivosNacionalesServiceImpl implements IFestivosNacionalesService
 				ApiResponseCode.ERROR_CALCULO_DIA_HABIL.getDescription(),
 				ApiResponseCode.ERROR_CALCULO_DIA_HABIL.getHttpStatus());
 
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public FestivosNacionales saveFestivosNacionales(FestivosNacionales festivosNacionales) {
+		if (festivosNacionales.getFecha() != null && festivosNacionalesRepository
+				.existsById(festivosNacionales.getFecha())) {		
+			throw new ConflictException("Festivo nacional ya existe");		
+		}
+		FestivosNacionales festivosNacionalesResponse = 
+				festivosNacionalesRepository.save(festivosNacionales);
+		return festivosNacionalesResponse;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean eliminarFestivosNacionales(FestivosNacionales festivosNacionales) {
+		try {
+			festivosNacionalesRepository.deleteById(festivosNacionales.getFecha());
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<FestivosNacionales> consultarFestivosNacionales() {
+		return festivosNacionalesRepository.findAll();
 	}
 }
