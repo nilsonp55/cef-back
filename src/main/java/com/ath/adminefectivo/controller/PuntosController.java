@@ -56,7 +56,7 @@ public class PuntosController {
 	 * @return ResponseEntity<ApiResponseADE<PuntosDTO>>
 	 * @author Bayron Andres Perez M
 	 */
-	@PostMapping(value = "${endpoints.Puntos.guardar}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, 
+	@PostMapping(value = "${endpoints.Puntos.guardar}", consumes = MediaType.APPLICATION_JSON_VALUE, 
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<PuntosDTO>> persistirPuntos(@RequestBody CreatePuntosDTO createPuntosDTO) {
 
