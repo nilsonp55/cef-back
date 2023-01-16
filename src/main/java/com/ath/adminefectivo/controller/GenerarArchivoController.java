@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ath.adminefectivo.delegate.IGenerarArchivoDelegate;
 import com.ath.adminefectivo.delegate.impl.GenerarArchivoDelegate;
 import com.ath.adminefectivo.dto.RespuestaContableDTO;
+import com.ath.adminefectivo.dto.compuestos.RespuestaGenerarArchivoDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
@@ -44,11 +45,11 @@ public class GenerarArchivoController {
 			@RequestParam(value = "tipoContabilidad") String tipoContabilidad,
 			@RequestParam(value = "codBanco") int codBanco
 			) {
-		ByteArrayInputStream archivo =generarArchivoDelegate.generarArchivo(fecha, tipoContabilidad, codBanco);
+		RespuestaGenerarArchivoDTO archivo =generarArchivoDelegate.generarArchivo(fecha, tipoContabilidad, codBanco);
  		 HttpHeaders headers = new HttpHeaders();
- 		 headers.add("Content-Disposition", "attachment; filename=cierreContable.xls");
-	 
-		 return ResponseEntity.ok().headers(headers).body(new InputStreamResource(archivo));
+ 		 headers.add("Content-Disposition", "attachment; filename="+archivo.getNombreArchivo());
+ 		ByteArrayInputStream bais =	new ByteArrayInputStream(archivo.getArchivoBytes().toByteArray());
+		 return ResponseEntity.ok().headers(headers).body(new InputStreamResource(bais));
 		 
 	}
 }

@@ -55,4 +55,13 @@ public interface ICiudadesService {
 	 * @author duvan.naranjo
 	 */
 	CiudadesDTO getCiudadPorCodigoDaneOrCodigoBrinks(String ciudad1);
+
+	/**
+	 * Servicio encargado de consultar una ciudad por nombre ciudad Fiserv
+	 * 
+	 * @param nombreCiudadFiserv
+	 * @return CiudadesDTO
+	 * @author duvan.naranjo
+	 */
+	CiudadesDTO getCiudadPorNombreCiudadFiserv(String nombreCiudad);
 }

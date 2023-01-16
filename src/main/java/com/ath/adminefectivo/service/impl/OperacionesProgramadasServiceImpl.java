@@ -985,12 +985,13 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		
 		int codigoPuntoOrigen ;
 		int codigoPuntoDestino;
+		int codigoFondo;
 		if(esAval) {
 			
 			codigoPuntoOrigen = puntoFondoDestino.getCodigoPunto();
 			codigoPuntoDestino = puntoFondoOrigen.getCodigoPunto();
 		}else {
-			puntoFondoOrigen = puntoFondoDestino;
+			//puntoFondoOrigen = puntoFondoDestino;
 			codigoPuntoDestino = puntoFondoDestino.getCodigoPunto();
 			
 			
@@ -1006,6 +1007,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 						ApiResponseCode.ERROR_BANCO_EXTERNO_NO_ENCONTRADO.getHttpStatus());
 			}
 		}
+		puntoFondoOrigen = puntoFondoDestino;
 
 		operacionesProgramadasDTO = OperacionesProgramadasDTO.builder()
 				.codigoFondoTDV(puntoFondoOrigen.getCodigoPunto())
@@ -1379,7 +1381,8 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 										Constantes.CAMPO_DETALLE_ARCHIVO_TRANSPORTADORA);
 				String ciudad = determinarCiudad(contenido, detalleArchivo, 
 										Constantes.CAMPO_DETALLE_ARCHIVO_CIUDAD);
-				ciudad = ciudadesRepository.findByNombreCiudadFiserv(ciudad).getNombreCiudad();
+				
+				ciudad = ciudadService.getCiudadPorNombreCiudadFiserv(ciudad).getNombreCiudad();
 				int codigoCompensacion = determinarCodigoCompensacion(contenido, detalleArchivo);
 				
 				Fondos codigoFondoTDV = fondosService.getCodigoFondo(transportadora, codigoCompensacion, ciudad);

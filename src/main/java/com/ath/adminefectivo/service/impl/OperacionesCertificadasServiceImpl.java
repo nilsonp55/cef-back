@@ -376,7 +376,9 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 		}
 		if (Objects.isNull(codigoPuntoOrigenDestino.getCertificadas())) {
 			var operaciones = new OperacionesCertificadasDTO();
+			
 			operaciones.setCodigoFondoTDV(registro.getCodigoPunto());
+			operaciones.setCodigoPropioTDV(codigoPropio);
 			operaciones.setCodigoPuntoDestino(codigoPuntoOrigenDestino.getCodigoPuntoDestino());
 			operaciones.setCodigoPuntoOrigen(codigoPuntoOrigenDestino.getCodigoPuntoOrigen());
 			operaciones.setCodigoServicioTdv(codigoServicio);
@@ -436,6 +438,9 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	 */
 	private CodigoPuntoOrigenDestinoDTO obtenerCodigoPuntoOrigenDestino(String entradaSalida,
 			RegistroTipo1ArchivosFondosDTO registro, String codigoPropio, String codigoServicio) {
+		
+		System.out.println("registro " +registro.toString());
+		
 		var codigoPuntoOrigenDestino = new CodigoPuntoOrigenDestinoDTO();
 		Integer codigoPuntoOrigen = 0;
 		Integer codigoPuntoDestino = 0;
@@ -866,14 +871,14 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	 */
 	@Transactional
 	private void procesarArchivoBrinks(ArchivosCargados elemento, List<DetallesDefinicionArchivoDTO> detalleArchivo) {
-
+	
 		var registro = new RegistroTipo1ArchivosFondosDTO();
-
 		for (var i = 0; i < elemento.getRegistrosCargados().size(); i++) {
 
 			var ajusteValor = new SobrantesFaltantesDTO();
 			String[] fila = elemento.getRegistrosCargados().get(i).getContenido().split(", ");
 			String tipoRegistro = determinarTipoRegistro(fila, detalleArchivo);
+			System.out.println("tipoRegistro = "+tipoRegistro);
 			switch (Integer.parseInt(tipoRegistro)) {
 			case 1: {
 				String tdv = determinarCampo(fila, detalleArchivo, Integer.parseInt(tipoRegistro),
@@ -895,6 +900,8 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 				registro.setFechaEjecucion(fecha);
 				registro.setBanco_aval(fondo.getBancoAVAL());
 				registro.setCodigoDane(codigoDaneCiudad);
+				
+				System.out.println("REGISTRO --> "+registro.toString());
 				break;
 			}
 			case 2: {

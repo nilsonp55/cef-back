@@ -601,12 +601,12 @@ public static final String DELETE_SEPARADORES = "";
 	 */
 	public static final String CTB_BBOG_Manana = "Contabilidad_BBOG_Manana";
 	public static final String CTB_BBOG_Tarde = "Contabilidad_BBOG_Tarde";
-	public static final String CTB_BOCC_Manana = "CTB_BOCC_Manana";
-	public static final String CTB_BOCC_Tarde = "CTB_BOCC_Tarde";
-	public static final String CTB_BPOP_Manana = "CTB_BPOP_Manana";
-	public static final String CTB_BPOP_Tarde = "CTB_BPOP_Tarde";
-	public static final String CTB_BAVV_Manana = "CTB_BAVV_Manana";
-	public static final String CTB_BAVV_Tarde = "CTB_BAVV_Tarde";
+	public static final String CTB_BOCC_Manana = "Contabilidad_BOCC_Manana";
+	public static final String CTB_BOCC_Tarde = "Contabilidad_BOCC_Tarde";
+	public static final String CTB_BPOP_Manana = "Contabilidad_BPOP_Manana";
+	public static final String CTB_BPOP_Tarde = "Contabilidad_BPOP_Tarde";
+	public static final String CTB_BAVV_Manana = "Contabilidad_BAVV_Manana";
+	public static final String CTB_BAVV_Tarde = "Contabilidad_BAVV_Tarde";
 	
 	public static final String EXTENSION_ARCHIVO_XLS = ".xls";
 	public static final String EXTENSION_ARCHIVO_TXT = ".txt";

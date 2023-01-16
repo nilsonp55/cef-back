@@ -116,4 +116,28 @@ public interface ITransaccionesContablesService {
 	 * @author duvan.naranjo
 	 */
 	String generarComprobanteContable(Date fecha, String tipoContabilidad);
+
+	/**
+	 * Metodo encargado de realizar la consulta para el banco de bogota BBOG y concatenar su resultado como
+	 * un string
+	 * 
+	 * @param fecha
+	 * @param tipoContabilidad
+	 * @param codBanco
+	 * @return List<String>
+	 * @author duvan.naranjo
+	 */
+	List<String> cierreContablebyBancoF1String(Date fecha, String tipoContabilidad, int codBanco);
+	
+	/**
+	 * Metodo encargado de realizar la consulta y concatenar su resultado como
+	 * un string, de la forma que lo realiza el banco 
+	 * 
+	 * @param fecha
+	 * @param tipoContabilidad
+	 * @param codBanco
+	 * @return List<String>
+	 * @author duvan.naranjo
+	 */
+	List<String> cierreContablebyBancoF2String(Date fecha, String tipoContabilidad, int codBanco);
 }

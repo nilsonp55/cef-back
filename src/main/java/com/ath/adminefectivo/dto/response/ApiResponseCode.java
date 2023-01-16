@@ -665,6 +665,18 @@ public enum ApiResponseCode {
 	 * Ocurrió un error al consultar un log proceso mensual ya que existen más de un proceso pendiente para el proceso filtrado
 	 */
 	ERROR_MAS_DE_UN_LOG_MENSUAL("E968", "Ocurrio un error, existe mas de un log proceso mensual ",
+			HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Ocurrió un error al consultar un fondo, existe más de un fondo
+	 */
+	ERROR_MAS_DE_UN_FONDO("E969", "Ocurrio un error, existe más de un fondo en la consulta ",
+			HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Ocurrió un error al realizar el exportar de datos de contabilidad
+	 */
+	ERROR_EXPORTANDO_ARCHIVO("E970", "Ocurrio un error, El archivo no pudo ser generado correctamente. ",
 			HttpStatus.PRECONDITION_FAILED);
 	
 	/**
