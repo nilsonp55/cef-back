@@ -118,8 +118,69 @@ public class PuntosDelegateImpl implements IPuntosDelegate{
 	 */
 	@Override
 	public PuntosDTO actualizarPunto(CreatePuntosDTO rreatePuntosDTO) {
-		// TODO Auto-generated method stub
-		return null;
+		Puntos punto = new Puntos();
+		punto.setTipoPunto(rreatePuntosDTO.getTipoPunto());
+		punto.setNombrePunto(rreatePuntosDTO.getNombrePunto());
+		punto.setCodigoCiudad(rreatePuntosDTO.getCodigoCiudad());
+		
+		Puntos puntoResponse = puntosService.actualizarPunto(punto);
+		
+		if(rreatePuntosDTO.getTipoPunto().equals(Constantes.PUNTO_BANCO)) {
+			Bancos banco = new Bancos();
+			banco.setCodigoCompensacion(rreatePuntosDTO.getCodigoCompensacion());
+			banco.setNumeroNit(rreatePuntosDTO.getNumeroNit());
+			banco.setAbreviatura(rreatePuntosDTO.getAbreviatura());
+			banco.setEsAVAL(rreatePuntosDTO.getEsAVAL());
+			
+			puntoResponse = puntosService.actualizarPuntoBanco(punto, banco);
+		}
+		
+		if(rreatePuntosDTO.getTipoPunto().equals(Constantes.PUNTO_CAJERO)) {
+			CajerosATM cajero = new CajerosATM();
+			cajero.setCodigoATM(rreatePuntosDTO.getCodigoATM());
+			cajero.setTarifaRuteo(rreatePuntosDTO.getTarifaRuteo());
+			cajero.setTarifaVerificacion(rreatePuntosDTO.getTarifaVerificacion());
+			Bancos bancoAval = new Bancos();
+			bancoAval.setCodigoPunto(rreatePuntosDTO.getBancoAVAL());
+			//cajero.setBancoAval(bancoAval);
+			
+			puntoResponse = puntosService.guardarPuntoCajeroATM(punto, cajero);
+		}
+		
+		if(rreatePuntosDTO.getTipoPunto().equals(Constantes.PUNTO_SITIO_CLIENTE)) {
+			SitiosClientes sitiosClientes = new SitiosClientes();
+			sitiosClientes.setCodigoPunto(puntoResponse.getCodigoPunto());
+			sitiosClientes.setCodigoCliente(rreatePuntosDTO.getCodigoCliente());
+			sitiosClientes.setFajado(rreatePuntosDTO.getFajado());
+			sitiosClientes.setPuntos(puntoResponse);
+			
+			puntoResponse = puntosService.guardarPuntoSitioCliente(punto, sitiosClientes);
+		}
+		
+		if(rreatePuntosDTO.getTipoPunto().equals(Constantes.PUNTO_FONDO)) {
+			Fondos fondos = new Fondos();
+			fondos.setTdv(rreatePuntosDTO.getTdv());
+			fondos.setBancoAVAL(rreatePuntosDTO.getBancoAVAL());
+			fondos.setNombreFondo(rreatePuntosDTO.getNombreFondo());
+			
+			puntoResponse = puntosService.guardarPuntoFondo(punto, fondos);
+		}
+			
+		if(rreatePuntosDTO.getTipoPunto().equals(Constantes.PUNTO_OFICINA)) {
+			Oficinas oficina = new Oficinas();
+			oficina.setCodigoOficina(rreatePuntosDTO.getCodigoOficina());
+			Bancos bancoAval = new Bancos();
+			bancoAval.setCodigoPunto(rreatePuntosDTO.getBancoAVAL());
+			//oficina.setBancoAval(bancoAval);
+			oficina.setFajado(rreatePuntosDTO.getFajado());
+			oficina.setRefagillado(rreatePuntosDTO.getRefagillado());
+			oficina.setTarifaRuteo(rreatePuntosDTO.getTarifaRuteo());
+			oficina.setTarifaVerificacion(rreatePuntosDTO.getTarifaVerificacion());
+			
+			puntoResponse = puntosService.guardarPuntoOficina(punto, oficina);
+		}
+		
+		return PuntosDTO.CONVERTER_DTO.apply(puntoResponse);
 	}
 
 	/**

@@ -167,6 +167,36 @@ public interface IPuntosService {
 	 */
 	Puntos getEntidadPunto(Integer codigo_banco_aval);
 	
+	/**
+	 * @author prv_jmazo
+	 * @param punto
+	 * @return
+	 */
 	Puntos crearPunto(Puntos punto);
+	
+	/**
+	 * 
+	 * @param punto
+	 * @return
+	 * @author prv_jmazo
+	 */
+	Puntos actualizarPunto(Puntos punto);
+	
+	/**
+	 * 
+	 * @param punto
+	 * @param banco
+	 * @return
+	 * @author prv_jmazo
+	 */
+	Puntos actualizarPuntoBanco(Puntos punto, Bancos banco);
+	
+	
+	Puntos actualizarPuntoOficina(Puntos punto, Oficinas oficina);
+	Puntos actualizarPuntoCajeroATM(Puntos punto, CajerosATM cajerosATM);
+	Puntos actualizarPuntoSitioCliente(Puntos punto, SitiosClientes sitiosClientes);
+	Puntos actualizarPuntoFondo(Puntos punto, Fondos fondo);
+	
+	
 	
 }
