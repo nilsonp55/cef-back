@@ -114,9 +114,9 @@ public class FestivosNacionalesServiceImpl implements IFestivosNacionalesService
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean eliminarFestivosNacionales(FestivosNacionales festivosNacionales) {
+	public boolean eliminarFestivosNacionales(Date idFestivoNacional) {
 		try {
-			festivosNacionalesRepository.deleteById(festivosNacionales.getFecha());
+			festivosNacionalesRepository.deleteById(idFestivoNacional);
 			return true;
 		} catch (Exception e) {
 			return false;

@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
 
 import com.ath.adminefectivo.constantes.Constantes;
@@ -43,6 +43,7 @@ public class PuntosDelegateImpl implements IPuntosDelegate{
 	 * {@inheritDoc}
 	 */
 	@Override
+	@Transactional
 	public PuntosDTO guardarPunto(CreatePuntosDTO createPuntosDTO) {
 		//Se crea instanca para persistir el punto
 		Puntos punto = new Puntos();
@@ -50,7 +51,8 @@ public class PuntosDelegateImpl implements IPuntosDelegate{
 		punto.setNombrePunto(createPuntosDTO.getNombrePunto());
 		punto.setCodigoCiudad(createPuntosDTO.getCodigoCiudad());
 		
-		Puntos puntoResponse = null;
+		Puntos puntoResponse = puntosService.crearPunto(punto);
+		
 		
 		//Se genera logica para decidir que tipo de punto se crea
 		if(createPuntosDTO.getTipoPunto().equals(Constantes.PUNTO_BANCO)) {
@@ -77,8 +79,10 @@ public class PuntosDelegateImpl implements IPuntosDelegate{
 		
 		if(createPuntosDTO.getTipoPunto().equals(Constantes.PUNTO_SITIO_CLIENTE)) {
 			SitiosClientes sitiosClientes = new SitiosClientes();
+			sitiosClientes.setCodigoPunto(puntoResponse.getCodigoPunto());
 			sitiosClientes.setCodigoCliente(createPuntosDTO.getCodigoCliente());
 			sitiosClientes.setFajado(createPuntosDTO.getFajado());
+			sitiosClientes.setPuntos(puntoResponse);
 			
 			puntoResponse = puntosService.guardarPuntoSitioCliente(punto, sitiosClientes);
 		}

@@ -167,4 +167,6 @@ public interface IPuntosService {
 	 */
 	Puntos getEntidadPunto(Integer codigo_banco_aval);
 	
+	Puntos crearPunto(Puntos punto);
+	
 }
