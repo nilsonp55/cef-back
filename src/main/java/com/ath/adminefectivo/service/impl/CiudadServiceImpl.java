@@ -91,9 +91,19 @@ public class CiudadServiceImpl implements ICiudadesService{
 		} else {
 			return CiudadesDTO.CONVERTER_DTO.apply(ciudadOpt);
 		}
+	}
 		
-		
-		
-		
+		@Override
+		public CiudadesDTO getCiudadPorNombreCiudadFiserv(String nombreCiudad) {
+			Ciudades ciudadOpt = ciudadesRepository.findByNombreCiudadFiserv(nombreCiudad);
+			
+			if (Objects.isNull(ciudadOpt)) {
+					throw new NegocioException(ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getCode(),
+							ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getDescription() + "Ciudad con nombreCiudad = "+nombreCiudad+" No existe. ",
+							ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getHttpStatus());
+				
+			} else {
+				return CiudadesDTO.CONVERTER_DTO.apply(ciudadOpt);
+			}
 	}
 }

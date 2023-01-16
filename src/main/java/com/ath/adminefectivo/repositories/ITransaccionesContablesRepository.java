@@ -125,4 +125,91 @@ public interface ITransaccionesContablesRepository extends JpaRepository<Transac
 	 */
 	@Procedure(name = "generarcomprobantecontable")
 	String generarcomprobantecontable(@Param("pfechaproceso") Date fecha, @Param("ptipoproceso") String tipoContabilidad);
+	
+	/**
+	 * Retorna una lista de strings con el resultado concatenado por comas
+	 * @param start
+	 * @param end
+	 * @return List<TransaccionesContables>
+	 * @author duvan.naranjo
+	 * */
+	@Query(value ="SELECT "
+			+ "    '' || tc.banco_aval ||','|| "
+			+ "	b.nombre_banco ||','|| "
+			+ "	b.abreviatura ||','|| "
+			+ "	tc.naturaleza ||','|| "
+			+ "	tc.cuenta_contable ||','|| "
+			+ "	CASE WHEN tc.cuenta_auxiliar IS NULL THEN '' ELSE tc.cuenta_auxiliar END ||','|| "
+			+ "	CASE WHEN tc.tipo_identificacion IS NULL THEN '' ELSE tc.tipo_identificacion END ||','|| "
+			+ "	CASE WHEN tc.codigo_moneda IS NULL THEN '' ELSE tc.codigo_moneda END||','|| "
+			+ "	CASE WHEN tc.valor IS NULL THEN 0 ELSE tc.valor end||','|| "
+			+ "	CASE WHEN tc.codigo_centro IS NULL THEN '' ELSE tc.codigo_centro END||','|| "
+			+ "	'' ||','|| "
+			+ "	'' ||','|| "
+			+ "	'' ||','|| "
+			+ "	CASE WHEN tc.identificador IS NULL THEN '' ELSE tc.identificador END||','|| "
+			+ "	CASE WHEN tc.descripcion IS NULL THEN '' ELSE tc.descripcion END||','|| "
+			+ "	CASE WHEN tc.id_tercero IS NULL THEN 0 ELSE tc.id_tercero END||','|| "
+			+ "	CASE WHEN tc.nombre_tercero IS NULL THEN '' ELSE tc.nombre_tercero END||','|| "
+			+ "	tc.fecha||','|| "
+			+ "	CASE WHEN tc.referencia1 IS NULL THEN '' ELSE tc.referencia1 END||','|| "
+			+ "	CASE WHEN tc.referencia2 IS NULL THEN '' ELSE tc.referencia2 END AS texto "
+			+ "FROM "
+			+ "	transacciones_contables tc, "
+			+ "	cuentas_puc cp, "
+			+ "	transacciones_internas ti, "
+			+ "	bancos b "
+			+ "WHERE "
+			+ "	tc.cuenta_contable = cp.CUENTA_CONTABLE AND "
+			+ "	tc.banco_aval = cp.banco_aval AND "
+			+ "	cp.nombre_cuenta NOT LIKE 'Transitoria%' AND "
+			+ "	tc.id_transacciones_internas = ti.id_transacciones_internas AND "
+			+ "	ti.estado = ?4 AND "
+			+ "	tc.fecha = ?1 AND "
+			+ "	ti.tipo_proceso = ?2 AND "
+			+ "	tc.banco_aval = ?3 AND "
+			+ "	tc.banco_aval = b.codigo_punto ",nativeQuery=true)
+	List<String> cierreContablebyBancoF1String(Date fecha, String tipoContabilidad, int codBanco, int estado);
+	
+	/**
+	 * Retorna una lista de strings con el resultado concatenado por comas
+	 * @param start
+	 * @param end
+	 * @return List<TransaccionesContables>
+	 * @author duvan.naranjo
+	 * */
+	@Query(value ="SELECT"
+			+ "     '' || CASE WHEN tc.naturaleza = 'C' THEN '50' ELSE '40' END ||','|| "
+			+ "    tc.cuenta_contable ||','|| "
+			+ "    CASE WHEN tc.cuenta_auxiliar IS NULL THEN '' ELSE tc.cuenta_auxiliar END ||','|| "
+			+ "    CASE WHEN tc.tipo_identificacion IS NULL THEN '' WHEN tc.tipo_identificacion = 'NIT' THEN '31' ELSE  tc.tipo_identificacion END ||','|| "
+			+ "    '' ||','|| "
+			+ "    '' ||','|| "
+			+ "	CASE WHEN tc.valor IS NULL THEN 0 ELSE tc.valor end||','|| "
+			+ "	CASE WHEN tc.valor IS NULL THEN 0 ELSE tc.valor end||','|| "
+			+ "    '' ||','|| "
+			+ "    CASE WHEN tc.codigo_centro  IS NOT NULL AND (tc.codigo_centro like '4%' or tc.codigo_centro like '5%') THEN tc.codigo_centro ELSE '' END||','|| "
+			+ "    CASE WHEN tc.codigo_centro  IS NOT NULL AND (tc.codigo_centro like '4%' or tc.codigo_centro like '5%') THEN '' ELSE tc.codigo_centro END||','|| "
+			+ "    '' ||','|| "
+			+ "    '' ||','|| "
+			+ "    '' ||','|| "
+			+ "    CASE WHEN tc.descripcion IS NULL THEN '' ELSE tc.descripcion END||','|| "
+			+ "	CASE WHEN tc.id_tercero IS NULL THEN 0 ELSE tc.id_tercero END||','|| "
+			+ "	CASE WHEN tc.nombre_tercero IS NULL THEN '' ELSE tc.nombre_tercero END AS texto	"
+			+ "FROM "
+			+ "	transacciones_contables tc, "
+			+ "	cuentas_puc cp, "
+			+ "	transacciones_internas ti, "
+			+ "	bancos b "
+			+ "WHERE"
+			+ "	tc.cuenta_contable = cp.CUENTA_CONTABLE AND "
+			+ "	tc.banco_aval = cp.banco_aval AND "
+			+ "	cp.nombre_cuenta NOT LIKE 'Transitoria%' AND "
+			+ "	tc.id_transacciones_internas = ti.id_transacciones_internas AND  "
+			+ "	ti.estado = ?4 AND "
+			+ "	tc.fecha = ?1 AND "
+			+ "	ti.tipo_proceso = ?2 AND "
+			+ "	tc.banco_aval = ?3 AND "
+			+ "	tc.banco_aval = b.codigo_punto ",nativeQuery=true)
+	List<String> cierreContablebyBancoF2String(Date fecha, String tipoContabilidad, int codBanco, int estado);
 }

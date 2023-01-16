@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.ath.adminefectivo.dto.RespuestaContableDTO;
+import com.ath.adminefectivo.dto.compuestos.RespuestaGenerarArchivoDTO;
 
 /**
  * Interfaz de los servicios referentes a la generacion
@@ -15,7 +16,27 @@ import com.ath.adminefectivo.dto.RespuestaContableDTO;
  */
 public interface IgenerarArchivoService {
 
-	ByteArrayOutputStream generarArchivo(Date fecha,String tipoContabilidad,int codBanco );
+	RespuestaGenerarArchivoDTO generarArchivo(Date fecha,String tipoContabilidad,int codBanco );
+	
+	/**
+	 * Metodo encargado de realizar la extraccion y formación del archivo contable para Banco de Bogota
+	 * 
+	 * @param fecha
+	 * @param tipoContabilidad
+	 * @param codBanco
+	 * @return
+	 */
+	RespuestaGenerarArchivoDTO generarArchivoBBOG(Date fecha, String tipoContabilidad,int codBanco);
+	
+	/**
+	 * Metodo encargado de realizar la extraccion y formación del archivo contable para Banco de Avvillas
+	 * 
+	 * @param fecha
+	 * @param tipoContabilidad
+	 * @param codBanco
+	 * @return
+	 */
+	RespuestaGenerarArchivoDTO generarArchivoBAVV(Date fecha, String tipoContabilidad,int codBanco);
 
 	/**
 	 * Metodo encargado de generar los archivos de cierre de contabilidad

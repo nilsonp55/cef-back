@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.delegate.IGenerarArchivoDelegate;
+import com.ath.adminefectivo.dto.compuestos.RespuestaGenerarArchivoDTO;
 import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.impl.TransaccionesContablesServiceImpl;
 import com.ath.adminefectivo.service.impl.generarArchivoServiceimpl;
@@ -34,20 +35,20 @@ public class GenerarArchivoDelegate implements IGenerarArchivoDelegate {
 	TransaccionesContablesServiceImpl transaccionesContablesService; 
 
 	@Override
-	public ByteArrayInputStream generarArchivo(Date fecha, String tipoContabilidad, int codBanco) {
-		//RespuestaContableDTO registros = new RespuestaContableDTO();
+	public RespuestaGenerarArchivoDTO generarArchivo(Date fecha, String tipoContabilidad, int codBanco) {
 		ByteArrayOutputStream registros = null;
-		//fecha actual
-		//Date fechaActual = parametroService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
-		//valida el tipoContabilidad
+
 	
 		fecha = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
 		
 		if(tipoContabilidad.equals("AM") || tipoContabilidad.equals("PM")) {
-			registros = generarArchivoService.generarArchivo(fecha, tipoContabilidad, codBanco);
+					
+			return generarArchivoService.generarArchivo(fecha, tipoContabilidad, codBanco);
+			
 		}
+		return null;
 		
-		return new ByteArrayInputStream(registros.toByteArray());
+		
 		
 	}
 }
