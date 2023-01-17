@@ -668,4 +668,5 @@ public static final String DELETE_SEPARADORES = "";
 	public static final String DOMINIO_DIVISAS = "DIVISAS";
 	
 	public static final String MIN_DENOM_COP = "MIN_DENOM_COP";
+	public static final Integer BANCO_BOGOTA = 297;
 }
