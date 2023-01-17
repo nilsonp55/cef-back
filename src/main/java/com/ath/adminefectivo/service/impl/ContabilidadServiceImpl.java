@@ -236,24 +236,30 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 	 */
 	private List<TransaccionesInternasDTO> procesarRegistrosContabilidadIntradia(String tipoContabilidad,
 			OperacionIntradiaDTO operacionIntradia, int consecutivoDia) {
+		
 		List<TransaccionesInternasDTO> listadoTransaccionesInternas = new ArrayList<>();
+		long valorImpuesto = 0;
+		
 		if (operacionIntradia.getEntradaSalida().equals(Constantes.VALOR_ENTRADA)) {
 			TransaccionesInternasDTO operacionIntradia21 = generarTransaccionInternaIntradia(tipoContabilidad, 21,
 					operacionIntradia);
-			listadoTransaccionesInternas.add(operacionIntradia21);
-
-			TransaccionesInternasDTO operacionIntradia22 = generarTransaccionInternaIntradia(tipoContabilidad, 22,
-					operacionIntradia);
-			operacionIntradia22
-					.setValor(this.calcularValorConImpuesto(operacionIntradia21.getValor(), Dominios.IMPUESTO_IVA));
-			operacionIntradia22.setTipoImpuesto(Integer.valueOf(Dominios.IMPUESTO_IVA));
-			listadoTransaccionesInternas.add(operacionIntradia22);
+			listadoTransaccionesInternas.add(operacionIntradia21);	
+			
+			if (isCiudadCobroIVA(operacionIntradia.getCodigoPunto()) && operacionIntradia.getBancoAVAL() == Constantes.BANCO_BOGOTA) {
+				TransaccionesInternasDTO operacionIntradia22 = generarTransaccionInternaIntradia(tipoContabilidad, 22,
+						operacionIntradia);
+				operacionIntradia22
+						.setValor(this.calcularValorConImpuesto(operacionIntradia21.getValor(), Dominios.IMPUESTO_IVA));
+				operacionIntradia22.setTipoImpuesto(Integer.valueOf(Dominios.IMPUESTO_IVA));
+				listadoTransaccionesInternas.add(operacionIntradia22);
+				valorImpuesto = operacionIntradia22.getValor();;
+			}	
 
 			TransaccionesInternasDTO operacionIntradia23 = generarTransaccionInternaIntradia(tipoContabilidad, 23,
 					operacionIntradia);
 			operacionIntradia23.setCodigoComision(null);
 			operacionIntradia23.setMedioPago(Dominios.MEDIOS_PAGO_ABONO);
-			operacionIntradia23.setValor(operacionIntradia22.getValor() + operacionIntradia21.getValor());
+			operacionIntradia23.setValor( operacionIntradia21.getValor() - valorImpuesto);
 			listadoTransaccionesInternas.add(operacionIntradia23);
 
 		} else if (operacionIntradia.getEntradaSalida().equals(Constantes.VALOR_SALIDA)) {
@@ -261,21 +267,38 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 					operacionIntradia);
 			listadoTransaccionesInternas.add(operacionIntradia11);
 
-			TransaccionesInternasDTO operacionIntradia12 = generarTransaccionInternaIntradia(tipoContabilidad, 12,
-					operacionIntradia);
-			operacionIntradia12
-					.setValor(this.calcularValorConImpuesto(operacionIntradia11.getValor(), Dominios.IMPUESTO_IVA));
-			operacionIntradia12.setTipoImpuesto(Integer.valueOf(Dominios.IMPUESTO_IVA));
-			listadoTransaccionesInternas.add(operacionIntradia12);
+			if (isCiudadCobroIVA(operacionIntradia.getCodigoPunto()) && operacionIntradia.getBancoAVAL() == Constantes.BANCO_BOGOTA ) {
+				TransaccionesInternasDTO operacionIntradia12 = generarTransaccionInternaIntradia(tipoContabilidad, 12,
+						operacionIntradia);
+				operacionIntradia12
+						.setValor(this.calcularValorConImpuesto(operacionIntradia11.getValor(), Dominios.IMPUESTO_IVA));
+				operacionIntradia12.setTipoImpuesto(Integer.valueOf(Dominios.IMPUESTO_IVA));
+				listadoTransaccionesInternas.add(operacionIntradia12);
+				valorImpuesto = operacionIntradia12.getValor();;
+			}	
 
 			TransaccionesInternasDTO operacionIntradia13 = generarTransaccionInternaIntradia(tipoContabilidad, 13,
 					operacionIntradia);
 			operacionIntradia13.setCodigoComision(null);
 			operacionIntradia13.setMedioPago(Dominios.MEDIOS_PAGO_CARGO_A_CUENTA);
-			operacionIntradia13.setValor(operacionIntradia12.getValor() + operacionIntradia11.getValor());
+			operacionIntradia13.setValor( operacionIntradia11.getValor() - valorImpuesto);
 			listadoTransaccionesInternas.add(operacionIntradia13);
 		}
 		return listadoTransaccionesInternas;
+	}
+
+	/**
+	 * Determina si para la ciudad de un punto se debe cobrar impuesto IVA
+	 */
+	private boolean isCiudadCobroIVA(Integer codigoPunto) {
+	
+		String codigoDane = puntosService.getPuntoById(codigoPunto).getCodigoCiudad();
+		if (!Objects.isNull(codigoDane)) {
+			return ciudadesService.getCiudadPorCodigoDane(codigoDane).getCobroIva();
+		}
+		else {
+			return true;
+		}
 	}
 
 	/**
@@ -305,14 +328,15 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 			transaccionInternaDTOComision.setCodigoComision(Integer.valueOf(Dominios.COMISION_1));
 			transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTOComision);
 			
-			TransaccionesInternasDTO transaccionInternaDTOImpuesto = generarTransaccionInterna(tipoProceso, 22, operacionProgramada, operacionProgramada.getCodigoFondoTDV());
-			
-			long valorImpuesto = this.calcularValorConImpuesto(operacionProgramada.getValorTotal().intValue(), Dominios.IMPUESTO_IVA);
-			transaccionInternaDTOImpuesto.setValor(valorImpuesto);
-			transaccionInternaDTOImpuesto.setCodigoComision(Integer.valueOf(Dominios.COMISION_1));
-			transaccionInternaDTOImpuesto.setTipoImpuesto(Integer.valueOf(Dominios.IMPUESTO_IVA));
-
-			transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTOImpuesto);
+			long valorImpuesto = 0;
+			if (isCiudadCobroIVA(operacionProgramada.getCodigoFondoTDV()) ) {
+				TransaccionesInternasDTO transaccionInternaDTOImpuesto = generarTransaccionInterna(tipoProceso, 22, operacionProgramada, operacionProgramada.getCodigoFondoTDV());
+				valorImpuesto = this.calcularValorConImpuesto(operacionProgramada.getValorTotal().intValue(), Dominios.IMPUESTO_IVA);
+				transaccionInternaDTOImpuesto.setValor(valorImpuesto);
+				transaccionInternaDTOImpuesto.setCodigoComision(Integer.valueOf(Dominios.COMISION_1));
+				transaccionInternaDTOImpuesto.setTipoImpuesto(Integer.valueOf(Dominios.IMPUESTO_IVA));
+				transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTOImpuesto);
+			};
 			
 			
 			TransaccionesInternasDTO transaccionInternaDTOMedioPago = generarTransaccionInterna(tipoProceso, 23, operacionProgramada, operacionProgramada.getCodigoFondoTDV());
@@ -361,12 +385,14 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 
 				BancosDTO bancoDestinoDTO = bancosService.validarPuntoBancoEsAval(puntoBancoExterno.getCodigoPunto());
 				if (Objects.isNull(bancoDestinoDTO)) {
-					TransaccionesInternasDTO transaccionInternaDTOVenta12 = generarTransaccionInterna(tipoProceso, 22,
-							operacionProgramada, operacionProgramada.getCodigoFondoTDV());
-					valorImpuesto = this.calcularValorConImpuesto(valorComision, Dominios.IMPUESTO_IVA);
-					transaccionInternaDTOVenta12.setValor(valorImpuesto);
-					transaccionInternaDTOVenta12.setTipoImpuesto(Integer.valueOf(Dominios.IMPUESTO_IVA));
-					transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTOVenta12);
+					if (isCiudadCobroIVA(operacionProgramada.getCodigoFondoTDV()) ) {	
+						TransaccionesInternasDTO transaccionInternaDTOVenta12 = generarTransaccionInterna(tipoProceso, 22,
+								operacionProgramada, operacionProgramada.getCodigoFondoTDV());
+						valorImpuesto = this.calcularValorConImpuesto(valorComision, Dominios.IMPUESTO_IVA);
+						transaccionInternaDTOVenta12.setValor(valorImpuesto);
+						transaccionInternaDTOVenta12.setTipoImpuesto(Integer.valueOf(Dominios.IMPUESTO_IVA));
+						transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTOVenta12);
+					}
 				}
 									
 				TransaccionesInternasDTO transaccionInternaDTOVenta13 = generarTransaccionInterna(tipoProceso, 23, operacionProgramada, operacionProgramada.getCodigoFondoTDV());
@@ -399,13 +425,15 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 
 				BancosDTO bancoDestinoDTO = bancosService.validarPuntoBancoEsAval(puntoBancoExterno.getCodigoPunto());
 				if (Objects.isNull(bancoDestinoDTO)) {
-					TransaccionesInternasDTO transaccionInternaDTOVenta22 = generarTransaccionInterna(tipoProceso, 12,
-							operacionProgramada, operacionProgramada.getCodigoFondoTDV());
-					valorImpuesto = this.calcularValorConImpuesto(valorComision, Dominios.IMPUESTO_IVA);
-					transaccionInternaDTOVenta22.setValor(valorImpuesto);
-					transaccionInternaDTOVenta22.setCodigoComision(Integer.valueOf(Dominios.COMISION_2));
-					transaccionInternaDTOVenta22.setTipoImpuesto(Integer.valueOf(Dominios.IMPUESTO_IVA));
-					transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTOVenta22);
+					if (isCiudadCobroIVA(operacionProgramada.getCodigoFondoTDV()) ) {	
+						TransaccionesInternasDTO transaccionInternaDTOVenta22 = generarTransaccionInterna(tipoProceso, 12,
+								operacionProgramada, operacionProgramada.getCodigoFondoTDV());
+						valorImpuesto = this.calcularValorConImpuesto(valorComision, Dominios.IMPUESTO_IVA);
+						transaccionInternaDTOVenta22.setValor(valorImpuesto);
+						transaccionInternaDTOVenta22.setCodigoComision(Integer.valueOf(Dominios.COMISION_2));
+						transaccionInternaDTOVenta22.setTipoImpuesto(Integer.valueOf(Dominios.IMPUESTO_IVA));
+						transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTOVenta22);
+					}
 				}
 				
 				TransaccionesInternasDTO transaccionInternaDTOVenta23 = generarTransaccionInterna(tipoProceso, 13, operacionProgramada, operacionProgramada.getCodigoFondoTDV());
@@ -485,14 +513,16 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 			transaccionInternaDTOComision.setCodigoComision(Integer.valueOf(Dominios.COMISION_1));
 			transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTOComision);
 			
-			TransaccionesInternasDTO transaccionInternaDTOImpuesto = generarTransaccionInterna(tipoProceso, 22, operacionProgramada, operacionProgramada.getCodigoFondoTDV());
-			
-			long valorImpuesto = this.calcularValorConImpuesto(operacionProgramada.getValorTotal().intValue(), Dominios.IMPUESTO_IVA);
-			transaccionInternaDTOImpuesto.setValor(valorImpuesto);
-			transaccionInternaDTOImpuesto.setCodigoComision(Integer.valueOf(Dominios.COMISION_1));
-			transaccionInternaDTOImpuesto.setTipoImpuesto(Integer.valueOf(Dominios.IMPUESTO_IVA));
-
-			transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTOImpuesto);
+			long valorImpuesto = 0;
+			if (isCiudadCobroIVA(operacionProgramada.getCodigoFondoTDV()) ) {	
+				TransaccionesInternasDTO transaccionInternaDTOImpuesto = generarTransaccionInterna(tipoProceso, 22, operacionProgramada, operacionProgramada.getCodigoFondoTDV());
+				valorImpuesto = this.calcularValorConImpuesto(operacionProgramada.getValorTotal().intValue(), Dominios.IMPUESTO_IVA);
+				transaccionInternaDTOImpuesto.setValor(valorImpuesto);
+				transaccionInternaDTOImpuesto.setCodigoComision(Integer.valueOf(Dominios.COMISION_1));
+				transaccionInternaDTOImpuesto.setTipoImpuesto(Integer.valueOf(Dominios.IMPUESTO_IVA));
+	
+				transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTOImpuesto);
+			}
 			
 			
 			TransaccionesInternasDTO transaccionInternaDTOMedioPago = generarTransaccionInterna(tipoProceso, 23, operacionProgramada, operacionProgramada.getCodigoFondoTDV());
