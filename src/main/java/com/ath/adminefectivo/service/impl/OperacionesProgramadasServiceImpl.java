@@ -983,12 +983,12 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 					ApiResponseCode.ERROR_NO_ES_FONDO.getHttpStatus());
 		}
 		
-		int codigoPuntoOrigen = 0;
-		int codigoPuntoDestino = 0;
-		if(!esAval) {
-		
-			codigoPuntoDestino = puntoFondoDestino.getCodigoPunto();
-			
+		int codigoPuntoOrigen;
+		int codigoPuntoDestino = puntoFondoDestino.getCodigoPunto();
+		if(esAval) {
+			codigoPuntoOrigen = puntoFondoOrigen.getCodigoPunto();
+		}
+		else {
 			PuntosDTO puntoEntidadOrigen = this.consultarPuntoPorDetalle(contenido, detallesArchivo,
 					Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_ORIGEN);
 			if(!Objects.isNull(puntoEntidadOrigen)) {
