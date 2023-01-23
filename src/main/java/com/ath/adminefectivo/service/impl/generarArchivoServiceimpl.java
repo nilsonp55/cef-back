@@ -191,22 +191,58 @@ public class generarArchivoServiceimpl implements IgenerarArchivoService {
 		RespuestaGenerarArchivoDTO archivo297 = this.generarArchivo(fecha, tipoContabilidad, 297);
 		s3utils.guardarArchivoEnBytes(archivo297.getArchivoBytes(), Constantes.URL_ARCHIVOS_CONTABLES_S3 + "BBOG/",
 				this.obtenerNombreArchivo(297, tipoContabilidad));
+		s3utils.guardarArchivoEnBytes(archivo297.getArchivoBytes(), Constantes.URL_ARCHIVOS_CONTABLES_S3 + "BBOG/Enviados/",
+				this.obtenerNombreArchivoConFecha(297, tipoContabilidad));
 
 		RespuestaGenerarArchivoDTO archivo298 = this.generarArchivo(fecha, tipoContabilidad, 298);
 		s3utils.guardarArchivoEnBytes(archivo298.getArchivoBytes(), Constantes.URL_ARCHIVOS_CONTABLES_S3 + "BAVV/",
 				this.obtenerNombreArchivo(298, tipoContabilidad));
+		s3utils.guardarArchivoEnBytes(archivo298.getArchivoBytes(), Constantes.URL_ARCHIVOS_CONTABLES_S3 + "BAVV/Enviados/",
+				this.obtenerNombreArchivoConFecha(298, tipoContabilidad));
 
 		RespuestaGenerarArchivoDTO archivo299 = this.generarArchivo(fecha, tipoContabilidad, 299);
 		s3utils.guardarArchivoEnBytes(archivo299.getArchivoBytes(), Constantes.URL_ARCHIVOS_CONTABLES_S3 + "BOCC/",
 				this.obtenerNombreArchivo(299, tipoContabilidad));
+		s3utils.guardarArchivoEnBytes(archivo299.getArchivoBytes(), Constantes.URL_ARCHIVOS_CONTABLES_S3 + "BOCC/Enviados/",
+				this.obtenerNombreArchivoConFecha(299, tipoContabilidad));
 
 		RespuestaGenerarArchivoDTO archivo300 = this.generarArchivo(fecha, tipoContabilidad, 300);
 		s3utils.guardarArchivoEnBytes(archivo300.getArchivoBytes(), Constantes.URL_ARCHIVOS_CONTABLES_S3 + "BPOP/",
 				this.obtenerNombreArchivo(300, tipoContabilidad));
+		s3utils.guardarArchivoEnBytes(archivo300.getArchivoBytes(), Constantes.URL_ARCHIVOS_CONTABLES_S3 + "BPOP/Enviados/",
+				this.obtenerNombreArchivoConFecha(300, tipoContabilidad));
 
 	}
 
 	private String obtenerNombreArchivo(int codigoBanco, String tipoContabilidad) {
+		String fechaSistemaString = parametrosService.valorParametro(Constantes.FECHA_DIA_PROCESO);
+		String fechaConFormato = fechaSistemaString.replace("/", "");
+
+		if (tipoContabilidad.equals("AM")) {
+			if (codigoBanco == 297) {
+				return Constantes.CTB_BBOG_Manana + fechaConFormato + Constantes.EXTENSION_ARCHIVO_TXT;
+			} else if (codigoBanco == 298) {
+				return Constantes.CTB_BAVV_Manana + Constantes.EXTENSION_ARCHIVO_TXT;
+			} else if (codigoBanco == 299) {
+				return Constantes.CTB_BOCC_Manana + Constantes.EXTENSION_ARCHIVO_XLS;
+			} else if (codigoBanco == 300) {
+				return Constantes.CTB_BPOP_Manana + Constantes.EXTENSION_ARCHIVO_XLS;
+			}
+		} else {
+			if (codigoBanco == 297) {
+				return Constantes.CTB_BBOG_Tarde + fechaConFormato + Constantes.EXTENSION_ARCHIVO_TXT;
+			} else if (codigoBanco == 298) {
+				return Constantes.CTB_BAVV_Tarde + Constantes.EXTENSION_ARCHIVO_TXT;
+			} else if (codigoBanco == 299) {
+				return Constantes.CTB_BOCC_Tarde + Constantes.EXTENSION_ARCHIVO_XLS;
+			} else if (codigoBanco == 300) {
+				return Constantes.CTB_BPOP_Tarde + Constantes.EXTENSION_ARCHIVO_XLS;
+			}
+		}
+		return null;
+	}
+	
+	private String obtenerNombreArchivoConFecha(int codigoBanco, String tipoContabilidad) {
 		String fechaSistemaString = parametrosService.valorParametro(Constantes.FECHA_DIA_PROCESO);
 		String fechaConFormato = fechaSistemaString.replace("/", "");
 

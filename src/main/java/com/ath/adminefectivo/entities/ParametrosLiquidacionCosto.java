@@ -143,8 +143,13 @@ public class ParametrosLiquidacionCosto {
 //	@OneToMany(mappedBy = "parametrosLiquidacionCosto", cascade = {CascadeType.ALL}, orphanRemoval = true)
 //	private List<DetallesLiquidacionCosto> detallesLiquidacionCosto;
 	
-	@OneToOne(mappedBy = "parametrosLiquidacionCosto", cascade = {CascadeType.ALL}, orphanRemoval = true)
+	//@OneToOne(mappedBy = "parametrosLiquidacionCosto", cascade = {CascadeType.ALL}, orphanRemoval = true)
+	@OneToOne(cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "ID_LIQUIDACION",referencedColumnName = "ID_LIQUIDACION")
 	private ValoresLiquidados valoresLiquidados;
+	
+	@Column(name = "fecha_concilia")
+	private Date fechaConcilia;
 	
 	
 

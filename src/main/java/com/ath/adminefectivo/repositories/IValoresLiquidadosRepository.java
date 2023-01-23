@@ -8,9 +8,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import com.ath.adminefectivo.entities.ValoresLiquidados;
 
+@Repository
 public interface IValoresLiquidadosRepository extends JpaRepository<ValoresLiquidados, Long>, 
 QuerydslPredicateExecutor<ValoresLiquidados>{
 
@@ -20,7 +22,8 @@ QuerydslPredicateExecutor<ValoresLiquidados>{
 	 * @return ValoresLiquidados
 	 * @author prv_ccastano
 	 */
-	ValoresLiquidados findByIdLiquidacion(Long idLiquidacion);
+	@Query(value = "SELECT * FROM public.valores_liquidados WHERE id_liquidacion = ?1" , nativeQuery = true)
+	ValoresLiquidados consultarPorIdLiquidacion(Long idLiquidacion);
 
 	/**
 	 * Metodo encargado de ejecutar la funcion de la base de datos para 

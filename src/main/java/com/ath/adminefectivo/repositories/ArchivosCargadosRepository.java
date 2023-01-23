@@ -75,7 +75,7 @@ public interface ArchivosCargadosRepository
 	@Query("select ac from ArchivosCargados ac "
             + "where idModeloArchivo IN ("
             + "select idMaestroDefinicionArchivo from MaestroDefinicionArchivo "
-            + "where agrupador = ?1)") 
+            + "where agrupador = ?1) order by fechaArchivo desc, estadoCargue asc") 
 	Page<ArchivosCargados> getArchivosByAgrupador(String agrupador, Pageable page);
 	
 	/**
