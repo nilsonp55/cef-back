@@ -61,8 +61,8 @@ public class ValoresLiquidados {
 	@Column(name = "COSTO_PAQUETEO")
 	private Double costoPaqueteo;
 	
-	@Column(name = "ID_LIQUIDACION")
-	private Long idLiquidacion;
+//	@Column(name = "ID_LIQUIDACION")
+//	private Long idLiquidacion;
 	
 	@Column(name = "MILAJE_POR_RUTEO")
 	private Double milajePorRuteo;
@@ -83,8 +83,9 @@ public class ValoresLiquidados {
 //	@OneToOne(mappedBy = "valoresLiquidados", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
 //	private ParametrosLiquidacionCosto parametrosLiquidacionCosto;
 	
-	@OneToOne
-	@JoinColumn(name = "ID_LIQUIDACION", nullable = false, insertable= false, updatable = false )
+//	@OneToOne
+//	@JoinColumn(name = "ID_LIQUIDACION", nullable = false, insertable= false, updatable = false )
+	@OneToOne(mappedBy = "valoresLiquidados", cascade = CascadeType.PERSIST)
 	private ParametrosLiquidacionCosto parametrosLiquidacionCosto;
 	
 }

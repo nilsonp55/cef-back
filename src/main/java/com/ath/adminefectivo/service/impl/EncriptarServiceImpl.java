@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
+import com.ath.adminefectivo.encript.AES256;
 import com.ath.adminefectivo.encript.RSA;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.service.IDominioService;
@@ -51,13 +52,13 @@ public class EncriptarServiceImpl implements IEncriptarService {
 
 			String bfRead;
 			String textoEncriptado = "";
-			RSA rsa = new RSA(parametroService);
+			AES256 rsa = new AES256(parametroService);
 	        try{
 	        	while ((bfRead = bf.readLine()) != null) {
 					if(!textoEncriptado.equals("")) {
 						bw.newLine();
 					}						
-					textoEncriptado =rsa.encrypt(bfRead); 
+					textoEncriptado =rsa.encryptAES(bfRead); 
 					bw.write(textoEncriptado);
 			}
 			bw.close();
@@ -79,14 +80,10 @@ public class EncriptarServiceImpl implements IEncriptarService {
 			BufferedReader bf = new BufferedReader(new FileReader(path+nombreArchivo));
 			String bfRead;
 			String textoDesencriptado;
-			RSA rsa = new RSA(parametroService);
+			AES256 rsa = new AES256(parametroService);
 			while ((bfRead = bf.readLine()) != null) {
-					textoDesencriptado = rsa.decrypt(bfRead);
+					textoDesencriptado = rsa.decryptAES(bfRead);
 			}
-		} catch (BadPaddingException e) {
-			throw new NegocioException(ApiResponseCode.ERROR_DESENCRIPTANDO_CADENA.getCode(),
-					ApiResponseCode.ERROR_DESENCRIPTANDO_CADENA.getDescription()+ " - "+ e.getMessage(),
-					ApiResponseCode.ERROR_DESENCRIPTANDO_CADENA.getHttpStatus());
 		} catch (Exception e) {
 			throw new NegocioException(ApiResponseCode.ERROR_DESENCRIPTANDO_CADENA.getCode(),
 					ApiResponseCode.ERROR_DESENCRIPTANDO_CADENA.getDescription()+ " - "+ e.getMessage(),

@@ -13,5 +13,5 @@ import lombok.Setter;
 public class ValoresLiquidadosDTO {
 	Integer cantidadOperacionesLiquidadas;
 	Integer registrosConError;
-	List<RespuestaLiquidarCostosDTO> respuestaLiquidarCostos;
+	List<ParametrosLiquidacionCostoDTO> respuestaLiquidarCostos;
 }

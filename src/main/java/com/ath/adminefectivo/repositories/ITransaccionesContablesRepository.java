@@ -142,7 +142,7 @@ public interface ITransaccionesContablesRepository extends JpaRepository<Transac
 			+ "	CASE WHEN tc.cuenta_auxiliar IS NULL THEN '' ELSE tc.cuenta_auxiliar END ||','|| "
 			+ "	CASE WHEN tc.tipo_identificacion IS NULL THEN '' ELSE tc.tipo_identificacion END ||','|| "
 			+ "	CASE WHEN tc.codigo_moneda IS NULL THEN '' ELSE tc.codigo_moneda END||','|| "
-			+ "	CASE WHEN tc.valor IS NULL THEN 0 ELSE tc.valor end||','|| "
+			+ "	CASE WHEN tc.valor IS NULL THEN '0' ELSE REPLACE(to_char(tc.valor::int8,'999G999G999G999G999'),',','.') end ||','|| "
 			+ "	CASE WHEN tc.codigo_centro IS NULL THEN '' ELSE tc.codigo_centro END||','|| "
 			+ "	'' ||','|| "
 			+ "	'' ||','|| "

@@ -1,9 +1,12 @@
 package com.ath.adminefectivo.service;
 
+import java.util.Date;
 import java.util.List;
 
 import com.ath.adminefectivo.dto.EscalasDTO;
+import com.ath.adminefectivo.dto.ParametrosLiquidacionCostoDTO;
 import com.ath.adminefectivo.dto.compuestos.EstimadoClasificacionCostosDTO;
+import com.ath.adminefectivo.entities.ParametrosLiquidacionCosto;
 import com.querydsl.core.types.Predicate;
 
 public interface IParametrosLiquidacionCostosService {
@@ -20,6 +23,24 @@ public interface IParametrosLiquidacionCostosService {
 	 * @author duvan.naranjo
 	 */
 	EstimadoClasificacionCostosDTO consultaEstimadosCostos(String transportadora, int bancoAval, int mesI, int anioI);
+
+	/**
+	 * Metodo encargado de realizar la consulta de los paramtros
+	 * liquidacion costos 
+	 * 
+	 * @return List<ParametrosLiquidacionCostoDTO>
+	 * @author duvan.naranjo
+	 */
+	List<ParametrosLiquidacionCostoDTO> consultarParametrosLiquidacionCostos(Date fechaSistema);
+
+	/**
+	 * Metodo encargado de realizar la consulta de parametros liquidacion costos por idLiquidacion
+	 * 
+	 * @param idLiquidacion
+	 * @return ParametrosLiquidacionCosto
+	 * @author duvan.naranjo
+	 */
+	ParametrosLiquidacionCosto getParametrosLiquidacionCostosById(Long idLiquidacion);
 
 	
 

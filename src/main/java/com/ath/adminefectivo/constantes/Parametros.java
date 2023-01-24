@@ -33,5 +33,17 @@ public final class Parametros {
 	public static final String CONSULTA_BASE_MOTOR_REGLAS ="SQL_BASE_CONSULTAS_MOTOR";
 
 	public static final String TIPO_CARPETA = "TIPO_CARPETA";
+	
+	/**
+	 * Codigo parametros de algoritmos
+	 */
+	public static final String AES256 = "AES256";
+	public static final String BYTES_AES = "BYTES_AES";
+	public static final String INSTANCIA_AES = "INSTANCIA_AES";
+	public static final String SECRET_KEY = "SECRET_KEY";
+	public static final String SALT_VALUE = "SALT_VALUE";
+	
+	
+	
 
 }

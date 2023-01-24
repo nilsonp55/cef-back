@@ -615,6 +615,7 @@ public static final String DELETE_SEPARADORES = "";
 	 * URL en la cual se almacenaran los archivos generados de contabilidad
 	 */
 	public static final String URL_ARCHIVOS_CONTABLES_S3 = "CEfectivo/Contabilidad/";
+	public static final String URL_ARCHIVOS_CONTABLES_ENVIADOS_S3 = "CEfectivo/Contabilidad/Enviados/";
 	
 	/**
 	 * Separador del tipo de mes año en el proceso de liquidacion 
