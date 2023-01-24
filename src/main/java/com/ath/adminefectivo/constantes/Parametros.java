@@ -42,6 +42,7 @@ public final class Parametros {
 	public static final String INSTANCIA_AES = "INSTANCIA_AES";
 	public static final String SECRET_KEY = "SECRET_KEY";
 	public static final String SALT_VALUE = "SALT_VALUE";
+	public static final String URL_FILE_PUBLIC_KEY = "URL_FILE_PUBLIC_KEY";
 	
 	
 	

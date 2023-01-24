@@ -2,6 +2,7 @@ package com.ath.adminefectivo.service.impl;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -27,6 +28,7 @@ import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.service.IDominioService;
 import com.ath.adminefectivo.service.IEncriptarService;
 import com.ath.adminefectivo.service.IParametroService;
+import com.ath.adminefectivo.utils.s3Utils;
 
 
 @Service
@@ -38,6 +40,9 @@ public class EncriptarServiceImpl implements IEncriptarService {
 	
 	@Autowired
 	IParametroService parametroService;
+	
+	@Autowired
+	s3Utils s3utils;
 	
 	
 	/**
@@ -52,13 +57,13 @@ public class EncriptarServiceImpl implements IEncriptarService {
 
 			String bfRead;
 			String textoEncriptado = "";
-			AES256 rsa = new AES256(parametroService);
+			RSA rsa = new RSA(parametroService, s3utils);
 	        try{
 	        	while ((bfRead = bf.readLine()) != null) {
 					if(!textoEncriptado.equals("")) {
 						bw.newLine();
 					}						
-					textoEncriptado =rsa.encryptAES(bfRead); 
+					textoEncriptado =rsa.encrypt(bfRead); 
 					bw.write(textoEncriptado);
 			}
 			bw.close();
@@ -80,9 +85,9 @@ public class EncriptarServiceImpl implements IEncriptarService {
 			BufferedReader bf = new BufferedReader(new FileReader(path+nombreArchivo));
 			String bfRead;
 			String textoDesencriptado;
-			AES256 rsa = new AES256(parametroService);
+			RSA rsa = new RSA(parametroService, s3utils);
 			while ((bfRead = bf.readLine()) != null) {
-					textoDesencriptado = rsa.decryptAES(bfRead);
+					textoDesencriptado = rsa.decrypt(bfRead);
 			}
 		} catch (Exception e) {
 			throw new NegocioException(ApiResponseCode.ERROR_DESENCRIPTANDO_CADENA.getCode(),
@@ -114,7 +119,7 @@ public class EncriptarServiceImpl implements IEncriptarService {
 	 */
 	@Override
 	public String generarLlaves() {
-		RSA rsa = new RSA(parametroService);
+		RSA rsa = new RSA(parametroService, s3utils);
 		rsa.createKeys();
 		return "Se crearon las llaves de forma exitosa";
 	}
@@ -124,7 +129,7 @@ public class EncriptarServiceImpl implements IEncriptarService {
 		List<String[]> resultado = new ArrayList<>();
 		BufferedReader br = new BufferedReader(new InputStreamReader(archivo));
 		String textoEncriptado;
-		RSA rsa = new RSA(parametroService);
+		RSA rsa = new RSA(parametroService, s3utils);
 		
 		try {
 			while ((textoEncriptado = br.readLine()) != null) {
@@ -145,6 +150,7 @@ public class EncriptarServiceImpl implements IEncriptarService {
 		}
 		return null;
 	}
+	
 
 
 	
