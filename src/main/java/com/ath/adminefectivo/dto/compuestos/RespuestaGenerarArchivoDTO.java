@@ -1,11 +1,5 @@
 package com.ath.adminefectivo.dto.compuestos;
-
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.util.function.Function;
-
-import com.ath.adminefectivo.entities.Bancos;
-import com.ath.adminefectivo.utils.UtilsObjects;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

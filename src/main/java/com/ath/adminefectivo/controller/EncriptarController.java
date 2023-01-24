@@ -19,6 +19,7 @@ import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
 import com.ath.adminefectivo.encript.AES256;
+import com.ath.adminefectivo.encript.RSA;
 import com.ath.adminefectivo.entities.Bancos;
 import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.impl.ParametroServiceImpl;
@@ -63,18 +64,8 @@ public class EncriptarController {
 	
 	@GetMapping(value = "${endpoints.Encriptar.generarLlaves}")
 	public ResponseEntity<ApiResponseADE<String>> generarLlaves() {
-		String consulta = "";//encriptarDelegate.generarLlaves();
+		String consulta = encriptarDelegate.generarLlaves();
 
-		
-		AES256 aes = new AES256(parametros);
-		System.out.println("----------------------------------------------------------");
-		String texto = "HOLA SOY TEXTO";
-		System.out.println(texto);
-		String textoE = aes.encryptAES(texto);
-		System.out.println(textoE);
-		System.out.println(aes.decryptAES(textoE));
-		System.out.println("----------------------------------------------------------");
-		
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
