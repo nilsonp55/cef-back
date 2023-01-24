@@ -182,7 +182,7 @@ public class RSA {
     }
 
     public static void main(String[] args) {
-        RSA rsa = new RSA(new ParametroServiceImpl());
+        RSA rsa = new RSA(new ParametroServiceImpl(), new s3Utils());
         try{
             String encryptedMessage = rsa.encrypt("Hello World");
             String decryptedMessage = rsa.decrypt(encryptedMessage);
