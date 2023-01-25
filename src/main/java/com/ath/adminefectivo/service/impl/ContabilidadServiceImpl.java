@@ -455,14 +455,16 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 	 */
 	private int procesarContabilidadTraslado(String tipoProceso, OperacionesProgramadasDTO operacionProgramada) {
 
-		TransaccionesInternasDTO transaccionInternaDTOTraslado10 = generarTransaccionInterna(tipoProceso, 10, operacionProgramada,
-				operacionProgramada.getCodigoPuntoOrigen());
-		transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTOTraslado10);
-		
-		TransaccionesInternasDTO transaccionInternaDTOTraslado20 = generarTransaccionInterna(tipoProceso, 20, operacionProgramada,
-				operacionProgramada.getCodigoPuntoDestino());
-		transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTOTraslado20);
-
+		if(Constantes.NOMBRE_SALIDA.equals(operacionProgramada.getEntradaSalida())) {	
+			TransaccionesInternasDTO transaccionInternaDTOTraslado10 = generarTransaccionInterna(tipoProceso, 10, operacionProgramada,
+					operacionProgramada.getCodigoPuntoOrigen());
+			transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTOTraslado10);
+		}
+		else { 	
+			TransaccionesInternasDTO transaccionInternaDTOTraslado20 = generarTransaccionInterna(tipoProceso, 20, operacionProgramada,
+					operacionProgramada.getCodigoPuntoDestino());
+			transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTOTraslado20);
+		}
 		return consecutivoDia;
 	}
 	
@@ -473,14 +475,16 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 	 */
 	private int procesarContabilidadIntercambio(String tipoProceso, OperacionesProgramadasDTO operacionProgramada) {
 
-		TransaccionesInternasDTO transaccionInternaDTOInter10 = generarTransaccionInterna(tipoProceso, 10, operacionProgramada,
-				operacionProgramada.getCodigoFondoTDV());
-		transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTOInter10);
-		
-		TransaccionesInternasDTO transaccionInternaDTOInter20 = generarTransaccionInterna(tipoProceso, 20, operacionProgramada,
-				operacionProgramada.getCodigoFondoTDV());
-		transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTOInter20);
-
+		if(Constantes.NOMBRE_SALIDA.equals(operacionProgramada.getEntradaSalida())) {
+			TransaccionesInternasDTO transaccionInternaDTOInter10 = generarTransaccionInterna(tipoProceso, 10, operacionProgramada,
+					operacionProgramada.getCodigoFondoTDV());
+			transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTOInter10);
+		}  // es una entrada
+		else {
+			TransaccionesInternasDTO transaccionInternaDTOInter20 = generarTransaccionInterna(tipoProceso, 20, operacionProgramada,
+					operacionProgramada.getCodigoFondoTDV());
+			transaccionesInternasService.saveTransaccionesInternasById(transaccionInternaDTOInter20);
+		}
 		return consecutivoDia;
 	}
 	
