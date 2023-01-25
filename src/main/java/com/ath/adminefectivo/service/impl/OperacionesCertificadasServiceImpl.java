@@ -4,7 +4,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -896,12 +895,11 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 				registro.setTdv(fondo.getTdv());
 				registro.setCodigoPunto(fondo.getCodigoPunto());
 				Date fecha = determinarFechaEjecucion(fila, detalleArchivo, Integer.parseInt(tipoRegistro),
-						Constantes.CAMPO_DETALLE_ARCHIVO_FECHAEMISION);
+						Constantes.CAMPO_DETALLE_ARCHIVO_FECHAEJECUCION);
 				registro.setFechaEjecucion(fecha);
 				registro.setBanco_aval(fondo.getBancoAVAL());
 				registro.setCodigoDane(codigoDaneCiudad);
 				
-				System.out.println("REGISTRO --> "+registro.toString());
 				break;
 			}
 			case 2: {

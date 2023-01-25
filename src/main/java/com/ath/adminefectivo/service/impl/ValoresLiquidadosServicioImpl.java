@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.ParametrosLiquidacionCostoDTO;
+import com.ath.adminefectivo.dto.ValorLiquidadoDTO;
 import com.ath.adminefectivo.dto.ValoresLiquidadosDTO;
 import com.ath.adminefectivo.dto.compuestos.RespuestaLiquidarCostosDTO;
 import com.ath.adminefectivo.dto.compuestos.costosCharterDTO;
@@ -216,7 +217,13 @@ public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService 
 	 * {@inheritDoc}
 	 */
 	@Override
-	public ValoresLiquidados consultarValoresLiquidadosPorIdLiquidacion(Long idLiquidacion) {
-		return valoresLiquidadosRepository.consultarPorIdLiquidacion(idLiquidacion);
+	public ValorLiquidadoDTO consultarValoresLiquidadosPorIdLiquidacion(Long idLiquidacion) {
+		ValoresLiquidados valorLiquidado = valoresLiquidadosRepository.consultarPorIdLiquidacion(idLiquidacion);
+		if(!Objects.isNull(valorLiquidado)) {
+			return ValorLiquidadoDTO.CONVERTER_DTO.apply(valorLiquidado); 
+		}else {
+			return new ValorLiquidadoDTO();
+		}
+		
 	}
 }

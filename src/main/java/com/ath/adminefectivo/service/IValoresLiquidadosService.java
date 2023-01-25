@@ -1,5 +1,6 @@
 package com.ath.adminefectivo.service;
 
+import com.ath.adminefectivo.dto.ValorLiquidadoDTO;
 import com.ath.adminefectivo.dto.ValoresLiquidadosDTO;
 import com.ath.adminefectivo.dto.compuestos.RespuestaLiquidarCostosDTO;
 import com.ath.adminefectivo.dto.compuestos.costosCharterDTO;
@@ -35,5 +36,5 @@ public interface IValoresLiquidadosService {
 	 * @return ValoresLiquidados
 	 * @author duvan.naranjo
 	 */
-	ValoresLiquidados consultarValoresLiquidadosPorIdLiquidacion(Long idLiquidacion);
+	ValorLiquidadoDTO consultarValoresLiquidadosPorIdLiquidacion(Long idLiquidacion);
 }
