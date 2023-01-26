@@ -677,7 +677,22 @@ public enum ApiResponseCode {
 	 * Ocurrió un error al realizar el exportar de datos de contabilidad
 	 */
 	ERROR_EXPORTANDO_ARCHIVO("E970", "Ocurrio un error, El archivo no pudo ser generado correctamente. ",
-			HttpStatus.PRECONDITION_FAILED);
+			HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Error puntos ya existentes
+	 */
+	ERROR_TASAS_CAMBIO_EXIST("E971", "Tasa cambio ya existente.  ", HttpStatus.CONFLICT),
+	
+	/**
+	 * Error puntos ya existentes
+	 */
+	ERROR_TASAS_CAMBIO_NO_EXIST("E972", "Tasa cambio no existente.  ", HttpStatus.CONFLICT),
+	
+	/**
+	* Ocurrió un error al consultar tipo cuentas
+	*/
+	ERROR_TASAS_CAMBIO_NO_ENCONTRADO("E973", "Ocurrió un error al consultar la table de Tasas cambio.  ", HttpStatus.CONFLICT);
 	
 	/**
 	 * Código asociado a la respuesta
