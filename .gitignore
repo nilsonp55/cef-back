@@ -81,3 +81,5 @@ Thumbs.db
 
 archivos/
 *.ath
+
+application.properties
