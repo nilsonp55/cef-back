@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -176,7 +177,8 @@ public class ContabilidadDelegateImpl implements IContabilidadDelegate {
 	public Date obtenerFechaProceso(Date fechaSistema, String tipoContabilidad) {
 		if(!Objects.isNull(fechaSistema)) {
 			if(tipoContabilidad.equals("AM")) {
-				return festivosNacionalesService.consultarAnteriorHabil(fechaSistema);
+				Date fechaAnteriorAnteriorHabil = festivosNacionalesService.consultarAnteriorHabil(festivosNacionalesService.consultarAnteriorHabil(fechaSistema));
+				return UtilsString.restarDiasAFecha(fechaAnteriorAnteriorHabil, 1);
 			}
 			return fechaSistema;
 		}else {
