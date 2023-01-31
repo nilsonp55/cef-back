@@ -75,8 +75,8 @@ public interface ArchivosCargadosRepository
 	@Query("select ac from ArchivosCargados ac "
             + "where idModeloArchivo IN ("
             + "select idMaestroDefinicionArchivo from MaestroDefinicionArchivo "
-            + "where agrupador = ?1) order by fechaArchivo desc, estadoCargue asc") 
-	Page<ArchivosCargados> getArchivosByAgrupador(String agrupador, Pageable page);
+            + "where agrupador = ?1) and estado = ?2 order by fechaArchivo desc, estadoCargue asc") 
+	Page<ArchivosCargados> getArchivosByAgrupador(String agrupador,String estado, Pageable page);
 	
 	/**
 	 * Metodo encargado de realizar la consulta de los registros cargados sin procesar de hoy
@@ -103,5 +103,15 @@ public interface ArchivosCargadosRepository
 		 + "where estadoCargue = ?1 and nombreArchivo = ?2 and "
 		 + "idModeloArchivo = ?3")
 	List<ArchivosCargados> getRegistrosCargadosPorNombreyEstado(String estadoCargue, String nombreArchivo, String idModeloArchivo);
+
+	/**
+	 * Consulta encargada de filtrar los archivos cargados
+	 * por una fecha de archivo
+	 * 
+	 * @param fechaArchivo
+	 * @return List<ArchivosCargados>
+	 * @author duvan.naranjo
+	 */
+	List<ArchivosCargados> findByFechaArchivo(Date fechaArchivo);
 
 }

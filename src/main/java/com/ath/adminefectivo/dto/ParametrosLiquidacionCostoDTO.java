@@ -73,6 +73,8 @@ public class ParametrosLiquidacionCostoDTO {
 	
 	private Double valorTotal;
 	
+	private String entradaSalida;
+	
 	@JsonIgnore
 	private List<DetallesLiquidacionCosto> detallesLiquidacionCosto;
 	
