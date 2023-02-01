@@ -56,8 +56,8 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 			validarLogProcesoDiario();
 			validarExistenciaArchivos(archivosCargados);
 			operacionesCertificadasService.procesarArchivosCertificaciones(archivosCargados);
-			// siguiente línea, incluye conciliación automática (en procedimientos de BD)
-			operacionesCertificadasService.validarNoConciliables(archivosCargados);
+			// siguiente lï¿½nea, incluye conciliaciï¿½n automï¿½tica (en procedimientos de BD)
+			operacionesCertificadasService.validarNoConciliables();
 			
 			cambiarEstadoLogProcesoDiario();
 			return true;

@@ -87,7 +87,7 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 	@Override
 	public Page<ArchivosCargadosDTO> getAllByAgrupador(String agrupador, Pageable page) {
 		
-		Page<ArchivosCargados> archivosCargados = archivosCargadosRepository.getArchivosByAgrupador(agrupador, page);
+		Page<ArchivosCargados> archivosCargados = archivosCargadosRepository.getArchivosByAgrupador(agrupador,"ACT", page);
 		return new PageImpl<>(archivosCargados.getContent().stream().map(ArchivosCargadosDTO
 		.CONVERTER_DTO).toList(), archivosCargados.getPageable(), archivosCargados.getTotalElements());
 
@@ -254,6 +254,15 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 		archivosCargadosRepository.save(archivosCargados);
 		
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<ArchivosCargados> consultarArchivosPorFecha(Date fechaActual) {
+	
+		return archivosCargadosRepository.findByFechaArchivo(fechaActual);
+	}
 
 	/**
 	 * Método encargado de organizar y separar las informacion de las lineas
@@ -378,5 +387,6 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 			});	
 		}
 	}
+
 
 }

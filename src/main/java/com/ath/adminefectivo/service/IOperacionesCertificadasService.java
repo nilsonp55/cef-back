@@ -62,7 +62,7 @@ public interface IOperacionesCertificadasService {
 	 * @param archivosCargados
 	 * @author duvan.naranjo
 	 */
-	void validarNoConciliables(List<ArchivosCargados> archivosCargados);
+	void validarNoConciliables();
 
 
 	/**

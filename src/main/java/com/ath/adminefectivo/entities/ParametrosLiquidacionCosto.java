@@ -131,6 +131,9 @@ public class ParametrosLiquidacionCosto {
 	@Column(name = "VALOR_TOTAL")
 	private Double valorTotal;
 	
+	@Column(name = "ENTRADA_SALIDA")
+	private String entradaSalida;
+	
 	
 //	@ManyToOne(fetch = FetchType.LAZY)
 //	@JoinColumn(name = "ID_LIQUIDACION", nullable = false)

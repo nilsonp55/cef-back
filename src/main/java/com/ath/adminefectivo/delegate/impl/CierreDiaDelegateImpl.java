@@ -8,16 +8,20 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.constantes.Parametros;
 import com.ath.adminefectivo.delegate.ICierreDiaDelegate;
+import com.ath.adminefectivo.dto.ArchivosCargadosDTO;
 import com.ath.adminefectivo.dto.LogProcesoDiarioDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
+import com.ath.adminefectivo.entities.ArchivosCargados;
 import com.ath.adminefectivo.entities.LogProcesoDiario;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.LogProcesoDiarioRepository;
+import com.ath.adminefectivo.service.IArchivosCargadosService;
 import com.ath.adminefectivo.service.IFestivosNacionalesService;
 import com.ath.adminefectivo.service.ILogProcesoDiarioService;
 import com.ath.adminefectivo.service.IParametroService;
@@ -40,11 +44,15 @@ public class CierreDiaDelegateImpl implements ICierreDiaDelegate {
 	@Autowired
 	LogProcesoDiarioRepository procesoDiarioRepository;
 	
+	@Autowired
+	IArchivosCargadosService archivosCargadosService;
+	
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
+	@Transactional
 	public Date cerrarDia() {
 		Date fechaActual = parametroService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
 
@@ -67,6 +75,12 @@ public class CierreDiaDelegateImpl implements ICierreDiaDelegate {
 				listLogProcesoDiario.add(LogProcesoDiarioDTO.CONVERTER_ENTITY.apply(entity));
 			});
 			procesoDiarioRepository.saveAll(listLogProcesoDiario);
+			
+			List<ArchivosCargados> archivosCargados = archivosCargadosService.consultarArchivosPorFecha(fechaActual);
+			archivosCargados.forEach(archivoCargado -> {
+				archivoCargado.setEstado(Constantes.ESTADO_ARCHIVO_HISTORICO);
+				archivosCargadosService.actualizarArchivosCargados(archivoCargado);
+			});
 			
 			return nuevaFecha;
 

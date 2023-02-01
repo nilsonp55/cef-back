@@ -209,10 +209,8 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	}
 
 	@Override
-	public void validarNoConciliables(List<ArchivosCargados> archivosCargados) {
-		archivosCargados.forEach(archivo -> {
-			boolean resultado = operacionesCertificadasRepository.validarnoconciliables(archivo.getIdArchivo());
-		});
+	public void validarNoConciliables() {
+		boolean resultado = operacionesCertificadasRepository.validarnoconciliables();
 	}
 
 	/**
