@@ -648,8 +648,8 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 				
 				OperacionesProgramadasDTO operacionesProgramadasEntradaDTO = OperacionesProgramadasDTO.builder()
 						.codigoFondoTDV(puntoFondoDestino.getCodigoPunto()).entradaSalida(Constantes.VALOR_ENTRADA)
-						.codigoPuntoOrigen(puntoFondoDestino.getCodigoPunto())
-						.codigoPuntoDestino(puntoFondoOrigen.getCodigoPunto())
+						.codigoPuntoOrigen(puntoFondoOrigen.getCodigoPunto())
+						.codigoPuntoDestino(puntoFondoDestino.getCodigoPunto())
 						.idArchivoCargado(Math.toIntExact(archivo.getIdArchivo())).build();
 				
 				OperacionesProgramadas operacionProgramadaEntradaEnt = operacionesProgramadasRepository.save(OperacionesProgramadasDTO.CONVERTER_ENTITY
@@ -668,39 +668,6 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
 	}
 
-	/**
-	 * Metodo encargado de realizar la logica para la operacion venta compra
-	 * 
-	 * @param contenido
-	 * @param detalleArchivo
-	 * @param archivo
-	 * @return OperacionesProgramadasDTO
-	 * @author duvan.naranjo
-	 */
-	private OperacionesProgramadasDTO generarOperacionVentaCompra(String[] contenido,
-			List<DetallesDefinicionArchivoDTO> detalleArchivo, ArchivosCargadosDTO archivo) {
-
-		OperacionesProgramadasDTO operacionesProgramadasDTO = null;
-		PuntosDTO puntoFondoDestino = this.consultarPuntoPorDetalle(contenido, detalleArchivo,
-				Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO);
-		BancosDTO bancoDestino = this.consultarBancoPorDetalle(contenido, detalleArchivo,
-				Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_DESTINO);
-
-		if (!Objects.isNull(puntoFondoDestino)
-				&& !puntoFondoDestino.getTipoPunto().toUpperCase().trim().equals(Constantes.PUNTO_FONDO)) {
-			throw new NegocioException(ApiResponseCode.ERROR_NO_ES_FONDO.getCode(),
-					ApiResponseCode.ERROR_NO_ES_FONDO.getDescription(),
-					ApiResponseCode.ERROR_NO_ES_FONDO.getHttpStatus());
-		}
-
-		operacionesProgramadasDTO = OperacionesProgramadasDTO.builder()
-				.codigoFondoTDV(puntoFondoDestino.getCodigoPunto()).entradaSalida(Constantes.VALOR_ENTRADA)
-				.codigoPuntoOrigen(bancoDestino.getCodigoPunto()).codigoPuntoDestino(puntoFondoDestino.getCodigoPunto())
-				.idArchivoCargado(Math.toIntExact(archivo.getIdArchivo())).build();
-
-		return this.completarOperacionesProgramadas(operacionesProgramadasDTO, contenido, detalleArchivo);
-
-	}
 
 	/**
 	 * Funcion encargada de realizar la logica de la operacion cambio
