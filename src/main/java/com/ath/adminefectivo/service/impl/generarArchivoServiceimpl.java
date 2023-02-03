@@ -76,28 +76,46 @@ public class generarArchivoServiceimpl implements IgenerarArchivoService {
 			Row row = sheet.createRow(0);
 
 			int initRow = 0;
-			RespuestaContableDTO dtoContable;
+			RespuestaContableDTO dtoContable = new RespuestaContableDTO();
 			for (int i = 0; i < listaContable.size(); i++) {
 
 				row = sheet.createRow(i);
 				dtoContable = listaContable.get(i);
 
-				row.createCell(0).setCellValue(dtoContable.getBancoAval());
-				row.createCell(1).setCellValue(dtoContable.getNaturalezaContable());
-				row.createCell(2).setCellValue(dtoContable.getCuentaMayor());
-				row.createCell(3).setCellValue(dtoContable.getSubAuxiliar());
-				row.createCell(4).setCellValue(dtoContable.getTipoIdentificacion());
-				row.createCell(5).setCellValue(dtoContable.getValor());
-				row.createCell(6).setCellValue(dtoContable.getCentroBeneficio());
-				row.createCell(7).setCellValue(dtoContable.getIdentificador());
-				row.createCell(8).setCellValue(dtoContable.getDescripcionTransaccion());
-				row.createCell(9).setCellValue(dtoContable.getTerceroGL() == null ? 0 : dtoContable.getTerceroGL());
-				row.createCell(10)
-						.setCellValue(dtoContable.getNombreTerceroGL() == null ? "" : dtoContable.getNombreTerceroGL());
-				row.createCell(11).setCellValue(
+				//NUEVO  ARCHIVO
+				String naturaleza = dtoContable.getNaturalezaContable();
+				if(!Objects.isNull(naturaleza) && naturaleza.equals("C")) {
+					naturaleza = "50";
+				}else {
+					naturaleza = "40";
+				}
+				row.createCell(0).setCellValue(naturaleza);
+				row.createCell(1).setCellValue(dtoContable.getCuentaMayor());
+				row.createCell(2).setCellValue(dtoContable.getSubAuxiliar());
+				
+				String tipoIdentificacion = dtoContable.getTipoIdentificacion();
+				if(!Objects.isNull(tipoIdentificacion) &&  tipoIdentificacion.equals("NIT")) {
+					tipoIdentificacion = "31";
+				}
+				row.createCell(3).setCellValue(tipoIdentificacion);
+				row.createCell(4).setCellValue("");//tipoDeCambio Origen vs Dolar
+				row.createCell(5).setCellValue("");//tipoDeCambio dolar vs pesos
+				row.createCell(6).setCellValue(dtoContable.getValor());//valor moneda del documento
+				row.createCell(7).setCellValue(dtoContable.getValor());//valor moneda local
+				row.createCell(8).setCellValue("");//valor en moneda fuerte USD
+				row.createCell(9).setCellValue("");//Centro de costos
+				row.createCell(10).setCellValue(dtoContable.getCentroBeneficio());	
+				row.createCell(11).setCellValue("");//Orden CO
+				row.createCell(12).setCellValue("");//Area funcional
+				row.createCell(13).setCellValue(dtoContable.getIdentificador());
+				row.createCell(14).setCellValue(dtoContable.getDescripcionTransaccion());
+				row.createCell(15).setCellValue(dtoContable.getTerceroGL() == null ? 0 : dtoContable.getTerceroGL());
+				row.createCell(16).setCellValue(dtoContable.getNombreTerceroGL());
+				row.createCell(17).setCellValue("");//Fecha conversion
+				row.createCell(18).setCellValue(
 						dtoContable.getClaveReferencia1() == null ? "" : dtoContable.getClaveReferencia1());
-				row.createCell(12).setCellValue(
-						dtoContable.getClaveReferencia2() == null ? "" : dtoContable.getClaveReferencia2());
+				row.createCell(19).setCellValue("");//Clave referencia3
+							
 			}
 
 			try {

@@ -556,17 +556,43 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 			puntoBancoOrigen = puntoFondoDestino;
 		}
 		
+		Integer valorComisionBR = 0;
+		String cobroBR = this.consultarValorCobroBR(contenido, detalleArchivo,Constantes.CAMPO_DETALLE_COBROBR);
+		if (!Objects.isNull(cobroBR) && "SI".equals(cobroBR) ) {
+			// consultar parametro que tiene valor de la comisi�n
+			valorComisionBR = dominioService.valorNumericoDominio(Constantes.DOMINIO_COMISIONES, Dominios.COMISION_1).intValue();
+		}
+		
 		operacionesProgramadasDTO = OperacionesProgramadasDTO.builder()
 				.codigoFondoTDV(puntoFondoDestino.getCodigoPunto()).entradaSalida(Constantes.VALOR_ENTRADA)
 				.codigoPuntoOrigen(puntoBancoOrigen.getCodigoPunto())
 				.codigoPuntoDestino(puntoFondoDestino.getCodigoPunto())
-				.idArchivoCargado(Math.toIntExact(archivo.getIdArchivo())).build();
+				.idArchivoCargado(Math.toIntExact(archivo.getIdArchivo())).comisionBR(valorComisionBR).build();
 		
 		operacionesProgramadasDTO.setTipoOperacion(Dominios.TIPO_OPERA_RETIRO);
 		var operacionProgramadaEnt = operacionesProgramadasRepository.save(OperacionesProgramadasDTO.CONVERTER_ENTITY
 				.apply(this.completarOperacionesProgramadas(operacionesProgramadasDTO, contenido, detalleArchivo)));
 		return OperacionesProgramadasDTO.CONVERTER_DTO.apply(operacionProgramadaEnt);
 	}
+	
+	/**
+     * Metodo encargado de realizar leer del detalle si se cobra o no comicion BanRep.
+     * 
+     * @param contenido
+     * @param detalle
+     * @return PuntosDTO
+     * @author rparra
+     */
+    private String consultarValorCobroBR(String[] contenido, List<DetallesDefinicionArchivoDTO> detallesArchivo,
+            String nombreCampo) {
+        DetallesDefinicionArchivoDTO detalle = detallesArchivo.stream()
+                .filter(deta -> deta.getNombreCampo().toUpperCase().equals(nombreCampo)).findFirst().orElse(null);
+        if (!Objects.isNull(detalle)) {
+            String cobroBR = contenido[detalle.getId().getNumeroCampo() - 1].trim();
+            return cobroBR;
+        }
+        return null;
+    }
 
 	/**
 	 * Funcion encargada de realizar la logica de la operacion venta
@@ -1065,8 +1091,10 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		
 		
 		operacionesProgramadasDTO.setTipoOperacion(this.obtenerTipoOperacion(tipoOperacion));
-		
 		operacionesProgramadasDTO.setValorTotal(valorTotal);
+		
+		Integer comisionBR = operacionesProgramadasDTO.getComisionBR();
+		operacionesProgramadasDTO.setComisionBR( (int) ((valorTotal * comisionBR) / 10000) );
 		operacionesProgramadasDTO.setIdNegociacion(idNegoc);
 		operacionesProgramadasDTO.setTasaNegociacion(tasaNegociacion);
 		operacionesProgramadasDTO.setEstadoOperacion(dominioService.valorTextoDominio(Constantes.DOMINIO_ESTADOS_OPERACION,Dominios.ESTADOS_OPERA_PROGRAMADO));

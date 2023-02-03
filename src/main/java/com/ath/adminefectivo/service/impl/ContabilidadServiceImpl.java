@@ -331,7 +331,7 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 			long valorImpuesto = 0;
 			if (isCiudadCobroIVA(operacionProgramada.getCodigoFondoTDV()) ) {
 				TransaccionesInternasDTO transaccionInternaDTOImpuesto = generarTransaccionInterna(tipoProceso, 22, operacionProgramada, operacionProgramada.getCodigoFondoTDV());
-				valorImpuesto = this.calcularValorConImpuesto(operacionProgramada.getValorTotal().intValue(), Dominios.IMPUESTO_IVA);
+				valorImpuesto = this.calcularValorConImpuesto(operacionProgramada.getComisionBR(), Dominios.IMPUESTO_IVA);
 				transaccionInternaDTOImpuesto.setValor(valorImpuesto);
 				transaccionInternaDTOImpuesto.setCodigoComision(Integer.valueOf(Dominios.COMISION_1));
 				transaccionInternaDTOImpuesto.setTipoImpuesto(Integer.valueOf(Dominios.IMPUESTO_IVA));
@@ -375,7 +375,7 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 			if(Integer.valueOf(operacionProgramada.getTasaNegociacion()) > 0) {
 				TransaccionesInternasDTO transaccionInternaDTOVenta11 = generarTransaccionInterna(tipoProceso, 21, operacionProgramada, operacionProgramada.getCodigoFondoTDV());
 
-				Double valorComisionDouble = (operacionProgramada.getValorTotal() * Double.valueOf(operacionProgramada.getTasaNegociacion()).intValue()) / 100;
+				Double valorComisionDouble = (operacionProgramada.getValorTotal() * Double.valueOf(operacionProgramada.getTasaNegociacion()).intValue()) / 10000;
 				valorComision = valorComisionDouble.longValue();
 				transaccionInternaDTOVenta11.setValor(valorComision);
 				transaccionInternaDTOVenta11.setTasaNegociacion(operacionProgramada.getTasaNegociacion());
@@ -520,7 +520,7 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 			long valorImpuesto = 0;
 			if (isCiudadCobroIVA(operacionProgramada.getCodigoFondoTDV()) ) {	
 				TransaccionesInternasDTO transaccionInternaDTOImpuesto = generarTransaccionInterna(tipoProceso, 22, operacionProgramada, operacionProgramada.getCodigoFondoTDV());
-				valorImpuesto = this.calcularValorConImpuesto(operacionProgramada.getValorTotal().intValue(), Dominios.IMPUESTO_IVA);
+				valorImpuesto = this.calcularValorConImpuesto(operacionProgramada.getComisionBR(), Dominios.IMPUESTO_IVA);
 				transaccionInternaDTOImpuesto.setValor(valorImpuesto);
 				transaccionInternaDTOImpuesto.setCodigoComision(Integer.valueOf(Dominios.COMISION_1));
 				transaccionInternaDTOImpuesto.setTipoImpuesto(Integer.valueOf(Dominios.IMPUESTO_IVA));
@@ -591,7 +591,7 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 
 	private long calcularValorConImpuesto(long long1, String impuesto) {
 		Integer valorImpuesto = dominioService.valorNumericoDominio(Constantes.DOMINIO_IMPUESTOS, impuesto).intValue();
-		return ((long1/10000) * valorImpuesto) / 100;
+		return (long1 * valorImpuesto) / 100;
 	}
 
 	/**
