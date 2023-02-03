@@ -345,6 +345,12 @@ public final class Constantes {
 	public static final String CAMPO_DETALLE_ARCHIVO_ENTIDAD_DESTINO = "ENTIDADDESTINO";
 	
 	/**
+	 * Constante para identificar si en un retiro se cobra comision BanRepublica
+	 */
+	public static final String CAMPO_DETALLE_COBROBR = "COBRO BANREP";
+	
+	
+	/**
 	 * Constante para identificar el fondo origen de un archivo
 	 */
 	public static final String CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN = "CODIGOORIGEN";
