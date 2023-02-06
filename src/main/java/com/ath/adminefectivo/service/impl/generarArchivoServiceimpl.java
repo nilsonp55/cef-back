@@ -109,7 +109,7 @@ public class generarArchivoServiceimpl implements IgenerarArchivoService {
 				row.createCell(12).setCellValue("");//Area funcional
 				row.createCell(13).setCellValue(dtoContable.getIdentificador());
 				row.createCell(14).setCellValue(dtoContable.getDescripcionTransaccion());
-				row.createCell(15).setCellValue(dtoContable.getTerceroGL() == null ? 0 : dtoContable.getTerceroGL());
+				row.createCell(15).setCellValue(dtoContable.getTerceroGL() == null ? "" : dtoContable.getTerceroGL().toString());
 				row.createCell(16).setCellValue(dtoContable.getNombreTerceroGL());
 				row.createCell(17).setCellValue("");//Fecha conversion
 				row.createCell(18).setCellValue(
@@ -169,7 +169,7 @@ public class generarArchivoServiceimpl implements IgenerarArchivoService {
 	
 	@Override
 	public RespuestaGenerarArchivoDTO generarArchivoBAVV(Date fecha, String tipoContabilidad, int codBanco) {
-		List<String> listaContable = transaccionesContablesService.cierreContablebyBancoF1String(fecha,
+		List<String> listaContable = transaccionesContablesService.cierreContablebyBancoF2String(fecha,
 				tipoContabilidad, codBanco);
 
 		String nombreArchivo = this.obtenerNombreArchivo(codBanco, tipoContabilidad);
