@@ -591,7 +591,7 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 
 	private long calcularValorConImpuesto(long long1, String impuesto) {
 		Integer valorImpuesto = dominioService.valorNumericoDominio(Constantes.DOMINIO_IMPUESTOS, impuesto).intValue();
-		return (long1 * valorImpuesto) / 100;
+		return (long1 * valorImpuesto) / 10000;
 	}
 
 	/**
