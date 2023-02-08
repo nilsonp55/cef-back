@@ -692,8 +692,19 @@ public enum ApiResponseCode {
 	/**
 	* Ocurrió un error al consultar tipo cuentas
 	*/
-	ERROR_TASAS_CAMBIO_NO_ENCONTRADO("E973", "Ocurrió un error al consultar la table de Tasas cambio.  ", HttpStatus.CONFLICT);
+	ERROR_TASAS_CAMBIO_NO_ENCONTRADO("E973", "Ocurrió un error al consultar la table de Tasas cambio.  ", HttpStatus.CONFLICT),
 	
+	/**
+	 * Ocurrió un error al consultar la table de operaciones certificadas
+	 */
+	ERROR_OPERACIONES_CERTIFICADAS_UPDATE_NULL("E974", "El id Certificacion es nulo. ",
+			HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Ocurrió un error al consultar la table de operaciones certificadas
+	 */
+	ERROR_OPERACIONES_PROGRAMADAS_UPDATE_NULL("E975", "El id Operacion es nulo. ",
+			HttpStatus.PRECONDITION_FAILED);
 	/**
 	 * Código asociado a la respuesta
 	 */
