@@ -185,7 +185,7 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 		}
 		OperacionesProgramadas programadas = operacionesProgramadasRepository
 				.findById(updateProgramadasFallidasDTO.getIdOperacion()).orElse(null);
-		if (Objects.isNull(programadas)) {
+		if (!Objects.isNull(programadas)) {
 			try {
 				programadas.setIdOperacion(updateProgramadasFallidasDTO.getIdOperacion());
 				programadas.setEstadoConciliacion(updateProgramadasFallidasDTO.getEstado());
@@ -215,7 +215,7 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 		}
 		OperacionesCertificadas certificadas = operacionesCertificadasRepository
 				.findById(updateCertificadasFallidasDTO.getIdCertificacion()).orElse(null);
-		if (Objects.isNull(certificadas)) {
+		if (!Objects.isNull(certificadas)) {
 			try {
 				certificadas.setIdCertificacion(updateCertificadasFallidasDTO.getIdCertificacion());
 				certificadas.setEstadoConciliacion(updateCertificadasFallidasDTO.getEstado());
