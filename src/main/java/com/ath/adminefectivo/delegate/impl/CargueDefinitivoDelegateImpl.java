@@ -23,6 +23,7 @@ import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.service.IArchivosCargadosService;
+import com.ath.adminefectivo.service.IAuditoriaProcesosService;
 import com.ath.adminefectivo.service.IFestivosNacionalesService;
 import com.ath.adminefectivo.service.IFilesService;
 import com.ath.adminefectivo.service.ILecturaArchivoService;
@@ -62,6 +63,9 @@ public class CargueDefinitivoDelegateImpl implements ICargueDefinitivoDelegate {
 	
 	@Autowired
 	IFestivosNacionalesService festivosNacionalesService;
+	
+	@Autowired
+	IAuditoriaProcesosService auditoriaProcesosService;
 
 	private ValidacionArchivoDTO validacionArchivo;
 
@@ -98,6 +102,11 @@ public class CargueDefinitivoDelegateImpl implements ICargueDefinitivoDelegate {
 	@Transactional
 	public ValidacionArchivoDTO procesarArchivo(String idMaestroDefinicion, String nombreArchivo) {
 		validarLogProcesoDiario();
+		Date fechaProceso = parametrosService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
+		
+		auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_DEFINITIVO, 
+				fechaProceso, Constantes.ESTADO_PROCESO_PROCESO, Constantes.ESTADO_PROCESO_PROCESO);
+		
 		this.validacionesAchivoCargado(idMaestroDefinicion, nombreArchivo);
 		Long idArchivo = archivosCargadosService.persistirDetalleArchivoCargado(validacionArchivo, false);
 
@@ -110,7 +119,10 @@ public class CargueDefinitivoDelegateImpl implements ICargueDefinitivoDelegate {
 				this.validacionArchivo.getMaestroDefinicion().getUbicacion().concat(urlDestino),
 				this.validacionArchivo.getNombreArchivo(),idArchivo.toString());
 
-		return ValidacionArchivoDTO.conversionRespuesta(this.validacionArchivo);
+		ValidacionArchivoDTO resultado = ValidacionArchivoDTO.conversionRespuesta(this.validacionArchivo);
+		auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_DEFINITIVO, 
+				fechaProceso, Constantes.ESTADO_PROCESO_PROCESO, Constantes.ESTRUCTURA_OK);
+		return resultado;
 	}
 
 	/**

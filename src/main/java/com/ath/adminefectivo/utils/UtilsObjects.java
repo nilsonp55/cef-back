@@ -3,9 +3,14 @@ package com.ath.adminefectivo.utils;
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import com.ath.adminefectivo.constantes.Constantes;
+import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.exception.AplicationException;
+import com.ath.adminefectivo.service.IAuditoriaProcesosService;
+import com.ath.adminefectivo.service.IParametroService;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -17,6 +22,14 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor(access= AccessLevel.PRIVATE)
 public class UtilsObjects {
+	
+	@Autowired
+	static
+	IAuditoriaProcesosService auditoriaProcesosService;
+	
+	@Autowired
+	static 
+	IParametroService parametroService;
 
 	/**
 	 * Copia el valor que contiene los atributos de la fuente a los atributos del
@@ -57,6 +70,15 @@ public class UtilsObjects {
 	 */
 	public static void copiarPropiedades(Object origen, Object dest) {
 		copiarPropiedades(origen, dest, false);
+	}
+	
+	
+	public static void actualizarAuditoriaProceso(String codigoProceso, String mensaje) {
+		auditoriaProcesosService.ActualizarAuditoriaProceso(codigoProceso, 
+				parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO), 
+				Constantes.ESTADO_PROCESO_PROCESADO, 
+				ApiResponseCode.ERROR_ARCHICOS_CARGADOS_NO_ENCONTRADO.getDescription());
+		
 	}
 	
 

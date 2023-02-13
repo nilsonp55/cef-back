@@ -22,6 +22,7 @@ import com.ath.adminefectivo.entities.LogProcesoDiario;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.LogProcesoDiarioRepository;
 import com.ath.adminefectivo.service.IArchivosCargadosService;
+import com.ath.adminefectivo.service.IAuditoriaProcesosService;
 import com.ath.adminefectivo.service.IFestivosNacionalesService;
 import com.ath.adminefectivo.service.ILogProcesoDiarioService;
 import com.ath.adminefectivo.service.IParametroService;
@@ -46,6 +47,9 @@ public class CierreDiaDelegateImpl implements ICierreDiaDelegate {
 	
 	@Autowired
 	IArchivosCargadosService archivosCargadosService;
+	
+	@Autowired
+	IAuditoriaProcesosService auditoriaProcesosService;
 	
 	
 	/**
@@ -81,6 +85,8 @@ public class CierreDiaDelegateImpl implements ICierreDiaDelegate {
 				archivoCargado.setEstado(Constantes.ESTADO_ARCHIVO_HISTORICO);
 				archivosCargadosService.actualizarArchivosCargados(archivoCargado);
 			});
+			
+			auditoriaProcesosService.crearTodosAuditoriaProcesos(nuevaFecha);
 			
 			return nuevaFecha;
 

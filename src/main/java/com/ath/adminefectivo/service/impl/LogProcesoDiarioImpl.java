@@ -17,6 +17,7 @@ import com.ath.adminefectivo.entities.LogProcesoDiario;
 import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.exception.ConflictException;
 import com.ath.adminefectivo.repositories.LogProcesoDiarioRepository;
+import com.ath.adminefectivo.service.IAuditoriaProcesosService;
 import com.ath.adminefectivo.service.ILogProcesoDiarioService;
 import com.ath.adminefectivo.service.IParametroService;
 import com.querydsl.core.types.Predicate;
@@ -35,6 +36,9 @@ public class LogProcesoDiarioImpl implements ILogProcesoDiarioService {
 
 	@Autowired
 	IParametroService parametroService;
+	
+	@Autowired
+	IAuditoriaProcesosService auditoriaProcesosService;
 
 	
 	/**
@@ -150,6 +154,10 @@ public class LogProcesoDiarioImpl implements ILogProcesoDiarioService {
 		Date fecha = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
 		var logProcesoDiario = logProcesoDiarioRepository.findByCodigoProcesoAndFechaCreacion(codigoProceso, fecha);
 		if(Objects.isNull(logProcesoDiario)) {
+			auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION, 
+					parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO), 
+					Constantes.ESTADO_PROCESO_PROCESADO, 
+					ApiResponseCode.ERROR_LOGPROCESODIARIO_NO_ENCONTRADO.getDescription());
 			throw new AplicationException(ApiResponseCode.ERROR_LOGPROCESODIARIO_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_LOGPROCESODIARIO_NO_ENCONTRADO.getDescription(),
 					ApiResponseCode.ERROR_LOGPROCESODIARIO_NO_ENCONTRADO.getHttpStatus());
