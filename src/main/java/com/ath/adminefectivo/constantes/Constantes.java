@@ -64,6 +64,14 @@ public final class Constantes {
 	public static final String ESTADO_CARGUE_VALIDO = "OK";
 	public static final String ESTADO_ARCHIVO_HISTORICO = "HIS";
 	
+	/**
+	 * Constantes de estados para auditoria procesos
+	 */
+	public static final String ESTADO_PROCESO_PROCESO = "EN PROCESO";
+	public static final String ESTADO_PROCESO_PENDIENTE = "PENDIENTE";
+	public static final String ESTADO_PROCESO_PROCESADO = "PROCESADO";
+	public static final String ESTADO_PROCESO_ERROR = "ERROR";
+	
 
 	/**
 	 * Constantes estado Pedido
@@ -245,6 +253,11 @@ public final class Constantes {
 	 * Constante del tipo de encriptado en dominios
 	 */
 	public static final String DOMINIO_TIPO_ENCRIPTADO = "TIPO_ENCRIPTADO";
+	
+	/**
+	 * Constante del tipo de encriptado en dominios
+	 */
+	public static final String DOMINIO_AUDITORIA_PROCESOS = "AUDITORIA_PROCESOS";
 	
 	/**
 	 * Delimintadores de los archivos
@@ -616,6 +629,7 @@ public static final String DELETE_SEPARADORES = "";
 	public static final String CTB_BAVV_Tarde = "Contabilidad_BAVV_Tarde";
 	
 	public static final String EXTENSION_ARCHIVO_XLS = ".xls";
+	public static final String EXTENSION_ARCHIVO_XLSX = ".xlsx";
 	public static final String EXTENSION_ARCHIVO_TXT = ".txt";
 	
 	/**

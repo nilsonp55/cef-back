@@ -51,11 +51,17 @@ public class CostosFletesCharterServiceImpl implements ICostosFleteCharterServic
 	@Override
 	public List<ParametrosLiquidacionCostoDTO> ConsultarCostosFleteCharter(Date fechaInicial, Date fechaFinal) {
 
-		String escala = dominioService.valorTextoDominio(Constantes.DOMINIO_ESCALAS, Dominios.ESCALA_AEREO_CHARTER);
+		String escalaCharter = dominioService.valorTextoDominio(Constantes.DOMINIO_ESCALAS, Dominios.ESCALA_AEREO_CHARTER);
+		String escalaComercial = dominioService.valorTextoDominio(Constantes.DOMINIO_ESCALAS, Dominios.ESCALA_AEREO_COMERCIAL);
+		
 		List<ParametrosLiquidacionCostoDTO> listCostosCharter = new ArrayList<>();
 
 		List<ParametrosLiquidacionCosto> costoCharter = costosFletesCharterRepository
-				.findByEscalaAndFechaEjecucionBetween(escala, fechaInicial, fechaFinal);
+				.findByEscalaAndFechaEjecucionBetween(escalaCharter, fechaInicial, fechaFinal);
+		
+		costoCharter.addAll(costosFletesCharterRepository
+				.findByEscalaAndFechaEjecucionBetween(escalaComercial, fechaInicial, fechaFinal));
+		
 		for (ParametrosLiquidacionCosto parametros : costoCharter) {
 			ParametrosLiquidacionCostoDTO parametrosDTO = new ParametrosLiquidacionCostoDTO();
 			parametrosDTO = ParametrosLiquidacionCostoDTO.CONVERTER_DTO.apply(parametros);

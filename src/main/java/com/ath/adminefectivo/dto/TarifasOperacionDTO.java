@@ -47,7 +47,7 @@ public class TarifasOperacionDTO {
 
 	private String comisionAplicar;
 
-	private int valorTarifa; 
+	private Double valorTarifa; 
 
 	private int estado;
 	
