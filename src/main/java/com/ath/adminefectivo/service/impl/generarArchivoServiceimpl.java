@@ -23,6 +23,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -70,7 +71,7 @@ public class generarArchivoServiceimpl implements IgenerarArchivoService {
 					tipoContabilidad, codBanco);
 
 			// AQUI ARMAR EL ARCHIVO EXCEL
-			Workbook workbook = new HSSFWorkbook();
+			XSSFWorkbook workbook = new XSSFWorkbook();
 			ByteArrayOutputStream stream = new ByteArrayOutputStream();
 			Sheet sheet = (Sheet) workbook.createSheet("transaccionesContables");
 			Row row = sheet.createRow(0);
@@ -242,9 +243,9 @@ public class generarArchivoServiceimpl implements IgenerarArchivoService {
 			} else if (codigoBanco == 298) {
 				return Constantes.CTB_BAVV_Manana + Constantes.EXTENSION_ARCHIVO_TXT;
 			} else if (codigoBanco == 299) {
-				return Constantes.CTB_BOCC_Manana + Constantes.EXTENSION_ARCHIVO_XLS;
+				return Constantes.CTB_BOCC_Manana + Constantes.EXTENSION_ARCHIVO_XLSX;
 			} else if (codigoBanco == 300) {
-				return Constantes.CTB_BPOP_Manana + Constantes.EXTENSION_ARCHIVO_XLS;
+				return Constantes.CTB_BPOP_Manana + Constantes.EXTENSION_ARCHIVO_XLSX;
 			}
 		} else {
 			if (codigoBanco == 297) {
@@ -252,9 +253,9 @@ public class generarArchivoServiceimpl implements IgenerarArchivoService {
 			} else if (codigoBanco == 298) {
 				return Constantes.CTB_BAVV_Tarde + Constantes.EXTENSION_ARCHIVO_TXT;
 			} else if (codigoBanco == 299) {
-				return Constantes.CTB_BOCC_Tarde + Constantes.EXTENSION_ARCHIVO_XLS;
+				return Constantes.CTB_BOCC_Tarde + Constantes.EXTENSION_ARCHIVO_XLSX;
 			} else if (codigoBanco == 300) {
-				return Constantes.CTB_BPOP_Tarde + Constantes.EXTENSION_ARCHIVO_XLS;
+				return Constantes.CTB_BPOP_Tarde + Constantes.EXTENSION_ARCHIVO_XLSX;
 			}
 		}
 		return null;
