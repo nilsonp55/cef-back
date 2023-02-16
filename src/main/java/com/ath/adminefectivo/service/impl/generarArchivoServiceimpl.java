@@ -40,6 +40,7 @@ import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.ITransaccionesContablesService;
 import com.ath.adminefectivo.service.IgenerarArchivoService;
 import com.ath.adminefectivo.utils.UtilsObjects;
+import com.ath.adminefectivo.utils.UtilsString;
 import com.ath.adminefectivo.utils.s3Utils;
 
 @Service
@@ -127,7 +128,7 @@ public class generarArchivoServiceimpl implements IgenerarArchivoService {
 						ApiResponseCode.ERROR_EXPORTANDO_ARCHIVO.getDescription()+ " - "+ e.getMessage(),
 						ApiResponseCode.ERROR_EXPORTANDO_ARCHIVO.getHttpStatus());
 			}
-			String nombreArchivo = this.obtenerNombreArchivo(codBanco, tipoContabilidad);
+			String nombreArchivo = this.obtenerNombreArchivo(fecha, codBanco, tipoContabilidad);
 			
 			return RespuestaGenerarArchivoDTO.builder().nombreArchivo(nombreArchivo).archivoBytes(stream)
 					.build();
@@ -140,7 +141,7 @@ public class generarArchivoServiceimpl implements IgenerarArchivoService {
 		List<String> listaContable = transaccionesContablesService.cierreContablebyBancoF1String(fecha,
 				tipoContabilidad, codBanco);
 
-		String nombreArchivo = this.obtenerNombreArchivo(codBanco, tipoContabilidad);
+		String nombreArchivo = this.obtenerNombreArchivo(fecha, codBanco, tipoContabilidad);
 
 		BufferedWriter bw;
 
@@ -173,7 +174,7 @@ public class generarArchivoServiceimpl implements IgenerarArchivoService {
 		List<String> listaContable = transaccionesContablesService.cierreContablebyBancoF2String(fecha,
 				tipoContabilidad, codBanco);
 
-		String nombreArchivo = this.obtenerNombreArchivo(codBanco, tipoContabilidad);
+		String nombreArchivo = this.obtenerNombreArchivo(fecha, codBanco, tipoContabilidad);
 
 		BufferedWriter bw;
 
@@ -209,36 +210,40 @@ public class generarArchivoServiceimpl implements IgenerarArchivoService {
 
 		RespuestaGenerarArchivoDTO archivo297 = this.generarArchivo(fecha, tipoContabilidad, 297);
 		s3utils.guardarArchivoEnBytes(archivo297.getArchivoBytes(), Constantes.URL_ARCHIVOS_CONTABLES_S3 + "BBOG/",
-				this.obtenerNombreArchivo(297, tipoContabilidad));
+				this.obtenerNombreArchivo(fecha, 297, tipoContabilidad));
 		s3utils.guardarArchivoEnBytes(archivo297.getArchivoBytes(), Constantes.URL_ARCHIVOS_CONTABLES_S3 + "BBOG/Enviados/",
 				this.obtenerNombreArchivoConFecha(297, tipoContabilidad));
 
 		RespuestaGenerarArchivoDTO archivo298 = this.generarArchivo(fecha, tipoContabilidad, 298);
 		s3utils.guardarArchivoEnBytes(archivo298.getArchivoBytes(), Constantes.URL_ARCHIVOS_CONTABLES_S3 + "BAVV/",
-				this.obtenerNombreArchivo(298, tipoContabilidad));
+				this.obtenerNombreArchivo(fecha, 298, tipoContabilidad));
 		s3utils.guardarArchivoEnBytes(archivo298.getArchivoBytes(), Constantes.URL_ARCHIVOS_CONTABLES_S3 + "BAVV/Enviados/",
 				this.obtenerNombreArchivoConFecha(298, tipoContabilidad));
 
 		RespuestaGenerarArchivoDTO archivo299 = this.generarArchivo(fecha, tipoContabilidad, 299);
 		s3utils.guardarArchivoEnBytes(archivo299.getArchivoBytes(), Constantes.URL_ARCHIVOS_CONTABLES_S3 + "BOCC/",
-				this.obtenerNombreArchivo(299, tipoContabilidad));
+				this.obtenerNombreArchivo(fecha, 299, tipoContabilidad));
 		s3utils.guardarArchivoEnBytes(archivo299.getArchivoBytes(), Constantes.URL_ARCHIVOS_CONTABLES_S3 + "BOCC/Enviados/",
 				this.obtenerNombreArchivoConFecha(299, tipoContabilidad));
 
 		RespuestaGenerarArchivoDTO archivo300 = this.generarArchivo(fecha, tipoContabilidad, 300);
 		s3utils.guardarArchivoEnBytes(archivo300.getArchivoBytes(), Constantes.URL_ARCHIVOS_CONTABLES_S3 + "BPOP/",
-				this.obtenerNombreArchivo(300, tipoContabilidad));
+				this.obtenerNombreArchivo(fecha, 300, tipoContabilidad));
 		s3utils.guardarArchivoEnBytes(archivo300.getArchivoBytes(), Constantes.URL_ARCHIVOS_CONTABLES_S3 + "BPOP/Enviados/",
 				this.obtenerNombreArchivoConFecha(300, tipoContabilidad));
 
 	}
 
-	private String obtenerNombreArchivo(int codigoBanco, String tipoContabilidad) {
-		String fechaSistemaString = parametrosService.valorParametro(Constantes.FECHA_DIA_PROCESO);
-		String fechaConFormato = fechaSistemaString.replace("/", "");
-
+	private String obtenerNombreArchivo(Date fecha, int codigoBanco, String tipoContabilidad) {
+		SimpleDateFormat formato = new SimpleDateFormat("yyyy/MM/dd");
+		
+		System.out.println(fecha);
 		if (tipoContabilidad.equals("AM")) {
 			if (codigoBanco == 297) {
+				
+				String fechaSistemaString = formato.format(UtilsString.restarDiasAFecha(fecha, -1));
+
+				String fechaConFormato = fechaSistemaString.replace("/", "");
 				return Constantes.CTB_BBOG_Manana + fechaConFormato + Constantes.EXTENSION_ARCHIVO_TXT;
 			} else if (codigoBanco == 298) {
 				return Constantes.CTB_BAVV_Manana + Constantes.EXTENSION_ARCHIVO_TXT;
@@ -249,6 +254,9 @@ public class generarArchivoServiceimpl implements IgenerarArchivoService {
 			}
 		} else {
 			if (codigoBanco == 297) {
+				String fechaSistemaString = formato.format(UtilsString.restarDiasAFecha(fecha, -1));
+
+				String fechaConFormato = fechaSistemaString.replace("/", "");
 				return Constantes.CTB_BBOG_Tarde + fechaConFormato + Constantes.EXTENSION_ARCHIVO_TXT;
 			} else if (codigoBanco == 298) {
 				return Constantes.CTB_BAVV_Tarde + Constantes.EXTENSION_ARCHIVO_TXT;
@@ -264,9 +272,14 @@ public class generarArchivoServiceimpl implements IgenerarArchivoService {
 	private String obtenerNombreArchivoConFecha(int codigoBanco, String tipoContabilidad) {
 		String fechaSistemaString = parametrosService.valorParametro(Constantes.FECHA_DIA_PROCESO);
 		String fechaConFormato = fechaSistemaString.replace("/", "");
+		SimpleDateFormat formato = new SimpleDateFormat("yyyy/MM/dd");
 
 		if (tipoContabilidad.equals("AM")) {
 			if (codigoBanco == 297) {
+				Date fecha = parametrosService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
+				fechaSistemaString = formato.format(UtilsString.restarDiasAFecha(fecha, -1));
+
+				fechaConFormato = fechaSistemaString.replace("/", "");
 				return Constantes.CTB_BBOG_Manana + fechaConFormato + Constantes.EXTENSION_ARCHIVO_TXT;
 			} else if (codigoBanco == 298) {
 				return Constantes.CTB_BAVV_Manana + fechaConFormato + Constantes.EXTENSION_ARCHIVO_TXT;
@@ -277,6 +290,10 @@ public class generarArchivoServiceimpl implements IgenerarArchivoService {
 			}
 		} else {
 			if (codigoBanco == 297) {
+				Date fecha = parametrosService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
+				fechaSistemaString = formato.format(fecha);
+
+				fechaConFormato = fechaSistemaString.replace("/", "");
 				return Constantes.CTB_BBOG_Tarde + fechaConFormato + Constantes.EXTENSION_ARCHIVO_TXT;
 			} else if (codigoBanco == 298) {
 				return Constantes.CTB_BAVV_Tarde + fechaConFormato + Constantes.EXTENSION_ARCHIVO_TXT;
