@@ -619,8 +619,8 @@ public static final String DELETE_SEPARADORES = "";
 	/**
 	 * Nombre de archivos generados xls 
 	 */
-	public static final String CTB_BBOG_Manana = "Contabilidad_BBOG_Manana";
-	public static final String CTB_BBOG_Tarde = "Contabilidad_BBOG_Tarde";
+	public static final String CTB_BBOG_Manana = "Contabilidad_BBOG_Cambios_";
+	public static final String CTB_BBOG_Tarde = "Contabilidad_BBOG_";
 	public static final String CTB_BOCC_Manana = "Contabilidad_BOCC_Manana";
 	public static final String CTB_BOCC_Tarde = "Contabilidad_BOCC_Tarde";
 	public static final String CTB_BPOP_Manana = "Contabilidad_BPOP_Manana";

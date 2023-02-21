@@ -88,7 +88,7 @@ public class AES256 {
 	public String encryptAES(String text) {
 		try {
 			/* Declare a byte array. */
-			byte[] iv = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+			byte[] iv = { -47, -57, -112, -16, -127, -101, 127, 67, -23, -47, -52, 38, 76, -56, 3, 98 };
 			IvParameterSpec ivspec = new IvParameterSpec(iv);
 
 			/* Create factory for secret keys. */
@@ -117,7 +117,7 @@ public class AES256 {
 	public String decryptAES(String text) {
 		try {
 			/* Declare a byte array. */
-			byte[] iv = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+			byte[] iv = { -47, -57, -112, -16, -127, -101, 127, 67, -23, -47, -52, 38, 76, -56, 3, 98 };
 			IvParameterSpec ivspec = new IvParameterSpec(iv);
 			/* Create factory for secret keys. */
 			SecretKeyFactory factory = SecretKeyFactory.getInstance(parametroService.valorParametro(Parametros.AES256));
