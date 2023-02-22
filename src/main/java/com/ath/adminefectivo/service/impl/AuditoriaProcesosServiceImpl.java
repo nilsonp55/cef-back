@@ -6,14 +6,17 @@ import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ath.adminefectivo.constantes.Constantes;
+import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.AuditoriaProcesosDTO;
 import com.ath.adminefectivo.entities.AuditoriaProcesos;
 import com.ath.adminefectivo.entities.id.AuditoriaProcesosPK;
 import com.ath.adminefectivo.repositories.IAuditoriaProcesosRepository;
 import com.ath.adminefectivo.service.IAuditoriaProcesosService;
 import com.ath.adminefectivo.service.IDominioService;
+import com.ath.adminefectivo.exception.NegocioException;
 
 
 @Service
@@ -35,12 +38,11 @@ public class AuditoriaProcesosServiceImpl implements IAuditoriaProcesosService {
 		AuditoriaProcesos auditoriaProceso = auditoriaProcesosRepository.findById(new AuditoriaProcesosPK(codigoProceso, fechaSistema)).orElse(null);
 		
 		if(Objects.isNull(auditoriaProceso)) {
-			//lanza excepcion de que no existe
+			throw new NegocioException(ApiResponseCode.ERROR_PROCESO_NO_EXISTE.getCode(),
+					ApiResponseCode.ERROR_PROCESO_NO_EXISTE.getDescription(),
+					ApiResponseCode.ERROR_PROCESO_NO_EXISTE.getHttpStatus());
 		}
-		
-		if(auditoriaProceso.getEstadoProceso().equals(Constantes.ESTADO_PROCESO_PROCESO)) {
-			//lanza excepcion de que ya se esta ejecutando el proceso 
-		}	
+			
 		return AuditoriaProcesosDTO.CONVERTER_DTO.apply(auditoriaProceso);
 	}
 	
@@ -48,13 +50,23 @@ public class AuditoriaProcesosServiceImpl implements IAuditoriaProcesosService {
 	 * {@inheritDoc}
 	 */
 	@Override
+	@Transactional
 	public void ActualizarAuditoriaProceso(String codigoProceso, Date fechaSistema, String estado, String mensaje) {
 		
 		AuditoriaProcesos auditoriaProceso = auditoriaProcesosRepository.findById(new AuditoriaProcesosPK(codigoProceso, fechaSistema)).orElse(null);
 		
 		if(Objects.isNull(auditoriaProceso)) {
-			//lanza excepcion de que no existe
+			throw new NegocioException(ApiResponseCode.ERROR_PROCESO_NO_EXISTE.getCode(),
+					ApiResponseCode.ERROR_PROCESO_NO_EXISTE.getDescription(),
+					ApiResponseCode.ERROR_PROCESO_NO_EXISTE.getHttpStatus());
 		}
+		
+		if(auditoriaProceso.getEstadoProceso().equals(Constantes.ESTADO_PROCESO_INICIO )&& estado.equals(Constantes.ESTADO_PROCESO_INICIO)) {
+			throw new NegocioException(ApiResponseCode.ERROR_PROCESO_YA_CERRADO.getCode(),
+					ApiResponseCode.ERROR_PROCESO_YA_CERRADO.getDescription(),
+					ApiResponseCode.ERROR_PROCESO_YA_CERRADO.getHttpStatus());
+		}
+		
 		auditoriaProceso.setEstadoProceso(estado);
 		auditoriaProceso.setMensaje(mensaje);
 		

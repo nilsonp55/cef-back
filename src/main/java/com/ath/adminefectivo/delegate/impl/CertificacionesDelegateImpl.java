@@ -48,17 +48,17 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 	 * {@inheritDoc}
 	 */
 	@Override
-	@Transactional
 	public Boolean procesarCertificaciones(String agrupador) {
 
 		Date fechaProceso = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
 		auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION, 
-				fechaProceso, Constantes.ESTADO_PROCESO_PROCESO, Constantes.ESTADO_PROCESO_PROCESO);
+				fechaProceso, Constantes.ESTADO_PROCESO_INICIO, Constantes.ESTADO_PROCESO_INICIO);
 		
 		List<ArchivosCargados> archivosCargados = archivosCargadosRepository
 				.getRegistrosCargadosSinProcesarDeHoy(agrupador, fechaProceso, Constantes.ESTADO_CARGUE_VALIDO);
 		if (archivosCargados.isEmpty()) {
-			UtilsObjects.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+			auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION, 
+					fechaProceso, Constantes.ESTADO_PROCESO_ERROR, 
 					ApiResponseCode.ERROR_ARCHICOS_CARGADOS_NO_ENCONTRADO.getDescription());
 			throw new NegocioException(ApiResponseCode.ERROR_ARCHICOS_CARGADOS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_ARCHICOS_CARGADOS_NO_ENCONTRADO.getDescription(),
@@ -67,6 +67,7 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 			validarLogProcesoDiario();
 			validarExistenciaArchivos(archivosCargados);
 			operacionesCertificadasService.procesarArchivosCertificaciones(archivosCargados);
+			
 			// siguiente l�nea, incluye conciliaci�n autom�tica (en procedimientos de BD)
 			operacionesCertificadasService.validarNoConciliables();
 			
@@ -85,7 +86,7 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 	 */
 	private void validarLogProcesoDiario() {
 		var log = logProcesoDiarioService.obtenerEntidadLogProcesoDiario(Dominios.CODIGO_PROCESO_LOG_DEFINITIVO);
-		if (!log.getEstadoProceso().equals(Dominios.ESTADO_PROCESO_DIA_COMPLETO)) {
+		if (!log.getEstadoProceso().equals(Dominios.ESTADO_PROCESO_DIA_COMPLETO)) {			
 			UtilsObjects.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
 					ApiResponseCode.ERROR_PROCESO_SIGUE_ABIERTO.getDescription());
 			throw new NegocioException(ApiResponseCode.ERROR_PROCESO_SIGUE_ABIERTO.getCode(),
@@ -96,7 +97,6 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 		var logConciliacion = logProcesoDiarioService
 				.obtenerEntidadLogProcesoDiario(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION);
 		if (logConciliacion.getEstadoProceso().equals(Dominios.ESTADO_PROCESO_DIA_COMPLETO)) {
-
 			UtilsObjects.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
 					ApiResponseCode.ERROR_LOGPROCESODIARIO_NO_ENCONTRADO.getDescription());
 			throw new NegocioException(ApiResponseCode.ERROR_LOGPROCESODIARIO_NO_ENCONTRADO.getCode(),

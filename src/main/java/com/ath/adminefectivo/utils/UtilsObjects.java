@@ -76,8 +76,7 @@ public class UtilsObjects {
 	public static void actualizarAuditoriaProceso(String codigoProceso, String mensaje) {
 		auditoriaProcesosService.ActualizarAuditoriaProceso(codigoProceso, 
 				parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO), 
-				Constantes.ESTADO_PROCESO_PROCESADO, 
-				ApiResponseCode.ERROR_ARCHICOS_CARGADOS_NO_ENCONTRADO.getDescription());
+				Constantes.ESTADO_PROCESO_ERROR, mensaje);
 		
 	}
 	

@@ -704,7 +704,14 @@ public enum ApiResponseCode {
 	 * Ocurrió un error al consultar la table de operaciones certificadas
 	 */
 	ERROR_OPERACIONES_PROGRAMADAS_UPDATE_NULL("E975", "El id Operacion es nulo. ",
-			HttpStatus.PRECONDITION_FAILED);
+			HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Ocurrio un error al consultar la auditor�a de un Proceso Diario
+	 */
+	ERROR_PROCESO_NO_EXISTE("E976", "Codigo Proceso no existe en auditor�a de procesos", HttpStatus.PRECONDITION_FAILED);
+	
+	
 	/**
 	 * Código asociado a la respuesta
 	 */
@@ -744,7 +751,4 @@ public enum ApiResponseCode {
 		this.httpStatus = httpStatus;
 	}
 
-	
-	
-	
 }
