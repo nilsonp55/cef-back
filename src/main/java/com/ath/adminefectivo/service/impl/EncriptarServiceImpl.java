@@ -70,7 +70,9 @@ public class EncriptarServiceImpl implements IEncriptarService {
 	        }catch (Exception ingored){}
 			
 		} catch (Exception e) {
-			System.out.println("Archivo con ruta "+path+nombreArchivo +" no existe. " +e);
+			throw new NegocioException(ApiResponseCode.ERROR_ARCHIVOS_NO_EXISTE_BD.getCode(),
+					ApiResponseCode.ERROR_ARCHIVOS_NO_EXISTE_BD.getDescription(),
+					ApiResponseCode.ERROR_ARCHIVOS_NO_EXISTE_BD.getHttpStatus());
 		}
 		
 		return "Se encripto el archivo exitosamente";

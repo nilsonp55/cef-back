@@ -180,15 +180,6 @@ public class RSA {
     private byte[] decode(String data){
         return Base64.getDecoder().decode(data);
     }
-
-    public static void main(String[] args) {
-        RSA rsa = new RSA(new ParametroServiceImpl(), new s3Utils());
-        try{
-            String encryptedMessage = rsa.encrypt("Hello World");
-            String decryptedMessage = rsa.decrypt(encryptedMessage);
-
-        }catch (Exception ingored){}
-    }
     
     private void getKeys(){
     	String privateKeyString = parametroService.valorParametro("privateKeyRSA");

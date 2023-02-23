@@ -11,10 +11,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
@@ -48,6 +47,7 @@ import com.ath.adminefectivo.service.IPuntosCodigoTdvService;
 import com.ath.adminefectivo.service.IPuntosService;
 import com.ath.adminefectivo.service.ITransportadorasService;
 import com.ath.adminefectivo.utils.UtilsObjects;
+import com.ath.adminefectivo.service.IAuditoriaProcesosService;
 
 @Service
 public class OperacionesCertificadasServiceImpl implements IOperacionesCertificadasService {
@@ -93,6 +93,9 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	
 	@Autowired
 	IParametroService parametroService;
+	
+	@Autowired
+	IAuditoriaProcesosService auditoriaProcesosService;
 
 	private List<SobrantesFaltantesDTO> listaAjustesValor = new ArrayList<>();
 	private OperacionesCertificadas certificadas;
@@ -163,20 +166,35 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	@Override
 	public Boolean procesarArchivosCertificaciones(List<ArchivosCargados> archivosCargados) {
 
+		Date fechaProceso = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
+		int cuenta = 0; 
+
 		for (ArchivosCargados elemento : archivosCargados) {
-			List<DetallesDefinicionArchivoDTO> listadoDetalleArchivo = detalleDefinicionArchivoService
-					.consultarDetalleDefinicionArchivoByIdMaestro(elemento.getIdModeloArchivo());
-			if (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IBBCS)
-					|| elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IBMCS)) {
-				procesarArchivoBrinks(elemento, listadoDetalleArchivo);
-				procesarSobranteFaltanteBrinks();
-			} else {
-				procesarArchivoOtrosFondos(elemento, listadoDetalleArchivo);
-				procesarSobranteFaltanteNoBrinks();
+			try {
+				cuenta = cuenta + 1;
+				List<DetallesDefinicionArchivoDTO> listadoDetalleArchivo = detalleDefinicionArchivoService
+						.consultarDetalleDefinicionArchivoByIdMaestro(elemento.getIdModeloArchivo());
+				if (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IBBCS)
+						|| elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IBMCS)) {
+					procesarArchivoBrinks(elemento, listadoDetalleArchivo);
+				} else {
+					procesarArchivoOtrosFondos(elemento, listadoDetalleArchivo);
+				}			
+			
+			auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION, 
+					fechaProceso, Constantes.ESTADO_PROCESO_PROCESO, "Archivos procesados: " + cuenta);
+			
+			} catch (NegocioException nExcep) {
+				auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION, 
+						fechaProceso, Constantes.ESTADO_PROCESO_ERROR, nExcep.getMessage());
+				throw nExcep;
+			} catch (Exception excep) {
+				auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION, 
+						fechaProceso, Constantes.ESTADO_PROCESO_ERROR, "Error procesando archivo: " + cuenta);
+				throw excep;
 			}
-			elemento.setEstadoCargue(Dominios.ESTADO_VALIDACION_ACEPTADO);
-			archivosCargadosService.actualizarArchivosCargados(elemento);
 		}
+		
 		return true;
 	}
 
@@ -268,6 +286,9 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 						ApiResponseCode.ERROR_TIPO_REGISTRO_NO_VALIDO.getHttpStatus());
 			}
 		}
+		procesarSobranteFaltanteNoBrinks();
+		elemento.setEstadoCargue(Dominios.ESTADO_VALIDACION_ACEPTADO);
+		archivosCargadosService.actualizarArchivosCargados(elemento);
 	}
 
 	/**
@@ -438,9 +459,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	 */
 	private CodigoPuntoOrigenDestinoDTO obtenerCodigoPuntoOrigenDestino(String entradaSalida,
 			RegistroTipo1ArchivosFondosDTO registro, String codigoPropio, String codigoServicio) {
-		
-		System.out.println("registro " +registro.toString());
-		
+			
 		var codigoPuntoOrigenDestino = new CodigoPuntoOrigenDestinoDTO();
 		Integer codigoPuntoOrigen = 0;
 		Integer codigoPuntoDestino = 0;
@@ -893,7 +912,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 			var ajusteValor = new SobrantesFaltantesDTO();
 			String[] fila = elemento.getRegistrosCargados().get(i).getContenido().split(", ");
 			String tipoRegistro = determinarTipoRegistro(fila, detalleArchivo);
-			System.out.println("tipoRegistro = "+tipoRegistro);
+
 			switch (Integer.parseInt(tipoRegistro)) {
 			case 1: {
 				String tdv = determinarCampo(fila, detalleArchivo, Integer.parseInt(tipoRegistro),
@@ -966,6 +985,9 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 						ApiResponseCode.ERROR_TIPO_REGISTRO_NO_VALIDO.getHttpStatus());
 			}
 		}
+		procesarSobranteFaltanteBrinks();
+		elemento.setEstadoCargue(Dominios.ESTADO_VALIDACION_ACEPTADO);
+		archivosCargadosService.actualizarArchivosCargados(elemento);
 	}
 
 	/**
