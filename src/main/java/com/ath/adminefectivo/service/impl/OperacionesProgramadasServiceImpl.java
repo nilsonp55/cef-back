@@ -1698,6 +1698,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		}
 		return tipoOperacion;
 	}
+	
 
 	/**
 	 * Metodo encargado de crear el detalle de las operaciones programadas
