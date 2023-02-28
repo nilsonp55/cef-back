@@ -422,6 +422,11 @@ public enum ApiResponseCode {
 	/**
 	 * Error puntos ya existentes
 	 */
+	ERROR_AUDITORIA_LOGIN_EXIST("E929", "AuditoriaLogin ya existente.  ", HttpStatus.CONFLICT),
+	
+	/**
+	 * Error puntos ya existentes
+	 */
 	ERROR_CUENTAS_PUC_NO_EXIST("E921", "Punto no existente.  ", HttpStatus.CONFLICT),
 	
 	/**
