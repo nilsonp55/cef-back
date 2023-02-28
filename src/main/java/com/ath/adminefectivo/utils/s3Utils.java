@@ -181,6 +181,39 @@ public class s3Utils {
 		return salida;
 	}
 	
+
+	/**
+	 * Metodo encargado de realizar la conexion con AWS s3 antes de realiar cualquier ejecuci�n
+	 * Version prueba #1
+	 * @author Bayron Perez
+	 * @throws URISyntaxException
+	 */
+	public void conexionS3(String bucketName) {
+	try {
+         Properties systemSettings = System.getProperties();
+         
+      } catch (Exception e) {
+         e.printStackTrace();
+         System.out.println(false);
+      }
+	  
+	BasicAWSCredentials credentials = new BasicAWSCredentials("AKIAZPUFXGZ5GEMGWLFZ", "HD1RM1Il0nAJYu2gNr1oYG6MtdBzafSKpf+1TtMM");
+		try {
+			ClientConfiguration config = new ClientConfiguration();
+			config.setProtocol(Protocol.HTTP);
+			config.setProxyHost("10.140.1.52");
+			config.setProxyPort(8002);
+			s3 = AmazonS3ClientBuilder.standard()
+					.withClientConfiguration(config).withRegion("us-east-1")
+					.withCredentials(new AWSStaticCredentialsProvider(credentials)).build();
+		} catch (Exception e) {
+			throw new NegocioException(ApiResponseCode.ERROR_ACCEDIENDO_S3.getCode(),
+					ApiResponseCode.ERROR_ACCEDIENDO_S3.getDescription(),
+					ApiResponseCode.ERROR_ACCEDIENDO_S3.getHttpStatus());
+		}
+		bucketNameFormat = bucketName + UUID.randomUUID();
+	}
+
 	/**
 	 * Metodo para mover un objeto de un bucket S3
 	 * 

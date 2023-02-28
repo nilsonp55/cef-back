@@ -89,8 +89,7 @@ public class AES256 {
 	public String encryptAES(String text) {
 		try {
 			/* Declare a byte array. */
-			SecureRandom random = new SecureRandom();
-			byte[] iv = random.generateSeed(16);
+			byte[] iv = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 			IvParameterSpec ivspec = new IvParameterSpec(iv);
 
 			/* Create factory for secret keys. */
@@ -98,7 +97,7 @@ public class AES256 {
 																														// ALGORITMO_ENCRIPTADO
 
 			/* PBEKeySpec class implements KeySpec interface. */
-			KeySpec spec = new PBEKeySpec(SECRET_KEY.toCharArray(), SALTVALUE.getBytes(), 100000,
+			KeySpec spec = new PBEKeySpec(SECRET_KEY.toCharArray(), SALTVALUE.getBytes(), 65536,
 					parametroService.valorParametroEntero(Parametros.BYTES_AES));// BYTES_AES ALGORITMO_AES
 
 			SecretKey tmp = factory.generateSecret(spec);
@@ -118,14 +117,13 @@ public class AES256 {
 	public String decryptAES(String text) {
 		try {
 			/* Declare a byte array. */
-			SecureRandom random = new SecureRandom();
-			byte[] iv = random.generateSeed(16);
+			byte[] iv = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 			IvParameterSpec ivspec = new IvParameterSpec(iv);
 			/* Create factory for secret keys. */
 			SecretKeyFactory factory = SecretKeyFactory.getInstance(parametroService.valorParametro(Parametros.AES256));
 			
 			/* PBEKeySpec class implements KeySpec interface. */
-			KeySpec spec = new PBEKeySpec(SECRET_KEY.toCharArray(), SALTVALUE.getBytes(), 100000, parametroService.valorParametroEntero(Parametros.BYTES_AES));
+			KeySpec spec = new PBEKeySpec(SECRET_KEY.toCharArray(), SALTVALUE.getBytes(), 65536, parametroService.valorParametroEntero(Parametros.BYTES_AES));
 			SecretKey tmp = factory.generateSecret(spec);
 			SecretKeySpec secretKey = new SecretKeySpec(tmp.getEncoded(), "AES");
 			Cipher cipher = Cipher.getInstance(parametroService.valorParametro(Parametros.INSTANCIA_AES));
