@@ -136,4 +136,14 @@ public interface IArchivosCargadosService {
 	 * @author duvan.naranjo
 	 */
 	void actualizarArchivosCargados(ArchivosCargados archivosCargados);
+	
+	/**
+	 * Metodo encargado de realizar la consulta por archivos cargados 
+	 * segun una fecha que corresponda
+	 * 
+	 * @param fechaActual
+	 * @return List<ArchivosCargadosDTO>
+	 * @author duvan.naranjo
+	 */
+	List<ArchivosCargados> consultarArchivosPorFecha(Date fechaActual);
 }

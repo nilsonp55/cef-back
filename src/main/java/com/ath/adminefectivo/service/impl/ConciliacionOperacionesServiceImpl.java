@@ -178,14 +178,19 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	@Override
 	public Boolean updateOperacionesProgramadasFallidas(UpdateProgramadasFallidasDTO updateProgramadasFallidasDTO) {
 
-		Optional<OperacionesProgramadas> programadas = operacionesProgramadasRepository
-				.findById(updateProgramadasFallidasDTO.getIdOperacion());
-		if (programadas.isPresent()) {
+		if(Objects.isNull(updateProgramadasFallidasDTO.getIdOperacion())) {
+			throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_UPDATE_NULL.getCode(),
+					ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_UPDATE_NULL.getDescription(),
+					ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_UPDATE_NULL.getHttpStatus());
+		}
+		OperacionesProgramadas programadas = operacionesProgramadasRepository
+				.findById(updateProgramadasFallidasDTO.getIdOperacion()).orElse(null);
+		if (!Objects.isNull(programadas)) {
 			try {
-				programadas.get().setIdOperacion(updateProgramadasFallidasDTO.getIdOperacion());
-				programadas.get().setEstadoConciliacion(updateProgramadasFallidasDTO.getEstado());
-				programadas.get().setValorTotal(updateProgramadasFallidasDTO.getValor());
-				operacionesProgramadasRepository.save(programadas.get());
+				programadas.setIdOperacion(updateProgramadasFallidasDTO.getIdOperacion());
+				programadas.setEstadoConciliacion(updateProgramadasFallidasDTO.getEstado());
+				programadas.setValorTotal(updateProgramadasFallidasDTO.getValor());
+				operacionesProgramadasRepository.save(programadas);
 			} catch (Exception e) {
 				e.getMessage();
 			}
@@ -203,13 +208,19 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	@Override
 	public Boolean updateOperacionesCertificadasFallidas(UpdateCertificadasFallidasDTO updateCertificadasFallidasDTO) {
 
-		Optional<OperacionesCertificadas> certificadas = operacionesCertificadasRepository
-				.findById(updateCertificadasFallidasDTO.getIdCertificacion());
-		if (certificadas.isPresent()) {
+		if(Objects.isNull(updateCertificadasFallidasDTO.getIdCertificacion())) {
+			throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_UPDATE_NULL.getCode(),
+					ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_UPDATE_NULL.getDescription(),
+					ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_UPDATE_NULL.getHttpStatus());
+		}
+		OperacionesCertificadas certificadas = operacionesCertificadasRepository
+				.findById(updateCertificadasFallidasDTO.getIdCertificacion()).orElse(null);
+		if (!Objects.isNull(certificadas)) {
 			try {
-				certificadas.get().setIdCertificacion(updateCertificadasFallidasDTO.getIdCertificacion());
-				certificadas.get().setEstadoConciliacion(updateCertificadasFallidasDTO.getEstado());
-				operacionesCertificadasRepository.save(certificadas.get());
+				certificadas.setIdCertificacion(updateCertificadasFallidasDTO.getIdCertificacion());
+				certificadas.setEstadoConciliacion(updateCertificadasFallidasDTO.getEstado());
+				certificadas.setValorTotal(updateCertificadasFallidasDTO.getValor());
+				operacionesCertificadasRepository.save(certificadas);
 			} catch (Exception e) {
 				e.getMessage();
 			}

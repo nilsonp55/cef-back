@@ -4,7 +4,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -12,10 +11,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
@@ -48,6 +46,8 @@ import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.IPuntosCodigoTdvService;
 import com.ath.adminefectivo.service.IPuntosService;
 import com.ath.adminefectivo.service.ITransportadorasService;
+import com.ath.adminefectivo.utils.UtilsObjects;
+import com.ath.adminefectivo.service.IAuditoriaProcesosService;
 
 @Service
 public class OperacionesCertificadasServiceImpl implements IOperacionesCertificadasService {
@@ -93,6 +93,9 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	
 	@Autowired
 	IParametroService parametroService;
+	
+	@Autowired
+	IAuditoriaProcesosService auditoriaProcesosService;
 
 	private List<SobrantesFaltantesDTO> listaAjustesValor = new ArrayList<>();
 	private OperacionesCertificadas certificadas;
@@ -163,20 +166,35 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	@Override
 	public Boolean procesarArchivosCertificaciones(List<ArchivosCargados> archivosCargados) {
 
+		Date fechaProceso = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
+		int cuenta = 0; 
+
 		for (ArchivosCargados elemento : archivosCargados) {
-			List<DetallesDefinicionArchivoDTO> listadoDetalleArchivo = detalleDefinicionArchivoService
-					.consultarDetalleDefinicionArchivoByIdMaestro(elemento.getIdModeloArchivo());
-			if (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IBBCS)
-					|| elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IBMCS)) {
-				procesarArchivoBrinks(elemento, listadoDetalleArchivo);
-				procesarSobranteFaltanteBrinks();
-			} else {
-				procesarArchivoOtrosFondos(elemento, listadoDetalleArchivo);
-				procesarSobranteFaltanteNoBrinks();
+			try {
+				cuenta = cuenta + 1;
+				List<DetallesDefinicionArchivoDTO> listadoDetalleArchivo = detalleDefinicionArchivoService
+						.consultarDetalleDefinicionArchivoByIdMaestro(elemento.getIdModeloArchivo());
+				if (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IBBCS)
+						|| elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IBMCS)) {
+					procesarArchivoBrinks(elemento, listadoDetalleArchivo);
+				} else {
+					procesarArchivoOtrosFondos(elemento, listadoDetalleArchivo);
+				}			
+			
+			auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION, 
+					fechaProceso, Constantes.ESTADO_PROCESO_PROCESO, "Archivos procesados: " + cuenta);
+			
+			} catch (NegocioException nExcep) {
+				auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION, 
+						fechaProceso, Constantes.ESTADO_PROCESO_ERROR, nExcep.getMessage());
+				throw nExcep;
+			} catch (Exception excep) {
+				auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION, 
+						fechaProceso, Constantes.ESTADO_PROCESO_ERROR, "Error procesando archivo: " + cuenta);
+				throw excep;
 			}
-			elemento.setEstadoCargue(Dominios.ESTADO_VALIDACION_ACEPTADO);
-			archivosCargadosService.actualizarArchivosCargados(elemento);
 		}
+		
 		return true;
 	}
 
@@ -210,10 +228,8 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	}
 
 	@Override
-	public void validarNoConciliables(List<ArchivosCargados> archivosCargados) {
-		archivosCargados.forEach(archivo -> {
-			boolean resultado = operacionesCertificadasRepository.validarnoconciliables(archivo.getIdArchivo());
-		});
+	public void validarNoConciliables() {
+		boolean resultado = operacionesCertificadasRepository.validarnoconciliables();
 	}
 
 	/**
@@ -263,11 +279,16 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 				break;
 			}
 			default:
+				UtilsObjects.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+						ApiResponseCode.ERROR_TIPO_REGISTRO_NO_VALIDO.getDescription());
 				throw new NegocioException(ApiResponseCode.ERROR_TIPO_REGISTRO_NO_VALIDO.getCode(),
 						ApiResponseCode.ERROR_TIPO_REGISTRO_NO_VALIDO.getDescription(),
 						ApiResponseCode.ERROR_TIPO_REGISTRO_NO_VALIDO.getHttpStatus());
 			}
 		}
+		procesarSobranteFaltanteNoBrinks();
+		elemento.setEstadoCargue(Dominios.ESTADO_VALIDACION_ACEPTADO);
+		archivosCargadosService.actualizarArchivosCargados(elemento);
 	}
 
 	/**
@@ -376,7 +397,9 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 		}
 		if (Objects.isNull(codigoPuntoOrigenDestino.getCertificadas())) {
 			var operaciones = new OperacionesCertificadasDTO();
+			
 			operaciones.setCodigoFondoTDV(registro.getCodigoPunto());
+			operaciones.setCodigoPropioTDV(codigoPropio);
 			operaciones.setCodigoPuntoDestino(codigoPuntoOrigenDestino.getCodigoPuntoDestino());
 			operaciones.setCodigoPuntoOrigen(codigoPuntoOrigenDestino.getCodigoPuntoOrigen());
 			operaciones.setCodigoServicioTdv(codigoServicio);
@@ -436,6 +459,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	 */
 	private CodigoPuntoOrigenDestinoDTO obtenerCodigoPuntoOrigenDestino(String entradaSalida,
 			RegistroTipo1ArchivosFondosDTO registro, String codigoPropio, String codigoServicio) {
+			
 		var codigoPuntoOrigenDestino = new CodigoPuntoOrigenDestinoDTO();
 		Integer codigoPuntoOrigen = 0;
 		Integer codigoPuntoDestino = 0;
@@ -505,6 +529,8 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 		}
 		var fondo = fondosService.getCodigoFondoCertificacion(transportadora, nit, ciudad);
 		if (Objects.isNull(fondo)) {
+			UtilsObjects.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getDescription() +"no existe para transportadora = "+transportadora+" NIT = "+nit+" Ciudad = "+ciudad);
 			throw new NegocioException(ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getDescription() +"no existe para transportadora = "+transportadora+" NIT = "+nit+" Ciudad = "+ciudad,
 					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getHttpStatus());
@@ -751,6 +777,10 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 		List<OperacionesCertificadas> ocertificadas = operacionesCertificadasRepository
 				.findByCodigoServicioTdv(codigoServicio);
 		if (Objects.isNull(ocertificadas)) {
+			
+			UtilsObjects.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+					ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getDescription());
+			
 			throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getDescription(),
 					ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getHttpStatus());
@@ -773,6 +803,9 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 		List<OperacionesCertificadas> ocertificadas = operacionesCertificadasRepository
 				.findByCodigoServicioTdv(codigoServicio);
 		if (Objects.isNull(ocertificadas)) {
+			UtilsObjects.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+					ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getDescription());
+			
 			throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getDescription(),
 					ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getHttpStatus());
@@ -807,6 +840,9 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 			}
 
 			if (Objects.isNull(ocertificadas)) {
+				
+				UtilsObjects.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+						ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getDescription());
 				throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getCode(),
 						ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getDescription(),
 						ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getHttpStatus());
@@ -844,6 +880,9 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 			}
 
 			if (Objects.isNull(ocertificadas)) {
+				UtilsObjects.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+						ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getDescription());
+				
 				throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getCode(),
 						ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getDescription(),
 						ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getHttpStatus());
@@ -866,14 +905,14 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	 */
 	@Transactional
 	private void procesarArchivoBrinks(ArchivosCargados elemento, List<DetallesDefinicionArchivoDTO> detalleArchivo) {
-
+	
 		var registro = new RegistroTipo1ArchivosFondosDTO();
-
 		for (var i = 0; i < elemento.getRegistrosCargados().size(); i++) {
 
 			var ajusteValor = new SobrantesFaltantesDTO();
 			String[] fila = elemento.getRegistrosCargados().get(i).getContenido().split(", ");
 			String tipoRegistro = determinarTipoRegistro(fila, detalleArchivo);
+
 			switch (Integer.parseInt(tipoRegistro)) {
 			case 1: {
 				String tdv = determinarCampo(fila, detalleArchivo, Integer.parseInt(tipoRegistro),
@@ -891,10 +930,11 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 				registro.setTdv(fondo.getTdv());
 				registro.setCodigoPunto(fondo.getCodigoPunto());
 				Date fecha = determinarFechaEjecucion(fila, detalleArchivo, Integer.parseInt(tipoRegistro),
-						Constantes.CAMPO_DETALLE_ARCHIVO_FECHAEMISION);
+						Constantes.CAMPO_DETALLE_ARCHIVO_FECHAEJECUCION);
 				registro.setFechaEjecucion(fecha);
 				registro.setBanco_aval(fondo.getBancoAVAL());
 				registro.setCodigoDane(codigoDaneCiudad);
+				
 				break;
 			}
 			case 2: {
@@ -936,11 +976,18 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 				break;
 			}
 			default:
+				
+				UtilsObjects.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+						ApiResponseCode.ERROR_TIPO_REGISTRO_NO_VALIDO.getDescription());
+				
 				throw new NegocioException(ApiResponseCode.ERROR_TIPO_REGISTRO_NO_VALIDO.getCode(),
 						ApiResponseCode.ERROR_TIPO_REGISTRO_NO_VALIDO.getDescription(),
 						ApiResponseCode.ERROR_TIPO_REGISTRO_NO_VALIDO.getHttpStatus());
 			}
 		}
+		procesarSobranteFaltanteBrinks();
+		elemento.setEstadoCargue(Dominios.ESTADO_VALIDACION_ACEPTADO);
+		archivosCargadosService.actualizarArchivosCargados(elemento);
 	}
 
 	/**

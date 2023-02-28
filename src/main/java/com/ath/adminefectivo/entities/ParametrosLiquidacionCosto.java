@@ -131,6 +131,9 @@ public class ParametrosLiquidacionCosto {
 	@Column(name = "VALOR_TOTAL")
 	private Double valorTotal;
 	
+	@Column(name = "ENTRADA_SALIDA")
+	private String entradaSalida;
+	
 	
 //	@ManyToOne(fetch = FetchType.LAZY)
 //	@JoinColumn(name = "ID_LIQUIDACION", nullable = false)
@@ -143,8 +146,13 @@ public class ParametrosLiquidacionCosto {
 //	@OneToMany(mappedBy = "parametrosLiquidacionCosto", cascade = {CascadeType.ALL}, orphanRemoval = true)
 //	private List<DetallesLiquidacionCosto> detallesLiquidacionCosto;
 	
-	@OneToOne(mappedBy = "parametrosLiquidacionCosto", cascade = {CascadeType.ALL}, orphanRemoval = true)
+	//@OneToOne(mappedBy = "parametrosLiquidacionCosto", cascade = {CascadeType.ALL}, orphanRemoval = true)
+	@OneToOne(cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "ID_LIQUIDACION",referencedColumnName = "ID_LIQUIDACION")
 	private ValoresLiquidados valoresLiquidados;
+	
+	@Column(name = "fecha_concilia")
+	private Date fechaConcilia;
 	
 	
 

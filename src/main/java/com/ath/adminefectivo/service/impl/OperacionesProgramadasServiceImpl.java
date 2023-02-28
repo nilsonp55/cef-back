@@ -556,17 +556,43 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 			puntoBancoOrigen = puntoFondoDestino;
 		}
 		
+		Integer valorComisionBR = 0;
+		String cobroBR = this.consultarValorCobroBR(contenido, detalleArchivo,Constantes.CAMPO_DETALLE_COBROBR);
+		if (!Objects.isNull(cobroBR) && "SI".equals(cobroBR) ) {
+			// consultar parametro que tiene valor de la comisi�n
+			valorComisionBR = dominioService.valorNumericoDominio(Constantes.DOMINIO_COMISIONES, Dominios.COMISION_1).intValue();
+		}
+		
 		operacionesProgramadasDTO = OperacionesProgramadasDTO.builder()
 				.codigoFondoTDV(puntoFondoDestino.getCodigoPunto()).entradaSalida(Constantes.VALOR_ENTRADA)
 				.codigoPuntoOrigen(puntoBancoOrigen.getCodigoPunto())
 				.codigoPuntoDestino(puntoFondoDestino.getCodigoPunto())
-				.idArchivoCargado(Math.toIntExact(archivo.getIdArchivo())).build();
+				.idArchivoCargado(Math.toIntExact(archivo.getIdArchivo())).comisionBR(valorComisionBR).build();
 		
 		operacionesProgramadasDTO.setTipoOperacion(Dominios.TIPO_OPERA_RETIRO);
 		var operacionProgramadaEnt = operacionesProgramadasRepository.save(OperacionesProgramadasDTO.CONVERTER_ENTITY
 				.apply(this.completarOperacionesProgramadas(operacionesProgramadasDTO, contenido, detalleArchivo)));
 		return OperacionesProgramadasDTO.CONVERTER_DTO.apply(operacionProgramadaEnt);
 	}
+	
+	/**
+     * Metodo encargado de realizar leer del detalle si se cobra o no comicion BanRep.
+     * 
+     * @param contenido
+     * @param detalle
+     * @return PuntosDTO
+     * @author rparra
+     */
+    private String consultarValorCobroBR(String[] contenido, List<DetallesDefinicionArchivoDTO> detallesArchivo,
+            String nombreCampo) {
+        DetallesDefinicionArchivoDTO detalle = detallesArchivo.stream()
+                .filter(deta -> deta.getNombreCampo().toUpperCase().equals(nombreCampo)).findFirst().orElse(null);
+        if (!Objects.isNull(detalle)) {
+            String cobroBR = contenido[detalle.getId().getNumeroCampo() - 1].trim();
+            return cobroBR;
+        }
+        return null;
+    }
 
 	/**
 	 * Funcion encargada de realizar la logica de la operacion venta
@@ -648,8 +674,8 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 				
 				OperacionesProgramadasDTO operacionesProgramadasEntradaDTO = OperacionesProgramadasDTO.builder()
 						.codigoFondoTDV(puntoFondoDestino.getCodigoPunto()).entradaSalida(Constantes.VALOR_ENTRADA)
-						.codigoPuntoOrigen(puntoFondoDestino.getCodigoPunto())
-						.codigoPuntoDestino(puntoFondoOrigen.getCodigoPunto())
+						.codigoPuntoOrigen(puntoFondoOrigen.getCodigoPunto())
+						.codigoPuntoDestino(puntoFondoDestino.getCodigoPunto())
 						.idArchivoCargado(Math.toIntExact(archivo.getIdArchivo())).build();
 				
 				OperacionesProgramadas operacionProgramadaEntradaEnt = operacionesProgramadasRepository.save(OperacionesProgramadasDTO.CONVERTER_ENTITY
@@ -668,39 +694,6 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
 	}
 
-	/**
-	 * Metodo encargado de realizar la logica para la operacion venta compra
-	 * 
-	 * @param contenido
-	 * @param detalleArchivo
-	 * @param archivo
-	 * @return OperacionesProgramadasDTO
-	 * @author duvan.naranjo
-	 */
-	private OperacionesProgramadasDTO generarOperacionVentaCompra(String[] contenido,
-			List<DetallesDefinicionArchivoDTO> detalleArchivo, ArchivosCargadosDTO archivo) {
-
-		OperacionesProgramadasDTO operacionesProgramadasDTO = null;
-		PuntosDTO puntoFondoDestino = this.consultarPuntoPorDetalle(contenido, detalleArchivo,
-				Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO);
-		BancosDTO bancoDestino = this.consultarBancoPorDetalle(contenido, detalleArchivo,
-				Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_DESTINO);
-
-		if (!Objects.isNull(puntoFondoDestino)
-				&& !puntoFondoDestino.getTipoPunto().toUpperCase().trim().equals(Constantes.PUNTO_FONDO)) {
-			throw new NegocioException(ApiResponseCode.ERROR_NO_ES_FONDO.getCode(),
-					ApiResponseCode.ERROR_NO_ES_FONDO.getDescription(),
-					ApiResponseCode.ERROR_NO_ES_FONDO.getHttpStatus());
-		}
-
-		operacionesProgramadasDTO = OperacionesProgramadasDTO.builder()
-				.codigoFondoTDV(puntoFondoDestino.getCodigoPunto()).entradaSalida(Constantes.VALOR_ENTRADA)
-				.codigoPuntoOrigen(bancoDestino.getCodigoPunto()).codigoPuntoDestino(puntoFondoDestino.getCodigoPunto())
-				.idArchivoCargado(Math.toIntExact(archivo.getIdArchivo())).build();
-
-		return this.completarOperacionesProgramadas(operacionesProgramadasDTO, contenido, detalleArchivo);
-
-	}
 
 	/**
 	 * Funcion encargada de realizar la logica de la operacion cambio
@@ -983,18 +976,12 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 					ApiResponseCode.ERROR_NO_ES_FONDO.getHttpStatus());
 		}
 		
-		int codigoPuntoOrigen ;
-		int codigoPuntoDestino;
+		int codigoPuntoOrigen;
+		int codigoPuntoDestino = puntoFondoDestino.getCodigoPunto();
 		if(esAval) {
-			
-			codigoPuntoOrigen = puntoFondoDestino.getCodigoPunto();
-			codigoPuntoDestino = puntoFondoOrigen.getCodigoPunto();
-		}else {
-			puntoFondoOrigen = puntoFondoDestino;
-			codigoPuntoDestino = puntoFondoDestino.getCodigoPunto();
-			
-			
-			
+			codigoPuntoOrigen = puntoFondoOrigen.getCodigoPunto();
+		}
+		else {
 			PuntosDTO puntoEntidadOrigen = this.consultarPuntoPorDetalle(contenido, detallesArchivo,
 					Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_ORIGEN);
 			if(!Objects.isNull(puntoEntidadOrigen)) {
@@ -1006,6 +993,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 						ApiResponseCode.ERROR_BANCO_EXTERNO_NO_ENCONTRADO.getHttpStatus());
 			}
 		}
+		puntoFondoOrigen = puntoFondoDestino;
 
 		operacionesProgramadasDTO = OperacionesProgramadasDTO.builder()
 				.codigoFondoTDV(puntoFondoOrigen.getCodigoPunto())
@@ -1103,8 +1091,14 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		
 		
 		operacionesProgramadasDTO.setTipoOperacion(this.obtenerTipoOperacion(tipoOperacion));
-		
 		operacionesProgramadasDTO.setValorTotal(valorTotal);
+		
+		Integer comisionBR = operacionesProgramadasDTO.getComisionBR();
+		if (!Objects.isNull(comisionBR)) {
+			operacionesProgramadasDTO.setComisionBR( (int) ((valorTotal * comisionBR) / 10000) );
+		}else {
+			operacionesProgramadasDTO.setComisionBR(0);
+		}
 		operacionesProgramadasDTO.setIdNegociacion(idNegoc);
 		operacionesProgramadasDTO.setTasaNegociacion(tasaNegociacion);
 		operacionesProgramadasDTO.setEstadoOperacion(dominioService.valorTextoDominio(Constantes.DOMINIO_ESTADOS_OPERACION,Dominios.ESTADOS_OPERA_PROGRAMADO));
@@ -1379,7 +1373,8 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 										Constantes.CAMPO_DETALLE_ARCHIVO_TRANSPORTADORA);
 				String ciudad = determinarCiudad(contenido, detalleArchivo, 
 										Constantes.CAMPO_DETALLE_ARCHIVO_CIUDAD);
-				ciudad = ciudadesRepository.findByNombreCiudadFiserv(ciudad).getNombreCiudad();
+				
+				ciudad = ciudadService.getCiudadPorNombreCiudadFiserv(ciudad).getNombreCiudad();
 				int codigoCompensacion = determinarCodigoCompensacion(contenido, detalleArchivo);
 				
 				Fondos codigoFondoTDV = fondosService.getCodigoFondo(transportadora, codigoCompensacion, ciudad);
@@ -1707,6 +1702,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		}
 		return tipoOperacion;
 	}
+	
 
 	/**
 	 * Metodo encargado de crear el detalle de las operaciones programadas

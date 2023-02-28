@@ -91,8 +91,13 @@ public class FondosServiceImpl implements IFondosService {
 
 	@Override
 	public Fondos getCodigoFondoCertificacion(String codigoTransportadora, String numeroNit, String codigoCiudad){
-
-		return fondosRepository.obtenerCodigoFondoTDV2(codigoTransportadora, numeroNit, codigoCiudad);
+		try {
+			return fondosRepository.obtenerCodigoFondoTDV2(codigoTransportadora, numeroNit, codigoCiudad);
+		} catch (Exception e) {
+			throw new NegocioException(ApiResponseCode.ERROR_MAS_DE_UN_FONDO.getCode(),
+					ApiResponseCode.ERROR_MAS_DE_UN_FONDO.getDescription()+ " con codigoTransportadora = "+codigoTransportadora+", numeroNit = "+numeroNit+", codigoCiudad = "+codigoCiudad,
+					ApiResponseCode.ERROR_MAS_DE_UN_FONDO.getHttpStatus());
+		} 
 	}
 	
 	/**

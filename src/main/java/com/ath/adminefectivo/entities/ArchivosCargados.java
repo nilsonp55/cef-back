@@ -13,9 +13,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -99,6 +101,7 @@ public class ArchivosCargados {
 	private FallasArchivo fallasArchivos;
 	
 	@OneToMany(mappedBy = "archivosCargados", cascade = CascadeType.PERSIST)
+	@OrderBy("CONSECUTIVO_REGISTRO ASC")
 	private List<RegistrosCargados> registrosCargados;
 	
 }

@@ -2,6 +2,7 @@ package com.ath.adminefectivo.service.impl;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -21,11 +22,13 @@ import org.springframework.stereotype.Service;
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
+import com.ath.adminefectivo.encript.AES256;
 import com.ath.adminefectivo.encript.RSA;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.service.IDominioService;
 import com.ath.adminefectivo.service.IEncriptarService;
 import com.ath.adminefectivo.service.IParametroService;
+import com.ath.adminefectivo.utils.s3Utils;
 
 
 @Service
@@ -37,6 +40,9 @@ public class EncriptarServiceImpl implements IEncriptarService {
 	
 	@Autowired
 	IParametroService parametroService;
+	
+	@Autowired
+	s3Utils s3utils;
 	
 	
 	/**
@@ -51,7 +57,7 @@ public class EncriptarServiceImpl implements IEncriptarService {
 
 			String bfRead;
 			String textoEncriptado = "";
-			RSA rsa = new RSA(parametroService);
+			RSA rsa = new RSA(parametroService, s3utils);
 	        try{
 	        	while ((bfRead = bf.readLine()) != null) {
 					if(!textoEncriptado.equals("")) {
@@ -64,7 +70,9 @@ public class EncriptarServiceImpl implements IEncriptarService {
 	        }catch (Exception ingored){}
 			
 		} catch (Exception e) {
-			System.out.println("Archivo con ruta "+path+nombreArchivo +" no existe. " +e);
+			throw new NegocioException(ApiResponseCode.ERROR_ARCHIVOS_NO_EXISTE_BD.getCode(),
+					ApiResponseCode.ERROR_ARCHIVOS_NO_EXISTE_BD.getDescription(),
+					ApiResponseCode.ERROR_ARCHIVOS_NO_EXISTE_BD.getHttpStatus());
 		}
 		
 		return "Se encripto el archivo exitosamente";
@@ -79,14 +87,10 @@ public class EncriptarServiceImpl implements IEncriptarService {
 			BufferedReader bf = new BufferedReader(new FileReader(path+nombreArchivo));
 			String bfRead;
 			String textoDesencriptado;
-			RSA rsa = new RSA(parametroService);
+			RSA rsa = new RSA(parametroService, s3utils);
 			while ((bfRead = bf.readLine()) != null) {
 					textoDesencriptado = rsa.decrypt(bfRead);
 			}
-		} catch (BadPaddingException e) {
-			throw new NegocioException(ApiResponseCode.ERROR_DESENCRIPTANDO_CADENA.getCode(),
-					ApiResponseCode.ERROR_DESENCRIPTANDO_CADENA.getDescription()+ " - "+ e.getMessage(),
-					ApiResponseCode.ERROR_DESENCRIPTANDO_CADENA.getHttpStatus());
 		} catch (Exception e) {
 			throw new NegocioException(ApiResponseCode.ERROR_DESENCRIPTANDO_CADENA.getCode(),
 					ApiResponseCode.ERROR_DESENCRIPTANDO_CADENA.getDescription()+ " - "+ e.getMessage(),
@@ -117,7 +121,7 @@ public class EncriptarServiceImpl implements IEncriptarService {
 	 */
 	@Override
 	public String generarLlaves() {
-		RSA rsa = new RSA(parametroService);
+		RSA rsa = new RSA(parametroService, s3utils);
 		rsa.createKeys();
 		return "Se crearon las llaves de forma exitosa";
 	}
@@ -127,7 +131,7 @@ public class EncriptarServiceImpl implements IEncriptarService {
 		List<String[]> resultado = new ArrayList<>();
 		BufferedReader br = new BufferedReader(new InputStreamReader(archivo));
 		String textoEncriptado;
-		RSA rsa = new RSA(parametroService);
+		RSA rsa = new RSA(parametroService, s3utils);
 		
 		try {
 			while ((textoEncriptado = br.readLine()) != null) {
@@ -148,6 +152,7 @@ public class EncriptarServiceImpl implements IEncriptarService {
 		}
 		return null;
 	}
+	
 
 
 	

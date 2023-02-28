@@ -5,8 +5,9 @@ import java.util.Date;
 import java.util.List;
 
 import com.ath.adminefectivo.dto.RespuestaContableDTO;
+import com.ath.adminefectivo.dto.compuestos.RespuestaGenerarArchivoDTO;
 
 public interface IGenerarArchivoDelegate {
 
-	ByteArrayInputStream generarArchivo(Date fecha,String tipoContabilidad,int codBanco);
+	RespuestaGenerarArchivoDTO generarArchivo(Date fecha,String tipoContabilidad,int codBanco);
 }

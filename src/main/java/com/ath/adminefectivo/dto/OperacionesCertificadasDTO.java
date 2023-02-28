@@ -70,6 +70,8 @@ public class OperacionesCertificadasDTO {
 	
 	private String tipoPuntoDestino;
 	
+	private String codigoPropioTDV;
+	
 	/**
 	 * Funcion que convierte el archivo DTO OperacionesCertificadasDTO a Entity OperacionesCertificadas
 	 * @author cesar.castano

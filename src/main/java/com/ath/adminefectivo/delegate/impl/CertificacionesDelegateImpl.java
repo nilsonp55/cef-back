@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
@@ -15,10 +16,12 @@ import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.ArchivosCargados;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.ArchivosCargadosRepository;
+import com.ath.adminefectivo.service.IAuditoriaProcesosService;
 import com.ath.adminefectivo.service.IConciliacionOperacionesService;
 import com.ath.adminefectivo.service.ILogProcesoDiarioService;
 import com.ath.adminefectivo.service.IOperacionesCertificadasService;
 import com.ath.adminefectivo.service.IParametroService;
+import com.ath.adminefectivo.utils.UtilsObjects;
 
 @Service
 public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
@@ -37,6 +40,9 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 
 	@Autowired
 	IConciliacionOperacionesService conciliacionOperacionesService;
+	
+	@Autowired
+	IAuditoriaProcesosService auditoriaProcesosService;
 
 	/**
 	 * {@inheritDoc}
@@ -45,10 +51,15 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 	public Boolean procesarCertificaciones(String agrupador) {
 
 		Date fechaProceso = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
+		auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION, 
+				fechaProceso, Constantes.ESTADO_PROCESO_INICIO, Constantes.ESTADO_PROCESO_INICIO);
 		
 		List<ArchivosCargados> archivosCargados = archivosCargadosRepository
 				.getRegistrosCargadosSinProcesarDeHoy(agrupador, fechaProceso, Constantes.ESTADO_CARGUE_VALIDO);
 		if (archivosCargados.isEmpty()) {
+			auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION, 
+					fechaProceso, Constantes.ESTADO_PROCESO_ERROR, 
+					ApiResponseCode.ERROR_ARCHICOS_CARGADOS_NO_ENCONTRADO.getDescription());
 			throw new NegocioException(ApiResponseCode.ERROR_ARCHICOS_CARGADOS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_ARCHICOS_CARGADOS_NO_ENCONTRADO.getDescription(),
 					ApiResponseCode.ERROR_ARCHICOS_CARGADOS_NO_ENCONTRADO.getHttpStatus());
@@ -56,11 +67,14 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 			validarLogProcesoDiario();
 			validarExistenciaArchivos(archivosCargados);
 			operacionesCertificadasService.procesarArchivosCertificaciones(archivosCargados);
+			
 			// siguiente l�nea, incluye conciliaci�n autom�tica (en procedimientos de BD)
-			operacionesCertificadasService.validarNoConciliables(archivosCargados);
-			conciliacionOperacionesService.conciliacionAutomatica();
+			operacionesCertificadasService.validarNoConciliables();
 			
 			cambiarEstadoLogProcesoDiario();
+			auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION, 
+					fechaProceso, Constantes.ESTADO_PROCESO_PROCESADO, 
+					Constantes.ESTRUCTURA_OK);
 			return true;
 		}
 	}
@@ -72,7 +86,9 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 	 */
 	private void validarLogProcesoDiario() {
 		var log = logProcesoDiarioService.obtenerEntidadLogProcesoDiario(Dominios.CODIGO_PROCESO_LOG_DEFINITIVO);
-		if (!log.getEstadoProceso().equals(Dominios.ESTADO_PROCESO_DIA_COMPLETO)) {
+		if (!log.getEstadoProceso().equals(Dominios.ESTADO_PROCESO_DIA_COMPLETO)) {			
+			UtilsObjects.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+					ApiResponseCode.ERROR_PROCESO_SIGUE_ABIERTO.getDescription());
 			throw new NegocioException(ApiResponseCode.ERROR_PROCESO_SIGUE_ABIERTO.getCode(),
 					ApiResponseCode.ERROR_PROCESO_SIGUE_ABIERTO.getDescription(),
 					ApiResponseCode.ERROR_PROCESO_SIGUE_ABIERTO.getHttpStatus());
@@ -81,6 +97,8 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 		var logConciliacion = logProcesoDiarioService
 				.obtenerEntidadLogProcesoDiario(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION);
 		if (logConciliacion.getEstadoProceso().equals(Dominios.ESTADO_PROCESO_DIA_COMPLETO)) {
+			UtilsObjects.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+					ApiResponseCode.ERROR_LOGPROCESODIARIO_NO_ENCONTRADO.getDescription());
 			throw new NegocioException(ApiResponseCode.ERROR_LOGPROCESODIARIO_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_LOGPROCESODIARIO_NO_ENCONTRADO.getDescription(),
 					ApiResponseCode.ERROR_LOGPROCESODIARIO_NO_ENCONTRADO.getHttpStatus());
@@ -97,6 +115,9 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 
 		Integer valor = parametroService.valorParametroEntero(Constantes.NUMERO_MINIMO_ARCHIVOS_PARA_CIERRE);
 		if (archivosCargados.size() < valor) {
+			UtilsObjects.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+					ApiResponseCode.ERROR_NO_CUMPLE_MINIMO_ARCHIVOS_CARGADOS_CERTIFICACION.getDescription());
+			
 			throw new NegocioException(ApiResponseCode.ERROR_NO_CUMPLE_MINIMO_ARCHIVOS_CARGADOS_CERTIFICACION.getCode(),
 					ApiResponseCode.ERROR_NO_CUMPLE_MINIMO_ARCHIVOS_CARGADOS_CERTIFICACION.getDescription(),
 					ApiResponseCode.ERROR_NO_CUMPLE_MINIMO_ARCHIVOS_CARGADOS_CERTIFICACION.getHttpStatus());
@@ -112,6 +133,8 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 		var logProcesoDiario = logProcesoDiarioService
 				.obtenerEntidadLogProcesoDiario(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION);
 		if (Objects.isNull(logProcesoDiario)) {
+			UtilsObjects.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+					ApiResponseCode.ERROR_CODIGO_PROCESO_NO_EXISTE.getDescription());
 			throw new NegocioException(ApiResponseCode.ERROR_CODIGO_PROCESO_NO_EXISTE.getCode(),
 					ApiResponseCode.ERROR_CODIGO_PROCESO_NO_EXISTE.getDescription(),
 					ApiResponseCode.ERROR_CODIGO_PROCESO_NO_EXISTE.getHttpStatus());

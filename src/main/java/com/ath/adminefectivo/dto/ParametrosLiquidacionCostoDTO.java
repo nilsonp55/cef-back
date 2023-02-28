@@ -73,10 +73,11 @@ public class ParametrosLiquidacionCostoDTO {
 	
 	private Double valorTotal;
 	
+	private String entradaSalida;
+	
 	@JsonIgnore
 	private List<DetallesLiquidacionCosto> detallesLiquidacionCosto;
 	
-	@JsonIgnore
 	private ValorLiquidadoDTO valoresLiquidadosDTO;
 	
 	private String nombreBanco;
@@ -86,6 +87,12 @@ public class ParametrosLiquidacionCostoDTO {
 	private String nombrePuntoOrigen;
 	
 	private String nombrePuntoDestino;
+	
+	private String nombreCiudadPuntoOrigen;
+	
+	private String nombreCiudadPuntoDestino;
+	
+	private Date fechaConcilia;
 	
 	/**
 	 * Funcion que convierte el archivo ParametrosLiquidacionCostoDTO a Entity ParametrosLiquidacionCosto

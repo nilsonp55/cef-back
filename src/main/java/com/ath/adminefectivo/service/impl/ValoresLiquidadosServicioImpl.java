@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
+import com.ath.adminefectivo.dto.ParametrosLiquidacionCostoDTO;
+import com.ath.adminefectivo.dto.ValorLiquidadoDTO;
 import com.ath.adminefectivo.dto.ValoresLiquidadosDTO;
 import com.ath.adminefectivo.dto.compuestos.RespuestaLiquidarCostosDTO;
 import com.ath.adminefectivo.dto.compuestos.costosCharterDTO;
@@ -18,13 +20,17 @@ import com.ath.adminefectivo.entities.LogProcesoDiario;
 import com.ath.adminefectivo.entities.Puntos;
 import com.ath.adminefectivo.entities.ValoresLiquidados;
 import com.ath.adminefectivo.exception.NegocioException;
+import com.ath.adminefectivo.repositories.IParametrosLiquidacionCostosRepository;
 import com.ath.adminefectivo.repositories.IValoresLiquidadosRepository;
 import com.ath.adminefectivo.repositories.LogProcesoDiarioRepository;
+import com.ath.adminefectivo.service.IAuditoriaProcesosService;
 import com.ath.adminefectivo.service.ICiudadesService;
 import com.ath.adminefectivo.service.IDominioService;
+import com.ath.adminefectivo.service.IParametrosLiquidacionCostosService;
 import com.ath.adminefectivo.service.IPuntosService;
 import com.ath.adminefectivo.service.ITransportadorasService;
 import com.ath.adminefectivo.service.IValoresLiquidadosService;
+import com.ath.adminefectivo.utils.UtilsObjects;
 
 @Service
 public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService {
@@ -49,6 +55,12 @@ public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService 
 
 	@Autowired
 	ICiudadesService ciudadesService;
+	
+	@Autowired
+	IParametrosLiquidacionCostosService parametrosLiquidacionCostosService;
+	
+	@Autowired
+	IAuditoriaProcesosService auditoriaProcesosService;
 
 	/**
 	 * {@inheritDoc}
@@ -57,13 +69,15 @@ public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService 
 	public Boolean ActualizaCostosFletesCharter(costosCharterDTO costos) {
 		Boolean estado = false;
 		try {
-			ValoresLiquidados valores = valoresLiquidadosRepository.findByIdLiquidacion(costos.getIdLiquidacion());
+			ValoresLiquidados valores = valoresLiquidadosRepository.consultarPorIdLiquidacion(costos.getIdLiquidacion());
 			if (Objects.isNull(valores)) {
 				throw new NegocioException(ApiResponseCode.ERROR_VALORES_LIQUIDADOS_NO_ENCONTRADO.getCode(),
 						ApiResponseCode.ERROR_VALORES_LIQUIDADOS_NO_ENCONTRADO.getDescription(),
 						ApiResponseCode.ERROR_VALORES_LIQUIDADOS_NO_ENCONTRADO.getHttpStatus());
 			} else {
-				valores.setIdLiquidacion(costos.getIdLiquidacion());
+				
+				//valores.setIdLiquidacion(costos.getIdLiquidacion());
+				valores.setParametrosLiquidacionCosto(parametrosLiquidacionCostosService.getParametrosLiquidacionCostosById(costos.getIdLiquidacion()));
 				valores.setCostoCharter(costos.getCostosCharter());
 				valoresLiquidadosRepository.save(valores);
 			}
@@ -86,6 +100,8 @@ public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService 
 
 		// Se valida que la conciliacion este cerrada para poder ejecutar el package
 		List<LogProcesoDiario> logProcesoDiarios = logProcesoDiarioRepository.findByFechaCreacion(fecha);
+		auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_LIQUIDACION, 
+				fecha, Constantes.ESTADO_PROCESO_INICIO, Constantes.ESTADO_PROCESO_PROCESO);
 
 		var procesoDiarioConciliacionCerrad = false;
 		var procesoDiarioLiquidacionPendiente = false;
@@ -104,30 +120,37 @@ public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService 
 		;
 		if (procesoDiarioConciliacionCerrad && procesoDiarioLiquidacionPendiente) {
 			try {
-				
-				
-
 				// Se ejecutan procedimientos
-				System.out.println("INICIA EL PROCESO DE LLAMADO ");
 				String parametro = valoresLiquidadosRepository.armar_parametros_liquida(fecha);
-				System.out.println("CONSULTA DE PARAMETRO A armar_parametros_liquida(fecha) = "+parametro);
+				
 				if (Integer.parseInt(parametro) > 0) {
+					auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_LIQUIDACION, 
+							fecha, Constantes.ESTADO_PROCESO_PROCESO, "Terminó armado de parámetros de liquidación");
+					
 					String resultado = valoresLiquidadosRepository.liquidar_costos(Integer.parseInt(parametro));
-					System.out.println("CONSULTA DE PARAMETRO A liquidar_costos(Integer.parseInt(parametro)) = "+resultado);
 
 				} else {
+					UtilsObjects.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_LIQUIDACION,
+							ApiResponseCode.ERROR_PROCESO_CONSTO_VALORES_LIQUIDADOS_SIN_PARAM.getDescription());
 					throw new NegocioException(
 							ApiResponseCode.ERROR_PROCESO_CONSTO_VALORES_LIQUIDADOS_SIN_PARAM.getCode(),
 							ApiResponseCode.ERROR_PROCESO_CONSTO_VALORES_LIQUIDADOS_SIN_PARAM.getDescription(),
 							ApiResponseCode.ERROR_PROCESO_CONSTO_VALORES_LIQUIDADOS_SIN_PARAM.getHttpStatus());
 				}
+				auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_LIQUIDACION, 
+						fecha, Constantes.ESTADO_PROCESO_PROCESADO, Constantes.ESTRUCTURA_OK);
 				return "Se proceso con exito";
 			} catch (Exception e) {
+				UtilsObjects.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_LIQUIDACION,
+						ApiResponseCode.ERROR_PROCESO_CONSTO_VALORES_LIQUIDADOS.getDescription());
+				
 				throw new NegocioException(ApiResponseCode.ERROR_PROCESO_CONSTO_VALORES_LIQUIDADOS.getCode(),
 						ApiResponseCode.ERROR_PROCESO_CONSTO_VALORES_LIQUIDADOS.getDescription() + "  " + e,
 						ApiResponseCode.ERROR_PROCESO_CONSTO_VALORES_LIQUIDADOS.getHttpStatus());
 			}
 		} else {
+			UtilsObjects.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_LIQUIDACION,
+					ApiResponseCode.ERROR_PROCESO_CONSTO_VALORES_LIQUIDADOS.getDescription());
 			throw new NegocioException(
 					ApiResponseCode.ERROR_PROCESO_VALIDACION_CIERRE_CONSTO_VALORES_LIQUIDADOS.getCode(),
 					ApiResponseCode.ERROR_PROCESO_VALIDACION_CIERRE_CONSTO_VALORES_LIQUIDADOS.getDescription(),
@@ -141,93 +164,80 @@ public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService 
 	 */
 	@Override
 	public ValoresLiquidadosDTO consultarLiquidacionCostos() {
-		int idSeq = valoresLiquidadosRepository.obtenerUltimoIdSeq();
-		List<ValoresLiquidados> valoresLiquidados = valoresLiquidadosRepository
-				.findByIdSeqGrupo(idSeq);
-		System.out.println("CONSULTA DE PARAMETRO A findByIdSeqGrupo(Integer.parseInt(parametro)) = "+valoresLiquidados.size());
-		List<RespuestaLiquidarCostosDTO> respuestaLiquidarCostosDTO = this.generarRespuestaLiquidacionCostos(valoresLiquidados);
+			
+		int idSeq = 0;
+
+		Date fechaActual = parametroServiceImpl.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
+		List<ParametrosLiquidacionCostoDTO> respuestaLiquidarCostosDTO = this.generarRespuestaLiquidacionCostos(fechaActual);
 		ValoresLiquidadosDTO valoresLiquidadosDTO = new ValoresLiquidadosDTO();
 		// Sacamos los dos cumero de la cadena de texto
-		Integer cantidad1 = valoresLiquidadosRepository.consultarCantidadValoresLiquidadosByIdSeqGrupo(idSeq);
-		Integer cantidad2 = valoresLiquidadosRepository.consultarCantidadErroresValoresLiquidadosByIdSeqGrupo(idSeq);
-
-		System.out.println("TERMINO FOR CON CHAR AT cantidad1 "+cantidad1 +" cantidad2 "+cantidad2);
 		
+		
+		Integer cantidad1 = 0;
+		Integer cantidad2 = 0;
+		if(!respuestaLiquidarCostosDTO.isEmpty()) {
+			idSeq = respuestaLiquidarCostosDTO.get(0).getSeqGrupo();
+			cantidad1 = valoresLiquidadosRepository.consultarCantidadValoresLiquidadosByIdSeqGrupo(idSeq);
+			cantidad2 = valoresLiquidadosRepository.consultarCantidadErroresValoresLiquidadosByIdSeqGrupo(idSeq);
+		}
+			
 		valoresLiquidadosDTO.setRespuestaLiquidarCostos(respuestaLiquidarCostosDTO);
 		valoresLiquidadosDTO.setCantidadOperacionesLiquidadas(cantidad1);
 		valoresLiquidadosDTO.setRegistrosConError(cantidad2);
-		System.out.println("TERMINO DE SETEAR EL DTO valoresLiquidadosDTO ");
+		
 		return valoresLiquidadosDTO;
 		
 	}
 	
 	/**
-	 * 
+	 * Metodo encargado de realizar la respuesta de la liquidacion de costos
+	 * que es el  DTO el cual se muestra en la tabla valores liquidados consulta
 	 *
 	 * @param valoresLiquidados
-	 * @return
+	 * @return List<ParametrosLiquidacionCostoDTO>
+	 * @author duvan.naranjo
 	 */
 
-	private List<RespuestaLiquidarCostosDTO> generarRespuestaLiquidacionCostos(
-			List<ValoresLiquidados> valoresLiquidados) {
-		List<RespuestaLiquidarCostosDTO> respuestaLiquidarCostosDTO = new ArrayList<>();
-		System.out.println("INICIA FOREACH Y SETEO EN generarRespuestaLiquidacionCostos");
-		valoresLiquidados.forEach(valorLiquidado -> {
-			RespuestaLiquidarCostosDTO liquidarCostosDTO = new RespuestaLiquidarCostosDTO();
-			liquidarCostosDTO.setFechaEjecucion(valorLiquidado.getParametrosLiquidacionCosto().getFechaEjecucion());
-			liquidarCostosDTO.setCodigoBanco(valorLiquidado.getParametrosLiquidacionCosto().getCodigoBanco());
-			liquidarCostosDTO.setCodigoTdv(valorLiquidado.getParametrosLiquidacionCosto().getCodigoTdv());
-			liquidarCostosDTO.setTipoOperacion(valorLiquidado.getParametrosLiquidacionCosto().getTipoOperacion());
-			liquidarCostosDTO.setTipoServicio(valorLiquidado.getParametrosLiquidacionCosto().getTipoServicio());
-			liquidarCostosDTO.setPuntoOrigen(valorLiquidado.getParametrosLiquidacionCosto().getPuntoOrigen());
-			liquidarCostosDTO.setPuntoDestino(valorLiquidado.getParametrosLiquidacionCosto().getPuntoDestino());
-			liquidarCostosDTO.setEscala(valorLiquidado.getParametrosLiquidacionCosto().getEscala());
-			liquidarCostosDTO.setNumeroFajos(valorLiquidado.getParametrosLiquidacionCosto().getNumeroFajos());
-			liquidarCostosDTO.setResiduoBilletes(valorLiquidado.getParametrosLiquidacionCosto().getResiduoBilletes());
-			liquidarCostosDTO.setNumeroBolsas(valorLiquidado.getParametrosLiquidacionCosto().getNumeroBolsas());
-			liquidarCostosDTO.setResiduoMonedas(valorLiquidado.getParametrosLiquidacionCosto().getResiduoMonedas());
-			liquidarCostosDTO.setValorTotal(valorLiquidado.getParametrosLiquidacionCosto().getValorTotal());
-			liquidarCostosDTO.setNumeroParadas(valorLiquidado.getParametrosLiquidacionCosto().getNumeroParadas());
-			liquidarCostosDTO.setMilajeParadas(null);
-			liquidarCostosDTO.setMilajePorRuteo(valorLiquidado.getMilajePorRuteo());
-			liquidarCostosDTO.setMilajeVerificacion(valorLiquidado.getMilajeVerificacion());
-			liquidarCostosDTO.setCostoRuteoVerificacion(null);
-			liquidarCostosDTO.setClasificacionFajado(valorLiquidado.getClasificacionFajado());
-			liquidarCostosDTO.setClasificacionNoFajado(valorLiquidado.getClasificacionNoFajado());
-			liquidarCostosDTO.setBilleteResiduo(valorLiquidado.getParametrosLiquidacionCosto().getResiduoBilletes());
-			liquidarCostosDTO.setClasificacionMonedas(null);
-			liquidarCostosDTO.setModenaResiduo(valorLiquidado.getParametrosLiquidacionCosto().getResiduoMonedas());
-			liquidarCostosDTO.setBilleteResiduo(valorLiquidado.getParametrosLiquidacionCosto().getResiduoBilletes());
-			liquidarCostosDTO.setCostoEmisario(valorLiquidado.getCostoEmisario());
-			liquidarCostosDTO.setCostoPaqueteo(valorLiquidado.getCostoPaqueteo());
-			liquidarCostosDTO.setTasaAeroportuaria(valorLiquidado.getTasaAeroportuaria());
-			liquidarCostosDTO.setCostoCharter(valorLiquidado.getCostoCharter());
-			liquidarCostosDTO.setIdSeqGrupo(valorLiquidado.getIdSeqGrupo());
-
-			liquidarCostosDTO
-					.setFechaLiquidacion(parametroServiceImpl.valorParametroDate(Constantes.FECHA_DIA_PROCESO));
-			liquidarCostosDTO.setNombreBancoAval(puntosService.getNombrePunto(
+	private List<ParametrosLiquidacionCostoDTO> generarRespuestaLiquidacionCostos(
+			Date fechaSistema) {
+		System.out.println(fechaSistema);
+		List<ParametrosLiquidacionCostoDTO> respuest = parametrosLiquidacionCostosService.consultarParametrosLiquidacionCostos(fechaSistema);
+		
+		respuest.forEach(valorLiquidado -> {
+			valorLiquidado.setNombreBanco(puntosService.getNombrePunto(
 					dominioService.valorTextoDominio(Constantes.DOMINIO_TIPOS_PUNTO, Dominios.TIPOS_PUNTO_BANCO),
-					liquidarCostosDTO.getCodigoBanco()));
-			liquidarCostosDTO
-					.setNombreTdv(transportadorasService.getNombreTransportadora(liquidarCostosDTO.getCodigoTdv()));
+					valorLiquidado.getCodigoBanco()));
+			
+			valorLiquidado
+					.setNombreTdv(transportadorasService.getNombreTransportadora(valorLiquidado.getCodigoTdv()));
 
-			Puntos puntoOrigen = puntosService.getPuntoById(liquidarCostosDTO.getPuntoOrigen());
+			Puntos puntoOrigen = puntosService.getPuntoById(valorLiquidado.getPuntoOrigen());
 
-			liquidarCostosDTO.setNombrePuntoOrigen(puntoOrigen.getNombrePunto());
-			liquidarCostosDTO
+			valorLiquidado.setNombrePuntoOrigen(puntoOrigen.getNombrePunto());
+			valorLiquidado
 					.setNombreCiudadPuntoOrigen(ciudadesService.getNombreCiudad(puntoOrigen.getCodigoCiudad()));
 
-			Puntos puntoDestino = puntosService.getPuntoById(liquidarCostosDTO.getPuntoDestino());
+			Puntos puntoDestino = puntosService.getPuntoById(valorLiquidado.getPuntoDestino());
 
-			liquidarCostosDTO.setNombrePuntoDestino(puntoDestino.getNombrePunto());
-			liquidarCostosDTO
+			valorLiquidado.setNombrePuntoDestino(puntoDestino.getNombrePunto());
+			valorLiquidado
 					.setNombreCiudadPuntoDestino(ciudadesService.getNombreCiudad(puntoDestino.getCodigoCiudad()));
-			System.out.println("FINALIZA EL SETEO DE UN COSTO LIQUIDADO "+liquidarCostosDTO.getIdSeqGrupo());
-			respuestaLiquidarCostosDTO.add(liquidarCostosDTO);
-
 		});
-		System.out.println("FINALIZA FOR EACH CON CANTIDAD DE REGIISTROS = "+respuestaLiquidarCostosDTO.size());
-		return respuestaLiquidarCostosDTO;
+	
+		return respuest;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public ValorLiquidadoDTO consultarValoresLiquidadosPorIdLiquidacion(Long idLiquidacion) {
+		ValoresLiquidados valorLiquidado = valoresLiquidadosRepository.consultarPorIdLiquidacion(idLiquidacion);
+		if(!Objects.isNull(valorLiquidado)) {
+			return ValorLiquidadoDTO.CONVERTER_DTO.apply(valorLiquidado); 
+		}else {
+			return new ValorLiquidadoDTO();
+		}
+		
 	}
 }

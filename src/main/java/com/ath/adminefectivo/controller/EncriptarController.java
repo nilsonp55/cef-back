@@ -18,7 +18,11 @@ import com.ath.adminefectivo.dto.BancosDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
+import com.ath.adminefectivo.encript.AES256;
+import com.ath.adminefectivo.encript.RSA;
 import com.ath.adminefectivo.entities.Bancos;
+import com.ath.adminefectivo.service.IParametroService;
+import com.ath.adminefectivo.service.impl.ParametroServiceImpl;
 import com.querydsl.core.types.Predicate;
 
 /**
@@ -31,6 +35,9 @@ public class EncriptarController {
 
 	@Autowired
 	IEncriptarDelegate encriptarDelegate;
+	
+	@Autowired
+	IParametroService parametros;
 	
 	/**
 	 * Servicio encargado de encriptar un archivo 
@@ -58,6 +65,7 @@ public class EncriptarController {
 	@GetMapping(value = "${endpoints.Encriptar.generarLlaves}")
 	public ResponseEntity<ApiResponseADE<String>> generarLlaves() {
 		String consulta = encriptarDelegate.generarLlaves();
+
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));

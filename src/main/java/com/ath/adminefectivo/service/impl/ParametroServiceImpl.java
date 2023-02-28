@@ -11,10 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.constantes.Constantes;
+import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.ParametroDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.repositories.ParametroRepository;
+import com.ath.adminefectivo.service.IAuditoriaProcesosService;
 import com.ath.adminefectivo.service.IParametroService;
 import com.querydsl.core.types.Predicate;
 
@@ -23,6 +25,12 @@ public class ParametroServiceImpl implements IParametroService {
 
 	@Autowired
 	ParametroRepository parametroRepository;
+	
+	@Autowired
+	IAuditoriaProcesosService auditoriaProcesosService;
+	
+	@Autowired
+	IParametroService parametroService;
 
 	/**
 	 * {@inheritDoc}
@@ -63,11 +71,21 @@ public class ParametroServiceImpl implements IParametroService {
 			try {
 				return Integer.valueOf(parametroOpt.get().getValor());
 			} catch (NumberFormatException e) {
+				auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION, 
+						parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO), 
+						Constantes.ESTADO_PROCESO_PROCESADO, 
+						ApiResponseCode.ERROR_PARAMETRO_NO_ENTERO.getDescription());
+				
 				throw new AplicationException(ApiResponseCode.ERROR_PARAMETRO_NO_ENTERO.getCode(),
 						ApiResponseCode.ERROR_PARAMETRO_NO_ENTERO.getDescription(),
 						ApiResponseCode.ERROR_PARAMETRO_NO_ENTERO.getHttpStatus());
 			}
 		} else {
+			auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION, 
+					parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO), 
+					Constantes.ESTADO_PROCESO_PROCESADO, 
+					ApiResponseCode.ERROR_PARAMETRO_NOT_FOUND.getDescription());
+			
 			throw new AplicationException(ApiResponseCode.ERROR_PARAMETRO_NOT_FOUND.getCode(),
 					ApiResponseCode.ERROR_PARAMETRO_NOT_FOUND.getDescription(),
 					ApiResponseCode.ERROR_PARAMETRO_NOT_FOUND.getHttpStatus());

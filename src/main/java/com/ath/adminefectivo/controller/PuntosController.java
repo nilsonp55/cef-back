@@ -80,15 +80,4 @@ public class PuntosController {
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
-	
-	@PostMapping(value = "${endpoints.Puntos.actualizar}", consumes = MediaType.APPLICATION_JSON_VALUE, 
-			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponseADE<PuntosDTO>> actualizarPuntos(@RequestBody CreatePuntosDTO createPuntosDTO) {
-
-		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ApiResponseADE<PuntosDTO>(puntosDelegate.actualizarPunto(createPuntosDTO),
-						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
-						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
-
-	}
 }

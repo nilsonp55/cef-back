@@ -155,4 +155,24 @@ public class TransaccionesContablesServiceImpl implements ITransaccionesContable
 		return transaccionesContablesRepository.generarcomprobantecontable(fecha, tipoContabilidad);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<String> cierreContablebyBancoF1String(Date fecha, String tipoContabilidad,
+			int codBanco){
+		return transaccionesContablesRepository.cierreContablebyBancoF1String(fecha, tipoContabilidad, codBanco, 1);
+		
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<String> cierreContablebyBancoF2String(Date fecha, String tipoContabilidad,
+			int codBanco){
+		return transaccionesContablesRepository.cierreContablebyBancoF2String(fecha, tipoContabilidad, codBanco, 1);
+		
+	}
+	
 }

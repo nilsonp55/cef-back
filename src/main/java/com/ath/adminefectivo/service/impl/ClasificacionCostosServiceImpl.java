@@ -188,11 +188,11 @@ public class ClasificacionCostosServiceImpl implements IClasificacionCostosServi
 			if(!Objects.isNull(listadoTarifasOperacionDTO)) {
 				listadoTarifasOperacionDTO.forEach(tarifaOp -> {
 					if(tarifaOp.getComisionAplicar().equals(Constantes.COMISION_APLICAR_CLASIFICACION_DETERIORADO)) {
-						costoMensual.setValorLiquidadoRem(costoMensual.getCantidadAsignadaRem() * tarifaOp.getValorTarifa());
+						costoMensual.setValorLiquidadoRem(costoMensual.getCantidadAsignadaRem() * tarifaOp.getValorTarifa().intValue());
 					}else if(tarifaOp.getComisionAplicar().equals(Constantes.COMISION_APLICAR_CLASIFICACION_FAJADO)) {
-						costoMensual.setValorLiquidadoFajos(costoMensual.getCantidadAsignadaFajos() * tarifaOp.getValorTarifa());
+						costoMensual.setValorLiquidadoFajos(costoMensual.getCantidadAsignadaFajos() * tarifaOp.getValorTarifa().intValue());
 					}else if(tarifaOp.getComisionAplicar().equals(Constantes.COMISION_APLICAR_CLASIFICACION_MONEDA)) {
-						costoMensual.setValorLiquidadoBolsas(costoMensual.getCantidadAsignadaBolsas() * tarifaOp.getValorTarifa());
+						costoMensual.setValorLiquidadoBolsas((costoMensual.getCantidadAsignadaBolsas() * tarifaOp.getValorTarifa().intValue()));
 					}
 				});
 				costoMensual.setValorTotalLiquidacion(costoMensual.getValorLiquidadoRem() + 

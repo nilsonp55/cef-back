@@ -120,4 +120,7 @@ public class OperacionesCertificadas {
 	
 	@OneToMany(mappedBy = "operacionesCertificadas")
 	private List<ConciliacionServicios> conciliacionServicios;
+	
+	@Column(name = "CODIGO_PROPIO_TDV", length = 100)
+	private String codigoPropioTDV;
 }

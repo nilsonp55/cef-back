@@ -7,6 +7,7 @@ import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.CiudadesDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.Ciudades;
@@ -14,6 +15,7 @@ import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.ICiudadesRepository;
 import com.ath.adminefectivo.service.ICiudadesService;
+import com.ath.adminefectivo.utils.UtilsObjects;
 import com.querydsl.core.types.Predicate;
 
 @Service
@@ -82,6 +84,9 @@ public class CiudadServiceImpl implements ICiudadesService{
 		if (Objects.isNull(ciudadOpt)) {
 			Ciudades ciudadBrinks = ciudadesRepository.findByCodigoBrinks(Integer.parseInt(codigo));
 			if (Objects.isNull(ciudadBrinks)) {
+				UtilsObjects.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+						ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getDescription());
+				
 				throw new NegocioException(ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getCode(),
 						ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getDescription() + "Ciudad con codigoDane o CodigoBrinks = "+codigo+" No existe. ",
 						ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getHttpStatus());
@@ -91,9 +96,19 @@ public class CiudadServiceImpl implements ICiudadesService{
 		} else {
 			return CiudadesDTO.CONVERTER_DTO.apply(ciudadOpt);
 		}
+	}
 		
-		
-		
-		
+		@Override
+		public CiudadesDTO getCiudadPorNombreCiudadFiserv(String nombreCiudad) {
+			Ciudades ciudadOpt = ciudadesRepository.findByNombreCiudadFiserv(nombreCiudad);
+			
+			if (Objects.isNull(ciudadOpt)) {
+					throw new NegocioException(ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getCode(),
+							ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getDescription() + "Ciudad con nombreCiudad = "+nombreCiudad+" No existe. ",
+							ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getHttpStatus());
+				
+			} else {
+				return CiudadesDTO.CONVERTER_DTO.apply(ciudadOpt);
+			}
 	}
 }
