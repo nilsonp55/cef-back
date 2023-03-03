@@ -104,7 +104,6 @@ public class s3Utils {
 	 * @return
 	 */
 	public List<String> getObjectsFromPathS3(String path) {
-//		conexionS3(bucketName);
 		ListObjectsV2Request req = new ListObjectsV2Request().withBucketName(bucketName).withPrefix(path)
 				.withDelimiter("/");
 		ListObjectsV2Result listing = s3.listObjectsV2(req);
@@ -134,7 +133,6 @@ public class s3Utils {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		byte[] buffer = new byte[1024];
 		int len;
-//		conexionS3(bucketName);
 		S3Object object;
 		try {
 			object = s3.getObject(bucketName, key);
@@ -170,7 +168,6 @@ public class s3Utils {
 	 */
 	public Boolean consultarArchivo(String key) throws IOException {
 		Boolean salida = true;
-//		conexionS3(bucketName);
 		S3Object object = null;
 		try {
 			object = s3.getObject(bucketName, key);
@@ -227,7 +224,7 @@ public class s3Utils {
 	 */
 	public void moverObjeto(String keyOrigin, String keyDestination) {
 		try {
-//			conexionS3(bucketName);
+
 			s3.copyObject(bucketName, keyOrigin, bucketName, keyDestination);
 			deleteObjectBucket(keyOrigin);
 		} catch (AmazonServiceException e) {
@@ -245,7 +242,6 @@ public class s3Utils {
 	 */
 	public void deleteObjectBucket(String objectKey) {
 		try {
-//			conexionS3(bucketName);
 			s3.deleteObject(bucketName, objectKey);
 		} catch (AmazonServiceException e) {
 			throw new NegocioException(ApiResponseCode.ERROR_ELIMINAR_ARCHIVO_FISICO.getCode(),
@@ -258,7 +254,6 @@ public class s3Utils {
 		
 		PutObjectResult result;
 		try {
-			//conexionS3(bucketName);
 			String pathArchivo = key+nombreArchivo;
 			File archivoFile = new File(pathArchivo);			
 			FileUtils.writeByteArrayToFile (archivoFile, archivo.toByteArray());
@@ -280,7 +275,6 @@ public class s3Utils {
 
 		PutObjectResult result;
 		try {
-			conexionS3(bucketName);
 			String pathArchivo = key+nombreArchivo;
 
 			byte[] bytearr = archivo.getBytes();
@@ -291,8 +285,7 @@ public class s3Utils {
 			file.createNewFile();
 			FileOutputStream fos = new FileOutputStream(file);
 			fos.write(archivo.getBytes());
-			fos.close();
-			//FileUtils.copyInputStreamToFile(initialStream, file);      
+			fos.close();     
 			result = s3.putObject(bucketName, pathArchivo, file);
 			
 		} catch (AmazonServiceException e) {

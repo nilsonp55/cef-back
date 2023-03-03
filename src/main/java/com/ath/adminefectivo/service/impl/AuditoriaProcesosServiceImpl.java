@@ -1,5 +1,6 @@
 package com.ath.adminefectivo.service.impl;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -34,6 +35,9 @@ public class AuditoriaProcesosServiceImpl implements IAuditoriaProcesosService {
 	 */
 	@Override
 	public AuditoriaProcesosDTO consultarAuditoriaPorProceso(String codigoProceso, Date fechaSistema) {
+		
+		fechaSistema.setHours(0);
+		fechaSistema.setSeconds(0);
 		
 		AuditoriaProcesos auditoriaProceso = auditoriaProcesosRepository.findById(new AuditoriaProcesosPK(codigoProceso, fechaSistema)).orElse(null);
 		

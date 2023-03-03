@@ -120,16 +120,14 @@ public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService 
 		;
 		if (procesoDiarioConciliacionCerrad && procesoDiarioLiquidacionPendiente) {
 			try {
-				
-				
-
 				// Se ejecutan procedimientos
-				System.out.println("INICIA EL PROCESO DE LLAMADO ");
 				String parametro = valoresLiquidadosRepository.armar_parametros_liquida(fecha);
-				System.out.println("CONSULTA DE PARAMETRO A armar_parametros_liquida(fecha) = "+parametro);
+				
 				if (Integer.parseInt(parametro) > 0) {
+					auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_LIQUIDACION, 
+							fecha, Constantes.ESTADO_PROCESO_PROCESO, "Termin� armado de par�metros de liquidaci�n");
+					
 					String resultado = valoresLiquidadosRepository.liquidar_costos(Integer.parseInt(parametro));
-					System.out.println("CONSULTA DE PARAMETRO A liquidar_costos(Integer.parseInt(parametro)) = "+resultado);
 
 				} else {
 					UtilsObjects.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_LIQUIDACION,
@@ -151,6 +149,8 @@ public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService 
 						ApiResponseCode.ERROR_PROCESO_CONSTO_VALORES_LIQUIDADOS.getHttpStatus());
 			}
 		} else {
+			UtilsObjects.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_LIQUIDACION,
+					ApiResponseCode.ERROR_PROCESO_CONSTO_VALORES_LIQUIDADOS.getDescription());
 			throw new NegocioException(
 					ApiResponseCode.ERROR_PROCESO_VALIDACION_CIERRE_CONSTO_VALORES_LIQUIDADOS.getCode(),
 					ApiResponseCode.ERROR_PROCESO_VALIDACION_CIERRE_CONSTO_VALORES_LIQUIDADOS.getDescription(),

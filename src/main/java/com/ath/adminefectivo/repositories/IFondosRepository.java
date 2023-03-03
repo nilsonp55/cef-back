@@ -84,8 +84,8 @@ public interface IFondosRepository extends JpaRepository<Fondos, Integer>, Query
 			+ "	WHERE "
 			+ "				f.codigo_punto = p.codigo_punto AND "
 			+ "		f.tdv = ?1 and "
-			+ "		f.banco_aval = (select b.codigo_punto  from public.bancos b where b.numero_nit = ?2) and "
-			+ "		p.codigo_ciudad = (select c.codigo_dane  from public.ciudades c where c.codigo_dane = ?3 or ('BRK' = ?1 and cast(c.codigo_brinks as varchar) = ?3 )) "
+			+ "		f.banco_aval = (select b.codigo_punto  from bancos b where b.numero_nit = ?2) and "
+			+ "		p.codigo_ciudad = (select c.codigo_dane  from ciudades c where c.codigo_dane = ?3 or ('BRK' = ?1 and cast(c.codigo_brinks as varchar) = ?3 )) "
 			+ "",nativeQuery = true)
 	Fondos obtenerCodigoFondoTDV2(String codigoTransportadora, String numeroNit, String codigoCiudad);
 }
