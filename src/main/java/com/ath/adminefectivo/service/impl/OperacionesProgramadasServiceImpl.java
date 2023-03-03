@@ -1094,7 +1094,11 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		operacionesProgramadasDTO.setValorTotal(valorTotal);
 		
 		Integer comisionBR = operacionesProgramadasDTO.getComisionBR();
-		operacionesProgramadasDTO.setComisionBR( (int) ((valorTotal * comisionBR) / 10000) );
+		if (!Objects.isNull(comisionBR)) {
+			operacionesProgramadasDTO.setComisionBR( (int) ((valorTotal * comisionBR) / 10000) );
+			}else {
+				operacionesProgramadasDTO.setComisionBR(0);
+				}
 		operacionesProgramadasDTO.setIdNegociacion(idNegoc);
 		operacionesProgramadasDTO.setTasaNegociacion(tasaNegociacion);
 		operacionesProgramadasDTO.setEstadoOperacion(dominioService.valorTextoDominio(Constantes.DOMINIO_ESTADOS_OPERACION,Dominios.ESTADOS_OPERA_PROGRAMADO));
