@@ -101,7 +101,7 @@ public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService 
 		// Se valida que la conciliacion este cerrada para poder ejecutar el package
 		List<LogProcesoDiario> logProcesoDiarios = logProcesoDiarioRepository.findByFechaCreacion(fecha);
 		auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_LIQUIDACION, 
-				fecha, Constantes.ESTADO_PROCESO_PROCESO, Constantes.ESTADO_PROCESO_PROCESO);
+				fecha, Constantes.ESTADO_PROCESO_INICIO, Constantes.ESTADO_PROCESO_PROCESO);
 
 		var procesoDiarioConciliacionCerrad = false;
 		var procesoDiarioLiquidacionPendiente = false;
@@ -125,7 +125,7 @@ public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService 
 				
 				if (Integer.parseInt(parametro) > 0) {
 					auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_LIQUIDACION, 
-							fecha, Constantes.ESTADO_PROCESO_PROCESO, "Termin� armado de par�metros de liquidaci�n");
+							fecha, Constantes.ESTADO_PROCESO_PROCESO, "Terminó armado de parámetros de liquidación");
 					
 					String resultado = valoresLiquidadosRepository.liquidar_costos(Integer.parseInt(parametro));
 
@@ -138,7 +138,7 @@ public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService 
 							ApiResponseCode.ERROR_PROCESO_CONSTO_VALORES_LIQUIDADOS_SIN_PARAM.getHttpStatus());
 				}
 				auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_LIQUIDACION, 
-						fecha, Constantes.ESTADO_PROCESO_PROCESO, Constantes.ESTADO_PROCESO_PROCESADO);
+						fecha, Constantes.ESTADO_PROCESO_PROCESADO, Constantes.ESTRUCTURA_OK);
 				return "Se proceso con exito";
 			} catch (Exception e) {
 				UtilsObjects.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_LIQUIDACION,
