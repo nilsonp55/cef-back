@@ -416,7 +416,7 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 				TransaccionesInternasDTO transaccionInternaDTOVenta21 = generarTransaccionInterna(tipoProceso, 11,
 						operacionProgramada, operacionProgramada.getCodigoFondoTDV());
 				transaccionInternaDTOVenta21.setTasaNegociacion(operacionProgramada.getTasaNegociacion());
-				Double valorComisionDouble = (operacionProgramada.getValorTotal() * Integer.valueOf(operacionProgramada.getTasaNegociacion())) / 100;
+				Double valorComisionDouble = (operacionProgramada.getValorTotal() * Integer.valueOf(operacionProgramada.getTasaNegociacion())) / 10000;
 				valorComision = valorComisionDouble.longValue();
 				transaccionInternaDTOVenta21.setValor(valorComision);
 				transaccionInternaDTOVenta21.setCodigoComision(Integer.valueOf(Dominios.COMISION_2));
