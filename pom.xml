@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>com.ath</groupId>
 	<artifactId>admin-efectivo</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>admin-efectivo</name>
 	<description>Administrador de efectivo para ATH</description>
 	<properties>
