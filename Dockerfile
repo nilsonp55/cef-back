@@ -19,4 +19,5 @@ ENV bucket=${ENV_BUCKET}
 ENV region=${ENV_REGION}
 
 COPY ${JAR_FILE} app.jar
+
 ENTRYPOINT ["java","-jar","/app.jar"]
