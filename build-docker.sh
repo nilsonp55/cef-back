@@ -15,6 +15,7 @@ set JAR_FILE="admin-efectivo-0.0.1.jar"
 set ENV_PASS="$(aws secretsmanager get-secret-value --secret-id awue1athcef-pt-rds-secrets --query SecretString --output text --region us-east-1)" 
 
 ### Build docker image
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 652041729658.dkr.ecr.us-east-1.amazonaws.com
 docker build --build-arg ENV_URL=$ENV_URL,ENV_USER=$ENV_USER,ENV_SCHEMA=$ENV_SCHEMA,ENV_BUCKET=$ENV_BUCKET,ENV_REGION=$ENV_REGION,JAR_FILE=$JAR_FILE -t 652041729658.dkr.ecr.us-east-1.amazonaws.com/awue1athcef-pt-ecr-fargate:latest .
 
 ### upload docker image to aws ECR
