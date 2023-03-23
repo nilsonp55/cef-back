@@ -126,6 +126,8 @@ public class LogProcesoDiarioImpl implements ILogProcesoDiarioService {
 					ApiResponseCode.ERROR_LOGPROCESODIARIO_NO_ENCONTRADO.getDescription(),
 					ApiResponseCode.ERROR_LOGPROCESODIARIO_NO_ENCONTRADO.getHttpStatus());
 		}
+		Date fecha = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
+		logProcesoDiarioDTO.setFechaFinalizacion(fecha);
 		return LogProcesoDiarioDTO.CONVERTER_DTO.apply(logProcesoDiarioRepository.
 					save(LogProcesoDiarioDTO.CONVERTER_ENTITY.apply(logProcesoDiarioDTO)));
 	}
