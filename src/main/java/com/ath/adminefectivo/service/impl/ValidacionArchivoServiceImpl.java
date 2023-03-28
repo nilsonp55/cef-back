@@ -25,7 +25,6 @@ import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.service.IDetalleDefinicionArchivoService;
 import com.ath.adminefectivo.service.IDominioService;
-import com.ath.adminefectivo.service.IFestivosNacionalesService;
 import com.ath.adminefectivo.service.IMotorReglasService;
 import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.IValidacionArchivoService;
@@ -35,12 +34,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Service
+@Log4j2
 public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 
 	@Autowired
@@ -698,7 +699,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 		
 		if (maestroDefinicion.isMultiformato()) {
 			try {
-				System.out.println("validacionLineasDTO.getContenido().get(maestroDefinicion.getCampoMultiformato()) "+validacionLineasDTO.getContenido().get(maestroDefinicion.getCampoMultiformato()));
+				log.debug("validacionLineasDTO.getContenido().get(maestroDefinicion.getCampoMultiformato()) "+validacionLineasDTO.getContenido().get(maestroDefinicion.getCampoMultiformato()));
 				Integer tipo = Integer
 						.valueOf(validacionLineasDTO.getContenido().get(maestroDefinicion.getCampoMultiformato()));
 				validacionLineasDTO.setTipo(tipo);

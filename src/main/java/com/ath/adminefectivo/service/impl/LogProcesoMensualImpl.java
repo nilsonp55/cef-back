@@ -7,29 +7,22 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
-import com.ath.adminefectivo.constantes.Parametros;
-import com.ath.adminefectivo.dto.LogProcesoDiarioDTO;
 import com.ath.adminefectivo.dto.LogProcesoMensualDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
-import com.ath.adminefectivo.entities.LogProcesoDiario;
-import com.ath.adminefectivo.entities.LogProcesoMensual;
-import com.ath.adminefectivo.exception.AplicationException;
-import com.ath.adminefectivo.exception.ConflictException;
 import com.ath.adminefectivo.exception.NegocioException;
-import com.ath.adminefectivo.repositories.LogProcesoDiarioRepository;
 import com.ath.adminefectivo.repositories.LogProcesoMensualRepository;
 import com.ath.adminefectivo.service.IFestivosNacionalesService;
-import com.ath.adminefectivo.service.ILogProcesoDiarioService;
 import com.ath.adminefectivo.service.ILogProcesoMensualService;
 import com.ath.adminefectivo.service.IParametroService;
 import com.querydsl.core.types.Predicate;
+
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Servicios responsables de exponer los metodos referentes a los procesos 
@@ -38,6 +31,7 @@ import com.querydsl.core.types.Predicate;
  */
 
 @Service
+@Log4j2
 public class LogProcesoMensualImpl implements ILogProcesoMensualService {
 
 	@Autowired
@@ -60,7 +54,7 @@ public class LogProcesoMensualImpl implements ILogProcesoMensualService {
 		List<LogProcesoMensualDTO> listLogProcesoMensualDto = new ArrayList<>();
 		
 		logProcesoDiarios.forEach(entity -> {
-			System.out.println(entity.getIdLog());
+			log.debug(entity.getIdLog());
 			listLogProcesoMensualDto.add(LogProcesoMensualDTO.CONVERTER_DTO.apply(entity));
 		});
 		return listLogProcesoMensualDto;
@@ -115,7 +109,7 @@ public class LogProcesoMensualImpl implements ILogProcesoMensualService {
 						logProcesoPorCrear.setIdLog(null);
 						logProcesoPorCrear.setFechaCreacion(new Date());
 						//logProcesoPorCrear.setFechaCierre(  Date.from(  LocalDate.now().with(    TemporalAdjusters.lastDayOfMonth() )  )  );
-						System.out.println("El último día de este mes es: " + LocalDate.now().with( TemporalAdjusters.lastDayOfMonth() ));
+						log.debug("El último día de este mes es: " + LocalDate.now().with( TemporalAdjusters.lastDayOfMonth() ));
 						
 					}else {
 						//no existen liquidacion costos diaria para alguna fecha
@@ -164,8 +158,7 @@ public class LogProcesoMensualImpl implements ILogProcesoMensualService {
 			
 			
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.debug(e.getMessage());
 		}
 		return true;
 	}
