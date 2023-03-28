@@ -6,12 +6,18 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Properties;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.AmazonServiceException;
@@ -23,25 +29,13 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.ListObjectsV2Request;
 import com.amazonaws.services.s3.model.ListObjectsV2Result;
-import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectResult;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.io.FileUtils;
-import org.springframework.stereotype.Service;
-
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.exception.NegocioException;
 
-import software.amazon.awssdk.services.s3.model.PutObjectResponse;
-
-import java.util.Properties;
-import java.net.URISyntaxException;
-import java.util.Objects;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Clase para generar funcionalidades con respect al s3 del PP
@@ -49,7 +43,7 @@ import java.util.Objects;
  * @author Bayron Perez
  */
 @Service
-
+@Log4j2
 public class s3Utils {
 
 	private String bucketNameFormat;
@@ -194,7 +188,7 @@ public class s3Utils {
          
       } catch (Exception e) {
          e.printStackTrace();
-         System.out.println(false);
+         log.debug(false);
       }
 	  
 	BasicAWSCredentials credentials = new BasicAWSCredentials("AKIAZPUFXGZ5GEMGWLFZ", "HD1RM1Il0nAJYu2gNr1oYG6MtdBzafSKpf+1TtMM");
@@ -278,8 +272,8 @@ public class s3Utils {
 			String pathArchivo = key+nombreArchivo;
 
 			byte[] bytearr = archivo.getBytes();
-			System.out.print("byte length: " + bytearr.length);
-			System.out.print("Size : " + archivo.getSize());
+			log.debug("byte length: " + bytearr.length);
+			log.debug("Size : " + archivo.getSize());
 
 			File file = new File(pathArchivo);
 			file.createNewFile();

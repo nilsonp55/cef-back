@@ -1,6 +1,5 @@
 package com.ath.adminefectivo.service.impl;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -13,14 +12,12 @@ import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.ParametrosLiquidacionCostoDTO;
 import com.ath.adminefectivo.dto.ValorLiquidadoDTO;
 import com.ath.adminefectivo.dto.ValoresLiquidadosDTO;
-import com.ath.adminefectivo.dto.compuestos.RespuestaLiquidarCostosDTO;
 import com.ath.adminefectivo.dto.compuestos.costosCharterDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.LogProcesoDiario;
 import com.ath.adminefectivo.entities.Puntos;
 import com.ath.adminefectivo.entities.ValoresLiquidados;
 import com.ath.adminefectivo.exception.NegocioException;
-import com.ath.adminefectivo.repositories.IParametrosLiquidacionCostosRepository;
 import com.ath.adminefectivo.repositories.IValoresLiquidadosRepository;
 import com.ath.adminefectivo.repositories.LogProcesoDiarioRepository;
 import com.ath.adminefectivo.service.IAuditoriaProcesosService;
@@ -32,7 +29,10 @@ import com.ath.adminefectivo.service.ITransportadorasService;
 import com.ath.adminefectivo.service.IValoresLiquidadosService;
 import com.ath.adminefectivo.utils.UtilsObjects;
 
+import lombok.extern.log4j.Log4j2;
+
 @Service
+@Log4j2
 public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService {
 
 	@Autowired
@@ -200,7 +200,7 @@ public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService 
 
 	private List<ParametrosLiquidacionCostoDTO> generarRespuestaLiquidacionCostos(
 			Date fechaSistema) {
-		System.out.println(fechaSistema);
+		log.debug(fechaSistema);
 		List<ParametrosLiquidacionCostoDTO> respuest = parametrosLiquidacionCostosService.consultarParametrosLiquidacionCostos(fechaSistema);
 		
 		respuest.forEach(valorLiquidado -> {

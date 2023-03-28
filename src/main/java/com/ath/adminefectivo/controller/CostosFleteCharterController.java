@@ -21,6 +21,8 @@ import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
 
+import lombok.extern.log4j.Log4j2;
+
 /**
  * Controlador responsable de exponer los metodos referentes al proceso de 
  * Costos por Flete Charter
@@ -28,6 +30,7 @@ import com.ath.adminefectivo.dto.response.ResponseADE;
  */
 @RestController
 @RequestMapping("${endpoints.CostosFleteCharter}")
+@Log4j2
 public class CostosFleteCharterController {
 
 	@Autowired
@@ -44,8 +47,8 @@ public class CostosFleteCharterController {
 	public ResponseEntity<ApiResponseADE<List<ParametrosLiquidacionCostoDTO>>> consultarCostosFleteCharter(
 					@RequestParam("fechaInicial") Date fechaInicial, 
 					@RequestParam("fechaFinal") Date fechaFinal) {
-		System.out.println("fechaInicial "+fechaInicial);
-		System.out.println("fechaFinal "+fechaFinal);
+		log.debug("fechaInicial "+fechaInicial);
+		log.debug("fechaFinal "+fechaFinal);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<List<ParametrosLiquidacionCostoDTO>>(
 						costosFleteCharterDelegate.consultarCostosFleteCharter(fechaInicial, fechaFinal),
