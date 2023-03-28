@@ -8,16 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.dto.ClientesCorporativosDTO;
-import com.ath.adminefectivo.dto.response.ApiResponseCode;
-import com.ath.adminefectivo.entities.ClientesCorporativos;
-import com.ath.adminefectivo.entities.SitiosClientes;
-import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.repositories.IClientesCorporativosRepository;
 import com.ath.adminefectivo.service.IClientesCorporativosService;
 import com.ath.adminefectivo.service.ISitiosClientesService;
 import com.querydsl.core.types.Predicate;
 
+import lombok.extern.log4j.Log4j2;
+
 @Service
+@Log4j2
 public class ClientesCorporativosServiceImpl implements IClientesCorporativosService {
 
 	@Autowired
@@ -42,7 +41,7 @@ public class ClientesCorporativosServiceImpl implements IClientesCorporativosSer
 	 */
 	@Override
 	public Integer getCodigoCliente(Integer codigoBanco, String nit) {
-		System.out.println("codigoBanco, nit " +codigoBanco+ " -- nit " + nit);
+		log.debug("codigoBanco, nit " +codigoBanco+ " -- nit " + nit);
 		var clientesCorporativos = clientesCorporativosRepository.findByCodigoBancoAvalAndIdentificacion(codigoBanco, nit);
 		if (Objects.isNull(clientesCorporativos)) {
 			return clientesCorporativosRepository.findByCodigoBancoAvalAndIdentificacion(codigoBanco, "9999999999").getCodigoCliente();

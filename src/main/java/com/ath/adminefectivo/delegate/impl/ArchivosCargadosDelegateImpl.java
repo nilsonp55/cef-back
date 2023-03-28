@@ -19,7 +19,10 @@ import com.ath.adminefectivo.service.IFilesService;
 import com.ath.adminefectivo.service.IParametroService;
 import com.querydsl.core.types.Predicate;
 
+import lombok.extern.log4j.Log4j2;
+
 @Service
+@Log4j2
 public class ArchivosCargadosDelegateImpl implements IArchivosCargadosDelegate {
 
 	@Autowired
@@ -36,7 +39,7 @@ public class ArchivosCargadosDelegateImpl implements IArchivosCargadosDelegate {
 	 */
 	@Override
 	public List<ArchivosCargadosDTO> getAll() {
-		System.out.println("Entro al Delegate");
+		log.debug("Entro al Delegate");
 		return archivosCargadosService.getAll();
 	}
 	
