@@ -126,7 +126,7 @@ public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService 
 					auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_LIQUIDACION, 
 							fecha, Constantes.ESTADO_PROCESO_PROCESO, "Terminó armado de parámetros de liquidación");
 					
-					String resultado = valoresLiquidadosRepository.liquidar_costos(Integer.parseInt(parametro));
+					valoresLiquidadosRepository.liquidar_costos(Integer.parseInt(parametro));
 
 				} else {
 					auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_LIQUIDACION,
