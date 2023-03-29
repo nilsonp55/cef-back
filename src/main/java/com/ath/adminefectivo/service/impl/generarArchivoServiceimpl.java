@@ -91,7 +91,12 @@ public class generarArchivoServiceimpl implements IgenerarArchivoService {
 				int tipoIdentificacionNum = 0; 
 				String tipoIdentificacion = dtoContable.getTipoIdentificacion();
 				if(!Objects.isNull(tipoIdentificacion) ) {
-					tipoIdentificacionNum = Integer.parseInt(tipoIdentificacion);
+					try {
+						tipoIdentificacionNum = Integer.parseInt(tipoIdentificacion);
+					}
+					catch (NumberFormatException ex) {
+						tipoIdentificacionNum = 33;
+					}	
 				}
 				row.createCell(3).setCellValue(tipoIdentificacionNum);
 				row.createCell(4).setBlank();//tipoDeCambio Origen vs Dolar
