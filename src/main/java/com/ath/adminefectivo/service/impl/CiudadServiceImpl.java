@@ -1,12 +1,14 @@
 package com.ath.adminefectivo.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.CiudadesDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
@@ -14,8 +16,9 @@ import com.ath.adminefectivo.entities.Ciudades;
 import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.ICiudadesRepository;
+import com.ath.adminefectivo.service.IAuditoriaProcesosService;
 import com.ath.adminefectivo.service.ICiudadesService;
-import com.ath.adminefectivo.utils.UtilsObjects;
+import com.ath.adminefectivo.service.IParametroService;
 import com.querydsl.core.types.Predicate;
 
 import lombok.extern.log4j.Log4j2;
@@ -26,6 +29,12 @@ public class CiudadServiceImpl implements ICiudadesService{
 
 	@Autowired
 	ICiudadesRepository ciudadesRepository;
+	
+	@Autowired
+	IAuditoriaProcesosService auditoriaProcesosService;
+	
+	@Autowired
+	IParametroService parametroService;
 	
 	/**
 	 * {@inheritDoc}
@@ -83,11 +92,13 @@ public class CiudadServiceImpl implements ICiudadesService{
 
 	@Override
 	public CiudadesDTO getCiudadPorCodigoDaneOrCodigoBrinks(String codigo) {
+		Date fechaProceso = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
 		Ciudades ciudadOpt = ciudadesRepository.findByCodigoDANE(codigo);
 		if (Objects.isNull(ciudadOpt)) {
 			Ciudades ciudadBrinks = ciudadesRepository.findByCodigoBrinks(Integer.parseInt(codigo));
 			if (Objects.isNull(ciudadBrinks)) {
-				UtilsObjects.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+				auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+						fechaProceso, Constantes.ESTADO_PROCESO_ERROR, 
 						ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getDescription());
 				
 				throw new NegocioException(ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getCode(),

@@ -6,7 +6,6 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.ath.adminefectivo.constantes.Constantes;
-import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.service.IAuditoriaProcesosService;
