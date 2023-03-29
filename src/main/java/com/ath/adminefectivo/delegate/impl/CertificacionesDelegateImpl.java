@@ -6,7 +6,6 @@ import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
@@ -21,7 +20,6 @@ import com.ath.adminefectivo.service.IConciliacionOperacionesService;
 import com.ath.adminefectivo.service.ILogProcesoDiarioService;
 import com.ath.adminefectivo.service.IOperacionesCertificadasService;
 import com.ath.adminefectivo.service.IParametroService;
-import com.ath.adminefectivo.utils.UtilsObjects;
 
 @Service
 public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
@@ -85,9 +83,11 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 	 * @author cesar.castano
 	 */
 	private void validarLogProcesoDiario() {
+		Date fechaProceso = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
 		var log = logProcesoDiarioService.obtenerEntidadLogProcesoDiario(Dominios.CODIGO_PROCESO_LOG_DEFINITIVO);
 		if (!log.getEstadoProceso().equals(Dominios.ESTADO_PROCESO_DIA_COMPLETO)) {			
-			UtilsObjects.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+			auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+					fechaProceso, Constantes.ESTADO_PROCESO_ERROR, 
 					ApiResponseCode.ERROR_PROCESO_SIGUE_ABIERTO.getDescription());
 			throw new NegocioException(ApiResponseCode.ERROR_PROCESO_SIGUE_ABIERTO.getCode(),
 					ApiResponseCode.ERROR_PROCESO_SIGUE_ABIERTO.getDescription(),
@@ -97,7 +97,8 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 		var logConciliacion = logProcesoDiarioService
 				.obtenerEntidadLogProcesoDiario(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION);
 		if (logConciliacion.getEstadoProceso().equals(Dominios.ESTADO_PROCESO_DIA_COMPLETO)) {
-			UtilsObjects.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+			auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+					fechaProceso, Constantes.ESTADO_PROCESO_ERROR, 
 					ApiResponseCode.ERROR_LOGPROCESODIARIO_NO_ENCONTRADO.getDescription());
 			throw new NegocioException(ApiResponseCode.ERROR_LOGPROCESODIARIO_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_LOGPROCESODIARIO_NO_ENCONTRADO.getDescription(),
@@ -112,10 +113,11 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 	 * @author prv_ccastano
 	 */
 	private void validarExistenciaArchivos(List<ArchivosCargados> archivosCargados) {
-
+		Date fechaProceso = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
 		Integer valor = parametroService.valorParametroEntero(Constantes.NUMERO_MINIMO_ARCHIVOS_PARA_CIERRE);
 		if (archivosCargados.size() < valor) {
-			UtilsObjects.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+			auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+					fechaProceso, Constantes.ESTADO_PROCESO_ERROR, 
 					ApiResponseCode.ERROR_NO_CUMPLE_MINIMO_ARCHIVOS_CARGADOS_CERTIFICACION.getDescription());
 			
 			throw new NegocioException(ApiResponseCode.ERROR_NO_CUMPLE_MINIMO_ARCHIVOS_CARGADOS_CERTIFICACION.getCode(),
@@ -130,10 +132,12 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 	 * @author cesar.castano
 	 */
 	private void cambiarEstadoLogProcesoDiario() {
+		Date fechaProceso = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
 		var logProcesoDiario = logProcesoDiarioService
 				.obtenerEntidadLogProcesoDiario(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION);
 		if (Objects.isNull(logProcesoDiario)) {
-			UtilsObjects.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+			auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+					fechaProceso, Constantes.ESTADO_PROCESO_ERROR, 
 					ApiResponseCode.ERROR_CODIGO_PROCESO_NO_EXISTE.getDescription());
 			throw new NegocioException(ApiResponseCode.ERROR_CODIGO_PROCESO_NO_EXISTE.getCode(),
 					ApiResponseCode.ERROR_CODIGO_PROCESO_NO_EXISTE.getDescription(),
