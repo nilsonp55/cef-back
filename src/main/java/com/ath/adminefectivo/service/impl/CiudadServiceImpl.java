@@ -18,7 +18,10 @@ import com.ath.adminefectivo.service.ICiudadesService;
 import com.ath.adminefectivo.utils.UtilsObjects;
 import com.querydsl.core.types.Predicate;
 
+import lombok.extern.log4j.Log4j2;
+
 @Service
+@Log4j2
 public class CiudadServiceImpl implements ICiudadesService{
 
 	@Autowired
@@ -40,7 +43,7 @@ public class CiudadServiceImpl implements ICiudadesService{
 	 */
 	@Override
 	public String getNombreCiudad(String codigoCiudad) {
-		
+		log.info("Find by codigoCiudad: {}", codigoCiudad);
 		var ciudadOpt = ciudadesRepository.findById(codigoCiudad);
 		if (ciudadOpt.isPresent() && Objects.nonNull(ciudadOpt.get().getNombreCiudad())) {
 			return ciudadOpt.get().getNombreCiudad();

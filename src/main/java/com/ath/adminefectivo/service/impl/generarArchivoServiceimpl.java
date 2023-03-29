@@ -25,7 +25,10 @@ import com.ath.adminefectivo.service.ITransaccionesContablesService;
 import com.ath.adminefectivo.service.IgenerarArchivoService;
 import com.ath.adminefectivo.utils.s3Utils;
 
+import lombok.extern.log4j.Log4j2;
+
 @Service
+@Log4j2
 public class generarArchivoServiceimpl implements IgenerarArchivoService {
 
 	@Autowired
@@ -46,7 +49,7 @@ public class generarArchivoServiceimpl implements IgenerarArchivoService {
 	@Override
 	public RespuestaGenerarArchivoDTO generarArchivo(Date fecha, String tipoContabilidad, int codBanco) {
 
-		// List<RespuestaContableDTO> listaContable;
+		log.info("generar archivo codBanco:{}, tipoContabilidad:{}, fecha:{}", codBanco, tipoContabilidad, fecha);
 
 		if (codBanco == 297) {
 			return generarArchivoBBOG(fecha, tipoContabilidad, codBanco);
@@ -78,7 +81,7 @@ public class generarArchivoServiceimpl implements IgenerarArchivoService {
 				}
 				row.createCell(0).setCellValue(naturalezaNum);
 				try {
-					row.createCell(1).setCellValue( Integer.parseInt(dtoContable.getCuentaMayor()) );
+					row.createCell(1).setCellValue( Long.parseLong(dtoContable.getCuentaMayor()) );
 				}
 				catch (NumberFormatException ex) {
 					row.createCell(1).setBlank();
@@ -87,8 +90,8 @@ public class generarArchivoServiceimpl implements IgenerarArchivoService {
 				
 				int tipoIdentificacionNum = 0; 
 				String tipoIdentificacion = dtoContable.getTipoIdentificacion();
-				if(!Objects.isNull(tipoIdentificacion) &&  tipoIdentificacion.equals("NIT")) {
-					tipoIdentificacionNum = 31;
+				if(!Objects.isNull(tipoIdentificacion) ) {
+					tipoIdentificacionNum = Integer.parseInt(tipoIdentificacion);
 				}
 				row.createCell(3).setCellValue(tipoIdentificacionNum);
 				row.createCell(4).setBlank();//tipoDeCambio Origen vs Dolar
@@ -249,7 +252,7 @@ public class generarArchivoServiceimpl implements IgenerarArchivoService {
 			}
 		} else {
 			if (codigoBanco == 297) {
-				String fechaSistemaString = formato.format(festivosNacionalesService.consultarAnteriorHabil(fecha));
+				String fechaSistemaString = parametrosService.valorParametro(Constantes.FECHA_DIA_PROCESO);
 
 				String fechaConFormato = fechaSistemaString.replace("/", "");
 				return Constantes.CTB_BBOG_Tarde + fechaConFormato + Constantes.EXTENSION_ARCHIVO_TXT;
