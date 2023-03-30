@@ -95,7 +95,7 @@ public class generarArchivoServiceimpl implements IgenerarArchivoService {
 						tipoIdentificacionNum = Integer.parseInt(tipoIdentificacion);
 					}
 					catch (NumberFormatException ex) {
-						tipoIdentificacionNum = 33;
+						tipoIdentificacionNum = 31;
 					}	
 				}
 				row.createCell(3).setCellValue(tipoIdentificacionNum);
@@ -257,8 +257,7 @@ public class generarArchivoServiceimpl implements IgenerarArchivoService {
 			}
 		} else {
 			if (codigoBanco == 297) {
-				String fechaSistemaString = parametrosService.valorParametro(Constantes.FECHA_DIA_PROCESO);
-
+				String fechaSistemaString = formato.format(parametrosService.valorParametroDate(Constantes.FECHA_DIA_PROCESO));
 				String fechaConFormato = fechaSistemaString.replace("/", "");
 				return Constantes.CTB_BBOG_Tarde + fechaConFormato + Constantes.EXTENSION_ARCHIVO_TXT;
 			} else if (codigoBanco == 298) {
