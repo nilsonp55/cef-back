@@ -3,10 +3,7 @@ package com.ath.adminefectivo.service.impl;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,21 +12,19 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ath.adminefectivo.constantes.Constantes;
+import com.ath.adminefectivo.constantes.Dominios;
+import com.ath.adminefectivo.dto.CertificadasNoConciliadasDTO;
+import com.ath.adminefectivo.dto.FechasConciliacionDTO;
+import com.ath.adminefectivo.dto.LogProcesoDiarioDTO;
+import com.ath.adminefectivo.dto.ParametrosConciliacionDTO;
 import com.ath.adminefectivo.dto.ProgramadasNoConciliadasDTO;
 import com.ath.adminefectivo.dto.ResumenConciliacionesDTO;
 import com.ath.adminefectivo.dto.UpdateCertificadasFallidasDTO;
 import com.ath.adminefectivo.dto.UpdateProgramadasFallidasDTO;
-import com.ath.adminefectivo.dto.compuestos.CertificadasNoConciliadasNombresDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionesProgramadasNombresDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionespConciliadoDTO;
-import com.ath.adminefectivo.dto.compuestos.ProgramadasNoConciliadasNombresDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
-import com.ath.adminefectivo.constantes.Constantes;
-import com.ath.adminefectivo.constantes.Dominios;
-import com.ath.adminefectivo.dto.CertificadasNoConciliadasDTO;
-import com.ath.adminefectivo.dto.ParametrosConciliacionDTO;
-import com.ath.adminefectivo.dto.FechasConciliacionDTO;
-import com.ath.adminefectivo.dto.LogProcesoDiarioDTO;
 import com.ath.adminefectivo.entities.LogProcesoDiario;
 import com.ath.adminefectivo.entities.OperacionesCertificadas;
 import com.ath.adminefectivo.entities.OperacionesProgramadas;
@@ -49,7 +44,10 @@ import com.ath.adminefectivo.service.IPuntosService;
 import com.ath.adminefectivo.service.ITransportadorasService;
 import com.querydsl.core.types.Predicate;
 
+import lombok.extern.log4j.Log4j2;
+
 @Service
+@Log4j2
 public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacionesService {
 
 	@Autowired
@@ -115,13 +113,14 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	 */
 	@Override
 	public Page<ProgramadasNoConciliadasDTO> getProgramadaNoConcilliada(Predicate predicate, Pageable page) {
-		
 		Page<OperacionesProgramadas> archivos = operacionesProgramadasRepository.findAll(predicate, page);
 		if (archivos.isEmpty()) {
+			log.info("Consultar Operaciones programadas: predicate: {} - page: {}", predicate.toString(), page.toString());
 			throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getDescription(),
 					ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getHttpStatus());
 		}
+		log.debug("Operaciones programadas registros: {}", archivos.getSize());
 		return consultarProgramasNoConciliadas(archivos, page);
 	}
 
@@ -148,11 +147,12 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	public Page<CertificadasNoConciliadasDTO> getCertificadaNoConciliada(Predicate predicate, Pageable page) {
 		Page<OperacionesCertificadas> archivos = operacionesCertificadasRepository.findAll(predicate, page);
 		if (archivos.isEmpty()) {
+			log.info("Consultar Operaciones certificadas: predicate: {} - page: {}", predicate.toString(), page.toString());
 			throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getDescription(),
 					ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getHttpStatus());
 		}
-	
+		log.debug("Operaciones Certificadas registros: {}", archivos.getSize());
 		return consultarCertificadasNoConciliadas(archivos, page);
 	}
 	
@@ -349,17 +349,10 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	 */
 	private Page<ProgramadasNoConciliadasDTO> consultarProgramasNoConciliadas(
 										Page<OperacionesProgramadas> operacionesProgramadas, Pageable page) {
-
-		operacionesProgramadas.forEach(entity -> {
-						var programadasNoConciliadasDTO = new ProgramadasNoConciliadasDTO();
-						entity = this.obtenerNombresProgramadasNoConciliadas(entity);
-						programadasNoConciliadasDTO = ProgramadasNoConciliadasDTO.CONVERTER_DTO.apply(entity);
-						
-						
-						});		
 	
 		return new PageImpl<>(operacionesProgramadas.getContent().stream()
-                .map(ProgramadasNoConciliadasDTO.CONVERTER_DTO).collect(Collectors.<ProgramadasNoConciliadasDTO>toList()), page,
+                .map(e -> ProgramadasNoConciliadasDTO.CONVERTER_DTO.apply(this.obtenerNombresProgramadasNoConciliadas(e)))
+                .collect(Collectors.<ProgramadasNoConciliadasDTO>toList()), page,
                 operacionesProgramadas.getTotalElements());	
 	}
 
@@ -373,11 +366,9 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 			Page<OperacionesCertificadas> operacionesCertificadas, Pageable page) {
 
 		operacionesCertificadas.forEach(entity -> {
-						var certificadasNoConciliadas = new CertificadasNoConciliadasDTO();
-						certificadasNoConciliadas = CertificadasNoConciliadasDTO.CONVERTER_DTO.apply(entity);
-						
+						var certificadasNoConciliadas = CertificadasNoConciliadasDTO.CONVERTER_DTO.apply(entity);
 						entity.setEntradaSalida(certificadasNoConciliadas.getEntradaSalida());
-						entity = this.obtenerNombresCertificadasNoConciliadas(entity);
+						this.obtenerNombresCertificadasNoConciliadas(entity);
 						});
 		return new PageImpl<>(operacionesCertificadas.getContent().stream()
                 .map(CertificadasNoConciliadasDTO.CONVERTER_DTO).collect(Collectors.<CertificadasNoConciliadasDTO>toList()), page,

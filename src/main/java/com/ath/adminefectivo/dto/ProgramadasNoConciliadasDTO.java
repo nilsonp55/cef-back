@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Clase que contiene la estructura del archivo de Operaciones Programadas No Conciliadas
@@ -21,6 +22,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Log4j2
 public class ProgramadasNoConciliadasDTO {
 
 	@JsonProperty("idOperacion")
@@ -111,7 +113,7 @@ public class ProgramadasNoConciliadasDTO {
 	 * @author cesar.castano
 	 */
 	public static final Function<ProgramadasNoConciliadasDTO, OperacionesProgramadas> CONVERTER_ENTITY = (ProgramadasNoConciliadasDTO t) -> {
-
+		log.debug("Converter_ENTITY operacion programada: {}", t.getIdOperacion());
 		var operacionesProgramadas = new OperacionesProgramadas();
 		UtilsObjects.copiarPropiedades(t, operacionesProgramadas);		
 
@@ -123,7 +125,7 @@ public class ProgramadasNoConciliadasDTO {
 	 * @author cesar.castano
 	 */
 	public static final Function<OperacionesProgramadas, ProgramadasNoConciliadasDTO> CONVERTER_DTO = (OperacionesProgramadas t) -> {
-
+		log.debug("Converter_DTO operacion programada: {}", t.getIdOperacion());
 		var operacionesProgramadasDto = new ProgramadasNoConciliadasDTO();
 		UtilsObjects.copiarPropiedades(t, operacionesProgramadasDto);		
 
