@@ -149,7 +149,8 @@ public interface ITransaccionesContablesRepository extends JpaRepository<Transac
 			+ "			    '' ||','|| "
 			+ "			    CASE WHEN tc.identificador IS NULL THEN '' ELSE TRIM(tc.identificador) END||','|| "
 			+ "				CASE WHEN tc.descripcion IS NULL THEN '' ELSE TRIM(tc.descripcion) END||','|| "
-			+ "				CASE WHEN tc.id_tercero IS NULL THEN '' ELSE CAST(tc.id_tercero as varchar) END||','|| "
+			+ "				CASE WHEN tc.id_tercero IS NULL THEN '' WHEN tc.id_tercero = 860035827 THEN CAST(tc.id_tercero as varchar)||'5' "
+			+ "						ELSE CAST(tc.id_tercero as varchar) END||','|| "
 			+ "				CASE WHEN tc.nombre_tercero IS NULL THEN '' ELSE TRIM(tc.nombre_tercero) END||','|| "
 			+ "			    '' ||','|| "
 			+ "			    '' ||','|| "
@@ -168,7 +169,8 @@ public interface ITransaccionesContablesRepository extends JpaRepository<Transac
 			+ "	tc.fecha = ?1 AND "
 			+ "	ti.tipo_proceso = ?2 AND "
 			+ "	tc.banco_aval = ?3 AND "
-			+ "	tc.banco_aval = b.codigo_punto ",nativeQuery=true)
+			+ "	tc.banco_aval = b.codigo_punto "
+			+ "order by tc.id_operacion, tc.id_transacciones_internas, tc.id_transacciones_contables",nativeQuery=true)
 	List<String> cierreContablebyBancoF1String(Date fecha, String tipoContabilidad, int codBanco, int estado);
 	
 	/**
@@ -188,8 +190,8 @@ public interface ITransaccionesContablesRepository extends JpaRepository<Transac
 			+ "		CASE WHEN tc.valor IS NULL THEN '' ELSE CAST(tc.valor AS VARCHAR) end||','|| "
 			+ "		CASE WHEN tc.valor IS NULL THEN '' ELSE CAST(tc.valor AS VARCHAR) end||','|| "
 			+ "    '' ||','|| "
-			+ "    CASE WHEN tc.codigo_centro  IS NOT NULL AND (trim(tc.codigo_centro) like '4%' or trim(tc.codigo_centro) like '5%') THEN trim(tc.codigo_centro) ELSE '' END||','|| "
-			+ "    CASE WHEN tc.codigo_centro  IS NOT NULL AND (trim(tc.codigo_centro) like '4%' or trim(tc.codigo_centro) like '5%') THEN '' ELSE trim(tc.codigo_centro) END||','|| "
+			+ "    CASE WHEN tc.codigo_centro  IS NOT NULL AND (trim(tc.cuenta_contable) like '4%' or trim(tc.cuenta_contable) like '5%') THEN trim(tc.codigo_centro) ELSE '' END||','|| "
+			+ "    CASE WHEN tc.codigo_centro  IS NOT NULL AND (trim(tc.cuenta_contable) like '4%' or trim(tc.cuenta_contable) like '5%') THEN '' ELSE trim(tc.codigo_centro) END||','|| "
 			+ "    '' ||','|| "
 			+ "    '' ||','|| "
 			+ "    '' ||','|| "
@@ -210,6 +212,7 @@ public interface ITransaccionesContablesRepository extends JpaRepository<Transac
 			+ "	tc.fecha = ?1 AND "
 			+ "	ti.tipo_proceso = ?2 AND "
 			+ "	tc.banco_aval = ?3 AND "
-			+ "	tc.banco_aval = b.codigo_punto ",nativeQuery=true)
+			+ "	tc.banco_aval = b.codigo_punto "
+			+ "order by tc.id_operacion, tc.id_transacciones_internas, tc.id_transacciones_contables",nativeQuery=true)
 	List<String> cierreContablebyBancoF2String(Date fecha, String tipoContabilidad, int codBanco, int estado);
 }

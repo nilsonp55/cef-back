@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
-import com.ath.adminefectivo.dto.CiudadesDTO;
 import com.ath.adminefectivo.dto.DetallesDefinicionArchivoDTO;
 import com.ath.adminefectivo.dto.FechasConciliacionDTO;
 import com.ath.adminefectivo.dto.OperacionesCertificadasDTO;
@@ -26,13 +25,13 @@ import com.ath.adminefectivo.dto.compuestos.RegistroTipo1ArchivosFondosDTO;
 import com.ath.adminefectivo.dto.compuestos.SobrantesFaltantesDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.ArchivosCargados;
-import com.ath.adminefectivo.entities.Ciudades;
 import com.ath.adminefectivo.entities.Fondos;
 import com.ath.adminefectivo.entities.OperacionesCertificadas;
 import com.ath.adminefectivo.entities.RegistrosCargados;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.IOperacionesCertificadasRepository;
 import com.ath.adminefectivo.service.IArchivosCargadosService;
+import com.ath.adminefectivo.service.IAuditoriaProcesosService;
 import com.ath.adminefectivo.service.IBancosService;
 import com.ath.adminefectivo.service.ICajerosService;
 import com.ath.adminefectivo.service.ICiudadesService;
@@ -46,8 +45,6 @@ import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.IPuntosCodigoTdvService;
 import com.ath.adminefectivo.service.IPuntosService;
 import com.ath.adminefectivo.service.ITransportadorasService;
-import com.ath.adminefectivo.utils.UtilsObjects;
-import com.ath.adminefectivo.service.IAuditoriaProcesosService;
 
 @Service
 public class OperacionesCertificadasServiceImpl implements IOperacionesCertificadasService {
@@ -279,7 +276,9 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 				break;
 			}
 			default:
-				UtilsObjects.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+				Date fechaProceso = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
+				auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+						fechaProceso, Constantes.ESTADO_PROCESO_ERROR,
 						ApiResponseCode.ERROR_TIPO_REGISTRO_NO_VALIDO.getDescription());
 				throw new NegocioException(ApiResponseCode.ERROR_TIPO_REGISTRO_NO_VALIDO.getCode(),
 						ApiResponseCode.ERROR_TIPO_REGISTRO_NO_VALIDO.getDescription(),
@@ -529,7 +528,9 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 		}
 		var fondo = fondosService.getCodigoFondoCertificacion(transportadora, nit, ciudad);
 		if (Objects.isNull(fondo)) {
-			UtilsObjects.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+			Date fechaProceso = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
+			auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+					fechaProceso, Constantes.ESTADO_PROCESO_ERROR, 
 					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getDescription() +"no existe para transportadora = "+transportadora+" NIT = "+nit+" Ciudad = "+ciudad);
 			throw new NegocioException(ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getDescription() +"no existe para transportadora = "+transportadora+" NIT = "+nit+" Ciudad = "+ciudad,
@@ -777,8 +778,9 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 		List<OperacionesCertificadas> ocertificadas = operacionesCertificadasRepository
 				.findByCodigoServicioTdv(codigoServicio);
 		if (Objects.isNull(ocertificadas)) {
-			
-			UtilsObjects.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+			Date fechaProceso = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
+			auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+					fechaProceso, Constantes.ESTADO_PROCESO_ERROR, 
 					ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getDescription());
 			
 			throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getCode(),
@@ -803,7 +805,9 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 		List<OperacionesCertificadas> ocertificadas = operacionesCertificadasRepository
 				.findByCodigoServicioTdv(codigoServicio);
 		if (Objects.isNull(ocertificadas)) {
-			UtilsObjects.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+			Date fechaProceso = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
+			auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+					fechaProceso, Constantes.ESTADO_PROCESO_ERROR, 
 					ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getDescription());
 			
 			throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getCode(),
@@ -840,8 +844,9 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 			}
 
 			if (Objects.isNull(ocertificadas)) {
-				
-				UtilsObjects.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+				Date fechaProceso = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
+				auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+						fechaProceso, Constantes.ESTADO_PROCESO_ERROR, 
 						ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getDescription());
 				throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getCode(),
 						ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getDescription(),
@@ -880,7 +885,9 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 			}
 
 			if (Objects.isNull(ocertificadas)) {
-				UtilsObjects.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+				Date fechaProceso = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
+				auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+						fechaProceso, Constantes.ESTADO_PROCESO_ERROR, 
 						ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getDescription());
 				
 				throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getCode(),
@@ -976,8 +983,9 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 				break;
 			}
 			default:
-				
-				UtilsObjects.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+				Date fechaProceso = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
+				auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+						fechaProceso, Constantes.ESTADO_PROCESO_ERROR, 
 						ApiResponseCode.ERROR_TIPO_REGISTRO_NO_VALIDO.getDescription());
 				
 				throw new NegocioException(ApiResponseCode.ERROR_TIPO_REGISTRO_NO_VALIDO.getCode(),

@@ -25,7 +25,6 @@ import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.service.IDetalleDefinicionArchivoService;
 import com.ath.adminefectivo.service.IDominioService;
-import com.ath.adminefectivo.service.IFestivosNacionalesService;
 import com.ath.adminefectivo.service.IMotorReglasService;
 import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.IValidacionArchivoService;
@@ -35,12 +34,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Service
+@Log4j2
 public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 
 	@Autowired
@@ -237,7 +238,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 				case "AC": {
 					fecha = nombreArchivo.substring(5, 11);
 					mascaraFecha = maestroDefinicion.getMascaraArch().substring(8, 14);
-					formatoFecha = new ArrayList();
+					formatoFecha = new ArrayList<String>();
 					formatoFecha.add(mascaraFecha);
 					if (!UtilsString.isFecha(fecha, formatoFecha)) {
 						throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
@@ -249,7 +250,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 				case "BS": {
 					fecha = nombreArchivo.substring(8, 14);
 					mascaraFecha = maestroDefinicion.getMascaraArch().substring(13, 19);
-					formatoFecha = new ArrayList();
+					formatoFecha = new ArrayList<String>();
 					formatoFecha.add(mascaraFecha);
 					if (!UtilsString.isFecha(fecha, formatoFecha)) {
 						throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
@@ -261,7 +262,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 				case "BI": {
 					fecha = nombreArchivo.substring(8, 14);
 					mascaraFecha = maestroDefinicion.getMascaraArch().substring(13, 19);
-					formatoFecha = new ArrayList();
+					formatoFecha = new ArrayList<String>();
 					formatoFecha.add(mascaraFecha);
 					if (!UtilsString.isFecha(fecha, formatoFecha)) {
 						throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
@@ -282,7 +283,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 						}
 					}
 					mascaraFecha = maestroDefinicion.getMascaraArch().substring(19, 27);
-					formatoFecha = new ArrayList();
+					formatoFecha = new ArrayList<String>();
 					formatoFecha.add(mascaraFecha);
 					if (!UtilsString.isFecha(fecha, formatoFecha)) {
 						throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
@@ -300,7 +301,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 						mascaraFecha = maestroDefinicion.getMascaraArch().substring(5, 13);
 					}
 					
-					formatoFecha = new ArrayList();
+					formatoFecha = new ArrayList<String>();
 					formatoFecha.add(mascaraFecha);
 					if (!UtilsString.isFecha(fecha, formatoFecha)) {
 						throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
@@ -321,7 +322,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 			String[] arregloNombre = nombreArchivo
 					.replace(Constantes.SEPARADOR_FECHA_ARCHIVO, Constantes.SEPARADOR_EXTENSION_ARCHIVO)
 					.split(Constantes.EXPRESION_REGULAR_PUNTO);
-			String[] arregloMascara = maestroDefinicion.getMascaraArch().split(Constantes.SEPARADOR_FECHA_ARCHIVO);
+			maestroDefinicion.getMascaraArch().split(Constantes.SEPARADOR_FECHA_ARCHIVO);
 			if (!StringUtils.equalsIgnoreCase(arregloNombre[2], maestroDefinicion.getExtension())) {
 				throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
 						ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
@@ -698,7 +699,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 		
 		if (maestroDefinicion.isMultiformato()) {
 			try {
-				System.out.println("validacionLineasDTO.getContenido().get(maestroDefinicion.getCampoMultiformato()) "+validacionLineasDTO.getContenido().get(maestroDefinicion.getCampoMultiformato()));
+				log.debug("validacionLineasDTO.getContenido().get(maestroDefinicion.getCampoMultiformato()) "+validacionLineasDTO.getContenido().get(maestroDefinicion.getCampoMultiformato()));
 				Integer tipo = Integer
 						.valueOf(validacionLineasDTO.getContenido().get(maestroDefinicion.getCampoMultiformato()));
 				validacionLineasDTO.setTipo(tipo);

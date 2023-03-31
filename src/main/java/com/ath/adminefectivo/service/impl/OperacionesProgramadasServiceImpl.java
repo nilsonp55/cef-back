@@ -11,12 +11,12 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
@@ -36,7 +36,6 @@ import com.ath.adminefectivo.dto.compuestos.DetalleOperacionesDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionIntradiaDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionesProgramadasNombresDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
-import com.ath.adminefectivo.entities.DetalleOperacionesProgramadas;
 import com.ath.adminefectivo.entities.Fondos;
 import com.ath.adminefectivo.entities.OperacionesProgramadas;
 import com.ath.adminefectivo.exception.AplicationException;
@@ -48,8 +47,8 @@ import com.ath.adminefectivo.service.IArchivosCargadosService;
 import com.ath.adminefectivo.service.IBancosService;
 import com.ath.adminefectivo.service.ICajerosService;
 import com.ath.adminefectivo.service.ICiudadesService;
-import com.ath.adminefectivo.service.IDetalleDefinicionArchivoService;
 import com.ath.adminefectivo.service.IClientesCorporativosService;
+import com.ath.adminefectivo.service.IDetalleDefinicionArchivoService;
 import com.ath.adminefectivo.service.IDetalleOperacionesProgramadasService;
 import com.ath.adminefectivo.service.IDominioService;
 import com.ath.adminefectivo.service.IFondosService;
@@ -60,8 +59,8 @@ import com.ath.adminefectivo.service.IOficinasService;
 import com.ath.adminefectivo.service.IOperacionesProgramadasService;
 import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.IPuntosService;
-import com.ath.adminefectivo.service.ISitiosClientesService;
 import com.ath.adminefectivo.service.IRegistrosCargadosService;
+import com.ath.adminefectivo.service.ISitiosClientesService;
 import com.ath.adminefectivo.service.ITransportadorasService;
 import com.ath.adminefectivo.utils.UtilsString;
 import com.querydsl.core.types.Predicate;
@@ -70,12 +69,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Service
+@Log4j2
 public class OperacionesProgramadasServiceImpl implements IOperacionesProgramadasService {
 
 	@Autowired
@@ -534,7 +535,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	 */
 	private OperacionesProgramadasDTO generarOperacionRetiro(String[] contenido,
 			List<DetallesDefinicionArchivoDTO> detalleArchivo, ArchivosCargadosDTO archivo, boolean esCambio) {
-
+		log.info("operacion retiro archivo: {}, esCambio: {}", archivo.getNombreArchivo(), esCambio);
 		OperacionesProgramadasDTO operacionesProgramadasDTO = null;
 
 		PuntosDTO puntoFondoDestino = this.consultarPuntoPorDetalle(contenido, detalleArchivo,
@@ -558,7 +559,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		
 		Integer valorComisionBR = 0;
 		String cobroBR = this.consultarValorCobroBR(contenido, detalleArchivo,Constantes.CAMPO_DETALLE_COBROBR);
-		if (!Objects.isNull(cobroBR) && "SI".equals(cobroBR) ) {
+		if (!Objects.isNull(cobroBR) && "NO".equals(cobroBR) ) {
 			// consultar parametro que tiene valor de la comisi�n
 			valorComisionBR = dominioService.valorNumericoDominio(Constantes.DOMINIO_COMISIONES, Dominios.COMISION_1).intValue();
 		}

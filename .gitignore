@@ -23,6 +23,10 @@ npm-debug.log.*
 # Eclipse
 ######################
 *.pydevproject
+### STS ###
+.apt_generated
+.classpath
+.factorypath
 .project
 .metadata
 tmp/
@@ -159,3 +163,4 @@ Desktop.ini
 
 archivos/
 *.ath
+

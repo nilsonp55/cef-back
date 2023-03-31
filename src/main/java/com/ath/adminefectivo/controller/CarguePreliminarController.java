@@ -22,6 +22,8 @@ import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
 
+import lombok.extern.log4j.Log4j2;
+
 /**
  * Controlador responsable de exponer los metodos referentes al proceso de carga
  * preliminar
@@ -30,8 +32,9 @@ import com.ath.adminefectivo.dto.response.ResponseADE;
  */
 @RestController
 @RequestMapping("${endpoints.CarguePreliminar}")
+@Log4j2
 public class CarguePreliminarController {
-
+	
 	@Autowired
 	ICarguePreliminarDelegate carguePreliminarDelegate;
 
@@ -124,7 +127,7 @@ public class CarguePreliminarController {
 	@GetMapping(value = "${endpoints.CarguePreliminar.detalle}")
 	public ResponseEntity<ApiResponseADE<ValidacionArchivoDTO>> consultarDetalleArchivo(
 			@RequestParam("idArchivoCargado") Long idArchivoCargado) {
-				System.out.println("Entro al controlador de Cargue prelinminar");
+		log.debug("Entro al controlador de Cargue prelinminar");
 		var respuesta = carguePreliminarDelegate.consultarDetalleArchivo(idArchivoCargado);
 
 		return ResponseEntity.status(HttpStatus.OK)

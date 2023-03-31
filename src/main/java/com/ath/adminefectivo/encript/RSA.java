@@ -11,6 +11,8 @@ import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.impl.ParametroServiceImpl;
 import com.ath.adminefectivo.utils.s3Utils;
 
+import lombok.extern.log4j.Log4j2;
+
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -45,7 +47,7 @@ import java.util.Base64;
  * <p>
  * for more details @see <a href="https://docs.oracle.com/javase/7/docs/api/javax/crypto/Cipher.html">Java Ciphers</a>
  */
-
+@Log4j2
 public class RSA {
 
 	private final s3Utils s3utils;
@@ -259,7 +261,7 @@ public class RSA {
 			String nombreArchivoLLavePublica = parametroService.valorParametro(Constantes.NAME_PUBLIC_KEY_RSA);
 			s3utils.guardarArchivoEnBytes(archivo, parametroService.valorParametro(Parametros.URL_FILE_PUBLIC_KEY),nombreArchivoLLavePublica);
 		} catch (Exception e) {
-			System.out.println(e);
+			log.debug(e);
 //			throw new NegocioException(ApiResponseCode.ERROR_INSERTANDO_LLAVE_PUBLICA_RSA.getCode(),
 //					ApiResponseCode.ERROR_INSERTANDO_LLAVE_PUBLICA_RSA.getDescription()+ " en el proceso de cargue al S3",
 //					ApiResponseCode.ERROR_INSERTANDO_LLAVE_PUBLICA_RSA.getHttpStatus());
