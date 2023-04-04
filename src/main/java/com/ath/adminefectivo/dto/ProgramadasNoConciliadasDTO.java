@@ -94,6 +94,12 @@ public class ProgramadasNoConciliadasDTO {
 	@JsonProperty("idServicio")
 	private String idServicio;
 	
+	@JsonProperty("ciudadOrigen")
+	private String nombreCiudadOrigen;
+	
+	@JsonProperty("ciudadDestino")
+	private String nombreCiudadDestino;
+	
 	private String tdv;
 
 	private String bancoAVAL;

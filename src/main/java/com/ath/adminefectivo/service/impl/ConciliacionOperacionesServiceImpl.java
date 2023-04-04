@@ -15,10 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.CertificadasNoConciliadasDTO;
+import com.ath.adminefectivo.dto.CiudadesDTO;
 import com.ath.adminefectivo.dto.FechasConciliacionDTO;
 import com.ath.adminefectivo.dto.LogProcesoDiarioDTO;
 import com.ath.adminefectivo.dto.ParametrosConciliacionDTO;
 import com.ath.adminefectivo.dto.ProgramadasNoConciliadasDTO;
+import com.ath.adminefectivo.dto.PuntosDTO;
 import com.ath.adminefectivo.dto.ResumenConciliacionesDTO;
 import com.ath.adminefectivo.dto.UpdateCertificadasFallidasDTO;
 import com.ath.adminefectivo.dto.UpdateProgramadasFallidasDTO;
@@ -28,11 +30,13 @@ import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.LogProcesoDiario;
 import com.ath.adminefectivo.entities.OperacionesCertificadas;
 import com.ath.adminefectivo.entities.OperacionesProgramadas;
+import com.ath.adminefectivo.entities.Puntos;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.IConciliacionOperacionesRepository;
 import com.ath.adminefectivo.repositories.IOperacionesCertificadasRepository;
 import com.ath.adminefectivo.repositories.IOperacionesProgramadasRepository;
 import com.ath.adminefectivo.service.IBancosService;
+import com.ath.adminefectivo.service.ICiudadesService;
 import com.ath.adminefectivo.service.IConciliacionOperacionesService;
 import com.ath.adminefectivo.service.IConciliacionServiciosService;
 import com.ath.adminefectivo.service.IDominioService;
@@ -44,10 +48,12 @@ import com.ath.adminefectivo.service.IPuntosService;
 import com.ath.adminefectivo.service.ITransportadorasService;
 import com.querydsl.core.types.Predicate;
 
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
 @Service
 @Log4j2
+@Setter
 public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacionesService {
 
 	@Autowired
@@ -85,6 +91,9 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	
 	@Autowired
 	ILogProcesoDiarioService logProcesoDiarioService;
+	
+	@Autowired
+	ICiudadesService ciudadService;
 
 	List<OperacionesProgramadas> operacionesp;
 	List<OperacionesCertificadas> operacionesc;
@@ -130,13 +139,14 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 		String nombreFondoTdv = puntosService.getPuntoById(programadaNoConciliadaNombre.getCodigoFondoTDV()).getNombrePunto();
 		programadaNoConciliadaNombre.setNombreFondoTDV(nombreFondoTdv);
 		
-
-		String nombrePuntoOrigen = puntosService.getPuntoById(programadaNoConciliadaNombre.getCodigoPuntoOrigen()).getNombrePunto();
-		programadaNoConciliadaNombre.setNombrePuntoOrigen(nombrePuntoOrigen);
+		Puntos puntoOrigen = puntosService.getPuntoById(programadaNoConciliadaNombre.getCodigoPuntoOrigen());
+		programadaNoConciliadaNombre.setNombrePuntoOrigen(puntoOrigen.getNombrePunto());
 		
-		String nombrePuntoDestino = puntosService.getPuntoById(programadaNoConciliadaNombre.getCodigoPuntoDestino()).getNombrePunto();
-		programadaNoConciliadaNombre.setNombrePuntoDestino(nombrePuntoDestino);
+		Puntos puntoDestino = puntosService.getPuntoById(programadaNoConciliadaNombre.getCodigoPuntoDestino());
+		programadaNoConciliadaNombre.setNombrePuntoDestino(puntoDestino.getNombrePunto());
 		
+		programadaNoConciliadaNombre.setNombreCiudadOrigen(ciudadService.getCiudadPorCodigoDane(puntoOrigen.getCodigoCiudad()).getNombreCiudad());
+		programadaNoConciliadaNombre.setNombreCiudadDestino(ciudadService.getCiudadPorCodigoDane(puntoDestino.getCodigoCiudad()).getNombreCiudad());
 		return programadaNoConciliadaNombre;
 	}
 
@@ -436,5 +446,4 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 							Dominios.ESTADO_CONCILIACION_CONCILIADO));
 		}
 	}
-
 }
