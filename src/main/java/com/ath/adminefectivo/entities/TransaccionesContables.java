@@ -18,7 +18,6 @@ import javax.persistence.Table;
 
 import com.ath.adminefectivo.dto.RespuestaContableDTO;
 import com.ath.adminefectivo.dto.compuestos.ConteoContabilidadDTO;
-import com.ath.adminefectivo.dto.compuestos.OperacionIntradiaDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -87,7 +86,7 @@ query = "SELECT tc.banco_aval as bancoAval, b.nombre_banco as nombreBancoAval, b
 		+ " tc.fecha = :fecha AND "
 		+ " ti.tipo_proceso = :tipoContabilidad  AND "
 		+ " tc.banco_aval = b.codigo_punto "
-		+ " order by tc.nanco_aval, tc.id_operacion, tc.id_transacciones_internas, tc.id_transacciones_contables", 
+		+ " order by tc.banco_aval, tc.id_operacion, tc.id_transacciones_internas, tc.id_transacciones_contables", 
 resultSetMapping = "Mapping.RespuestaContableDTO")
 @SqlResultSetMapping(name = "Mapping.RespuestaContableDTO", classes = @ConstructorResult(targetClass = RespuestaContableDTO.class, columns = {
 		@ColumnResult(name = "bancoAval"), @ColumnResult(name = "nombreBancoAval"), @ColumnResult(name = "abreviaturaBancoAval"),
