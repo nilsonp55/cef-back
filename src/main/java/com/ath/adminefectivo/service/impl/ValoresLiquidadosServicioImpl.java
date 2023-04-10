@@ -216,14 +216,18 @@ public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService 
 			Puntos puntoOrigen = puntosService.getPuntoById(valorLiquidado.getPuntoOrigen());
 
 			valorLiquidado.setNombrePuntoOrigen(puntoOrigen.getNombrePunto());
-			valorLiquidado
+			if(!Objects.isNull(puntoOrigen.getCodigoCiudad())) {
+				valorLiquidado
 					.setNombreCiudadPuntoOrigen(ciudadesService.getNombreCiudad(puntoOrigen.getCodigoCiudad()));
-
+			}
+			
 			Puntos puntoDestino = puntosService.getPuntoById(valorLiquidado.getPuntoDestino());
-
+			
 			valorLiquidado.setNombrePuntoDestino(puntoDestino.getNombrePunto());
-			valorLiquidado
+			if(!Objects.isNull(puntoDestino.getCodigoCiudad())) {
+				valorLiquidado
 					.setNombreCiudadPuntoDestino(ciudadesService.getNombreCiudad(puntoDestino.getCodigoCiudad()));
+			}
 		});
 	
 		return respuest;

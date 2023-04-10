@@ -87,12 +87,14 @@ public class AuditoriaProcesosServiceImpl implements IAuditoriaProcesosService {
 		
 		if(Objects.isNull(auditoriaProceso)) {
 			auditoriaProceso = AuditoriaProcesos.builder().estadoProceso(Constantes.ESTADO_PROCESO_PENDIENTE)
-					.fechaCreacion(new Date()).fechaModificacion(new Date())
+					.fechaCreacion(fechaSistema).fechaModificacion(new Date())
 					.id(new AuditoriaProcesosPK(codigoProceso, fechaSistema))
 					.usuarioCreacion("ATH")
 					.build();
 		}else {
 			auditoriaProceso.setEstadoProceso(Constantes.ESTADO_PROCESO_PENDIENTE);
+			auditoriaProceso.setFechaCreacion(fechaSistema);
+			auditoriaProceso.setFechaModificacion(new Date());
 			
 		}	
 		auditoriaProcesosRepository.save(auditoriaProceso);

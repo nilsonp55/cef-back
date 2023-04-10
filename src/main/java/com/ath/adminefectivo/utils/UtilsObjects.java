@@ -13,6 +13,7 @@ import com.ath.adminefectivo.service.IParametroService;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Clase que contiene los servicios utilitarios de manera estatica
@@ -20,6 +21,7 @@ import lombok.NoArgsConstructor;
  * @author CamiloBenavides
  */
 @NoArgsConstructor(access= AccessLevel.PRIVATE)
+@Log4j2
 public class UtilsObjects {
 	
 	@Autowired
@@ -48,6 +50,7 @@ public class UtilsObjects {
 		try {
 			BeanUtils.copyProperties(origen, dest);
 		} catch (BeansException ex) {
+			log.error("copiarPropiedades Error: {}", ex.getMessage());
 			throw new AplicationException(ApiResponseCode.ERROR_COPIAR_PROPIEDADES.getCode(),
 					ApiResponseCode.ERROR_COPIAR_PROPIEDADES.getDescription(),
 					ApiResponseCode.ERROR_COPIAR_PROPIEDADES.getHttpStatus());

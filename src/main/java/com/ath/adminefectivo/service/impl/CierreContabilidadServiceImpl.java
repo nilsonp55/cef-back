@@ -1,13 +1,11 @@
 package com.ath.adminefectivo.service.impl;
 
 import java.util.Date;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.constantes.Dominios;
-import com.ath.adminefectivo.dto.RespuestaContableDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.LogProcesoDiario;
 import com.ath.adminefectivo.exception.NegocioException;

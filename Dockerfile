@@ -1,13 +1,23 @@
 FROM eclipse-temurin:17-jdk-alpine
 VOLUME /tmp
 EXPOSE 8080
-ENV url=jdbc:postgresql://awue1athcef-pt-rds-cluster.c59hzuikncxn.us-east-1.rds.amazonaws.com:5432/ctrefc
-ENV user=controlefect
-ENV pass=123
-ENV schema=controlefect
-ENV bucket=awue1athcef-pt-interfaces
-ENV region=us-east-1
 
-ARG JAR_FILE=target/admin-efectivo-0.0.1.jar
-ADD ${JAR_FILE} app.jar
+ARG ENV_URL
+ARG ENV_USER
+ARG ENV_PASS
+ARG ENV_SCHEMA
+ARG ENV_BUCKET
+ARG ENV_REGION
+ARG JAR_FILE
+
+
+ENV url=${ENV_URL}
+ENV user=${ENV_USER}
+ENV pass=${ENV_PASS}
+ENV schema=${ENV_SCHEMA}
+ENV bucket=${ENV_BUCKET}
+ENV region=${ENV_REGION}
+
+COPY ${JAR_FILE} app.jar
+
 ENTRYPOINT ["java","-jar","/app.jar"]

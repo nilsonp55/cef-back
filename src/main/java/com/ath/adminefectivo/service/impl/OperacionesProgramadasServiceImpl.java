@@ -1409,7 +1409,12 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 				operaciones.getIdOperacionRelac();
 				operaciones.setTasaNegociacion(null);
 				operaciones.setTipoOperacion(asignarTipoOperacion(contenido, detalleArchivo));
-				operaciones.setTipoServicio(determinarTipoServicio(contenido, detalleArchivo));
+				if ( operaciones.getFechaProgramacion().before(fechaDestino) ) {
+					operaciones.setTipoServicio( dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_SERVICIO,Dominios.TIPO_SERVICIO_PROGRAMADA));
+				}
+				else {
+					operaciones.setTipoServicio(determinarTipoServicio(contenido, detalleArchivo));
+				}
 				operaciones.setTipoTransporte(null);
 				operaciones.setUsuarioCreacion("User1");
 				operaciones.setUsuarioModificacion("User1");
