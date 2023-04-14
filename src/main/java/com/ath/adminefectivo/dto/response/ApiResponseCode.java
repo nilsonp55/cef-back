@@ -714,7 +714,7 @@ public enum ApiResponseCode {
 	/**
 	 * Ocurrio un error al consultar la auditor�a de un Proceso Diario
 	 */
-	ERROR_PROCESO_NO_EXISTE("E976", "Codigo Proceso no existe en auditor�a de procesos", HttpStatus.PRECONDITION_FAILED);
+	ERROR_PROCESO_NO_EXISTE("E976", "Codigo Proceso no existe en auditoría de procesos", HttpStatus.PRECONDITION_FAILED);
 	
 	
 	/**

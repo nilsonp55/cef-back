@@ -1,12 +1,10 @@
 package com.ath.adminefectivo.delegate.impl;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.data.domain.Page;
 
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.delegate.IPuntosDelegate;
@@ -70,9 +68,7 @@ public class PuntosDelegateImpl implements IPuntosDelegate{
 			cajero.setCodigoATM(createPuntosDTO.getCodigoATM());
 			cajero.setTarifaRuteo(createPuntosDTO.getTarifaRuteo());
 			cajero.setTarifaVerificacion(createPuntosDTO.getTarifaVerificacion());
-			Bancos bancoAval = new Bancos();
-			bancoAval.setCodigoPunto(createPuntosDTO.getBancoAVAL());
-			//cajero.setBancoAval(bancoAval);
+			cajero.setBancoAval(createPuntosDTO.getBancoAVAL());
 			
 			puntoResponse = puntosService.guardarPuntoCajeroATM(punto, cajero);
 		}
@@ -99,9 +95,7 @@ public class PuntosDelegateImpl implements IPuntosDelegate{
 		if(createPuntosDTO.getTipoPunto().equals(Constantes.PUNTO_OFICINA)) {
 			Oficinas oficina = new Oficinas();
 			oficina.setCodigoOficina(createPuntosDTO.getCodigoOficina());
-			Bancos bancoAval = new Bancos();
-			bancoAval.setCodigoPunto(createPuntosDTO.getBancoAVAL());
-			//oficina.setBancoAval(bancoAval);
+			oficina.setBancoAval(createPuntosDTO.getBancoAVAL());
 			oficina.setFajado(createPuntosDTO.getFajado());
 			oficina.setRefagillado(createPuntosDTO.getRefagillado());
 			oficina.setTarifaRuteo(createPuntosDTO.getTarifaRuteo());
