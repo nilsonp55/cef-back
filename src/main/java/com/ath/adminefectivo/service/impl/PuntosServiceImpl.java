@@ -150,19 +150,15 @@ public class PuntosServiceImpl implements IPuntosService {
 	 */
 	@Override
 	public Puntos guardarPuntoBanco(Puntos punto, Bancos banco) {
-		if (punto.getCodigoPunto() != null && puntosRepository.existsById(punto.getCodigoPunto())) {
-			throw new ConflictException(ApiResponseCode.ERROR_PUNTO_EXIST.getDescription());
-		}
-		Puntos puntoResponse = puntosRepository.save(punto);
-
+		
 		if (banco.getCodigoPunto() != null && bancosRepository.existsById(banco.getCodigoPunto())) {
 			throw new ConflictException(ApiResponseCode.ERROR_BANCO_EXIST.getDescription());
 		}
 
-		banco.setCodigoPunto(puntoResponse.getCodigoPunto());
+		banco.setCodigoPunto(punto.getCodigoPunto());
 		bancosRepository.save(banco);
 
-		return puntoResponse;
+		return punto;
 	}
 
 	/**
@@ -170,19 +166,15 @@ public class PuntosServiceImpl implements IPuntosService {
 	 */
 	@Override
 	public Puntos guardarPuntoOficina(Puntos punto, Oficinas oficina) {
-		if (punto.getCodigoPunto() != null && puntosRepository.existsById(punto.getCodigoPunto())) {
-			throw new ConflictException(ApiResponseCode.ERROR_PUNTO_EXIST.getDescription());
-		}
-		Puntos puntoResponse = puntosRepository.save(punto);
-
+		
 		if (oficina.getCodigoPunto() != null && oficinasRepository.existsById(oficina.getCodigoPunto())) {
 			throw new ConflictException(ApiResponseCode.ERROR_OFICINA_EXIST.getDescription());
 		}
 
-		oficina.setCodigoPunto(puntoResponse.getCodigoPunto());
+		oficina.setCodigoPunto(punto.getCodigoPunto());
 		oficinasRepository.save(oficina);
 
-		return puntoResponse;
+		return punto;
 	}
 
 	/**
@@ -190,19 +182,15 @@ public class PuntosServiceImpl implements IPuntosService {
 	 */
 	@Override
 	public Puntos guardarPuntoCajeroATM(Puntos punto, CajerosATM cajerosATM) {
-		if (punto.getCodigoPunto() != null && puntosRepository.existsById(punto.getCodigoPunto())) {
-			throw new ConflictException(ApiResponseCode.ERROR_PUNTO_EXIST.getDescription());
-		}
-		Puntos puntoResponse = puntosRepository.save(punto);
-
+		
 		if (cajerosATM.getCodigoPunto() != null && cajerosATMRepository.existsById(cajerosATM.getCodigoPunto())) {
 			throw new ConflictException(ApiResponseCode.ERROR_CAJERO_EXIST.getDescription());
 		}
 
-		cajerosATM.setCodigoPunto(puntoResponse.getCodigoPunto());
+		cajerosATM.setCodigoPunto(punto.getCodigoPunto());
 		cajerosATMRepository.save(cajerosATM);
 
-		return puntoResponse;
+		return punto;
 	}
 
 	/**
@@ -219,12 +207,9 @@ public class PuntosServiceImpl implements IPuntosService {
 
 	
 	public Puntos guardarPuntoSitioCliente(Puntos punto, SitiosClientes sitiosClientes) {
-		if (punto.getCodigoPunto() != null && !puntosRepository.existsById(punto.getCodigoPunto())) {
-			throw new ConflictException(ApiResponseCode.ERROR_PUNTO_EXIST.getDescription());
-		}
-		Puntos puntoResponse = puntosRepository.save(punto);
-		sitiosClientes.setPuntos(puntoResponse);
-		sitiosClientes.setCodigoPunto(puntoResponse.getCodigoPunto());
+		
+		sitiosClientes.setPuntos(punto);
+		sitiosClientes.setCodigoPunto(punto.getCodigoPunto());
 		if (sitiosClientes.getCodigoPunto() != null
 				&& sitiosClienteRepository.existsById(sitiosClientes.getCodigoPunto())) {
 			throw new ConflictException(ApiResponseCode.ERROR_SITIO_CLIENTE_EXIST.getDescription());
@@ -232,7 +217,7 @@ public class PuntosServiceImpl implements IPuntosService {
 
 		sitiosClienteRepository.save(sitiosClientes);
 
-		return puntoResponse;
+		return punto;
 	}
 
 	/**
@@ -240,19 +225,15 @@ public class PuntosServiceImpl implements IPuntosService {
 	 */
 	@Override
 	public Puntos guardarPuntoFondo(Puntos punto, Fondos fondo) {
-		if (punto.getCodigoPunto() != null && puntosRepository.existsById(punto.getCodigoPunto())) {
-			throw new ConflictException(ApiResponseCode.ERROR_PUNTO_EXIST.getDescription());
-		}
-		Puntos puntoResponse = puntosRepository.save(punto);
-
+		
 		if (fondo.getCodigoPunto() != null && fondosRepository.existsById(fondo.getCodigoPunto())) {
 			throw new ConflictException(ApiResponseCode.ERROR_FONDO_EXIST.getDescription());
 		}
 
-		fondo.setCodigoPunto(puntoResponse.getCodigoPunto());
+		fondo.setCodigoPunto(punto.getCodigoPunto());
 		fondosRepository.save(fondo);
 
-		return puntoResponse;
+		return punto;
 	}
 
 	/**

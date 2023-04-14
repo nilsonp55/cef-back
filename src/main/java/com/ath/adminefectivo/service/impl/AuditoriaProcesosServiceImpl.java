@@ -1,6 +1,6 @@
 package com.ath.adminefectivo.service.impl;
 
-import java.time.LocalDate;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -10,17 +10,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ath.adminefectivo.constantes.Constantes;
-import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.AuditoriaProcesosDTO;
+import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.AuditoriaProcesos;
 import com.ath.adminefectivo.entities.id.AuditoriaProcesosPK;
+import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.IAuditoriaProcesosRepository;
 import com.ath.adminefectivo.service.IAuditoriaProcesosService;
 import com.ath.adminefectivo.service.IDominioService;
-import com.ath.adminefectivo.exception.NegocioException;
+
+import lombok.extern.log4j.Log4j2;
 
 
 @Service
+@Log4j2
 public class AuditoriaProcesosServiceImpl implements IAuditoriaProcesosService {
 
 	@Autowired
@@ -35,18 +38,21 @@ public class AuditoriaProcesosServiceImpl implements IAuditoriaProcesosService {
 	 */
 	@Override
 	public AuditoriaProcesosDTO consultarAuditoriaPorProceso(String codigoProceso, Date fechaSistema) {
-		
-		fechaSistema.setHours(0);
-		fechaSistema.setSeconds(0);
-		
-		AuditoriaProcesos auditoriaProceso = auditoriaProcesosRepository.findById(new AuditoriaProcesosPK(codigoProceso, fechaSistema)).orElse(null);
-		
-		if(Objects.isNull(auditoriaProceso)) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(fechaSistema);
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.SECOND, 0);
+
+		AuditoriaProcesos auditoriaProceso = auditoriaProcesosRepository
+				.findById(new AuditoriaProcesosPK(codigoProceso, calendar.getTime())).orElse(null);
+
+		if (Objects.isNull(auditoriaProceso)) {
+			log.error("No se encontro proceso: {} - fechaSistema: {}", codigoProceso, fechaSistema.toString());
 			throw new NegocioException(ApiResponseCode.ERROR_PROCESO_NO_EXISTE.getCode(),
 					ApiResponseCode.ERROR_PROCESO_NO_EXISTE.getDescription(),
 					ApiResponseCode.ERROR_PROCESO_NO_EXISTE.getHttpStatus());
 		}
-			
+
 		return AuditoriaProcesosDTO.CONVERTER_DTO.apply(auditoriaProceso);
 	}
 	

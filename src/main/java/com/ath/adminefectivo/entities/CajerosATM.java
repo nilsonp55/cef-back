@@ -1,10 +1,9 @@
 package com.ath.adminefectivo.entities;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Entity;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -35,9 +34,8 @@ public class CajerosATM {
 	@Column(name = "CODIGO_ATM")
 	private Integer codigoATM;
 	
-	//@ManyToOne
-	//@JoinColumn(name = "COD_BANCO_AVAL", nullable = false)
-	//private Bancos bancoAval;
+	@Column(name = "COD_BANCO_AVAL")
+	private Integer bancoAval;
 	
 	@Column(name = "TARIFA_RUTEO")
 	private Double tarifaRuteo;
