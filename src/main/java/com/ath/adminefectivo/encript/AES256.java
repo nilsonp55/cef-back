@@ -1,5 +1,26 @@
 package com.ath.adminefectivo.encript;
 
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.KeyFactory;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.Arrays;
+import java.util.Base64;
+
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -18,32 +39,8 @@ import com.ath.adminefectivo.constantes.Parametros;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.service.IParametroService;
-import com.ath.adminefectivo.service.impl.ParametroServiceImpl;
-import com.fasterxml.jackson.databind.deser.impl.CreatorCandidate.Param;
 
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.KeyFactory;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.KeySpec;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
-import java.security.SecureRandom;
-import java.util.Arrays;
-import java.util.Base64;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * @author Anass AIT BEN EL ARBI
@@ -63,6 +60,7 @@ import java.util.Base64;
  */
 
 @Component
+@Log4j2
 public class AES256 {
 
 	@Autowired
@@ -191,23 +189,17 @@ public class AES256 {
 		}
 		String nombreArchivoLLavePublica = parametroService.valorParametro(Constantes.NAME_PUBLIC_KEY_RSA);
 		String nombreArchivoLLavePrivada = parametroService.valorParametro(Constantes.NAME_PRIVATE_KEY_RSA);
-		try {
-			BufferedWriter archivoPublico = new BufferedWriter(
-					new OutputStreamWriter(new FileOutputStream(nombreArchivoLLavePublica)));
-			BufferedWriter archivoPrivado = new BufferedWriter(
-					new OutputStreamWriter(new FileOutputStream(nombreArchivoLLavePrivada)));
-
+		try(BufferedWriter archivoPublico = new BufferedWriter(
+					new OutputStreamWriter(new FileOutputStream(nombreArchivoLLavePublica))) ) {
 			archivoPublico.write(publicKeysS);
-			archivoPrivado.write(privateKeyS);
-
-			archivoPublico.close();
-			archivoPrivado.close();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("Guardando archivo publico: {}", e.getMessage());
+		}
+		try(BufferedWriter archivoPrivado = new BufferedWriter(
+					new OutputStreamWriter(new FileOutputStream(nombreArchivoLLavePrivada)))) {
+			archivoPrivado.write(privateKeyS);
+		} catch (IOException e) {
+			log.error("Guardando archivo privado: {}", e.getMessage());
 		}
 
 	}
