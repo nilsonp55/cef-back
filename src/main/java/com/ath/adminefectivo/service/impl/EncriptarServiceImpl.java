@@ -104,7 +104,7 @@ public class EncriptarServiceImpl implements IEncriptarService {
 		if(algoritmoEncriptado.equals(dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_ENCRIPTADO, Dominios.TIPO_ENCRIPTADO_RSA))) {
 			return this.desencriptarArchivoAlgoritmoRSA(archivo, delimitador);
 		}
-		return null;
+		return new ArrayList<>();
 	}
 	
 	/**
@@ -141,7 +141,7 @@ public class EncriptarServiceImpl implements IEncriptarService {
 					ApiResponseCode.ERROR_DESENCRIPTANDO_CADENA.getDescription()+ " - "+ e.getMessage(),
 					ApiResponseCode.ERROR_DESENCRIPTANDO_CADENA.getHttpStatus());
 		}
-		return null;
+		return resultado;
 	}
 	
 
