@@ -2,7 +2,6 @@ package com.ath.adminefectivo.service;
 
 import java.util.List;
 
-import com.ath.adminefectivo.dto.LogProcesoDiarioDTO;
 import com.ath.adminefectivo.dto.LogProcesoMensualDTO;
 import com.querydsl.core.types.Predicate;
 
@@ -35,11 +34,11 @@ public interface ILogProcesoMensualService {
 	 * Servicio encargado de realizar validaciones para permitir el cierre
 	 * del proceso
 	 * 
-	 * @param logProcesoMensual
+	 * @param proceso
 	 * @return boolean
 	 * @author prv_dnaranjo
 	 */
-	boolean validarLogProceso(LogProcesoMensualDTO logProcesoMensual);
+	boolean validarLogProceso(String proceso);
 	
 
 }

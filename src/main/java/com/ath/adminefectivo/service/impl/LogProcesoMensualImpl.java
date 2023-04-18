@@ -66,7 +66,7 @@ public class LogProcesoMensualImpl implements ILogProcesoMensualService {
 	@Override
 	public LogProcesoMensualDTO getLogsProcesosMensualByCodigoProcesoAndPendiente(String codigoProceso){
 		var procesos = logProcesoMensualRepository.findByCodigoProcesoAndEstado(codigoProceso, Dominios.ESTADO_PROCESO_DIA_PENDIENTE);
-		
+		var proceso = logProcesoMensualRepository.findByCodigoProceso(codigoProceso);
 		if(procesos.isEmpty()) {
 			throw new NegocioException(ApiResponseCode.ERROR_LOG_MENSUAL_NO_EXISTE.getCode(),
 					ApiResponseCode.ERROR_LOG_MENSUAL_NO_EXISTE.getDescription()+codigoProceso+" con estado = "+ Dominios.ESTADO_PROCESO_DIA_PENDIENTE,
@@ -84,11 +84,9 @@ public class LogProcesoMensualImpl implements ILogProcesoMensualService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean validarLogProceso(LogProcesoMensualDTO logProcesoMensual) {
-		if(logProcesoMensual.getCodigoProceso().equals(Dominios.LOG_MENSUAL_LIQUIDACION)) {
-			return this.validarLogProcesoMensual(logProcesoMensual);
-		}
-		return false;
+	public boolean validarLogProceso(String proceso) {
+		LogProcesoMensualDTO logProcesoMensual = getLogsProcesosMensualByCodigoProcesoAndPendiente(proceso);
+		return this.validarLogProcesoMensual(logProcesoMensual);
 	}
 
 	private boolean validarLogProcesoMensual(LogProcesoMensualDTO logProcesoMensual) {
