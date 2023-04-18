@@ -9,30 +9,29 @@ import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.GetMapping;
 
-
-import com.ath.adminefectivo.delegate.IConciliacionOperacionesDelegate;
 import com.ath.adminefectivo.dto.CertificadasNoConciliadasDTO;
-import com.ath.adminefectivo.dto.ParametrosConciliacionDTO;
 import com.ath.adminefectivo.dto.FechasConciliacionDTO;
+import com.ath.adminefectivo.dto.ParametrosConciliacionDTO;
 import com.ath.adminefectivo.dto.ProgramadasNoConciliadasDTO;
 import com.ath.adminefectivo.dto.ResumenConciliacionesDTO;
 import com.ath.adminefectivo.dto.UpdateCertificadasFallidasDTO;
 import com.ath.adminefectivo.dto.UpdateProgramadasFallidasDTO;
-import com.ath.adminefectivo.dto.compuestos.CertificadasNoConciliadasNombresDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionesProgramadasNombresDTO;
-import com.ath.adminefectivo.dto.compuestos.ProgramadasNoConciliadasNombresDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
 import com.ath.adminefectivo.entities.OperacionesCertificadas;
 import com.ath.adminefectivo.entities.OperacionesProgramadas;
+import com.ath.adminefectivo.service.IConciliacionOperacionesService;
 import com.querydsl.core.types.Predicate;
+
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Controlador responsable de exponer los metodos referentes al proceso de
@@ -42,10 +41,11 @@ import com.querydsl.core.types.Predicate;
  */
 @RestController
 @RequestMapping("${endpoints.conciliacion}")
+@Log4j2
 public class ConciliacionOperacionesController {
-
+	
 	@Autowired
-	IConciliacionOperacionesDelegate conciliacionOperacionesDelegate;
+	IConciliacionOperacionesService conciliacionOperacionesService;
 
 	/**
 	 * Metodo encargado de retornar la lista de todas las operaciones conciliadas
@@ -58,7 +58,7 @@ public class ConciliacionOperacionesController {
 	public ResponseEntity<ApiResponseADE<Page<OperacionesProgramadasNombresDTO>>> getConciliadas(
 			@QuerydslPredicate(root = OperacionesProgramadas.class) Predicate predicate, Pageable page) {
 
-		Page<OperacionesProgramadasNombresDTO> consulta = conciliacionOperacionesDelegate.getOperacionesConciliadas(
+		Page<OperacionesProgramadasNombresDTO> consulta = conciliacionOperacionesService.getOperacionesConciliadas(
 				predicate, page);
 
 		return ResponseEntity.status(HttpStatus.OK)
@@ -76,8 +76,8 @@ public class ConciliacionOperacionesController {
 	@GetMapping(value = "${endpoints.conciliacion.consultar-programadas-no-conciliadas}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<Page<ProgramadasNoConciliadasDTO>>> getProgramadaNoConcilliada(
 			@QuerydslPredicate(root = OperacionesProgramadas.class) Predicate predicate, Pageable page) {
-		
-		Page<ProgramadasNoConciliadasDTO> consulta = conciliacionOperacionesDelegate.getProgramadaNoConcilliada(predicate, page);
+		log.debug("programadas-no-conciliadas - predicate: {}, page: {}", predicate.toString(), page.toString());
+		Page<ProgramadasNoConciliadasDTO> consulta = conciliacionOperacionesService.getProgramadaNoConcilliada(predicate, page);
 
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
@@ -95,8 +95,8 @@ public class ConciliacionOperacionesController {
 	@GetMapping(value = "${endpoints.conciliacion.consultar-certificadas-no-conciliadas}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<Page<CertificadasNoConciliadasDTO>>> getCertificadaNoConciliada(
 			@QuerydslPredicate(root = OperacionesCertificadas.class) Predicate predicate, Pageable page) {
-
-		var consulta1 = conciliacionOperacionesDelegate.getCertificadaNoConciliada(predicate, page);
+		log.debug("consultar-certificadas-no-conciliadas - Predicate: {} - Page: {}", predicate.toString(), page.toString());
+		var consulta1 = conciliacionOperacionesService.getCertificadaNoConciliada(predicate, page);
 
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta1, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
@@ -116,7 +116,7 @@ public class ConciliacionOperacionesController {
 	public ResponseEntity<ApiResponseADE<Boolean>> updateOperacionesProgramadasFallidas(
 			@RequestBody(required = true) UpdateProgramadasFallidasDTO updateProgramadasFallidasDTO) {
 
-		Boolean respuesta = conciliacionOperacionesDelegate
+		Boolean respuesta = conciliacionOperacionesService
 				.updateOperacionesProgramadasFallidas(updateProgramadasFallidasDTO);
 
 		return ResponseEntity.status(HttpStatus.OK)
@@ -137,7 +137,7 @@ public class ConciliacionOperacionesController {
 	public ResponseEntity<ApiResponseADE<Boolean>> updateOperacionesCertificadasFallidas(
 			@RequestBody(required = true) UpdateCertificadasFallidasDTO updateCertificadasFallidasDTO) {
 
-		Boolean respuesta = conciliacionOperacionesDelegate
+		Boolean respuesta = conciliacionOperacionesService
 				.updateOperacionesCertificadasFallidas(updateCertificadasFallidasDTO);
 
 		return ResponseEntity.status(HttpStatus.OK)
@@ -159,7 +159,7 @@ public class ConciliacionOperacionesController {
 	public ResponseEntity<ApiResponseADE<Boolean>> conciliacionManual(
 			@RequestBody(required = true) List<ParametrosConciliacionDTO> conciliacionManualDTO) {
 
-		Boolean respuesta = conciliacionOperacionesDelegate.conciliacionManual(conciliacionManualDTO);
+		Boolean respuesta = conciliacionOperacionesService.conciliacionManual(conciliacionManualDTO);
 
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(respuesta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
@@ -178,7 +178,7 @@ public class ConciliacionOperacionesController {
 	public ResponseEntity<ApiResponseADE<ResumenConciliacionesDTO>> consultaResumenConciliaciones(
 			@RequestBody(required = true) FechasConciliacionDTO fechaConciliacion) {
 
-		ResumenConciliacionesDTO consulta = conciliacionOperacionesDelegate
+		ResumenConciliacionesDTO consulta = conciliacionOperacionesService
 				.consultaResumenConciliaciones(fechaConciliacion);
 
 		return ResponseEntity.status(HttpStatus.OK)
@@ -195,7 +195,7 @@ public class ConciliacionOperacionesController {
 	@PostMapping(value = "${endpoints.conciliacion.cierre}")
 	public ResponseEntity<ApiResponseADE<Boolean>> cierreConciliaciones() {
 
-		Boolean consulta = conciliacionOperacionesDelegate.cierreConciliaciones();
+		Boolean consulta = conciliacionOperacionesService.cierreConciliaciones();
 
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())

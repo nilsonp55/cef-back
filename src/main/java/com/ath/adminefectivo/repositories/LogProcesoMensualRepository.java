@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
-import com.ath.adminefectivo.entities.LogProcesoDiario;
 import com.ath.adminefectivo.entities.LogProcesoMensual;
 
 /**
@@ -60,7 +59,7 @@ public interface LogProcesoMensualRepository extends JpaRepository<LogProcesoMen
 	@Query(value = "SELECT "
 			+ "	CASE WHEN COUNT(1) > 0 THEN TRUE ELSE FALSE END  "
 			+ "FROM "
-			+ "	public.log_proceso_diario "
+			+ "	log_proceso_diario "
 			+ "WHERE "
 			+ "	estado_proceso  = ?1 AND "
 			+ "	EXTRACT(YEAR FROM fecha_finalizacion) = ?2 AND "
@@ -78,7 +77,7 @@ public interface LogProcesoMensualRepository extends JpaRepository<LogProcesoMen
 	@Query(value = "SELECT "
 			+ "	CASE WHEN COUNT(1) > 0 THEN TRUE ELSE FALSE END  "
 			+ "FROM "
-			+ "	public.costos_clasificacion "
+			+ "	costos_clasificacion "
 			+ "WHERE mes_año = ?1 ",nativeQuery = true)
 	boolean existenCostosClasificacionPorMesAnio(String mesAnio);
 	
@@ -93,7 +92,7 @@ public interface LogProcesoMensualRepository extends JpaRepository<LogProcesoMen
 	@Query(value = "SELECT "
 			+ "	CASE WHEN COUNT(1) > 0 THEN TRUE ELSE FALSE END  "
 			+ "FROM "
-			+ "	public.parametros_liquidacion_costo plc "
+			+ "	parametros_liquidacion_costo plc "
 			+ "WHERE fecha_concilia = ?1 ",nativeQuery = true)
 	boolean existenLiquidacionCostoDiariaByFecha(Date fecha);
 	

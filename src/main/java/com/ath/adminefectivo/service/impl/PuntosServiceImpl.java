@@ -4,20 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import com.ath.adminefectivo.dto.CreatePuntosDTO;
-import com.ath.adminefectivo.dto.EscalasDTO;
 import com.ath.adminefectivo.dto.PuntosDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.Bancos;
 import com.ath.adminefectivo.entities.CajerosATM;
-import com.ath.adminefectivo.entities.Escalas;
 import com.ath.adminefectivo.entities.Fondos;
 import com.ath.adminefectivo.entities.Oficinas;
 import com.ath.adminefectivo.entities.Puntos;
@@ -34,7 +30,10 @@ import com.ath.adminefectivo.repositories.ISitiosClientesRepository;
 import com.ath.adminefectivo.service.IPuntosService;
 import com.querydsl.core.types.Predicate;
 
+import lombok.extern.log4j.Log4j2;
+
 @Service
+@Log4j2
 public class PuntosServiceImpl implements IPuntosService {
 
 	@Autowired
@@ -72,6 +71,7 @@ public class PuntosServiceImpl implements IPuntosService {
 	 */
 	@Override
 	public List<PuntosDTO> getPuntos(Predicate predicate) {
+		log.info("predicate: {}", predicate.toString());
 		var puntos = puntosRepository.findAll(predicate);
 		List<PuntosDTO> listPuntosDto = new ArrayList<>();
 		puntos.forEach(entity -> listPuntosDto.add(PuntosDTO.CONVERTER_DTO.apply(entity)));
@@ -99,7 +99,6 @@ public class PuntosServiceImpl implements IPuntosService {
 	 */
 	@Override
 	public String getNombrePunto(String tipoPunto, Integer codigoPunto) {
-		System.out.println("String tipoPunto, Integer codigoPunto = " + tipoPunto + "  " + codigoPunto);
 		var puntosOpt = puntosRepository.findByCodigoPuntoAndTipoPunto(codigoPunto, tipoPunto);
 		if (Objects.isNull(puntosOpt)) {
 			throw new AplicationException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
@@ -151,19 +150,15 @@ public class PuntosServiceImpl implements IPuntosService {
 	 */
 	@Override
 	public Puntos guardarPuntoBanco(Puntos punto, Bancos banco) {
-		if (punto.getCodigoPunto() != null && puntosRepository.existsById(punto.getCodigoPunto())) {
-			throw new ConflictException(ApiResponseCode.ERROR_PUNTO_EXIST.getDescription());
-		}
-		Puntos puntoResponse = puntosRepository.save(punto);
-
+		
 		if (banco.getCodigoPunto() != null && bancosRepository.existsById(banco.getCodigoPunto())) {
 			throw new ConflictException(ApiResponseCode.ERROR_BANCO_EXIST.getDescription());
 		}
 
-		banco.setCodigoPunto(puntoResponse.getCodigoPunto());
+		banco.setCodigoPunto(punto.getCodigoPunto());
 		bancosRepository.save(banco);
 
-		return puntoResponse;
+		return punto;
 	}
 
 	/**
@@ -171,19 +166,15 @@ public class PuntosServiceImpl implements IPuntosService {
 	 */
 	@Override
 	public Puntos guardarPuntoOficina(Puntos punto, Oficinas oficina) {
-		if (punto.getCodigoPunto() != null && puntosRepository.existsById(punto.getCodigoPunto())) {
-			throw new ConflictException(ApiResponseCode.ERROR_PUNTO_EXIST.getDescription());
-		}
-		Puntos puntoResponse = puntosRepository.save(punto);
-
+		
 		if (oficina.getCodigoPunto() != null && oficinasRepository.existsById(oficina.getCodigoPunto())) {
 			throw new ConflictException(ApiResponseCode.ERROR_OFICINA_EXIST.getDescription());
 		}
 
-		oficina.setCodigoPunto(puntoResponse.getCodigoPunto());
+		oficina.setCodigoPunto(punto.getCodigoPunto());
 		oficinasRepository.save(oficina);
 
-		return puntoResponse;
+		return punto;
 	}
 
 	/**
@@ -191,19 +182,15 @@ public class PuntosServiceImpl implements IPuntosService {
 	 */
 	@Override
 	public Puntos guardarPuntoCajeroATM(Puntos punto, CajerosATM cajerosATM) {
-		if (punto.getCodigoPunto() != null && puntosRepository.existsById(punto.getCodigoPunto())) {
-			throw new ConflictException(ApiResponseCode.ERROR_PUNTO_EXIST.getDescription());
-		}
-		Puntos puntoResponse = puntosRepository.save(punto);
-
+		
 		if (cajerosATM.getCodigoPunto() != null && cajerosATMRepository.existsById(cajerosATM.getCodigoPunto())) {
 			throw new ConflictException(ApiResponseCode.ERROR_CAJERO_EXIST.getDescription());
 		}
 
-		cajerosATM.setCodigoPunto(puntoResponse.getCodigoPunto());
+		cajerosATM.setCodigoPunto(punto.getCodigoPunto());
 		cajerosATMRepository.save(cajerosATM);
 
-		return puntoResponse;
+		return punto;
 	}
 
 	/**
@@ -220,12 +207,9 @@ public class PuntosServiceImpl implements IPuntosService {
 
 	
 	public Puntos guardarPuntoSitioCliente(Puntos punto, SitiosClientes sitiosClientes) {
-		if (punto.getCodigoPunto() != null && !puntosRepository.existsById(punto.getCodigoPunto())) {
-			throw new ConflictException(ApiResponseCode.ERROR_PUNTO_EXIST.getDescription());
-		}
-		Puntos puntoResponse = puntosRepository.save(punto);
-		sitiosClientes.setPuntos(puntoResponse);
-		sitiosClientes.setCodigoPunto(puntoResponse.getCodigoPunto());
+		
+		sitiosClientes.setPuntos(punto);
+		sitiosClientes.setCodigoPunto(punto.getCodigoPunto());
 		if (sitiosClientes.getCodigoPunto() != null
 				&& sitiosClienteRepository.existsById(sitiosClientes.getCodigoPunto())) {
 			throw new ConflictException(ApiResponseCode.ERROR_SITIO_CLIENTE_EXIST.getDescription());
@@ -233,7 +217,7 @@ public class PuntosServiceImpl implements IPuntosService {
 
 		sitiosClienteRepository.save(sitiosClientes);
 
-		return puntoResponse;
+		return punto;
 	}
 
 	/**
@@ -241,19 +225,15 @@ public class PuntosServiceImpl implements IPuntosService {
 	 */
 	@Override
 	public Puntos guardarPuntoFondo(Puntos punto, Fondos fondo) {
-		if (punto.getCodigoPunto() != null && puntosRepository.existsById(punto.getCodigoPunto())) {
-			throw new ConflictException(ApiResponseCode.ERROR_PUNTO_EXIST.getDescription());
-		}
-		Puntos puntoResponse = puntosRepository.save(punto);
-
+		
 		if (fondo.getCodigoPunto() != null && fondosRepository.existsById(fondo.getCodigoPunto())) {
 			throw new ConflictException(ApiResponseCode.ERROR_FONDO_EXIST.getDescription());
 		}
 
-		fondo.setCodigoPunto(puntoResponse.getCodigoPunto());
+		fondo.setCodigoPunto(punto.getCodigoPunto());
 		fondosRepository.save(fondo);
 
-		return puntoResponse;
+		return punto;
 	}
 
 	/**

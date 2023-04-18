@@ -62,6 +62,16 @@ public final class Constantes {
 	public static final String ESTADO_CARGUE_PENDIENTE = "PEND";
 	public static final String ESTADO_CARGUE_ERROR = "ERRADO";
 	public static final String ESTADO_CARGUE_VALIDO = "OK";
+	public static final String ESTADO_ARCHIVO_HISTORICO = "HIS";
+	
+	/**
+	 * Constantes de estados para auditoria procesos
+	 */
+	public static final String ESTADO_PROCESO_INICIO = "INICIADO";
+	public static final String ESTADO_PROCESO_PROCESO = "EN PROCESO";
+	public static final String ESTADO_PROCESO_PENDIENTE = "PENDIENTE";
+	public static final String ESTADO_PROCESO_PROCESADO = "PROCESADO";
+	public static final String ESTADO_PROCESO_ERROR = "ERROR";
 	
 
 	/**
@@ -246,6 +256,11 @@ public final class Constantes {
 	public static final String DOMINIO_TIPO_ENCRIPTADO = "TIPO_ENCRIPTADO";
 	
 	/**
+	 * Constante del tipo de encriptado en dominios
+	 */
+	public static final String DOMINIO_AUDITORIA_PROCESOS = "AUDITORIA_PROCESOS";
+	
+	/**
 	 * Delimintadores de los archivos
 	 */
 	public static final String DELIMITADOR_OTROS = "O";
@@ -342,6 +357,12 @@ public final class Constantes {
 	 * Constante para identificar el banco origen de un archivo
 	 */
 	public static final String CAMPO_DETALLE_ARCHIVO_ENTIDAD_DESTINO = "ENTIDADDESTINO";
+	
+	/**
+	 * Constante para identificar si en un retiro se cobra comision BanRepublica
+	 */
+	public static final String CAMPO_DETALLE_COBROBR = "COBRO BANREP";
+	
 	
 	/**
 	 * Constante para identificar el fondo origen de un archivo
@@ -599,8 +620,8 @@ public static final String DELETE_SEPARADORES = "";
 	/**
 	 * Nombre de archivos generados xls 
 	 */
-	public static final String CTB_BBOG_Manana = "Contabilidad_BBOG_Manana";
-	public static final String CTB_BBOG_Tarde = "Contabilidad_BBOG_Tarde";
+	public static final String CTB_BBOG_Manana = "Contabilidad_BBG_Cambios_";
+	public static final String CTB_BBOG_Tarde = "Contabilidad_BBOG_";
 	public static final String CTB_BOCC_Manana = "Contabilidad_BOCC_Manana";
 	public static final String CTB_BOCC_Tarde = "Contabilidad_BOCC_Tarde";
 	public static final String CTB_BPOP_Manana = "Contabilidad_BPOP_Manana";
@@ -609,12 +630,14 @@ public static final String DELETE_SEPARADORES = "";
 	public static final String CTB_BAVV_Tarde = "Contabilidad_BAVV_Tarde";
 	
 	public static final String EXTENSION_ARCHIVO_XLS = ".xls";
+	public static final String EXTENSION_ARCHIVO_XLSX = ".xlsx";
 	public static final String EXTENSION_ARCHIVO_TXT = ".txt";
 	
 	/**
 	 * URL en la cual se almacenaran los archivos generados de contabilidad
 	 */
 	public static final String URL_ARCHIVOS_CONTABLES_S3 = "CEfectivo/Contabilidad/";
+	public static final String URL_ARCHIVOS_CONTABLES_ENVIADOS_S3 = "CEfectivo/Contabilidad/Enviados/";
 	
 	/**
 	 * Separador del tipo de mes año en el proceso de liquidacion 

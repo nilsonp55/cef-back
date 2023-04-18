@@ -11,7 +11,8 @@ import lombok.Setter;
 @Setter
 @Getter
 public class ValoresLiquidadosDTO {
+	
 	Integer cantidadOperacionesLiquidadas;
 	Integer registrosConError;
-	List<RespuestaLiquidarCostosDTO> respuestaLiquidarCostos;
+	List<ParametrosLiquidacionCostoDTO> respuestaLiquidarCostos;
 }

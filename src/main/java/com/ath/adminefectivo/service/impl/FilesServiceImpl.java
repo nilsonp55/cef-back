@@ -115,16 +115,15 @@ public class FilesServiceImpl implements IFilesService {
 		try {
 			if(s3Bucket) {
 				s3Util.deleteObjectBucket(url);
-				return true;
 			}else {
 				Files.delete(Path.of(url));
-				return true;
 			}
 		} catch (IOException e) {
 			throw new NegocioException(ApiResponseCode.ERROR_ARCHIVOS_NO_EXISTE_BD.getCode(),
 					ApiResponseCode.ERROR_ARCHIVOS_NO_EXISTE_BD.getDescription(),
 					ApiResponseCode.ERROR_ARCHIVOS_NO_EXISTE_BD.getHttpStatus());
 		}
+		return true;
 	}
 
 	/**

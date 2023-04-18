@@ -1,6 +1,5 @@
 package com.ath.adminefectivo.service.impl;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
@@ -16,6 +15,7 @@ import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.MaestrosDefinicionArchivoDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.exception.AplicationException;
+import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.service.IDominioService;
 import com.ath.adminefectivo.service.IEncriptarService;
 import com.ath.adminefectivo.service.ILecturaArchivoService;
@@ -23,11 +23,11 @@ import com.opencsv.CSVParser;
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
-import com.opencsv.exceptions.CsvException;
 
-import com.ath.adminefectivo.exception.NegocioException;
+import lombok.extern.log4j.Log4j2;
 
 @Service
+@Log4j2
 public class LecturaArchivoServiceImpl implements ILecturaArchivoService {
 
 	@Autowired
@@ -80,7 +80,7 @@ public class LecturaArchivoServiceImpl implements ILecturaArchivoService {
 				
 				List<String[]> resultadoSinValidar = csvReader.readAll();
 					resultadoSinValidar.forEach(linea ->{
-					System.out.println("csvReader.readAll(); "+ linea.length);
+					log.debug("csvReader.readAll(); "+ linea.length);
 					if(linea.length > 2) {
 						resultadoValidado.add(linea);
 					}}

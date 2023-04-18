@@ -74,7 +74,7 @@ public class TarifasOperacion {
 	private String comisionAplicar;
 
 	@Column(name = "VALOR_TARIFA")
-	private int valorTarifa; 
+	private Double valorTarifa; 
 
 	@Column(name = "ESTADO", nullable = true)
 	private int estado;

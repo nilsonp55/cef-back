@@ -40,12 +40,15 @@ import com.ath.adminefectivo.service.IMaestroDefinicionArchivoService;
 import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.IValidacionArchivoService;
 
+import lombok.extern.log4j.Log4j2;
+
 /**
  * Delegate responsable del manejo, consulta y persistencia de archivos
  * 
  * @author cesar.castano
  */
 @Service
+@Log4j2
 public class CargueCertificacionDelegateImpl implements ICargueCertificacionDelegate {
 
 	@Autowired
@@ -293,7 +296,7 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	 */
 	@Scheduled(cron = "0 5/15 7-17 * * *")
 	public void certificacionesProgramadas() {
-		System.out.println("ME EJECUTE CADA HORA MINUTOS " + new Date());
+		log.debug("ME EJECUTE CADA HORA MINUTOS " + new Date());
 		List<ArchivosCargadosDTO> certificaciones;
 		List<ValidacionArchivoDTO> validacionesArchivos = new ArrayList<>();
 		//crea el registro en bitacora de automaticos

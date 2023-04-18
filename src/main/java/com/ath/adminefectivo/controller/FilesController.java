@@ -1,6 +1,5 @@
 package com.ath.adminefectivo.controller;
 
-import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 import javax.transaction.RollbackException;
@@ -36,9 +35,9 @@ import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.utils.s3Utils;
 
 import io.swagger.annotations.ApiOperation;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Controlador responsable de exponer los metodos referentes a la carga y
@@ -48,6 +47,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
  */
 @RestController
 @RequestMapping("${endpoints.Archivos}")
+@Log4j2
 public class FilesController {
 
 	@Autowired
@@ -189,7 +189,7 @@ public class FilesController {
 	@GetMapping(value = "${endpoints.Archivos.consultar}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<List<ArchivosCargadosDTO>>> consultarArchivos(
 			@RequestParam("idMaestroDefinicion") String idMaestroDefinicion, @RequestParam("estado") String estado) {
-				System.out.println("Entro controller");
+				log.debug("Entro controller");
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<List<ArchivosCargadosDTO>>(filesDelegate.consultarArchivos(idMaestroDefinicion, estado),
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())

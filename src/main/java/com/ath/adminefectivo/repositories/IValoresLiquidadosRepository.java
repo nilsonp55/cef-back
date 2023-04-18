@@ -8,9 +8,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import com.ath.adminefectivo.entities.ValoresLiquidados;
 
+@Repository
 public interface IValoresLiquidadosRepository extends JpaRepository<ValoresLiquidados, Long>, 
 QuerydslPredicateExecutor<ValoresLiquidados>{
 
@@ -20,14 +22,15 @@ QuerydslPredicateExecutor<ValoresLiquidados>{
 	 * @return ValoresLiquidados
 	 * @author prv_ccastano
 	 */
-	ValoresLiquidados findByIdLiquidacion(Long idLiquidacion);
+	@Query(value = "SELECT * FROM valores_liquidados WHERE id_liquidacion = ?1" , nativeQuery = true)
+	ValoresLiquidados consultarPorIdLiquidacion(Long idLiquidacion);
 
 	/**
 	 * Metodo encargado de ejecutar la funcion de la base de datos para 
 	 * realizar el proceso de costos de armar parametros 
 	 * @return bayron.perez
 	 */
-	@Procedure(name = "public.armar_parametros_liquida")
+	@Procedure(name = "armar_parametros_liquida")
 	String armar_parametros_liquida(@Param("fecha") Date fecha);
 	
 	/**
@@ -36,7 +39,7 @@ QuerydslPredicateExecutor<ValoresLiquidados>{
 	 * @param parametro
 	 * @return bayron.perez
 	 */
-	@Procedure(name = "public.liquidar_costos")
+	@Procedure(name = "liquidar_costos")
 	String liquidar_costos(@Param("parametro") Integer parametro);
 	
 	/**
@@ -46,10 +49,10 @@ QuerydslPredicateExecutor<ValoresLiquidados>{
 	 */
 	List<ValoresLiquidados> findByIdSeqGrupo(Integer idSeqGrupo);
 
-	@Query(value = "SELECT MAX(id_seq_grupo)  FROM public.valores_liquidados", nativeQuery = true)
+	@Query(value = "SELECT MAX(id_seq_grupo)  FROM valores_liquidados", nativeQuery = true)
 	int obtenerUltimoIdSeq();
 	
-	@Query(value = "SELECT COUNT(*) FROM public.valores_liquidados WHERE id_seq_grupo = ?1", nativeQuery = true)
+	@Query(value = "SELECT COUNT(*) FROM valores_liquidados WHERE id_seq_grupo = ?1", nativeQuery = true)
 	int consultarCantidadValoresLiquidadosByIdSeqGrupo(Integer idSeqGroup);
 	
 	@Query(value = "SELECT COUNT(*)	FROM errores_costos	WHERE ID_SEQ_GRUPO = ?1", nativeQuery = true)

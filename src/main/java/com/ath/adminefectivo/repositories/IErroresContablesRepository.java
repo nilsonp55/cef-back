@@ -29,8 +29,8 @@ public interface IErroresContablesRepository extends JpaRepository<ErroresContab
 	 * @return List<ErroresContables>
 	 * @author duvan.naranjo
 	 */
-	@Query(value = "SELECT ec.* from public.errores_contables ec, "
-			+ "			public.transacciones_internas ti "
+	@Query(value = "SELECT ec.* from errores_contables ec, "
+			+ "			transacciones_internas ti "
 			+ "	where "
 			+ "		ec.fecha  = ?1 and "
 			+ "		ec.id_transacciones_internas = ti.id_transacciones_internas and "
@@ -47,7 +47,7 @@ public interface IErroresContablesRepository extends JpaRepository<ErroresContab
 	@Query(nativeQuery = true)
 	public List<ResultadoErroresContablesDTO> consultarErroresContables();
 
-//	@Procedure(name = "public.fnc_generar_proceso_contables")
+//	@Procedure(name = "fnc_generar_proceso_contables")
 	@Query(value ="SELECT * "
 			+ " from fnc_generar_proceso_contables()", nativeQuery = true)
 	public List<Long> fnc_generar_proceso_contables();

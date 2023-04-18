@@ -23,7 +23,10 @@ import com.ath.adminefectivo.service.IPuntosCodigoTdvService;
 import com.ath.adminefectivo.service.IPuntosService;
 import com.querydsl.core.types.Predicate;
 
+import lombok.extern.log4j.Log4j2;
+
 @Service
+@Log4j2
 public class PuntosCodigoTDVServiceImpl implements IPuntosCodigoTdvService {
 
 	@Autowired
@@ -75,7 +78,7 @@ public class PuntosCodigoTDVServiceImpl implements IPuntosCodigoTdvService {
                     codigoPuntoTdv.trim(), codigoTdv, BancosDTO.CONVERTER_ENTITY.apply(bancoAval));
             if (!Objects.isNull(puntosCodigoTDVList) ) {
                 if (puntosCodigoTDVList.size() > 1 ) {
-                    System.out.println("Codigo Punto TDV se encuentra mas de una vez. "+codigoPuntoTdv.trim() +" - "+ codigoTdv);
+                    log.debug("Codigo Punto TDV se encuentra mas de una vez. "+codigoPuntoTdv.trim() +" - "+ codigoTdv);
                     return puntosService.getEntidadPunto(banco_aval).getCodigoPunto();
                 }else {
                     if (puntosCodigoTDVList.size() == 1) {

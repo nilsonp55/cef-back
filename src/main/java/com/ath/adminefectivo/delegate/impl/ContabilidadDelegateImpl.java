@@ -3,7 +3,6 @@ package com.ath.adminefectivo.delegate.impl;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -13,18 +12,15 @@ import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
-import com.ath.adminefectivo.constantes.Parametros;
 import com.ath.adminefectivo.delegate.IContabilidadDelegate;
 import com.ath.adminefectivo.dto.OperacionesProgramadasDTO;
 import com.ath.adminefectivo.dto.TransaccionesInternasDTO;
+import com.ath.adminefectivo.dto.compuestos.ContabilidadDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionIntradiaDTO;
 import com.ath.adminefectivo.dto.compuestos.ProcesoErroresContablesDTO;
 import com.ath.adminefectivo.dto.compuestos.ResultadoErroresContablesDTO;
-import com.ath.adminefectivo.dto.compuestos.ContabilidadDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
-import com.ath.adminefectivo.entities.LogProcesoDiario;
 import com.ath.adminefectivo.exception.AplicationException;
-import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.service.ICierreContabilidadService;
 import com.ath.adminefectivo.service.IContabilidadService;
 import com.ath.adminefectivo.service.IDominioService;
@@ -36,9 +32,10 @@ import com.ath.adminefectivo.service.ITransaccionesInternasService;
 import com.ath.adminefectivo.service.impl.LogProcesoDiarioImpl;
 import com.ath.adminefectivo.utils.UtilsString;
 
-import antlr.Utils;
+import lombok.extern.log4j.Log4j2;
 
 @Service
+@Log4j2
 public class ContabilidadDelegateImpl implements IContabilidadDelegate {
 
 	@Autowired
@@ -81,8 +78,8 @@ public class ContabilidadDelegateImpl implements IContabilidadDelegate {
 		
 		
 		
-		System.out.println("fechaProcesoInicial "+fechaProcesoInicial);
-		System.out.println("fechaProcesoFin "+fechaProcesoFin);
+		log.debug("fechaProcesoInicial "+fechaProcesoInicial);
+		log.debug("fechaProcesoFin "+fechaProcesoFin);
 		
 		var operacionesProgramadas = operacionesProgramadasService.getOperacionesProgramadasPorFechas(tipoContabilidad, fechaProcesoInicial,fechaProcesoFin);
 		
@@ -121,7 +118,7 @@ public class ContabilidadDelegateImpl implements IContabilidadDelegate {
 	@Override
 	public ProcesoErroresContablesDTO procesarErroresContables() {
 		List<OperacionesProgramadasDTO> listadoOperacionesProgramadasPM = operacionesProgramadasService.obtenerOperacionesProgramadasConErroresContables("PM");
-		System.out.println("listadoOperacionesProgramadasPM   "+listadoOperacionesProgramadasPM.size());
+		log.debug("listadoOperacionesProgramadasPM   "+listadoOperacionesProgramadasPM.size());
 		List<OperacionesProgramadasDTO> listadoOperacionesProgramadasAM = operacionesProgramadasService.obtenerOperacionesProgramadasConErroresContables("AM");
 
 		int resultado = contabilidadService.generarContabilidad("PM", listadoOperacionesProgramadasPM);
@@ -176,7 +173,8 @@ public class ContabilidadDelegateImpl implements IContabilidadDelegate {
 	public Date obtenerFechaProceso(Date fechaSistema, String tipoContabilidad) {
 		if(!Objects.isNull(fechaSistema)) {
 			if(tipoContabilidad.equals("AM")) {
-				return festivosNacionalesService.consultarAnteriorHabil(fechaSistema);
+				Date fechaAnteriorAnteriorHabil = festivosNacionalesService.consultarAnteriorHabil(festivosNacionalesService.consultarAnteriorHabil(fechaSistema));
+				return UtilsString.restarDiasAFecha(fechaAnteriorAnteriorHabil, 1);
 			}
 			return fechaSistema;
 		}else {
