@@ -7,7 +7,6 @@ import java.util.function.Function;
 
 import com.ath.adminefectivo.entities.DetallesLiquidacionCosto;
 import com.ath.adminefectivo.entities.ParametrosLiquidacionCosto;
-import com.ath.adminefectivo.entities.ValoresLiquidados;
 import com.ath.adminefectivo.utils.UtilsObjects;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -73,10 +72,11 @@ public class ParametrosLiquidacionCostoDTO {
 	
 	private Double valorTotal;
 	
+	private String entradaSalida;
+	
 	@JsonIgnore
 	private List<DetallesLiquidacionCosto> detallesLiquidacionCosto;
 	
-	@JsonIgnore
 	private ValorLiquidadoDTO valoresLiquidadosDTO;
 	
 	private String nombreBanco;
@@ -86,6 +86,16 @@ public class ParametrosLiquidacionCostoDTO {
 	private String nombrePuntoOrigen;
 	
 	private String nombrePuntoDestino;
+	
+	private String nombreCiudadPuntoOrigen;
+	
+	private String nombreCiudadPuntoDestino;
+	
+	private Date fechaConcilia;
+	
+	private String codigoPropioTdv;
+	
+	private String nombreCliente;
 	
 	/**
 	 * Funcion que convierte el archivo ParametrosLiquidacionCostoDTO a Entity ParametrosLiquidacionCosto

@@ -35,7 +35,10 @@ import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.utils.UtilsString;
 import com.querydsl.core.types.Predicate;
 
+import lombok.extern.log4j.Log4j2;
+
 @Service
+@Log4j2
 public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 
 	@Autowired
@@ -56,7 +59,7 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 	@Override
 	public List<ArchivosCargadosDTO> getAll() {
 		var archivos = archivosCargadosRepository.findAll();
-		System.out.println(archivos);
+		log.debug(archivos);
 		List<ArchivosCargadosDTO> listArchivosDto = new ArrayList<>();
 		archivos.forEach(entity -> listArchivosDto.add(ArchivosCargadosDTO.CONVERTER_DTO.apply(entity)));
 
@@ -87,7 +90,7 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 	@Override
 	public Page<ArchivosCargadosDTO> getAllByAgrupador(String agrupador, Pageable page) {
 		
-		Page<ArchivosCargados> archivosCargados = archivosCargadosRepository.getArchivosByAgrupador(agrupador, page);
+		Page<ArchivosCargados> archivosCargados = archivosCargadosRepository.getArchivosByAgrupador(agrupador,"ACT", page);
 		return new PageImpl<>(archivosCargados.getContent().stream().map(ArchivosCargadosDTO
 		.CONVERTER_DTO).toList(), archivosCargados.getPageable(), archivosCargados.getTotalElements());
 
@@ -254,6 +257,15 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 		archivosCargadosRepository.save(archivosCargados);
 		
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<ArchivosCargados> consultarArchivosPorFecha(Date fechaActual) {
+	
+		return archivosCargadosRepository.findByFechaArchivo(fechaActual);
+	}
 
 	/**
 	 * Método encargado de organizar y separar las informacion de las lineas
@@ -378,5 +390,6 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 			});	
 		}
 	}
+
 
 }

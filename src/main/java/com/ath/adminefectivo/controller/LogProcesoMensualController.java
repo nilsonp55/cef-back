@@ -12,15 +12,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ath.adminefectivo.delegate.ILogProcesoMensualDelegate;
-import com.ath.adminefectivo.dto.LogProcesoDiarioDTO;
 import com.ath.adminefectivo.dto.LogProcesoMensualDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
-import com.ath.adminefectivo.entities.LogProcesoDiario;
 import com.ath.adminefectivo.entities.LogProcesoMensual;
-import com.ath.adminefectivo.service.ILogProcesoDiarioService;
+import com.ath.adminefectivo.service.ILogProcesoMensualService;
 import com.querydsl.core.types.Predicate;
 
 /**
@@ -33,7 +30,7 @@ import com.querydsl.core.types.Predicate;
 public class LogProcesoMensualController {
 
 	@Autowired
-	ILogProcesoMensualDelegate procesoMensualDelegate;
+	ILogProcesoMensualService logProcesoMensualService;
 	
 	
 	/**
@@ -45,7 +42,7 @@ public class LogProcesoMensualController {
 	@GetMapping(value = "${endpoints.ProcesoMensual.consultar}")
 	public ResponseEntity<ApiResponseADE<List<LogProcesoMensualDTO>>> getLogProcesosProcesoMensuales(
 			@QuerydslPredicate(root = LogProcesoMensual.class) Predicate predicate) {
-		List<LogProcesoMensualDTO> consulta = procesoMensualDelegate.getLogsProcesosMensuales(predicate);
+		List<LogProcesoMensualDTO> consulta = logProcesoMensualService.getLogsProcesosMensual(predicate);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
@@ -59,9 +56,9 @@ public class LogProcesoMensualController {
 	 */
 	@PostMapping(value = "${endpoints.ProcesoMensual.cerrar}")
 	public ResponseEntity<ApiResponseADE<String>> cerrarLogProcesoMensual(@RequestParam String proceso) {
-		String consulta = procesoMensualDelegate.cerrarLogProcesoMensual(proceso);
+		Boolean consulta = logProcesoMensualService.validarLogProceso(proceso);
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+				.body(new ApiResponseADE<>(consulta.toString(), ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
 }

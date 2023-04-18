@@ -1,47 +1,34 @@
 package com.ath.adminefectivo.service.impl;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.dto.RespuestaContableDTO;
-import com.ath.adminefectivo.dto.TransaccionesContablesDTO;
 import com.ath.adminefectivo.dto.compuestos.RespuestaGenerarArchivoDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
-import com.ath.adminefectivo.entities.TransaccionesContables;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.impl.GenerarArchivoRepository;
-import com.ath.adminefectivo.service.ICierreContabilidadService;
+import com.ath.adminefectivo.service.IFestivosNacionalesService;
 import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.ITransaccionesContablesService;
 import com.ath.adminefectivo.service.IgenerarArchivoService;
-import com.ath.adminefectivo.utils.UtilsObjects;
 import com.ath.adminefectivo.utils.s3Utils;
 
+import lombok.extern.log4j.Log4j2;
+
 @Service
+@Log4j2
 public class generarArchivoServiceimpl implements IgenerarArchivoService {
 
 	@Autowired
@@ -55,11 +42,14 @@ public class generarArchivoServiceimpl implements IgenerarArchivoService {
 
 	@Autowired
 	IParametroService parametrosService;
+	
+	@Autowired
+	IFestivosNacionalesService festivosNacionalesService;
 
 	@Override
 	public RespuestaGenerarArchivoDTO generarArchivo(Date fecha, String tipoContabilidad, int codBanco) {
 
-		// List<RespuestaContableDTO> listaContable;
+		log.info("generar archivo codBanco:{}, tipoContabilidad:{}, fecha:{}", codBanco, tipoContabilidad, fecha);
 
 		if (codBanco == 297) {
 			return generarArchivoBBOG(fecha, tipoContabilidad, codBanco);
@@ -70,34 +60,73 @@ public class generarArchivoServiceimpl implements IgenerarArchivoService {
 					tipoContabilidad, codBanco);
 
 			// AQUI ARMAR EL ARCHIVO EXCEL
-			Workbook workbook = new HSSFWorkbook();
+			XSSFWorkbook workbook = new XSSFWorkbook();
 			ByteArrayOutputStream stream = new ByteArrayOutputStream();
 			Sheet sheet = (Sheet) workbook.createSheet("transaccionesContables");
 			Row row = sheet.createRow(0);
 
-			int initRow = 0;
-			RespuestaContableDTO dtoContable;
+			RespuestaContableDTO dtoContable = new RespuestaContableDTO();
 			for (int i = 0; i < listaContable.size(); i++) {
 
 				row = sheet.createRow(i);
 				dtoContable = listaContable.get(i);
 
-				row.createCell(0).setCellValue(dtoContable.getBancoAval());
-				row.createCell(1).setCellValue(dtoContable.getNaturalezaContable());
-				row.createCell(2).setCellValue(dtoContable.getCuentaMayor());
-				row.createCell(3).setCellValue(dtoContable.getSubAuxiliar());
-				row.createCell(4).setCellValue(dtoContable.getTipoIdentificacion());
-				row.createCell(5).setCellValue(dtoContable.getValor());
-				row.createCell(6).setCellValue(dtoContable.getCentroBeneficio());
-				row.createCell(7).setCellValue(dtoContable.getIdentificador());
-				row.createCell(8).setCellValue(dtoContable.getDescripcionTransaccion());
-				row.createCell(9).setCellValue(dtoContable.getTerceroGL() == null ? 0 : dtoContable.getTerceroGL());
-				row.createCell(10)
-						.setCellValue(dtoContable.getNombreTerceroGL() == null ? "" : dtoContable.getNombreTerceroGL());
-				row.createCell(11).setCellValue(
+				//NUEVO  ARCHIVO
+				int naturalezaNum = 0;
+				String naturaleza = dtoContable.getNaturalezaContable();
+				if(!Objects.isNull(naturaleza) && naturaleza.equals("C")) {
+					naturalezaNum = 50;
+				}else {
+					naturalezaNum = 40;
+				}
+				row.createCell(0).setCellValue(naturalezaNum);
+				try {
+					row.createCell(1).setCellValue( Long.parseLong(dtoContable.getCuentaMayor()) );
+				}
+				catch (NumberFormatException ex) {
+					row.createCell(1).setBlank();
+				}
+				row.createCell(2).setCellValue(dtoContable.getSubAuxiliar());
+				
+				int tipoIdentificacionNum = 0; 
+				String tipoIdentificacion = dtoContable.getTipoIdentificacion();
+				if(!Objects.isNull(tipoIdentificacion) ) {
+					try {
+						tipoIdentificacionNum = Integer.parseInt(tipoIdentificacion);
+					}
+					catch (NumberFormatException ex) {
+						tipoIdentificacionNum = 31;
+					}	
+				}
+				row.createCell(3).setCellValue(tipoIdentificacionNum);
+				row.createCell(4).setBlank();//tipoDeCambio Origen vs Dolar
+				row.createCell(5).setBlank();//tipoDeCambio dolar vs pesos
+				row.createCell(6).setCellValue(dtoContable.getValor());//valor moneda del documento
+				row.createCell(7).setCellValue(dtoContable.getValor());//valor moneda local
+				row.createCell(8).setBlank();//valor en moneda fuerte USD
+				row.createCell(9).setBlank();//Centro de costos
+				try {
+					row.createCell(10).setCellValue( Integer.parseInt(dtoContable.getCentroBeneficio()) );
+				}
+				catch (NumberFormatException ex) {
+					row.createCell(10).setBlank();
+				}
+				row.createCell(11).setBlank();//Orden CO
+				row.createCell(12).setBlank();//Area funcional
+				row.createCell(13).setCellValue(dtoContable.getIdentificador());
+				row.createCell(14).setCellValue(dtoContable.getDescripcionTransaccion());
+				if ( !Objects.isNull(dtoContable.getTerceroGL()) ) {
+					row.createCell(15).setCellValue(dtoContable.getTerceroGL());
+				}
+				else {
+					row.createCell(15).setBlank();
+				}
+				row.createCell(16).setCellValue(dtoContable.getNombreTerceroGL());
+				row.createCell(17).setBlank();//Fecha conversion
+				row.createCell(18).setCellValue(
 						dtoContable.getClaveReferencia1() == null ? "" : dtoContable.getClaveReferencia1());
-				row.createCell(12).setCellValue(
-						dtoContable.getClaveReferencia2() == null ? "" : dtoContable.getClaveReferencia2());
+				row.createCell(19).setBlank();//Clave referencia3
+							
 			}
 
 			try {
@@ -108,7 +137,7 @@ public class generarArchivoServiceimpl implements IgenerarArchivoService {
 						ApiResponseCode.ERROR_EXPORTANDO_ARCHIVO.getDescription()+ " - "+ e.getMessage(),
 						ApiResponseCode.ERROR_EXPORTANDO_ARCHIVO.getHttpStatus());
 			}
-			String nombreArchivo = this.obtenerNombreArchivo(codBanco, tipoContabilidad);
+			String nombreArchivo = this.obtenerNombreArchivo(fecha, codBanco, tipoContabilidad);
 			
 			return RespuestaGenerarArchivoDTO.builder().nombreArchivo(nombreArchivo).archivoBytes(stream)
 					.build();
@@ -121,9 +150,7 @@ public class generarArchivoServiceimpl implements IgenerarArchivoService {
 		List<String> listaContable = transaccionesContablesService.cierreContablebyBancoF1String(fecha,
 				tipoContabilidad, codBanco);
 
-		String nombreArchivo = this.obtenerNombreArchivo(codBanco, tipoContabilidad);
-
-		BufferedWriter bw;
+		String nombreArchivo = this.obtenerNombreArchivo(fecha, codBanco, tipoContabilidad);
 
 		ByteArrayOutputStream x = new ByteArrayOutputStream();
 
@@ -151,12 +178,10 @@ public class generarArchivoServiceimpl implements IgenerarArchivoService {
 	
 	@Override
 	public RespuestaGenerarArchivoDTO generarArchivoBAVV(Date fecha, String tipoContabilidad, int codBanco) {
-		List<String> listaContable = transaccionesContablesService.cierreContablebyBancoF1String(fecha,
+		List<String> listaContable = transaccionesContablesService.cierreContablebyBancoF2String(fecha,
 				tipoContabilidad, codBanco);
 
-		String nombreArchivo = this.obtenerNombreArchivo(codBanco, tipoContabilidad);
-
-		BufferedWriter bw;
+		String nombreArchivo = this.obtenerNombreArchivo(fecha, codBanco, tipoContabilidad);
 
 		ByteArrayOutputStream x = new ByteArrayOutputStream();
 
@@ -190,28 +215,74 @@ public class generarArchivoServiceimpl implements IgenerarArchivoService {
 
 		RespuestaGenerarArchivoDTO archivo297 = this.generarArchivo(fecha, tipoContabilidad, 297);
 		s3utils.guardarArchivoEnBytes(archivo297.getArchivoBytes(), Constantes.URL_ARCHIVOS_CONTABLES_S3 + "BBOG/",
-				this.obtenerNombreArchivo(297, tipoContabilidad));
+				this.obtenerNombreArchivo(fecha, 297, tipoContabilidad));
+		s3utils.guardarArchivoEnBytes(archivo297.getArchivoBytes(), Constantes.URL_ARCHIVOS_CONTABLES_S3 + "BBOG/Enviados/",
+				this.obtenerNombreArchivoConFecha(297, tipoContabilidad));
 
 		RespuestaGenerarArchivoDTO archivo298 = this.generarArchivo(fecha, tipoContabilidad, 298);
 		s3utils.guardarArchivoEnBytes(archivo298.getArchivoBytes(), Constantes.URL_ARCHIVOS_CONTABLES_S3 + "BAVV/",
-				this.obtenerNombreArchivo(298, tipoContabilidad));
+				this.obtenerNombreArchivo(fecha, 298, tipoContabilidad));
+		s3utils.guardarArchivoEnBytes(archivo298.getArchivoBytes(), Constantes.URL_ARCHIVOS_CONTABLES_S3 + "BAVV/Enviados/",
+				this.obtenerNombreArchivoConFecha(298, tipoContabilidad));
 
 		RespuestaGenerarArchivoDTO archivo299 = this.generarArchivo(fecha, tipoContabilidad, 299);
 		s3utils.guardarArchivoEnBytes(archivo299.getArchivoBytes(), Constantes.URL_ARCHIVOS_CONTABLES_S3 + "BOCC/",
-				this.obtenerNombreArchivo(299, tipoContabilidad));
+				this.obtenerNombreArchivo(fecha, 299, tipoContabilidad));
+		s3utils.guardarArchivoEnBytes(archivo299.getArchivoBytes(), Constantes.URL_ARCHIVOS_CONTABLES_S3 + "BOCC/Enviados/",
+				this.obtenerNombreArchivoConFecha(299, tipoContabilidad));
 
 		RespuestaGenerarArchivoDTO archivo300 = this.generarArchivo(fecha, tipoContabilidad, 300);
 		s3utils.guardarArchivoEnBytes(archivo300.getArchivoBytes(), Constantes.URL_ARCHIVOS_CONTABLES_S3 + "BPOP/",
-				this.obtenerNombreArchivo(300, tipoContabilidad));
+				this.obtenerNombreArchivo(fecha, 300, tipoContabilidad));
+		s3utils.guardarArchivoEnBytes(archivo300.getArchivoBytes(), Constantes.URL_ARCHIVOS_CONTABLES_S3 + "BPOP/Enviados/",
+				this.obtenerNombreArchivoConFecha(300, tipoContabilidad));
 
 	}
 
-	private String obtenerNombreArchivo(int codigoBanco, String tipoContabilidad) {
+	private String obtenerNombreArchivo(Date fecha, int codigoBanco, String tipoContabilidad) {
+		SimpleDateFormat formato = new SimpleDateFormat("yyyy/MM/dd");
+		
+		if (tipoContabilidad.equals("AM")) {
+			if (codigoBanco == 297) {
+				
+				String fechaSistemaString = formato.format(festivosNacionalesService.consultarAnteriorHabil(fecha));
+				String fechaConFormato = fechaSistemaString.replace("/", "");
+				return Constantes.CTB_BBOG_Manana + fechaConFormato + Constantes.EXTENSION_ARCHIVO_TXT;
+			} else if (codigoBanco == 298) {
+				return Constantes.CTB_BAVV_Manana + Constantes.EXTENSION_ARCHIVO_TXT;
+			} else if (codigoBanco == 299) {
+				return Constantes.CTB_BOCC_Manana + Constantes.EXTENSION_ARCHIVO_XLSX;
+			} else if (codigoBanco == 300) {
+				return Constantes.CTB_BPOP_Manana + Constantes.EXTENSION_ARCHIVO_XLSX;
+			}
+		} else {
+			if (codigoBanco == 297) {
+				String fechaSistemaString = formato.format(parametrosService.valorParametroDate(Constantes.FECHA_DIA_PROCESO));
+				String fechaConFormato = fechaSistemaString.replace("/", "");
+				return Constantes.CTB_BBOG_Tarde + fechaConFormato + Constantes.EXTENSION_ARCHIVO_TXT;
+			} else if (codigoBanco == 298) {
+				return Constantes.CTB_BAVV_Tarde + Constantes.EXTENSION_ARCHIVO_TXT;
+			} else if (codigoBanco == 299) {
+				return Constantes.CTB_BOCC_Tarde + Constantes.EXTENSION_ARCHIVO_XLSX;
+			} else if (codigoBanco == 300) {
+				return Constantes.CTB_BPOP_Tarde + Constantes.EXTENSION_ARCHIVO_XLSX;
+			}
+		}
+		return null;
+	}
+	
+	private String obtenerNombreArchivoConFecha(int codigoBanco, String tipoContabilidad) {
 		String fechaSistemaString = parametrosService.valorParametro(Constantes.FECHA_DIA_PROCESO);
 		String fechaConFormato = fechaSistemaString.replace("/", "");
+		SimpleDateFormat formato = new SimpleDateFormat("yyyy/MM/dd");
 
 		if (tipoContabilidad.equals("AM")) {
 			if (codigoBanco == 297) {
+				Date fecha = parametrosService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
+				fecha = festivosNacionalesService.consultarAnteriorHabil(fecha);
+				fechaSistemaString = formato.format(fecha);
+
+				fechaConFormato = fechaSistemaString.replace("/", "");
 				return Constantes.CTB_BBOG_Manana + fechaConFormato + Constantes.EXTENSION_ARCHIVO_TXT;
 			} else if (codigoBanco == 298) {
 				return Constantes.CTB_BAVV_Manana + fechaConFormato + Constantes.EXTENSION_ARCHIVO_TXT;
@@ -222,6 +293,11 @@ public class generarArchivoServiceimpl implements IgenerarArchivoService {
 			}
 		} else {
 			if (codigoBanco == 297) {
+				Date fecha = parametrosService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
+				fecha = festivosNacionalesService.consultarAnteriorHabil(fecha);
+				fechaSistemaString = formato.format(fecha);
+
+				fechaConFormato = fechaSistemaString.replace("/", "");
 				return Constantes.CTB_BBOG_Tarde + fechaConFormato + Constantes.EXTENSION_ARCHIVO_TXT;
 			} else if (codigoBanco == 298) {
 				return Constantes.CTB_BAVV_Tarde + fechaConFormato + Constantes.EXTENSION_ARCHIVO_TXT;

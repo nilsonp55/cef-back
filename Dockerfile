@@ -1,0 +1,23 @@
+FROM eclipse-temurin:17-jdk-alpine
+VOLUME /tmp
+EXPOSE 8080
+
+ARG ENV_URL
+ARG ENV_USER
+ARG ENV_PASS
+ARG ENV_SCHEMA
+ARG ENV_BUCKET
+ARG ENV_REGION
+ARG JAR_FILE
+
+
+ENV url=${ENV_URL}
+ENV user=${ENV_USER}
+ENV pass=${ENV_PASS}
+ENV schema=${ENV_SCHEMA}
+ENV bucket=${ENV_BUCKET}
+ENV region=${ENV_REGION}
+
+COPY ${JAR_FILE} app.jar
+
+ENTRYPOINT ["java","-jar","/app.jar"]

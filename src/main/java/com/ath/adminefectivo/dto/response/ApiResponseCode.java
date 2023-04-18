@@ -422,6 +422,11 @@ public enum ApiResponseCode {
 	/**
 	 * Error puntos ya existentes
 	 */
+	ERROR_AUDITORIA_LOGIN_EXIST("E929", "AuditoriaLogin ya existente.  ", HttpStatus.CONFLICT),
+	
+	/**
+	 * Error puntos ya existentes
+	 */
 	ERROR_CUENTAS_PUC_NO_EXIST("E921", "Punto no existente.  ", HttpStatus.CONFLICT),
 	
 	/**
@@ -677,7 +682,40 @@ public enum ApiResponseCode {
 	 * Ocurrió un error al realizar el exportar de datos de contabilidad
 	 */
 	ERROR_EXPORTANDO_ARCHIVO("E970", "Ocurrio un error, El archivo no pudo ser generado correctamente. ",
-			HttpStatus.PRECONDITION_FAILED);
+			HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Error puntos ya existentes
+	 */
+	ERROR_TASAS_CAMBIO_EXIST("E971", "Tasa cambio ya existente.  ", HttpStatus.CONFLICT),
+	
+	/**
+	 * Error puntos ya existentes
+	 */
+	ERROR_TASAS_CAMBIO_NO_EXIST("E972", "Tasa cambio no existente.  ", HttpStatus.CONFLICT),
+	
+	/**
+	* Ocurrió un error al consultar tipo cuentas
+	*/
+	ERROR_TASAS_CAMBIO_NO_ENCONTRADO("E973", "Ocurrió un error al consultar la table de Tasas cambio.  ", HttpStatus.CONFLICT),
+	
+	/**
+	 * Ocurrió un error al consultar la table de operaciones certificadas
+	 */
+	ERROR_OPERACIONES_CERTIFICADAS_UPDATE_NULL("E974", "El id Certificacion es nulo. ",
+			HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Ocurrió un error al consultar la table de operaciones certificadas
+	 */
+	ERROR_OPERACIONES_PROGRAMADAS_UPDATE_NULL("E975", "El id Operacion es nulo. ",
+			HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Ocurrio un error al consultar la auditor�a de un Proceso Diario
+	 */
+	ERROR_PROCESO_NO_EXISTE("E976", "Codigo Proceso no existe en auditoría de procesos", HttpStatus.PRECONDITION_FAILED);
+	
 	
 	/**
 	 * Código asociado a la respuesta
@@ -718,7 +756,4 @@ public enum ApiResponseCode {
 		this.httpStatus = httpStatus;
 	}
 
-	
-	
-	
 }

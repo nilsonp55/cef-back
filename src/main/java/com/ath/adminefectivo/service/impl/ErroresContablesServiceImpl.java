@@ -3,7 +3,6 @@ package com.ath.adminefectivo.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,12 +11,14 @@ import com.ath.adminefectivo.dto.ErroresContablesDTO;
 import com.ath.adminefectivo.dto.TransaccionesInternasDTO;
 import com.ath.adminefectivo.dto.compuestos.ResultadoErroresContablesDTO;
 import com.ath.adminefectivo.entities.ErroresContables;
-import com.ath.adminefectivo.entities.TransaccionesInternas;
 import com.ath.adminefectivo.repositories.IErroresContablesRepository;
 import com.ath.adminefectivo.service.IErroresContablesService;
 import com.ath.adminefectivo.service.ITransaccionesInternasService;
 
+import lombok.extern.log4j.Log4j2;
+
 @Service
+@Log4j2
 public class ErroresContablesServiceImpl implements IErroresContablesService{
 	
 	@Autowired
@@ -69,7 +70,7 @@ public class ErroresContablesServiceImpl implements IErroresContablesService{
 		List<ErroresContables> erroresListado = erroresContablesRepository.findByTransaccionInterna(idTransaccionesInternas);
 		erroresListado.forEach(errorContable -> {
 			erroresContablesRepository.delete(errorContable);
-			System.out.println(errorContable.getMensajeError());
+			log.debug(errorContable.getMensajeError());
 		});
 		
 	}

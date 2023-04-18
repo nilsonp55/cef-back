@@ -22,5 +22,7 @@ public class UpdateCertificadasFallidasDTO {
 	private Integer idCertificacion;
 	
 	private String estado;
+	
+	private Double valor;
 
 }

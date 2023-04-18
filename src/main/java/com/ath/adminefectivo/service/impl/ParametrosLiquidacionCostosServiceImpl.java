@@ -1,38 +1,31 @@
 package com.ath.adminefectivo.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ath.adminefectivo.constantes.Dominios;
-import com.ath.adminefectivo.dto.FuncionesDinamicasDTO;
-import com.ath.adminefectivo.dto.EscalasDTO;
-import com.ath.adminefectivo.dto.TarifasOperacionDTO;
+import com.ath.adminefectivo.dto.ParametrosLiquidacionCostoDTO;
+import com.ath.adminefectivo.dto.ValorLiquidadoDTO;
 import com.ath.adminefectivo.dto.compuestos.EstimadoClasificacionCostosDTO;
-import com.ath.adminefectivo.dto.response.ApiResponseCode;
-import com.ath.adminefectivo.entities.FuncionesDinamicas;
-import com.ath.adminefectivo.entities.Escalas;
-import com.ath.adminefectivo.entities.TarifasOperacion;
-import com.ath.adminefectivo.exception.NegocioException;
-import com.ath.adminefectivo.repositories.IBancosRepository;
-import com.ath.adminefectivo.repositories.IFuncionesDinamicasRepository;
+import com.ath.adminefectivo.entities.ParametrosLiquidacionCosto;
+import com.ath.adminefectivo.entities.ValoresLiquidados;
 import com.ath.adminefectivo.repositories.IParametrosLiquidacionCostosRepository;
-import com.ath.adminefectivo.repositories.IEscalasRepository;
-import com.ath.adminefectivo.repositories.ITarifasOperacionRepository;
-import com.ath.adminefectivo.service.IEscalasService;
-import com.ath.adminefectivo.service.IFuncionesDinamicasService;
 import com.ath.adminefectivo.service.IParametrosLiquidacionCostosService;
-import com.ath.adminefectivo.service.ITarifasOperacionService;
-import com.querydsl.core.types.Predicate;
+import com.ath.adminefectivo.service.IValoresLiquidadosService;
 
 @Service
 public class ParametrosLiquidacionCostosServiceImpl implements IParametrosLiquidacionCostosService {
 
 	@Autowired
 	IParametrosLiquidacionCostosRepository parametrosLiquidacionCostosRepository;
+	
+	@Autowired
+	IValoresLiquidadosService valoresLiquidadosService;
+	
 
 	/**
 	 * {@inheritDoc}
@@ -41,6 +34,30 @@ public class ParametrosLiquidacionCostosServiceImpl implements IParametrosLiquid
 	public EstimadoClasificacionCostosDTO consultaEstimadosCostos(String transportadora, int bancoAval, int mesI,
 			int anioI) {
 		return parametrosLiquidacionCostosRepository.consultaEstimadosCostos(transportadora, bancoAval, mesI, anioI);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<ParametrosLiquidacionCostoDTO> consultarParametrosLiquidacionCostos(Date fechaSistema) {
+		List<ParametrosLiquidacionCosto> parametrosLiquidacion = parametrosLiquidacionCostosRepository.findByFechaConcilia(fechaSistema);
+		
+		List<ParametrosLiquidacionCostoDTO> respuesta = new ArrayList<>();
+		
+		parametrosLiquidacion.forEach(parametroLiquidacion ->{
+			respuesta.add(ParametrosLiquidacionCostoDTO.CONVERTER_DTO.apply(parametroLiquidacion));
+		});
+		respuesta.forEach(x ->{
+			x.setValoresLiquidadosDTO(valoresLiquidadosService.consultarValoresLiquidadosPorIdLiquidacion(x.getIdLiquidacion()));
+		});
+		
+		return respuesta;
+	}
+
+	@Override
+	public ParametrosLiquidacionCosto getParametrosLiquidacionCostosById(Long idLiquidacion) {
+		return parametrosLiquidacionCostosRepository.findById(idLiquidacion).orElse(null); 
 	}
 
 	

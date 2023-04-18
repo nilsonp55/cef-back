@@ -17,7 +17,7 @@ import com.ath.adminefectivo.entities.TarifasOperacion;
  */
 public interface ITarifasOperacionRepository extends JpaRepository<TarifasOperacion, Integer>, QuerydslPredicateExecutor<TarifasOperacion> {
 
-	@Query(value ="SELECT x.* FROM ctrefc.public.tarifas_operacion x "
+	@Query(value ="SELECT x.* FROM tarifas_operacion x "
 			+ "WHERE 	x.fajado IS NULL AND "
 			+ "		x.comision_aplicar IN ('CLASIFICACION DETERIORADO','CLASIFICACION FAJADO','CLASIFICACION MONEDA') AND "
 			+ "		codigo_banco = ?1 AND "

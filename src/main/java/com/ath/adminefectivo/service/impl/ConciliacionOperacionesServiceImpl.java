@@ -3,10 +3,7 @@ package com.ath.adminefectivo.service.impl;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,29 +12,31 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ath.adminefectivo.dto.ProgramadasNoConciliadasDTO;
-import com.ath.adminefectivo.dto.ResumenConciliacionesDTO;
-import com.ath.adminefectivo.dto.UpdateCertificadasFallidasDTO;
-import com.ath.adminefectivo.dto.UpdateProgramadasFallidasDTO;
-import com.ath.adminefectivo.dto.compuestos.CertificadasNoConciliadasNombresDTO;
-import com.ath.adminefectivo.dto.compuestos.OperacionesProgramadasNombresDTO;
-import com.ath.adminefectivo.dto.compuestos.OperacionespConciliadoDTO;
-import com.ath.adminefectivo.dto.compuestos.ProgramadasNoConciliadasNombresDTO;
-import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.CertificadasNoConciliadasDTO;
-import com.ath.adminefectivo.dto.ParametrosConciliacionDTO;
+import com.ath.adminefectivo.dto.CiudadesDTO;
 import com.ath.adminefectivo.dto.FechasConciliacionDTO;
 import com.ath.adminefectivo.dto.LogProcesoDiarioDTO;
+import com.ath.adminefectivo.dto.ParametrosConciliacionDTO;
+import com.ath.adminefectivo.dto.ProgramadasNoConciliadasDTO;
+import com.ath.adminefectivo.dto.PuntosDTO;
+import com.ath.adminefectivo.dto.ResumenConciliacionesDTO;
+import com.ath.adminefectivo.dto.UpdateCertificadasFallidasDTO;
+import com.ath.adminefectivo.dto.UpdateProgramadasFallidasDTO;
+import com.ath.adminefectivo.dto.compuestos.OperacionesProgramadasNombresDTO;
+import com.ath.adminefectivo.dto.compuestos.OperacionespConciliadoDTO;
+import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.LogProcesoDiario;
 import com.ath.adminefectivo.entities.OperacionesCertificadas;
 import com.ath.adminefectivo.entities.OperacionesProgramadas;
+import com.ath.adminefectivo.entities.Puntos;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.IConciliacionOperacionesRepository;
 import com.ath.adminefectivo.repositories.IOperacionesCertificadasRepository;
 import com.ath.adminefectivo.repositories.IOperacionesProgramadasRepository;
 import com.ath.adminefectivo.service.IBancosService;
+import com.ath.adminefectivo.service.ICiudadesService;
 import com.ath.adminefectivo.service.IConciliacionOperacionesService;
 import com.ath.adminefectivo.service.IConciliacionServiciosService;
 import com.ath.adminefectivo.service.IDominioService;
@@ -49,7 +48,12 @@ import com.ath.adminefectivo.service.IPuntosService;
 import com.ath.adminefectivo.service.ITransportadorasService;
 import com.querydsl.core.types.Predicate;
 
+import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
+
 @Service
+@Log4j2
+@Setter
 public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacionesService {
 
 	@Autowired
@@ -87,6 +91,9 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	
 	@Autowired
 	ILogProcesoDiarioService logProcesoDiarioService;
+	
+	@Autowired
+	ICiudadesService ciudadService;
 
 	List<OperacionesProgramadas> operacionesp;
 	List<OperacionesCertificadas> operacionesc;
@@ -115,13 +122,14 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	 */
 	@Override
 	public Page<ProgramadasNoConciliadasDTO> getProgramadaNoConcilliada(Predicate predicate, Pageable page) {
-		
 		Page<OperacionesProgramadas> archivos = operacionesProgramadasRepository.findAll(predicate, page);
 		if (archivos.isEmpty()) {
+			log.info("Consultar Operaciones programadas: predicate: {} - page: {}", predicate.toString(), page.toString());
 			throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getDescription(),
 					ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getHttpStatus());
 		}
+		log.debug("Operaciones programadas registros: {}", archivos.getSize());
 		return consultarProgramasNoConciliadas(archivos, page);
 	}
 
@@ -131,13 +139,14 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 		String nombreFondoTdv = puntosService.getPuntoById(programadaNoConciliadaNombre.getCodigoFondoTDV()).getNombrePunto();
 		programadaNoConciliadaNombre.setNombreFondoTDV(nombreFondoTdv);
 		
-
-		String nombrePuntoOrigen = puntosService.getPuntoById(programadaNoConciliadaNombre.getCodigoPuntoOrigen()).getNombrePunto();
-		programadaNoConciliadaNombre.setNombrePuntoOrigen(nombrePuntoOrigen);
+		Puntos puntoOrigen = puntosService.getPuntoById(programadaNoConciliadaNombre.getCodigoPuntoOrigen());
+		programadaNoConciliadaNombre.setNombrePuntoOrigen(puntoOrigen.getNombrePunto());
 		
-		String nombrePuntoDestino = puntosService.getPuntoById(programadaNoConciliadaNombre.getCodigoPuntoDestino()).getNombrePunto();
-		programadaNoConciliadaNombre.setNombrePuntoDestino(nombrePuntoDestino);
+		Puntos puntoDestino = puntosService.getPuntoById(programadaNoConciliadaNombre.getCodigoPuntoDestino());
+		programadaNoConciliadaNombre.setNombrePuntoDestino(puntoDestino.getNombrePunto());
 		
+		programadaNoConciliadaNombre.setNombreCiudadOrigen(ciudadService.getCiudadPorCodigoDane(puntoOrigen.getCodigoCiudad()).getNombreCiudad());
+		programadaNoConciliadaNombre.setNombreCiudadDestino(ciudadService.getCiudadPorCodigoDane(puntoDestino.getCodigoCiudad()).getNombreCiudad());
 		return programadaNoConciliadaNombre;
 	}
 
@@ -148,11 +157,12 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	public Page<CertificadasNoConciliadasDTO> getCertificadaNoConciliada(Predicate predicate, Pageable page) {
 		Page<OperacionesCertificadas> archivos = operacionesCertificadasRepository.findAll(predicate, page);
 		if (archivos.isEmpty()) {
+			log.info("Consultar Operaciones certificadas: predicate: {} - page: {}", predicate.toString(), page.toString());
 			throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getDescription(),
 					ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getHttpStatus());
 		}
-	
+		log.debug("Operaciones Certificadas registros: {}", archivos.getSize());
 		return consultarCertificadasNoConciliadas(archivos, page);
 	}
 	
@@ -178,14 +188,19 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	@Override
 	public Boolean updateOperacionesProgramadasFallidas(UpdateProgramadasFallidasDTO updateProgramadasFallidasDTO) {
 
-		Optional<OperacionesProgramadas> programadas = operacionesProgramadasRepository
-				.findById(updateProgramadasFallidasDTO.getIdOperacion());
-		if (programadas.isPresent()) {
+		if(Objects.isNull(updateProgramadasFallidasDTO.getIdOperacion())) {
+			throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_UPDATE_NULL.getCode(),
+					ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_UPDATE_NULL.getDescription(),
+					ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_UPDATE_NULL.getHttpStatus());
+		}
+		OperacionesProgramadas programadas = operacionesProgramadasRepository
+				.findById(updateProgramadasFallidasDTO.getIdOperacion()).orElse(null);
+		if (!Objects.isNull(programadas)) {
 			try {
-				programadas.get().setIdOperacion(updateProgramadasFallidasDTO.getIdOperacion());
-				programadas.get().setEstadoConciliacion(updateProgramadasFallidasDTO.getEstado());
-				programadas.get().setValorTotal(updateProgramadasFallidasDTO.getValor());
-				operacionesProgramadasRepository.save(programadas.get());
+				programadas.setIdOperacion(updateProgramadasFallidasDTO.getIdOperacion());
+				programadas.setEstadoConciliacion(updateProgramadasFallidasDTO.getEstado());
+				programadas.setValorTotal(updateProgramadasFallidasDTO.getValor());
+				operacionesProgramadasRepository.save(programadas);
 			} catch (Exception e) {
 				e.getMessage();
 			}
@@ -203,13 +218,19 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	@Override
 	public Boolean updateOperacionesCertificadasFallidas(UpdateCertificadasFallidasDTO updateCertificadasFallidasDTO) {
 
-		Optional<OperacionesCertificadas> certificadas = operacionesCertificadasRepository
-				.findById(updateCertificadasFallidasDTO.getIdCertificacion());
-		if (certificadas.isPresent()) {
+		if(Objects.isNull(updateCertificadasFallidasDTO.getIdCertificacion())) {
+			throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_UPDATE_NULL.getCode(),
+					ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_UPDATE_NULL.getDescription(),
+					ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_UPDATE_NULL.getHttpStatus());
+		}
+		OperacionesCertificadas certificadas = operacionesCertificadasRepository
+				.findById(updateCertificadasFallidasDTO.getIdCertificacion()).orElse(null);
+		if (!Objects.isNull(certificadas)) {
 			try {
-				certificadas.get().setIdCertificacion(updateCertificadasFallidasDTO.getIdCertificacion());
-				certificadas.get().setEstadoConciliacion(updateCertificadasFallidasDTO.getEstado());
-				operacionesCertificadasRepository.save(certificadas.get());
+				certificadas.setIdCertificacion(updateCertificadasFallidasDTO.getIdCertificacion());
+				certificadas.setEstadoConciliacion(updateCertificadasFallidasDTO.getEstado());
+				certificadas.setValorTotal(updateCertificadasFallidasDTO.getValor());
+				operacionesCertificadasRepository.save(certificadas);
 			} catch (Exception e) {
 				e.getMessage();
 			}
@@ -338,17 +359,10 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	 */
 	private Page<ProgramadasNoConciliadasDTO> consultarProgramasNoConciliadas(
 										Page<OperacionesProgramadas> operacionesProgramadas, Pageable page) {
-
-		operacionesProgramadas.forEach(entity -> {
-						var programadasNoConciliadasDTO = new ProgramadasNoConciliadasDTO();
-						entity = this.obtenerNombresProgramadasNoConciliadas(entity);
-						programadasNoConciliadasDTO = ProgramadasNoConciliadasDTO.CONVERTER_DTO.apply(entity);
-						
-						
-						});		
 	
 		return new PageImpl<>(operacionesProgramadas.getContent().stream()
-                .map(ProgramadasNoConciliadasDTO.CONVERTER_DTO).collect(Collectors.<ProgramadasNoConciliadasDTO>toList()), page,
+                .map(e -> ProgramadasNoConciliadasDTO.CONVERTER_DTO.apply(this.obtenerNombresProgramadasNoConciliadas(e)))
+                .collect(Collectors.<ProgramadasNoConciliadasDTO>toList()), page,
                 operacionesProgramadas.getTotalElements());	
 	}
 
@@ -362,11 +376,9 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 			Page<OperacionesCertificadas> operacionesCertificadas, Pageable page) {
 
 		operacionesCertificadas.forEach(entity -> {
-						var certificadasNoConciliadas = new CertificadasNoConciliadasDTO();
-						certificadasNoConciliadas = CertificadasNoConciliadasDTO.CONVERTER_DTO.apply(entity);
-						
+						var certificadasNoConciliadas = CertificadasNoConciliadasDTO.CONVERTER_DTO.apply(entity);
 						entity.setEntradaSalida(certificadasNoConciliadas.getEntradaSalida());
-						entity = this.obtenerNombresCertificadasNoConciliadas(entity);
+						this.obtenerNombresCertificadasNoConciliadas(entity);
 						});
 		return new PageImpl<>(operacionesCertificadas.getContent().stream()
                 .map(CertificadasNoConciliadasDTO.CONVERTER_DTO).collect(Collectors.<CertificadasNoConciliadasDTO>toList()), page,
@@ -434,5 +446,4 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 							Dominios.ESTADO_CONCILIACION_CONCILIADO));
 		}
 	}
-
 }

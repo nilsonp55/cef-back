@@ -6,12 +6,18 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Properties;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.AmazonServiceException;
@@ -23,27 +29,13 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.ListObjectsV2Request;
 import com.amazonaws.services.s3.model.ListObjectsV2Result;
-import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectResult;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.io.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.exception.NegocioException;
 
-import software.amazon.awssdk.services.s3.model.PutObjectResponse;
-
-import java.util.Properties;
-import java.net.URISyntaxException;
-import java.util.Objects;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Clase para generar funcionalidades con respect al s3 del PP
@@ -51,7 +43,7 @@ import java.util.Objects;
  * @author Bayron Perez
  */
 @Service
-
+@Log4j2
 public class s3Utils {
 
 	private String bucketNameFormat;
@@ -62,7 +54,6 @@ public class s3Utils {
 	@Value("${aws.s3.bucket}")
 	private String bucketName;
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(s3Utils.class);
 
 	/**
 	 * upload file
@@ -74,12 +65,10 @@ public class s3Utils {
 			File mainFile = new File(file.getOriginalFilename());
 			s3.putObject(bucketName, key_name, mainFile);
 		} catch (AmazonServiceException e) {
-			LOGGER.error(e.getMessage(), e);
 			throw new NegocioException(ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getCode(),
 					ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getDescription(),
 					ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getHttpStatus());
 		} catch (Exception e) {
-			LOGGER.error(e.getMessage(), e);
 			throw new NegocioException(ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getCode(),
 					ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getDescription(),
 					ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getHttpStatus());
@@ -109,7 +98,6 @@ public class s3Utils {
 	 * @return
 	 */
 	public List<String> getObjectsFromPathS3(String path) {
-//		conexionS3(bucketName);
 		ListObjectsV2Request req = new ListObjectsV2Request().withBucketName(bucketName).withPrefix(path)
 				.withDelimiter("/");
 		ListObjectsV2Result listing = s3.listObjectsV2(req);
@@ -139,7 +127,6 @@ public class s3Utils {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		byte[] buffer = new byte[1024];
 		int len;
-//		conexionS3(bucketName);
 		S3Object object;
 		try {
 			object = s3.getObject(bucketName, key);
@@ -149,17 +136,14 @@ public class s3Utils {
 			} 
 			baos.flush();
 		} catch (AmazonServiceException e) {
-			LOGGER.error(e.getMessage(), e);
 			throw new NegocioException(ApiResponseCode.ERROR_LECTURA_CARGUE_ARCHIVO.getCode(),
 					ApiResponseCode.ERROR_LECTURA_CARGUE_ARCHIVO.getDescription(),
 					ApiResponseCode.ERROR_LECTURA_CARGUE_ARCHIVO.getHttpStatus());
 		} catch (Exception e) {
-			LOGGER.error(e.getMessage(), e);
 			throw new NegocioException(ApiResponseCode.ERROR_ARCHIVOS_NO_EXISTE_BD.getCode(),
 					ApiResponseCode.ERROR_ARCHIVOS_NO_EXISTE_BD.getDescription(),
 					ApiResponseCode.ERROR_ARCHIVOS_NO_EXISTE_BD.getHttpStatus());
 		} catch (Throwable t) {
-			LOGGER.error(t.getMessage(), t);
 			throw new NegocioException(ApiResponseCode.ERROR_LECTURA_CARGUE_ARCHIVO.getCode(),
 					ApiResponseCode.ERROR_LECTURA_CARGUE_ARCHIVO.getDescription(),
 					ApiResponseCode.ERROR_LECTURA_CARGUE_ARCHIVO.getHttpStatus());
@@ -178,7 +162,6 @@ public class s3Utils {
 	 */
 	public Boolean consultarArchivo(String key) throws IOException {
 		Boolean salida = true;
-//		conexionS3(bucketName);
 		S3Object object = null;
 		try {
 			object = s3.getObject(bucketName, key);
@@ -205,7 +188,7 @@ public class s3Utils {
          
       } catch (Exception e) {
          e.printStackTrace();
-         System.out.println(false);
+         log.debug(false);
       }
 	  
 	BasicAWSCredentials credentials = new BasicAWSCredentials("AKIAZPUFXGZ5GEMGWLFZ", "HD1RM1Il0nAJYu2gNr1oYG6MtdBzafSKpf+1TtMM");
@@ -218,7 +201,6 @@ public class s3Utils {
 					.withClientConfiguration(config).withRegion("us-east-1")
 					.withCredentials(new AWSStaticCredentialsProvider(credentials)).build();
 		} catch (Exception e) {
-			LOGGER.error(e.getMessage(), e);
 			throw new NegocioException(ApiResponseCode.ERROR_ACCEDIENDO_S3.getCode(),
 					ApiResponseCode.ERROR_ACCEDIENDO_S3.getDescription(),
 					ApiResponseCode.ERROR_ACCEDIENDO_S3.getHttpStatus());
@@ -236,11 +218,10 @@ public class s3Utils {
 	 */
 	public void moverObjeto(String keyOrigin, String keyDestination) {
 		try {
-//			conexionS3(bucketName);
+
 			s3.copyObject(bucketName, keyOrigin, bucketName, keyDestination);
 			deleteObjectBucket(keyOrigin);
 		} catch (AmazonServiceException e) {
-			LOGGER.error(e.getMessage(), e);
 			throw new NegocioException(ApiResponseCode.ERROR_MOVER_ARCHIVOS.getCode(),
 					ApiResponseCode.ERROR_MOVER_ARCHIVOS.getDescription(),
 					ApiResponseCode.ERROR_MOVER_ARCHIVOS.getHttpStatus());
@@ -255,10 +236,8 @@ public class s3Utils {
 	 */
 	public void deleteObjectBucket(String objectKey) {
 		try {
-//			conexionS3(bucketName);
 			s3.deleteObject(bucketName, objectKey);
 		} catch (AmazonServiceException e) {
-			LOGGER.error(e.getMessage(), e);
 			throw new NegocioException(ApiResponseCode.ERROR_ELIMINAR_ARCHIVO_FISICO.getCode(),
 					ApiResponseCode.ERROR_ELIMINAR_ARCHIVO_FISICO.getDescription(),
 					ApiResponseCode.ERROR_ELIMINAR_ARCHIVO_FISICO.getHttpStatus());
@@ -269,19 +248,16 @@ public class s3Utils {
 		
 		PutObjectResult result;
 		try {
-			//conexionS3(bucketName);
 			String pathArchivo = key+nombreArchivo;
 			File archivoFile = new File(pathArchivo);			
 			FileUtils.writeByteArrayToFile (archivoFile, archivo.toByteArray());
 
 			result = s3.putObject(bucketName, pathArchivo, archivoFile);
 		} catch (AmazonServiceException e) {
-			LOGGER.error(e.getMessage(), e);
 			throw new NegocioException(ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getCode(),
 					ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getDescription(),
 					ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getHttpStatus());
 		} catch (Exception e) {
-			LOGGER.error(e.getMessage(), e);
 			throw new NegocioException(ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getCode(),
 					ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getDescription(),
 					ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getHttpStatus());
@@ -293,28 +269,24 @@ public class s3Utils {
 
 		PutObjectResult result;
 		try {
-			conexionS3(bucketName);
 			String pathArchivo = key+nombreArchivo;
 
 			byte[] bytearr = archivo.getBytes();
-			System.out.print("byte length: " + bytearr.length);
-			System.out.print("Size : " + archivo.getSize());
+			log.debug("byte length: " + bytearr.length);
+			log.debug("Size : " + archivo.getSize());
 
 			File file = new File(pathArchivo);
 			file.createNewFile();
 			FileOutputStream fos = new FileOutputStream(file);
 			fos.write(archivo.getBytes());
-			fos.close();
-			//FileUtils.copyInputStreamToFile(initialStream, file);      
+			fos.close();     
 			result = s3.putObject(bucketName, pathArchivo, file);
 			
 		} catch (AmazonServiceException e) {
-			LOGGER.error(e.getMessage(), e);
 			throw new NegocioException(ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getCode(),
 					ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getDescription(),
 					ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getHttpStatus());
 		} catch (Exception e) {
-			LOGGER.error(e.getMessage(), e);
 			throw new NegocioException(ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getCode(),
 					ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getDescription(),
 					ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getHttpStatus());

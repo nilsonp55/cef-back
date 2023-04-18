@@ -228,4 +228,7 @@ public final class Dominios {
 	public static final String DOLAR = "3";
 	public static final String DOLAR_CANADIENSE = "4";
 	public static final String EURO = "24";
+	
+	//Dominios para Auditoria Procesos
+	public static final String AUDITORIA_CIERRE_CERTI = "24";
 }

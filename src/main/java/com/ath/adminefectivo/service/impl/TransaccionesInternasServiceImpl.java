@@ -7,12 +7,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ath.adminefectivo.dto.RespuestaContableDTO;
 import com.ath.adminefectivo.dto.TransaccionesInternasDTO;
 import com.ath.adminefectivo.entities.TransaccionesInternas;
 import com.ath.adminefectivo.repositories.ITransaccionesInternasRepository;
 import com.ath.adminefectivo.service.IErroresContablesService;
 import com.ath.adminefectivo.service.ITransaccionesInternasService;
+
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Servicios para gestionar las transacciones internas
@@ -21,6 +22,7 @@ import com.ath.adminefectivo.service.ITransaccionesInternasService;
  */
 
 @Service
+@Log4j2
 public class TransaccionesInternasServiceImpl implements ITransaccionesInternasService {
 
 	@Autowired
@@ -50,7 +52,7 @@ public class TransaccionesInternasServiceImpl implements ITransaccionesInternasS
 
 	@Override
 	public TransaccionesInternas saveTransaccionesInternasById(TransaccionesInternasDTO transaccionesInternasDTO) {
-		System.out.println("/////// " + transaccionesInternasDTO);
+		log.debug("/////// " + transaccionesInternasDTO);
 		var x = TransaccionesInternasDTO.CONVERTER_ENTITY.apply(transaccionesInternasDTO);
 		return transaccionesInternasRepository.save(x);
 	}
