@@ -1,6 +1,5 @@
 package com.ath.adminefectivo.service.impl;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -18,6 +17,7 @@ import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.IAuditoriaProcesosRepository;
 import com.ath.adminefectivo.service.IAuditoriaProcesosService;
 import com.ath.adminefectivo.service.IDominioService;
+import com.ath.adminefectivo.service.IParametroService;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -32,19 +32,20 @@ public class AuditoriaProcesosServiceImpl implements IAuditoriaProcesosService {
 	@Autowired
 	IDominioService dominioService;
 	
+	@Autowired
+	IParametroService parametroService;
+	
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public AuditoriaProcesosDTO consultarAuditoriaPorProceso(String codigoProceso, Date fechaSistema) {
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(fechaSistema);
-		calendar.set(Calendar.HOUR_OF_DAY, 0);
-		calendar.set(Calendar.SECOND, 0);
+		
+		fechaSistema = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
 
 		AuditoriaProcesos auditoriaProceso = auditoriaProcesosRepository
-				.findById(new AuditoriaProcesosPK(codigoProceso, calendar.getTime())).orElse(null);
+				.findById(new AuditoriaProcesosPK(codigoProceso, fechaSistema)).orElse(null);
 
 		if (Objects.isNull(auditoriaProceso)) {
 			log.error("No se encontro proceso: {} - fechaSistema: {}", codigoProceso, fechaSistema.toString());
