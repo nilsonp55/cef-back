@@ -88,6 +88,9 @@ public class CertificadasNoConciliadasDTO {
 	@JsonProperty("fechaModificacion")
 	private Date fechaModificacion;
 	
+	@JsonProperty("codigoPropioTDV")
+	private String codigoPropioTDV;
+	
 	private String tdv;
 
 	private String bancoAVAL;
