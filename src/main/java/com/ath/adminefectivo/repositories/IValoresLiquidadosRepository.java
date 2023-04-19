@@ -8,11 +8,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
 
 import com.ath.adminefectivo.entities.ValoresLiquidados;
 
-@Repository
 public interface IValoresLiquidadosRepository extends JpaRepository<ValoresLiquidados, Long>, 
 QuerydslPredicateExecutor<ValoresLiquidados>{
 
@@ -55,6 +53,6 @@ QuerydslPredicateExecutor<ValoresLiquidados>{
 	@Query(value = "SELECT COUNT(*) FROM valores_liquidados WHERE id_seq_grupo = ?1", nativeQuery = true)
 	int consultarCantidadValoresLiquidadosByIdSeqGrupo(Integer idSeqGroup);
 	
-	@Query(value = "SELECT COUNT(*)	FROM errores_costos	WHERE ID_SEQ_GRUPO = ?1", nativeQuery = true)
+	@Query(value = "SELECT COUNT(*) FROM errores_costos	WHERE ID_SEQ_GRUPO = ?1", nativeQuery = true)
 	int consultarCantidadErroresValoresLiquidadosByIdSeqGrupo(Integer idSeqGroup);
 }

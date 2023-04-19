@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
-import org.springframework.stereotype.Repository;
 
 import com.ath.adminefectivo.entities.ErroresCostos;
 
@@ -13,7 +12,6 @@ import com.ath.adminefectivo.entities.ErroresCostos;
  * @author bayron.perez
  */
 
-@Repository
 public interface ErroresCostosRepository extends JpaRepository<ErroresCostos, Integer>, 
 		QuerydslPredicateExecutor<ErroresCostos> {
 

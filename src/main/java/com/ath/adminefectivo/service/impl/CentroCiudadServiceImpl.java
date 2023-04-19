@@ -72,9 +72,4 @@ public class CentroCiudadServiceImpl implements ICentroCiudadService {
 		return CentroCiudadDTO.CONVERTER_DTO.apply(tipoCuentas);
 	}
 
-	@Override
-	public void deleteCentroCiudad(CentroCiudadDTO centroCiudadDTO) {
-		
-	}
-
 }

@@ -57,13 +57,13 @@ public interface LogProcesoMensualRepository extends JpaRepository<LogProcesoMen
 	 * @author duvan.naranjo
 	 */
 	@Query(value = "SELECT "
-			+ "	CASE WHEN COUNT(1) > 0 THEN TRUE ELSE FALSE END  "
+			+ "CASE WHEN COUNT(1) > 0 THEN TRUE ELSE FALSE END  "
 			+ "FROM "
-			+ "	log_proceso_diario "
+			+ "log_proceso_diario "
 			+ "WHERE "
-			+ "	estado_proceso  = ?1 AND "
-			+ "	EXTRACT(YEAR FROM fecha_finalizacion) = ?2 AND "
-			+ "	EXTRACT(MONTH FROM fecha_finalizacion) = ?3 ", nativeQuery = true)
+			+ "estado_proceso  = ?1 AND "
+			+ "EXTRACT(YEAR FROM fecha_finalizacion) = ?2 AND "
+			+ "EXTRACT(MONTH FROM fecha_finalizacion) = ?3 ", nativeQuery = true)
 	boolean existenLogParaMesAnioYEstado(String estadoProcesoDiaPendiente, int year, int month);
 
 	/**
@@ -75,9 +75,9 @@ public interface LogProcesoMensualRepository extends JpaRepository<LogProcesoMen
 	 * @author duvan.naranjo
 	 */
 	@Query(value = "SELECT "
-			+ "	CASE WHEN COUNT(1) > 0 THEN TRUE ELSE FALSE END  "
+			+ "CASE WHEN COUNT(1) > 0 THEN TRUE ELSE FALSE END  "
 			+ "FROM "
-			+ "	costos_clasificacion "
+			+ "costos_clasificacion "
 			+ "WHERE mes_año = ?1 ",nativeQuery = true)
 	boolean existenCostosClasificacionPorMesAnio(String mesAnio);
 	
@@ -90,9 +90,9 @@ public interface LogProcesoMensualRepository extends JpaRepository<LogProcesoMen
 	 * @author duvan.naranjo
 	 */
 	@Query(value = "SELECT "
-			+ "	CASE WHEN COUNT(1) > 0 THEN TRUE ELSE FALSE END  "
+			+ "CASE WHEN COUNT(1) > 0 THEN TRUE ELSE FALSE END "
 			+ "FROM "
-			+ "	parametros_liquidacion_costo plc "
+			+ "parametros_liquidacion_costo plc "
 			+ "WHERE fecha_concilia = ?1 ",nativeQuery = true)
 	boolean existenLiquidacionCostoDiariaByFecha(Date fecha);
 	
