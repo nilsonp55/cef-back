@@ -184,11 +184,9 @@ public class CargueDefinitivoDelegateImpl implements ICargueDefinitivoDelegate {
 	 */
 	private ArchivosCargadosDTO organizarDatosArchivo(String archivo, String estado,
 			String idModeloArchivo, String mascaraArchivo) {
-		ArchivosCargadosDTO archivosCargadosDTO = new ArchivosCargadosDTO();
 
 		Date fechaDatos = validacionArchivoService.obtenerFechaArchivo(archivo, mascaraArchivo);
-//        fechaDatos = festivosNacionalesService.consultarAnteriorHabil(fechaDatos);
-        archivosCargadosDTO = ArchivosCargadosDTO.builder().estadoCargue(estado).nombreArchivo(archivo)
+		ArchivosCargadosDTO archivosCargadosDTO = ArchivosCargadosDTO.builder().estadoCargue(estado).nombreArchivo(archivo)
                 .idModeloArchivo(idModeloArchivo).fechaArchivo(fechaDatos).build();
 
 		return archivosCargadosDTO;

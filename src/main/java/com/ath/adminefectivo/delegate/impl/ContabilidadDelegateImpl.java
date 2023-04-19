@@ -73,10 +73,7 @@ public class ContabilidadDelegateImpl implements IContabilidadDelegate {
 	
 		Date fechaSistema = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
 		Date fechaProcesoInicial = this.obtenerFechaProceso(fechaSistema, tipoContabilidad);
-		
 		Date fechaProcesoFin = this.obtenerFechaProcesoFinal(tipoContabilidad, fechaSistema);
-		
-		
 		
 		log.debug("fechaProcesoInicial "+fechaProcesoInicial);
 		log.debug("fechaProcesoFin "+fechaProcesoFin);
@@ -90,7 +87,7 @@ public class ContabilidadDelegateImpl implements IContabilidadDelegate {
 			int resultado = contabilidadService.generarContabilidad(tipoContabilidad, operacionesProgramadas);
 			
 			List<OperacionIntradiaDTO> listadoOperacionesProgramadasIntradia = operacionesProgramadasService.consultarOperacionesIntradia(fechaProcesoInicial, fechaProcesoFin);	
-			resultado = contabilidadService.generarContabilidadIntradia(tipoContabilidad, listadoOperacionesProgramadasIntradia, resultado);
+			contabilidadService.generarContabilidadIntradia(tipoContabilidad, listadoOperacionesProgramadasIntradia, resultado);
 			resultado = contabilidadService.generarMovimientosContables(fechaSistema, fechaSistema, tipoContabilidad, Dominios.ESTADO_CONTABILIDAD_GENERADO);
 		
 			
@@ -121,8 +118,8 @@ public class ContabilidadDelegateImpl implements IContabilidadDelegate {
 		log.debug("listadoOperacionesProgramadasPM   "+listadoOperacionesProgramadasPM.size());
 		List<OperacionesProgramadasDTO> listadoOperacionesProgramadasAM = operacionesProgramadasService.obtenerOperacionesProgramadasConErroresContables("AM");
 
-		int resultado = contabilidadService.generarContabilidad("PM", listadoOperacionesProgramadasPM);
-		resultado = contabilidadService.generarContabilidad("AM", listadoOperacionesProgramadasAM);
+		contabilidadService.generarContabilidad("PM", listadoOperacionesProgramadasPM);
+		int resultado = contabilidadService.generarContabilidad("AM", listadoOperacionesProgramadasAM);
 		
 		Date fechaSistema = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
 		Date fechaInicio = this.obtenerFecha2000();
@@ -130,10 +127,10 @@ public class ContabilidadDelegateImpl implements IContabilidadDelegate {
 		
 		List<OperacionIntradiaDTO> listadoOperacionesProgramadasIntradia = operacionesProgramadasService.consultarOperacionesIntradia(fechaInicio, fechaFin);	
 		resultado = contabilidadService.generarContabilidadIntradia("PM", listadoOperacionesProgramadasIntradia, resultado);
-		resultado = contabilidadService.generarContabilidadIntradia("AM", listadoOperacionesProgramadasIntradia, resultado);
+		contabilidadService.generarContabilidadIntradia("AM", listadoOperacionesProgramadasIntradia, resultado);
 		
-		resultado = contabilidadService.generarMovimientosContables(fechaInicio, fechaFin, "PM", Dominios.ESTADO_CONTABILIDAD_GENERADO);
-		resultado = contabilidadService.generarMovimientosContables(fechaInicio, fechaFin, "AM", Dominios.ESTADO_CONTABILIDAD_GENERADO);
+		contabilidadService.generarMovimientosContables(fechaInicio, fechaFin, "PM", Dominios.ESTADO_CONTABILIDAD_GENERADO);
+		contabilidadService.generarMovimientosContables(fechaInicio, fechaFin, "AM", Dominios.ESTADO_CONTABILIDAD_GENERADO);
 		
 		ProcesoErroresContablesDTO respuesta = new ProcesoErroresContablesDTO();
 		respuesta.setTransaccionesInternas(this.generarRespuestaProcesoContables());

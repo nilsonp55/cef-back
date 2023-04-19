@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.stereotype.Repository;
 
 import com.ath.adminefectivo.entities.ArchivosCargados;
 
@@ -18,7 +17,6 @@ import com.ath.adminefectivo.entities.ArchivosCargados;
  *
  * @author CamiloBenavides
  */
-@Repository
 public interface ArchivosCargadosRepository
 		extends JpaRepository<ArchivosCargados, Long>, 
 				QuerydslPredicateExecutor<ArchivosCargados>, 

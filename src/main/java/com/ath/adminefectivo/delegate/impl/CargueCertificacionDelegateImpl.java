@@ -258,10 +258,8 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	private ArchivosCargadosDTO organizarDatosArchivo(String archivo, String estado,
 			String idModeloArchivo, String mascaraArchivo) {
 		
-		ArchivosCargadosDTO archivosCargadosDTO = new ArchivosCargadosDTO();
 		Date fechaDatos = validacionArchivoService.obtenerFechaArchivo(archivo, mascaraArchivo);
-//        fechaDatos = festivosNacionalesService.consultarAnteriorHabil(fechaDatos);
-        archivosCargadosDTO = ArchivosCargadosDTO.builder().estadoCargue(estado).nombreArchivo(archivo)
+		ArchivosCargadosDTO archivosCargadosDTO = ArchivosCargadosDTO.builder().estadoCargue(estado).nombreArchivo(archivo)
                 .idModeloArchivo(idModeloArchivo).fechaArchivo(fechaDatos).build();
 		return archivosCargadosDTO;
 
@@ -288,41 +286,35 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	}
 	
 	/**
-	 * Metodo o job que es ejecutado segun el cron configurado(de lunes a viernes de 7 a 12 cada 15 minutos)
-	 * encargado de dejar registro de cada vez que se ejecuta el proceso automatico de archivos 
-	 * de certificaciones
+	 * Metodo o job que es ejecutado segun el cron configurado(de lunes a viernes de
+	 * 7 a 12 cada 15 minutos) encargado de dejar registro de cada vez que se
+	 * ejecuta el proceso automatico de archivos de certificaciones
 	 * 
 	 * @author duvan.naranjo
 	 */
 	@Scheduled(cron = "0 5/15 7-17 * * *")
 	public void certificacionesProgramadas() {
-		log.debug("ME EJECUTE CADA HORA MINUTOS " + new Date());
-		List<ArchivosCargadosDTO> certificaciones;
+		
+		// crea el registro en bitacora de automaticos
+		Date fechaActual = parametrosService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
+		log.info("Procesar archivos de Certificacion, fecha: {}", fechaActual.toString());
+		
+		BitacoraAutomaticosDTO bitacoraDTO = BitacoraAutomaticosDTO.builder()
+				.codigoProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION).fechaSistema(fechaActual)
+				.fechaHoraInicio(new Date()).build();
+		
 		List<ValidacionArchivoDTO> validacionesArchivos = new ArrayList<>();
-		//crea el registro en bitacora de automaticos
-				Date fechaActual = parametrosService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
-				
-		BitacoraAutomaticosDTO bitacoraDTO = BitacoraAutomaticosDTO.builder().codigoProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION).fechaSistema(fechaActual).
-				 fechaHoraInicio(new Date()).build();
-
-		//lectura
-		var agrupador = Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_CERTIFICACION;
-		var estado = Constantes.ESTADO_CARGUE_PENDIENTE;
-	
-		certificaciones = this.consultarArchivos(estado, agrupador);
+		this.consultarArchivos(Constantes.ESTADO_CARGUE_PENDIENTE, Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_CERTIFICACION)
+				.forEach(archivoCerti -> {
+					validacionesArchivos.add(
+							this.procesarArchivo(archivoCerti.getIdModeloArchivo(), archivoCerti.getNombreArchivo()));
+				});
+		log.info("Archivos a procesar: {}", validacionesArchivos.size());
 		
-		certificaciones.forEach(archivoCerti ->{
-			validacionesArchivos.add(this.procesarArchivo(archivoCerti.getIdModeloArchivo(), archivoCerti.getNombreArchivo()));
-		});
-		
-		
-		bitacoraDTO = this.procesarValidacionRealizada(bitacoraDTO, validacionesArchivos);
+		this.procesarValidacionRealizada(bitacoraDTO, validacionesArchivos);
 		bitacoraDTO.setFechaHoraFinal(new Date());
-		
 		bitacoraAutomaicosService.guardarBitacoraAutomaticos(bitacoraDTO);
-		
-		
-		
+		log.info("Finaliza procesar certificacion: {}", bitacoraDTO.getFechaHoraFinal().toString());
 	}
 
 	private BitacoraAutomaticosDTO procesarValidacionRealizada(BitacoraAutomaticosDTO bitacoraDTO,
@@ -336,12 +328,9 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 			detalleProcesoAuto.setResultado(validacion.getEstadoValidacion());
 			detalleProcesoAuto.setIdArchivo(validacion.getIdArchivo());
 			listadoDetallesProcesos.add(detalleProcesoAuto);
-				
 		});
 		bitacoraDTO.setDetallesProcesosAutomaticosDTO(listadoDetallesProcesos);
-		
-		
+
 		return bitacoraDTO;
 	}
-
 }

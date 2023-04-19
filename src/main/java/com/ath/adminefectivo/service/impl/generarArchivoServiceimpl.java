@@ -247,25 +247,25 @@ public class generarArchivoServiceimpl implements IgenerarArchivoService {
 				
 				String fechaSistemaString = formato.format(festivosNacionalesService.consultarAnteriorHabil(fecha));
 				String fechaConFormato = fechaSistemaString.replace("/", "");
-				return Constantes.CTB_BBOG_Manana + fechaConFormato + Constantes.EXTENSION_ARCHIVO_TXT;
+				return Constantes.CTB_BBOG_MANANA + fechaConFormato + Constantes.EXTENSION_ARCHIVO_TXT;
 			} else if (codigoBanco == 298) {
-				return Constantes.CTB_BAVV_Manana + Constantes.EXTENSION_ARCHIVO_TXT;
+				return Constantes.CTB_BAVV_MANANA + Constantes.EXTENSION_ARCHIVO_TXT;
 			} else if (codigoBanco == 299) {
-				return Constantes.CTB_BOCC_Manana + Constantes.EXTENSION_ARCHIVO_XLSX;
+				return Constantes.CTB_BOCC_MANANA + Constantes.EXTENSION_ARCHIVO_XLSX;
 			} else if (codigoBanco == 300) {
-				return Constantes.CTB_BPOP_Manana + Constantes.EXTENSION_ARCHIVO_XLSX;
+				return Constantes.CTB_BPOP_MANANA + Constantes.EXTENSION_ARCHIVO_XLSX;
 			}
 		} else {
 			if (codigoBanco == 297) {
 				String fechaSistemaString = formato.format(parametrosService.valorParametroDate(Constantes.FECHA_DIA_PROCESO));
 				String fechaConFormato = fechaSistemaString.replace("/", "");
-				return Constantes.CTB_BBOG_Tarde + fechaConFormato + Constantes.EXTENSION_ARCHIVO_TXT;
+				return Constantes.CTB_BBOG_TARDE + fechaConFormato + Constantes.EXTENSION_ARCHIVO_TXT;
 			} else if (codigoBanco == 298) {
-				return Constantes.CTB_BAVV_Tarde + Constantes.EXTENSION_ARCHIVO_TXT;
+				return Constantes.CTB_BAVV_TARDE + Constantes.EXTENSION_ARCHIVO_TXT;
 			} else if (codigoBanco == 299) {
-				return Constantes.CTB_BOCC_Tarde + Constantes.EXTENSION_ARCHIVO_XLSX;
+				return Constantes.CTB_BOCC_TARDE + Constantes.EXTENSION_ARCHIVO_XLSX;
 			} else if (codigoBanco == 300) {
-				return Constantes.CTB_BPOP_Tarde + Constantes.EXTENSION_ARCHIVO_XLSX;
+				return Constantes.CTB_BPOP_TARDE + Constantes.EXTENSION_ARCHIVO_XLSX;
 			}
 		}
 		return null;
@@ -283,13 +283,13 @@ public class generarArchivoServiceimpl implements IgenerarArchivoService {
 				fechaSistemaString = formato.format(fecha);
 
 				fechaConFormato = fechaSistemaString.replace("/", "");
-				return Constantes.CTB_BBOG_Manana + fechaConFormato + Constantes.EXTENSION_ARCHIVO_TXT;
+				return Constantes.CTB_BBOG_MANANA + fechaConFormato + Constantes.EXTENSION_ARCHIVO_TXT;
 			} else if (codigoBanco == 298) {
-				return Constantes.CTB_BAVV_Manana + fechaConFormato + Constantes.EXTENSION_ARCHIVO_TXT;
+				return Constantes.CTB_BAVV_MANANA + fechaConFormato + Constantes.EXTENSION_ARCHIVO_TXT;
 			} else if (codigoBanco == 299) {
-				return Constantes.CTB_BOCC_Manana + fechaConFormato + Constantes.EXTENSION_ARCHIVO_XLS;
+				return Constantes.CTB_BOCC_MANANA + fechaConFormato + Constantes.EXTENSION_ARCHIVO_XLS;
 			} else if (codigoBanco == 300) {
-				return Constantes.CTB_BPOP_Manana + fechaConFormato + Constantes.EXTENSION_ARCHIVO_XLS;
+				return Constantes.CTB_BPOP_MANANA + fechaConFormato + Constantes.EXTENSION_ARCHIVO_XLS;
 			}
 		} else {
 			if (codigoBanco == 297) {
@@ -298,13 +298,13 @@ public class generarArchivoServiceimpl implements IgenerarArchivoService {
 				fechaSistemaString = formato.format(fecha);
 
 				fechaConFormato = fechaSistemaString.replace("/", "");
-				return Constantes.CTB_BBOG_Tarde + fechaConFormato + Constantes.EXTENSION_ARCHIVO_TXT;
+				return Constantes.CTB_BBOG_TARDE + fechaConFormato + Constantes.EXTENSION_ARCHIVO_TXT;
 			} else if (codigoBanco == 298) {
-				return Constantes.CTB_BAVV_Tarde + fechaConFormato + Constantes.EXTENSION_ARCHIVO_TXT;
+				return Constantes.CTB_BAVV_TARDE + fechaConFormato + Constantes.EXTENSION_ARCHIVO_TXT;
 			} else if (codigoBanco == 299) {
-				return Constantes.CTB_BOCC_Tarde + fechaConFormato + Constantes.EXTENSION_ARCHIVO_XLS;
+				return Constantes.CTB_BOCC_TARDE + fechaConFormato + Constantes.EXTENSION_ARCHIVO_XLS;
 			} else if (codigoBanco == 300) {
-				return Constantes.CTB_BPOP_Tarde + fechaConFormato + Constantes.EXTENSION_ARCHIVO_XLS;
+				return Constantes.CTB_BPOP_TARDE + fechaConFormato + Constantes.EXTENSION_ARCHIVO_XLS;
 			}
 		}
 		return null;

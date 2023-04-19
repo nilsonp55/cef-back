@@ -14,7 +14,6 @@ import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.constantes.Parametros;
 import com.ath.adminefectivo.delegate.ICierreDiaDelegate;
-import com.ath.adminefectivo.dto.ArchivosCargadosDTO;
 import com.ath.adminefectivo.dto.LogProcesoDiarioDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.ArchivosCargados;

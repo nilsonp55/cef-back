@@ -2,7 +2,6 @@ package com.ath.adminefectivo.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
-import org.springframework.stereotype.Repository;
 import com.ath.adminefectivo.entities.Usuario;
 
 /**
@@ -10,7 +9,6 @@ import com.ath.adminefectivo.entities.Usuario;
  * @author bayron.perez
  */
 
-@Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, String>, 
 	QuerydslPredicateExecutor<Usuario> {
 

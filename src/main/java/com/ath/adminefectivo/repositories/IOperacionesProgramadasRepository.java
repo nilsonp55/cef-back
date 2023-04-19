@@ -203,12 +203,12 @@ public interface IOperacionesProgramadasRepository
 
 	@Query("SELECT op FROM OperacionesProgramadas op where idOperacion in (SELECT DISTINCT "
 			+" ti.idOperacion "
-			+ "	FROM ErroresContables ec, "
-			+ "		 TransaccionesInternas ti "
-			+ "	WHERE "
-			+ "		 ec.estado = 1 AND "
-			+ "		 ec.transaccionInterna = ti.idTransaccionesInternas AND "
-			+ "		 ti.tipoProceso = ?1) ")
+			+ "FROM ErroresContables ec, "
+			+ "TransaccionesInternas ti "
+			+ "WHERE "
+			+ "ec.estado = 1 AND "
+			+ "ec.transaccionInterna = ti.idTransaccionesInternas AND "
+			+ "ti.tipoProceso = ?1) ")
 	public List<OperacionesProgramadas> obtenerConErroresContables(String tipoContabilidad);
 
 	/**

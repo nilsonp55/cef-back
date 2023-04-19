@@ -14,7 +14,6 @@ import com.ath.adminefectivo.delegate.IOperacionesProgramadasDelegate;
 import com.ath.adminefectivo.dto.ArchivosCargadosDTO;
 import com.ath.adminefectivo.dto.LogProcesoDiarioDTO;
 import com.ath.adminefectivo.dto.MaestrosDefinicionArchivoDTO;
-import com.ath.adminefectivo.dto.OperacionesProgramadasDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.ArchivosCargados;
 import com.ath.adminefectivo.entities.LogProcesoDiario;
@@ -70,12 +69,10 @@ public class OperacionesProgramadasDelegateImpl implements IOperacionesProgramad
 					definicionArchivo.getIdMaestroDefinicionArchivo().toUpperCase().trim());
 			
 			if (!Objects.isNull(listadoArchivosCargados)) {
-				List<OperacionesProgramadasDTO> operacionesProgramadas = operacionesProgramadasService
-						.generarOperacionesProgramadas(listadoArchivosCargados);	
+				operacionesProgramadasService.generarOperacionesProgramadas(listadoArchivosCargados);	
 			}
 		}
 		cambiarEstadoLogProcesoDiario(agrupador);
-		//return Constantes.MENSAJE_NO_SE_ENCONTRARON_ARCHIVOS_OP;
 		return Constantes.MENSAJE_GENERO_OPERACIONES_PROGRAMADAS_CORRECTO;
 	}
 	

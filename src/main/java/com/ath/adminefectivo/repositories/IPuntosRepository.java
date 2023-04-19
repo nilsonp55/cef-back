@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
 import com.ath.adminefectivo.entities.Puntos;
-import com.ath.adminefectivo.entities.PuntosCodigoTDV;
 
 /**
  * Repository encargado de manejar la logica de la entidad Puntos
@@ -69,9 +68,9 @@ public interface IPuntosRepository extends JpaRepository<Puntos, Integer>, Query
 	 * @author prv_ccastano
 	 */
 	@Query("select p from Puntos p "
-	+ "		inner join SitiosClientes s on p.codigoPunto = s.codigoPunto "
-	+ "		inner join ClientesCorporativos c on c.codigoCliente = s.codigoCliente and "
-	+ "     c.identificacion = '9999999999' "
-	+ "		where p.tipoPunto ='CLIENTE' and c.codigoBancoAval = ?1")
+	+ "inner join SitiosClientes s on p.codigoPunto = s.codigoPunto "
+	+ "inner join ClientesCorporativos c on c.codigoCliente = s.codigoCliente and "
+	+ "c.identificacion = '9999999999' "
+	+ "where p.tipoPunto ='CLIENTE' and c.codigoBancoAval = ?1")
 	public Puntos obtenerCodigoPunto(Integer codigo_aval);
 }

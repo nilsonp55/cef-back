@@ -59,18 +59,18 @@ public interface ITransaccionesInternasRepository extends JpaRepository<Transacc
 	 * @author duvan.naranjo
 	 */
 	@Query(value = "SELECT "
-			+ "	CASE WHEN count(1) > 0 THEN "
-			+ "			TRUE "
-			+ "		ELSE "
-			+ "			FALSE "
-			+ "		END "
+			+ "CASE WHEN count(1) > 0 THEN "
+			+ "TRUE "
+			+ "ELSE "
+			+ "FALSE "
+			+ "END "
 			+ "FROM "
-			+ "	transacciones_internas "
+			+ "transacciones_internas "
 			+ "WHERE "
-			+ "	fecha = ?1 AND "
-			+ "	estado = ?4 AND "
-			+ " tipo_proceso = ?2 AND"
-			+ "	banco_aval = ?3 ", nativeQuery = true)
+			+ "fecha = ?1 AND "
+			+ "estado = ?4 AND "
+			+ "tipo_proceso = ?2 AND "
+			+ "banco_aval = ?3 ", nativeQuery = true)
 	boolean existErroresContablesByBanco(Date fecha, String tipoContabilidad, int codBanco, int i);
 
 	
@@ -85,16 +85,16 @@ public interface ITransaccionesInternasRepository extends JpaRepository<Transacc
 	 */
 	@Query(value = "SELECT "
 			+ "	CASE WHEN count(1) > 0 THEN "
-			+ "			TRUE "
-			+ "		ELSE "
-			+ "			FALSE "
-			+ "		END "
+			+ "TRUE "
+			+ "ELSE "
+			+ "FALSE "
+			+ "END "
 			+ "FROM "
-			+ "	transacciones_internas "
+			+ "transacciones_internas "
 			+ "WHERE "
-			+ "	fecha = ?1 AND "
-			+ "	estado = ?3 AND "
-			+ " tipo_proceso = ?2 ", nativeQuery = true)
+			+ "fecha = ?1 AND "
+			+ "estado = ?3 AND "
+			+ "tipo_proceso = ?2 ", nativeQuery = true)
 	boolean existErroresContablesAllBanco(Date fecha, String tipoContabilidad, int estado);
 
 }

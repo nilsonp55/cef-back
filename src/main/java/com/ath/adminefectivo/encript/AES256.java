@@ -14,6 +14,7 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -72,22 +73,20 @@ public class AES256 {
 	private String SECRET_KEY = "";
 	private String SALTVALUE = "";
 
-	private String instanceAlgorith = "";
+	private String instanceAlgorith = "AES/GCM/NoPadding";
+	
+	private SecureRandom random = new SecureRandom();
 
 	public AES256(IParametroService parametroService) {
 		this.parametroService = parametroService;
 		this.setKeys();
 	}
 
-	private boolean existsKeys() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 	public String encryptAES(String text) {
 		try {
 			/* Declare a byte array. */
-			byte[] iv = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+			byte[] iv = new byte[16];
+			random.nextBytes(iv);
 			IvParameterSpec ivspec = new IvParameterSpec(iv);
 
 			/* Create factory for secret keys. */
@@ -115,7 +114,8 @@ public class AES256 {
 	public String decryptAES(String text) {
 		try {
 			/* Declare a byte array. */
-			byte[] iv = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+			byte[] iv = new byte[16];
+			random.nextBytes(iv);
 			IvParameterSpec ivspec = new IvParameterSpec(iv);
 			/* Create factory for secret keys. */
 			SecretKeyFactory factory = SecretKeyFactory.getInstance(parametroService.valorParametro(Parametros.AES256));
@@ -246,12 +246,6 @@ public class AES256 {
 
 	private byte[] decode(String data) {
 		return Base64.getDecoder().decode(data);
-	}
-
-	private void getKeys() {
-		String privateKeyString = parametroService.valorParametro("privateKeyRSA");
-		String publicKeyString = parametroService.valorParametro("publicKeyRSA");
-
 	}
 
 	public String getPrivateKeyString() {

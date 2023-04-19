@@ -620,14 +620,14 @@ public static final String DELETE_SEPARADORES = "";
 	/**
 	 * Nombre de archivos generados xls 
 	 */
-	public static final String CTB_BBOG_Manana = "Contabilidad_BBG_Cambios_";
-	public static final String CTB_BBOG_Tarde = "Contabilidad_BBOG_";
-	public static final String CTB_BOCC_Manana = "Contabilidad_BOCC_Manana";
-	public static final String CTB_BOCC_Tarde = "Contabilidad_BOCC_Tarde";
-	public static final String CTB_BPOP_Manana = "Contabilidad_BPOP_Manana";
-	public static final String CTB_BPOP_Tarde = "Contabilidad_BPOP_Tarde";
-	public static final String CTB_BAVV_Manana = "Contabilidad_BAVV_Manana";
-	public static final String CTB_BAVV_Tarde = "Contabilidad_BAVV_Tarde";
+	public static final String CTB_BBOG_MANANA = "Contabilidad_BBG_Cambios_";
+	public static final String CTB_BBOG_TARDE = "Contabilidad_BBOG_";
+	public static final String CTB_BOCC_MANANA = "Contabilidad_BOCC_Manana";
+	public static final String CTB_BOCC_TARDE = "Contabilidad_BOCC_Tarde";
+	public static final String CTB_BPOP_MANANA = "Contabilidad_BPOP_Manana";
+	public static final String CTB_BPOP_TARDE = "Contabilidad_BPOP_Tarde";
+	public static final String CTB_BAVV_MANANA = "Contabilidad_BAVV_Manana";
+	public static final String CTB_BAVV_TARDE = "Contabilidad_BAVV_Tarde";
 	
 	public static final String EXTENSION_ARCHIVO_XLS = ".xls";
 	public static final String EXTENSION_ARCHIVO_XLSX = ".xlsx";
