@@ -80,7 +80,7 @@ public class CiudadServiceImpl implements ICiudadesService{
 	
 	@Override
 	public CiudadesDTO getCiudadPorCodigoDane(String codigo) {
-		Ciudades ciudadOpt = ciudadesRepository.findByCodigoDANE(codigo);
+		Ciudades ciudadOpt = ciudadesRepository.findBycodigoDANE(codigo);
 		if (Objects.isNull(ciudadOpt)) {
 			throw new AplicationException(ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getDescription()  + "Ciudad con codigoDane = "+codigo+" No existe. ",
@@ -93,7 +93,7 @@ public class CiudadServiceImpl implements ICiudadesService{
 	@Override
 	public CiudadesDTO getCiudadPorCodigoDaneOrCodigoBrinks(String codigo) {
 		Date fechaProceso = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
-		Ciudades ciudadOpt = ciudadesRepository.findByCodigoDANE(codigo);
+		Ciudades ciudadOpt = ciudadesRepository.findBycodigoDANE(codigo);
 		if (Objects.isNull(ciudadOpt)) {
 			Ciudades ciudadBrinks = ciudadesRepository.findByCodigoBrinks(Integer.parseInt(codigo));
 			if (Objects.isNull(ciudadBrinks)) {
