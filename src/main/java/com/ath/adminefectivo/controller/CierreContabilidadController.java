@@ -65,7 +65,7 @@ public class CierreContabilidadController {
 			) 
 	
 	{
-		List<RespuestaContableDTO> consultas = CierreContabilidadDelegate.cerrarContabilidad(fechaSistema, tipoContabilidad, codBanco, fase);
+		List<RespuestaContableDTO> consultas = CierreContabilidadDelegate.cerrarContabilidad(tipoContabilidad, codBanco, fase);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consultas, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));

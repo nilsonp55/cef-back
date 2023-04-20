@@ -1,6 +1,5 @@
 package com.ath.adminefectivo.delegate.impl;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.Date;
 
@@ -35,20 +34,12 @@ public class GenerarArchivoDelegate implements IGenerarArchivoDelegate {
 	TransaccionesContablesServiceImpl transaccionesContablesService; 
 
 	@Override
-	public RespuestaGenerarArchivoDTO generarArchivo(Date fecha, String tipoContabilidad, int codBanco) {
-		ByteArrayOutputStream registros = null;
-
+	public RespuestaGenerarArchivoDTO generarArchivo(String tipoContabilidad, int codBanco) {
 	
-		fecha = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
-		
-		if(tipoContabilidad.equals("AM") || tipoContabilidad.equals("PM")) {
-					
-			return generarArchivoService.generarArchivo(fecha, tipoContabilidad, codBanco);
-			
+		Date fecha = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);		
+		if(tipoContabilidad.equals("AM") || tipoContabilidad.equals("PM")) {					
+			return generarArchivoService.generarArchivo(fecha, tipoContabilidad, codBanco);			
 		}
 		return null;
-		
-		
-		
 	}
 }
