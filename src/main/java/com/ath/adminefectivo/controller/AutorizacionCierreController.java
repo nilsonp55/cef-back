@@ -31,7 +31,7 @@ public class AutorizacionCierreController {
 			@RequestParam(value = "estado") String estado
 			) {
 
-		String consulta = autorizacionContableDelegate.autorizacionContable(fecha,tipoContabilidad,estado);
+		String consulta = autorizacionContableDelegate.autorizacionContable(tipoContabilidad,estado);
 
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())

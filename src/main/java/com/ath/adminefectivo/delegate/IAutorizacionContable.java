@@ -1,9 +1,5 @@
 package com.ath.adminefectivo.delegate;
 
-import java.util.Date;
-
-import com.ath.adminefectivo.dto.LogProcesoDiarioDTO;
-
 public interface IAutorizacionContable {
 	
 	/**
@@ -15,5 +11,5 @@ public interface IAutorizacionContable {
 	 * @author miller.caro
 	 */
 	
-	String autorizacionContable(Date fecha,String tipoContabilidad,String estado);
+	String autorizacionContable(String tipoContabilidad,String estado);
 }
