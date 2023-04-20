@@ -32,11 +32,11 @@ public class CierreContabilidadDelegateImpl implements ICierreContabilidadDelega
 	CierreContabilidadServiceImpl cierreContabilidadService;
 
 	@Override
-	public List<RespuestaContableDTO> cerrarContabilidad(Date fechaSistema, String tipoContabilidad, int codBanco,
+	public List<RespuestaContableDTO> cerrarContabilidad(String tipoContabilidad, int codBanco,
 			String fase) {
 		List<RespuestaContableDTO> respuesta = null;
 
-		fechaSistema = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
+		Date fechaSistema = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
 
 		// VALIDA QUE LA CARGA PELIMINAR ESTE CERRADA SI ES PM
 		// O SI ES PM QUE LA CONCILIACION ESTE CERRADA

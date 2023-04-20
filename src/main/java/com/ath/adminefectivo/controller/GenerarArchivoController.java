@@ -2,28 +2,18 @@ package com.ath.adminefectivo.controller;
 
 import java.io.ByteArrayInputStream;
 import java.util.Date;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ath.adminefectivo.delegate.IGenerarArchivoDelegate;
 import com.ath.adminefectivo.delegate.impl.GenerarArchivoDelegate;
-import com.ath.adminefectivo.dto.RespuestaContableDTO;
 import com.ath.adminefectivo.dto.compuestos.RespuestaGenerarArchivoDTO;
-import com.ath.adminefectivo.dto.response.ApiResponseADE;
-import com.ath.adminefectivo.dto.response.ApiResponseCode;
-import com.ath.adminefectivo.dto.response.ResponseADE;
 
 @RestController
 @RequestMapping("${endpoints.GenerarArchivo}")
@@ -45,7 +35,7 @@ public class GenerarArchivoController {
 			@RequestParam(value = "tipoContabilidad") String tipoContabilidad,
 			@RequestParam(value = "codBanco") int codBanco
 			) {
-		RespuestaGenerarArchivoDTO archivo =generarArchivoDelegate.generarArchivo(fecha, tipoContabilidad, codBanco);
+		RespuestaGenerarArchivoDTO archivo =generarArchivoDelegate.generarArchivo(tipoContabilidad, codBanco);
  		 HttpHeaders headers = new HttpHeaders();
  		 headers.add("Content-Disposition", "attachment; filename="+archivo.getNombreArchivo());
  		ByteArrayInputStream bais =	new ByteArrayInputStream(archivo.getArchivoBytes().toByteArray());
