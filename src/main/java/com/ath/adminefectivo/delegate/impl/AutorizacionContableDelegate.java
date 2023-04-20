@@ -35,9 +35,9 @@ public class AutorizacionContableDelegate implements IAutorizacionContable {
 	IgenerarArchivoService generarArchivoService;
 
 	@Override
-	public String autorizacionContable(Date fecha, String tipoContabilidad, String estado) {
+	public String autorizacionContable(String tipoContabilidad, String estado) {
 
-		fecha = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
+		Date fecha = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
 		
 		String contabilidadProceso = "";
 		if (tipoContabilidad.equals("PM")) {
