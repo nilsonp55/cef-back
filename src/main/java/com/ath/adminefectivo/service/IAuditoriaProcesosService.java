@@ -15,7 +15,7 @@ public interface IAuditoriaProcesosService {
 	 * @return AuditoriaProcesosDTO
 	 * @author duvan_naranjo
 	 */
-	AuditoriaProcesosDTO consultarAuditoriaPorProceso(String codigoProceso, Date fechaSistema);
+	AuditoriaProcesosDTO consultarAuditoriaPorProceso(String codigoProceso);
 
 	/**
 	 * 
