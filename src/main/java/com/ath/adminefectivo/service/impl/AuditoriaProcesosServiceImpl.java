@@ -40,9 +40,9 @@ public class AuditoriaProcesosServiceImpl implements IAuditoriaProcesosService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public AuditoriaProcesosDTO consultarAuditoriaPorProceso(String codigoProceso, Date fechaSistema) {
+	public AuditoriaProcesosDTO consultarAuditoriaPorProceso(String codigoProceso) {
 		
-		fechaSistema = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
+		Date fechaSistema = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
 
 		AuditoriaProcesos auditoriaProceso = auditoriaProcesosRepository
 				.findById(new AuditoriaProcesosPK(codigoProceso, fechaSistema)).orElse(null);

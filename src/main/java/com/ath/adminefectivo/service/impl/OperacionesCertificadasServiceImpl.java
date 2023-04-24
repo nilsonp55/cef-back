@@ -226,7 +226,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 
 	@Override
 	public void validarNoConciliables() {
-		boolean resultado = operacionesCertificadasRepository.validarnoconciliables();
+		operacionesCertificadasRepository.validarnoconciliables();
 	}
 
 	/**
@@ -356,7 +356,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 		String nitbanco = nit.substring(0, 9);
 		String ciudad = determinarCampo(fila, detalleArchivo, tipoRegistro,
 				Constantes.CAMPO_DETALLE_ARCHIVO_CODIGOCIUDAD);
-		String ciudad2 = ciudad.valueOf(Integer.parseInt(ciudad.trim()));	
+		String ciudad2 = String.valueOf(Integer.parseInt(ciudad.trim()));	
 		Fondos fondo = asignarFondo(tdv, nitbanco, ciudad2);
 		registro.setTdv(fondo.getTdv());
 		registro.setCodigoPunto(fondo.getCodigoPunto());
@@ -834,12 +834,12 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 
 		if (!Objects.isNull(codigoPunto)) {
 			List<OperacionesCertificadas> ocertificadas = operacionesCertificadasRepository
-					.findByCodigoPuntoDestinoAndEntradaSalidaAndFechaEjecucion(Integer.valueOf(codigoPunto),
+					.findByCodigoPuntoDestinoAndEntradaSalidaAndFechaEjecucion(codigoPunto,
 							Constantes.VALOR_SALIDA, fecha);
 
 			if (Objects.isNull(ocertificadas)) {
 				ocertificadas = operacionesCertificadasRepository
-						.findByCodigoPuntoOrigenAndEntradaSalidaAndFechaEjecucion(Integer.valueOf(codigoPunto),
+						.findByCodigoPuntoOrigenAndEntradaSalidaAndFechaEjecucion(codigoPunto,
 								Constantes.VALOR_ENTRADA, fecha);
 			}
 

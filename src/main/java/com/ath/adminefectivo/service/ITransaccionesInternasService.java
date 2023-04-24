@@ -3,7 +3,6 @@ package com.ath.adminefectivo.service;
 import java.util.Date;
 import java.util.List;
 
-import com.ath.adminefectivo.dto.RespuestaContableDTO;
 import com.ath.adminefectivo.dto.TransaccionesInternasDTO;
 import com.ath.adminefectivo.entities.TransaccionesInternas;
 

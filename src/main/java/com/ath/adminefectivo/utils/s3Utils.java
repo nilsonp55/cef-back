@@ -46,8 +46,6 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class s3Utils {
 
-	private String bucketNameFormat;
-
 	@Autowired
 	private AmazonS3 s3;
 
@@ -183,13 +181,6 @@ public class s3Utils {
 	 * @throws URISyntaxException
 	 */
 	public void conexionS3(String bucketName) {
-	try {
-         Properties systemSettings = System.getProperties();
-         
-      } catch (Exception e) {
-         e.printStackTrace();
-         log.debug(false);
-      }
 	  
 	BasicAWSCredentials credentials = new BasicAWSCredentials("AKIAZPUFXGZ5GEMGWLFZ", "HD1RM1Il0nAJYu2gNr1oYG6MtdBzafSKpf+1TtMM");
 		try {
@@ -204,8 +195,7 @@ public class s3Utils {
 			throw new NegocioException(ApiResponseCode.ERROR_ACCEDIENDO_S3.getCode(),
 					ApiResponseCode.ERROR_ACCEDIENDO_S3.getDescription(),
 					ApiResponseCode.ERROR_ACCEDIENDO_S3.getHttpStatus());
-		}
-		bucketNameFormat = bucketName + UUID.randomUUID();
+		}		
 	}
 
 	/**

@@ -12,7 +12,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.FluentQuery.FetchableFluentQuery;
 import org.springframework.stereotype.Service;
 
-import com.ath.adminefectivo.dto.RespuestaContableDTO;
 import com.ath.adminefectivo.dto.TransaccionesContablesDTO;
 import com.ath.adminefectivo.entities.TransaccionesContables;
 import com.ath.adminefectivo.repositories.IGenerarArchivoRepository;
@@ -118,7 +117,7 @@ public class GenerarArchivoRepository implements IGenerarArchivoRepository {
 	@Override
 	public Optional<TransaccionesContables> findById(Long id) {
 		// TODO Auto-generated method stub
-		return null;
+		return Optional.empty();
 	}
 
 	@Override
@@ -166,7 +165,7 @@ public class GenerarArchivoRepository implements IGenerarArchivoRepository {
 	@Override
 	public <S extends TransaccionesContables> Optional<S> findOne(Example<S> example) {
 		// TODO Auto-generated method stub
-		return null;
+		return Optional.empty();
 	}
 
 	@Override
