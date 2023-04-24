@@ -158,17 +158,6 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 			transaccionesInternasService.deleteTransaccionesInternasByFechasAndTipoProceso(fechaInicio, fechaFin,tipoContabilidad);
 		
 	}
-	
-
-	/**
-	 * 
-	 * @param tipoContabilidad
-	 * @param transaccionInterna
-	 */
-	private void procesarTransaccionesInternas(String tipoContabilidad, TransaccionesInternasDTO transaccionInterna) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	/**
 	 * ----------------------------------- METODOS PRIVADOS-----------------------------------
