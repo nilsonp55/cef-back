@@ -34,7 +34,7 @@ import lombok.Setter;
  *
  */
 @NamedNativeQuery(name = "OperacionesProgramadas.consultaOperacionesIntradia_Salida", 
-	  query = "select fo.banco_aval as bancoAVAL, op.codigo_punto_destino as codigoPunto, op.entrada_salida as entradaSalida"
+	  query = "select fo.banco_aval as bancoAVAL, op.codigo_punto_destino as codigoPunto, op.entrada_salida as entradaSalida "
 	  		+ "from operaciones_programadas  op, fondos fo, bancos ba "
 	  		+ "where fo.codigo_punto  = op.codigo_fondo_tdv  "
 	  		+ "and ba.codigo_punto  = op.codigo_punto_destino  "
@@ -46,7 +46,7 @@ import lombok.Setter;
 	  resultSetMapping = "Mapping.OperacionIntradiaDTO")
 
 @NamedNativeQuery(name = "OperacionesProgramadas.consultaOperacionesIntradia_Entrada", 
-query = "select fo.banco_aval as bancoAVAL, op.codigo_punto_origen as codigoPunto, op.entrada_salida as entradaSalida"
+query = "select fo.banco_aval as bancoAVAL, op.codigo_punto_origen as codigoPunto, op.entrada_salida as entradaSalida "
 		+ "from operaciones_programadas  op, fondos fo, bancos ba "
 		+ "where fo.codigo_punto  = op.codigo_fondo_tdv  "
 		+ "and ba.codigo_punto  = op.codigo_punto_origen  "
