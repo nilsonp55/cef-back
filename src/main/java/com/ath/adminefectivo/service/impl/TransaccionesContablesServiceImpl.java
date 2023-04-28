@@ -9,14 +9,12 @@ import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.dto.RespuestaContableDTO;
 import com.ath.adminefectivo.dto.TransaccionesContablesDTO;
-import com.ath.adminefectivo.dto.TransaccionesInternasDTO;
 import com.ath.adminefectivo.dto.compuestos.ConteoContabilidadDTO;
 import com.ath.adminefectivo.entities.TransaccionesContables;
-import com.ath.adminefectivo.entities.TransaccionesInternas;
 import com.ath.adminefectivo.repositories.ITransaccionesContablesRepository;
-import com.ath.adminefectivo.repositories.ITransaccionesInternasRepository;
 import com.ath.adminefectivo.service.ITransaccionesContablesService;
-import com.ath.adminefectivo.service.ITransaccionesInternasService;
+
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Implementacion de Servicios para gestionar las transacciones contables
@@ -25,6 +23,7 @@ import com.ath.adminefectivo.service.ITransaccionesInternasService;
  */
 
 @Service
+@Log4j2
 public class TransaccionesContablesServiceImpl implements ITransaccionesContablesService {
 
 	@Autowired
@@ -92,7 +91,6 @@ public class TransaccionesContablesServiceImpl implements ITransaccionesContable
 	public List<RespuestaContableDTO> getCierreContable(Date fecha, String tipoContabilidad,
 			int codBanco) {
 		
-		List<TransaccionesContablesDTO> listadoTransaccionesCierreDTO = new ArrayList<>();
 		List<RespuestaContableDTO> listadoTransaccionContables = null;
 			if(codBanco == 0) {
 				listadoTransaccionContables = transaccionesContablesRepository
@@ -171,6 +169,7 @@ public class TransaccionesContablesServiceImpl implements ITransaccionesContable
 	@Override
 	public List<String> cierreContablebyBancoF2String(Date fecha, String tipoContabilidad,
 			int codBanco){
+		log.debug("tipoContabilidad: {} - codBanco: {}", tipoContabilidad, codBanco);
 		return transaccionesContablesRepository.cierreContablebyBancoF2String(fecha, tipoContabilidad, codBanco, 1);
 		
 	}

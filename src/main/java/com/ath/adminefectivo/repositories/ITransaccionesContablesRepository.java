@@ -203,7 +203,7 @@ public interface ITransaccionesContablesRepository extends JpaRepository<Transac
 			+ "cuentas_puc cp, "
 			+ "transacciones_internas ti, "
 			+ "bancos b "
-			+ "WHERE"
+			+ "WHERE "
 			+ "tc.cuenta_contable = cp.CUENTA_CONTABLE AND "
 			+ "tc.banco_aval = cp.banco_aval AND "
 			+ "cp.nombre_cuenta NOT LIKE 'Transitoria%' AND "
