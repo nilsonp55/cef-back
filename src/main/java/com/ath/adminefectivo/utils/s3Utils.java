@@ -10,8 +10,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Properties;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
@@ -29,7 +27,6 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.ListObjectsV2Request;
 import com.amazonaws.services.s3.model.ListObjectsV2Result;
-import com.amazonaws.services.s3.model.PutObjectResult;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
@@ -236,13 +233,12 @@ public class s3Utils {
 	
 	public void guardarArchivoEnBytes(ByteArrayOutputStream archivo, String key, String nombreArchivo) {
 		
-		PutObjectResult result;
 		try {
 			String pathArchivo = key+nombreArchivo;
 			File archivoFile = new File(pathArchivo);			
 			FileUtils.writeByteArrayToFile (archivoFile, archivo.toByteArray());
 
-			result = s3.putObject(bucketName, pathArchivo, archivoFile);
+			s3.putObject(bucketName, pathArchivo, archivoFile);
 		} catch (AmazonServiceException e) {
 			throw new NegocioException(ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getCode(),
 					ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getDescription(),
@@ -257,7 +253,6 @@ public class s3Utils {
 	
 	public void convertAndSaveArchivoEnBytes(MultipartFile archivo, String key, String nombreArchivo) {
 
-		PutObjectResult result;
 		try {
 			String pathArchivo = key+nombreArchivo;
 
@@ -270,7 +265,7 @@ public class s3Utils {
 			FileOutputStream fos = new FileOutputStream(file);
 			fos.write(archivo.getBytes());
 			fos.close();     
-			result = s3.putObject(bucketName, pathArchivo, file);
+			s3.putObject(bucketName, pathArchivo, file);
 			
 		} catch (AmazonServiceException e) {
 			throw new NegocioException(ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getCode(),

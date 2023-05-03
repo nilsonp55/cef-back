@@ -1,13 +1,7 @@
 package com.ath.adminefectivo.dto;
 
-import java.util.Date;
 import java.util.function.Function;
 
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-
-import com.ath.adminefectivo.entities.FuncionesDinamicas;
 import com.ath.adminefectivo.entities.ParametrosFuncionesDinamicas;
 import com.ath.adminefectivo.utils.UtilsObjects;
 

@@ -3,7 +3,6 @@ package com.ath.adminefectivo.dto;
 import java.util.Objects;
 import java.util.function.Function;
 
-import com.ath.adminefectivo.entities.ErroresContables;
 import com.ath.adminefectivo.entities.PuntosCodigoTDV;
 import com.ath.adminefectivo.utils.UtilsObjects;
 

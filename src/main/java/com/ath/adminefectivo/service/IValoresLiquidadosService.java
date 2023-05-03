@@ -2,9 +2,7 @@ package com.ath.adminefectivo.service;
 
 import com.ath.adminefectivo.dto.ValorLiquidadoDTO;
 import com.ath.adminefectivo.dto.ValoresLiquidadosDTO;
-import com.ath.adminefectivo.dto.compuestos.RespuestaLiquidarCostosDTO;
 import com.ath.adminefectivo.dto.compuestos.costosCharterDTO;
-import com.ath.adminefectivo.entities.ValoresLiquidados;
 
 public interface IValoresLiquidadosService {
 

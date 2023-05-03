@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
-import javax.persistence.Column;
-
 import com.ath.adminefectivo.dto.compuestos.DetalleOperacionesDTO;
 import com.ath.adminefectivo.entities.ConciliacionServicios;
 import com.ath.adminefectivo.entities.DetalleOperacionesProgramadas;
@@ -129,7 +127,7 @@ public class OperacionesProgramadasDTO {
 		var operacionesProgramadasDTO = new OperacionesProgramadasDTO();
 		UtilsObjects.copiarPropiedades(t, operacionesProgramadasDTO);		
 		if(!Objects.isNull(t.getDetalleOperacionesProgramadas())){
-			List<DetalleOperacionesDTO> detalleOperacionDTO = new ArrayList();
+			List<DetalleOperacionesDTO> detalleOperacionDTO = new ArrayList<DetalleOperacionesDTO>();
 			t.getDetalleOperacionesProgramadas().forEach(detalle ->{
 				detalleOperacionDTO.add(DetalleOperacionesDTO.CONVERTER_DTO.apply(detalle));
 			});

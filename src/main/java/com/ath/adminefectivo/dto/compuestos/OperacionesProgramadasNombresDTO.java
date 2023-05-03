@@ -3,8 +3,6 @@ package com.ath.adminefectivo.dto.compuestos;
 import java.util.Date;
 import java.util.function.Function;
 
-import javax.persistence.Column;
-
 import com.ath.adminefectivo.entities.OperacionesProgramadas;
 import com.ath.adminefectivo.utils.UtilsObjects;
 import com.fasterxml.jackson.annotation.JsonProperty;

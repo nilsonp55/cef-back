@@ -1,25 +1,6 @@
 package com.ath.adminefectivo.encript;
-import javax.crypto.Cipher;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.ath.adminefectivo.constantes.Constantes;
-import com.ath.adminefectivo.constantes.Parametros;
-import com.ath.adminefectivo.dto.response.ApiResponseCode;
-import com.ath.adminefectivo.exception.NegocioException;
-import com.ath.adminefectivo.service.IParametroService;
-import com.ath.adminefectivo.service.impl.ParametroServiceImpl;
-import com.ath.adminefectivo.utils.s3Utils;
-
-import lombok.extern.log4j.Log4j2;
-
-import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.math.BigInteger;
 import java.security.KeyFactory;
 import java.security.KeyPair;
@@ -32,6 +13,17 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Arrays;
 import java.util.Base64;
+
+import javax.crypto.Cipher;
+
+import com.ath.adminefectivo.constantes.Constantes;
+import com.ath.adminefectivo.constantes.Parametros;
+import com.ath.adminefectivo.dto.response.ApiResponseCode;
+import com.ath.adminefectivo.exception.NegocioException;
+import com.ath.adminefectivo.service.IParametroService;
+import com.ath.adminefectivo.utils.s3Utils;
+
+import lombok.extern.log4j.Log4j2;
 
 /**
  * @author Anass AIT BEN EL ARBI

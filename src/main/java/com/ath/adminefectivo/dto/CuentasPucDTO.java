@@ -3,7 +3,6 @@ package com.ath.adminefectivo.dto;
 import java.util.function.Function;
 
 import com.ath.adminefectivo.entities.Bancos;
-import com.ath.adminefectivo.entities.ConfContableEntidades;
 import com.ath.adminefectivo.entities.CuentasPuc;
 import com.ath.adminefectivo.entities.TiposCentrosCostos;
 import com.ath.adminefectivo.entities.TiposCuentas;

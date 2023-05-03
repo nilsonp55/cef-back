@@ -3,7 +3,6 @@ package com.ath.adminefectivo.dto;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 
 import com.ath.adminefectivo.entities.FuncionesDinamicas;
@@ -54,7 +53,7 @@ public class FuncionesDinamicasDTO {
 	public static final Function<FuncionesDinamicasDTO, FuncionesDinamicas> CONVERTER_ENTITY = (FuncionesDinamicasDTO t) -> {
 		var funcionesDinamicas = new FuncionesDinamicas();
 		UtilsObjects.copiarPropiedades(t, funcionesDinamicas);
-		List<ParametrosFuncionesDinamicas> parametrosFuncionesDinamicas = new ArrayList();
+		List<ParametrosFuncionesDinamicas> parametrosFuncionesDinamicas = new ArrayList<ParametrosFuncionesDinamicas>();
 		if(!t.getParametrosFuncionesDinamicasDTO().isEmpty()) {
 			t.getParametrosFuncionesDinamicasDTO().forEach(parametroFuncion ->{
 				parametrosFuncionesDinamicas.add(ParametrosFuncionesDinamicasDTO.CONVERTER_ENTITY.apply(parametroFuncion));
@@ -71,7 +70,7 @@ public class FuncionesDinamicasDTO {
 		var funcionesDinamicasDTO = new FuncionesDinamicasDTO();
 		UtilsObjects.copiarPropiedades(t, funcionesDinamicasDTO);
 		
-		List<ParametrosFuncionesDinamicasDTO> parametrosFuncionesDinamicasDTO = new ArrayList();
+		List<ParametrosFuncionesDinamicasDTO> parametrosFuncionesDinamicasDTO = new ArrayList<ParametrosFuncionesDinamicasDTO>();
 		if(!t.getParametrosFuncionesDinamicas().isEmpty()) {
 			t.getParametrosFuncionesDinamicas().forEach(parametroFuncionDTO ->{
 				parametrosFuncionesDinamicasDTO.add(ParametrosFuncionesDinamicasDTO.CONVERTER_DTO.apply(parametroFuncionDTO));

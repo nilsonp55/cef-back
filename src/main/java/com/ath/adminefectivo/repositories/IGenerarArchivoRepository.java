@@ -5,11 +5,8 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
-import com.ath.adminefectivo.dto.RespuestaContableDTO;
 import com.ath.adminefectivo.dto.TransaccionesContablesDTO;
-import com.ath.adminefectivo.entities.DominioMaestro;
 import com.ath.adminefectivo.entities.TransaccionesContables;
 
 public interface IGenerarArchivoRepository extends JpaRepository<TransaccionesContables, Long> 

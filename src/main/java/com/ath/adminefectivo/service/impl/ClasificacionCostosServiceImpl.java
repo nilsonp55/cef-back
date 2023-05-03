@@ -10,37 +10,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ath.adminefectivo.constantes.Constantes;
-import com.ath.adminefectivo.constantes.Dominios;
-import com.ath.adminefectivo.dto.FuncionesDinamicasDTO;
-import com.ath.adminefectivo.dto.ParametrosLiquidacionCostoDTO;
 import com.ath.adminefectivo.dto.BancosDTO;
 import com.ath.adminefectivo.dto.ClasificacionCostosDTO;
-import com.ath.adminefectivo.dto.EscalasDTO;
-import com.ath.adminefectivo.dto.FondosDTO;
 import com.ath.adminefectivo.dto.TarifasOperacionDTO;
 import com.ath.adminefectivo.dto.compuestos.CostosMensualesClasificacionDTO;
 import com.ath.adminefectivo.dto.compuestos.EstimadoClasificacionCostosDTO;
-import com.ath.adminefectivo.dto.response.ApiResponseCode;
-import com.ath.adminefectivo.entities.FuncionesDinamicas;
 import com.ath.adminefectivo.entities.ClasificacionCostos;
-import com.ath.adminefectivo.entities.Escalas;
-import com.ath.adminefectivo.entities.TarifasOperacion;
-import com.ath.adminefectivo.exception.NegocioException;
-import com.ath.adminefectivo.repositories.IBancosRepository;
 import com.ath.adminefectivo.repositories.IClasificacionCostosRepository;
-import com.ath.adminefectivo.repositories.IFuncionesDinamicasRepository;
-import com.ath.adminefectivo.repositories.IParametrosLiquidacionCostosRepository;
-import com.ath.adminefectivo.repositories.IEscalasRepository;
-import com.ath.adminefectivo.repositories.ITarifasOperacionRepository;
 import com.ath.adminefectivo.service.IBancosService;
 import com.ath.adminefectivo.service.IClasificacionCostosService;
-import com.ath.adminefectivo.service.IEscalasService;
 import com.ath.adminefectivo.service.IFondosService;
-import com.ath.adminefectivo.service.IFuncionesDinamicasService;
 import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.IParametrosLiquidacionCostosService;
 import com.ath.adminefectivo.service.ITarifasOperacionService;
-import com.querydsl.core.types.Predicate;
 
 @Service
 public class ClasificacionCostosServiceImpl implements IClasificacionCostosService {
@@ -69,7 +51,7 @@ public class ClasificacionCostosServiceImpl implements IClasificacionCostosServi
 	@Override
 	public List<CostosMensualesClasificacionDTO> getClasificacionMensualCostos(String transportadora) {
 		
-		List<CostosMensualesClasificacionDTO> costosMensualesClasificacion = new ArrayList();
+		List<CostosMensualesClasificacionDTO> costosMensualesClasificacion = new ArrayList<CostosMensualesClasificacionDTO>();
 		Date fechaSistema = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
 		String fechaSistemaS = parametroService.valorParametro(Constantes.FECHA_DIA_PROCESO);
 		String[] diaMesAnio = fechaSistemaS.split("/");

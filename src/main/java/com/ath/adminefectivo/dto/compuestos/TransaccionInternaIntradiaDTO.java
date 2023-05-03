@@ -1,7 +1,5 @@
 package com.ath.adminefectivo.dto.compuestos;
 
-import com.ath.adminefectivo.dto.BancosDTO;
-import com.ath.adminefectivo.dto.OperacionesProgramadasDTO;
 import com.ath.adminefectivo.dto.TransaccionesInternasDTO;
 import com.fasterxml.jackson.annotation.JsonInclude;
 

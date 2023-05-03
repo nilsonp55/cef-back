@@ -1,9 +1,6 @@
 package com.ath.adminefectivo.dto.compuestos;
 
 import java.io.Serializable;
-import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -4,8 +4,6 @@ import java.util.Date;
 import java.util.function.Function;
 
 import com.ath.adminefectivo.dto.CertificadasNoConciliadasDTO;
-import com.ath.adminefectivo.dto.ProgramadasNoConciliadasDTO;
-import com.ath.adminefectivo.entities.OperacionesCertificadas;
 import com.ath.adminefectivo.utils.UtilsObjects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 

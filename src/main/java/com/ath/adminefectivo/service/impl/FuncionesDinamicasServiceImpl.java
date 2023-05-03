@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import com.ath.adminefectivo.dto.FuncionesDinamicasDTO;
 import com.ath.adminefectivo.dto.compuestos.ResultadoFuncionDinamicaDTO;
 import com.ath.adminefectivo.entities.FuncionesDinamicas;
-import com.ath.adminefectivo.repositories.IBancosRepository;
 import com.ath.adminefectivo.repositories.IFuncionesDinamicasRepository;
 import com.ath.adminefectivo.service.IFuncionesDinamicasService;
 

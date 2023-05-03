@@ -11,8 +11,6 @@ import com.ath.adminefectivo.dto.FechasConciliacionDTO;
 import com.ath.adminefectivo.dto.OperacionesProgramadasDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionIntradiaDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionesProgramadasNombresDTO;
-import com.ath.adminefectivo.dto.compuestos.ContabilidadDTO;
-import com.ath.adminefectivo.entities.ArchivosCargados;
 import com.ath.adminefectivo.entities.OperacionesProgramadas;
 import com.querydsl.core.types.Predicate;
 
