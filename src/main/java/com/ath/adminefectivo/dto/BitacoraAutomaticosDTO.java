@@ -5,10 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
 
-import org.apache.poi.hpsf.Array;
-
-import com.ath.adminefectivo.entities.DetallesProcesoAutomatico;
 import com.ath.adminefectivo.entities.BitacoraAutomaticos;
+import com.ath.adminefectivo.entities.DetallesProcesoAutomatico;
 import com.ath.adminefectivo.utils.UtilsObjects;
 
 import lombok.AllArgsConstructor;
@@ -50,7 +48,7 @@ public class BitacoraAutomaticosDTO {
 		var bitacoraAutomaticos = new BitacoraAutomaticos();
 		UtilsObjects.copiarPropiedades(t, bitacoraAutomaticos);
 		if(t.getDetallesProcesosAutomaticosDTO().size() > 0 || t.getDetallesProcesosAutomaticosDTO() != null) {
-			List<DetallesProcesoAutomatico> detallesProcesosAutomaticos = new ArrayList();
+			List<DetallesProcesoAutomatico> detallesProcesosAutomaticos = new ArrayList<DetallesProcesoAutomatico>();
 			t.getDetallesProcesosAutomaticosDTO().forEach(detalleProcesoAuto ->{
 				detallesProcesosAutomaticos.add(DetallesProcesoAutomaticoDTO.CONVERTER_ENTITY.apply(detalleProcesoAuto));
 			});
@@ -67,7 +65,7 @@ public class BitacoraAutomaticosDTO {
 		UtilsObjects.copiarPropiedades(t, bitacoraAutomaticosDTO);
 		
 		if(t.getDetallesProcesosAutomaticos().size() > 0 || t.getDetallesProcesosAutomaticos() != null) {
-			List<DetallesProcesoAutomaticoDTO> detallesProcesosAutomaticosDTO = new ArrayList();
+			List<DetallesProcesoAutomaticoDTO> detallesProcesosAutomaticosDTO = new ArrayList<DetallesProcesoAutomaticoDTO>();
 			t.getDetallesProcesosAutomaticos().forEach(detalleProcesoAutoDTO ->{
 				detallesProcesosAutomaticosDTO.add(DetallesProcesoAutomaticoDTO.CONVERTER_DTO.apply(detalleProcesoAutoDTO));
 			});

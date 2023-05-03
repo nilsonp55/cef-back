@@ -5,16 +5,14 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.ath.adminefectivo.dto.CertificadasNoConciliadasDTO;
+import com.ath.adminefectivo.dto.FechasConciliacionDTO;
+import com.ath.adminefectivo.dto.ParametrosConciliacionDTO;
 import com.ath.adminefectivo.dto.ProgramadasNoConciliadasDTO;
 import com.ath.adminefectivo.dto.ResumenConciliacionesDTO;
 import com.ath.adminefectivo.dto.UpdateCertificadasFallidasDTO;
 import com.ath.adminefectivo.dto.UpdateProgramadasFallidasDTO;
-import com.ath.adminefectivo.dto.compuestos.CertificadasNoConciliadasNombresDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionesProgramadasNombresDTO;
-import com.ath.adminefectivo.dto.compuestos.ProgramadasNoConciliadasNombresDTO;
-import com.ath.adminefectivo.dto.CertificadasNoConciliadasDTO;
-import com.ath.adminefectivo.dto.ParametrosConciliacionDTO;
-import com.ath.adminefectivo.dto.FechasConciliacionDTO;
 import com.querydsl.core.types.Predicate;
 
 /**

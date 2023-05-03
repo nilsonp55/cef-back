@@ -5,10 +5,8 @@ import java.util.List;
 
 import com.ath.adminefectivo.dto.RespuestaContableDTO;
 import com.ath.adminefectivo.dto.TransaccionesContablesDTO;
-import com.ath.adminefectivo.dto.TransaccionesInternasDTO;
 import com.ath.adminefectivo.dto.compuestos.ConteoContabilidadDTO;
 import com.ath.adminefectivo.entities.TransaccionesContables;
-import com.ath.adminefectivo.entities.TransaccionesInternas;
 
 /**
  * Servicios para gestionar las transacciones contables

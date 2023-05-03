@@ -2,7 +2,6 @@ package com.ath.adminefectivo.dto;
 
 import java.util.function.Function;
 
-import com.ath.adminefectivo.entities.Cajeros;
 import com.ath.adminefectivo.entities.CajerosATM;
 import com.ath.adminefectivo.utils.UtilsObjects;
 

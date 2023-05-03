@@ -1,6 +1,5 @@
 package com.ath.adminefectivo.delegate.impl;
 
-import java.io.ByteArrayOutputStream;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;

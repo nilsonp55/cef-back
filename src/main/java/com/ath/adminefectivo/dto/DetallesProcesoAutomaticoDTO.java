@@ -1,7 +1,5 @@
 package com.ath.adminefectivo.dto;
 
-import java.util.Date;
-import java.util.List;
 import java.util.function.Function;
 
 import com.ath.adminefectivo.entities.DetallesProcesoAutomatico;

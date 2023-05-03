@@ -32,7 +32,6 @@ import com.ath.adminefectivo.repositories.IRegistrosCargadosRepository;
 import com.ath.adminefectivo.service.IArchivosCargadosService;
 import com.ath.adminefectivo.service.IMaestroDefinicionArchivoService;
 import com.ath.adminefectivo.service.IParametroService;
-import com.ath.adminefectivo.utils.UtilsString;
 import com.querydsl.core.types.Predicate;
 
 import lombok.extern.log4j.Log4j2;

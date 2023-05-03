@@ -2,8 +2,6 @@ package com.ath.adminefectivo.service;
 
 import java.util.Date;
 
-import com.ath.adminefectivo.entities.LogProcesoDiario;
-
 public interface ICierreContabilidadService {
 	
 	/**

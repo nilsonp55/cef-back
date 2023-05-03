@@ -11,7 +11,6 @@ import org.apache.commons.lang3.time.DateUtils;
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.exception.AplicationException;
-import com.ath.adminefectivo.exception.NegocioException;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

@@ -2,9 +2,7 @@ package com.ath.adminefectivo.service;
 
 import java.util.List;
 
-import com.ath.adminefectivo.dto.EscalasDTO;
 import com.ath.adminefectivo.dto.compuestos.CostosMensualesClasificacionDTO;
-import com.querydsl.core.types.Predicate;
 
 public interface IClasificacionCostosService {
 

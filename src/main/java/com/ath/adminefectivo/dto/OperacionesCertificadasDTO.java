@@ -3,8 +3,6 @@ package com.ath.adminefectivo.dto;
 import java.util.Date;
 import java.util.function.Function;
 
-import javax.persistence.Column;
-
 import com.ath.adminefectivo.entities.OperacionesCertificadas;
 import com.ath.adminefectivo.utils.UtilsObjects;
 

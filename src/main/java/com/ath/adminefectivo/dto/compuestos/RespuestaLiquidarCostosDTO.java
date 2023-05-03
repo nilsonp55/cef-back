@@ -1,13 +1,6 @@
 package com.ath.adminefectivo.dto.compuestos;
 
 import java.util.Date;
-import java.util.List;
-
-import javax.persistence.Column;
-
-import com.ath.adminefectivo.dto.CiudadesDTO;
-import com.ath.adminefectivo.dto.ErroresContablesDTO;
-import com.ath.adminefectivo.dto.TransaccionesContablesDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

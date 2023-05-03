@@ -1,10 +1,5 @@
 package com.ath.adminefectivo.delegate;
 
-import java.util.List;
-
-import com.ath.adminefectivo.dto.BancosDTO;
-import com.querydsl.core.types.Predicate;
-
 /**
  * Delegate que expone los servicios referente a los bancos
  * @author cduvan.naranjo

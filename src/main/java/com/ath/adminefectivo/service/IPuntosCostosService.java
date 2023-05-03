@@ -3,7 +3,6 @@ package com.ath.adminefectivo.service;
 import java.util.List;
 
 import com.ath.adminefectivo.dto.PuntosCostosDTO;
-import com.ath.adminefectivo.dto.TarifasOperacionDTO;
 import com.querydsl.core.types.Predicate;
 
 public interface IPuntosCostosService {
