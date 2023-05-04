@@ -223,12 +223,12 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 				.findByEstadoCargueAndIdModeloArchivo(Dominios.ESTADO_VALIDACION_CORRECTO, idModeloArchivo);
 
 		if (!Objects.isNull(archivosCargados)) {
-			archivosCargados.forEach(arch -> {
-				resultado.add(ArchivosCargadosDTO.CONVERTER_DTO.apply(arch));
-			});
+			archivosCargados.forEach(arch -> 
+				resultado.add(ArchivosCargadosDTO.CONVERTER_DTO.apply(arch))
+			);
 			return resultado;
 		}
-		return null;
+		return new ArrayList<>();
 	}
 	
 	/**

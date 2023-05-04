@@ -50,9 +50,9 @@ public class LogProcesoDiarioImpl implements ILogProcesoDiarioService {
 		var logProcesoDiarios = logProcesoDiarioRepository.findByFechaCreacion(fecha);
 		
 		List<LogProcesoDiarioDTO> listLogProcesoDiarioDto = new ArrayList<>();
-		logProcesoDiarios.forEach(entity -> {
-			listLogProcesoDiarioDto.add(LogProcesoDiarioDTO.CONVERTER_DTO.apply(entity));
-		});
+		logProcesoDiarios.forEach(entity -> 
+			listLogProcesoDiarioDto.add(LogProcesoDiarioDTO.CONVERTER_DTO.apply(entity))
+		);
 		return listLogProcesoDiarioDto;
 	}
 	
@@ -64,9 +64,9 @@ public class LogProcesoDiarioImpl implements ILogProcesoDiarioService {
 		var logProcesoDiarios = logProcesoDiarioRepository.findByFechaCreacion(fechaProceso);
 		
 		List<LogProcesoDiarioDTO> listLogProcesoDiarioDto = new ArrayList<>();
-		logProcesoDiarios.forEach(entity -> {
-			listLogProcesoDiarioDto.add(LogProcesoDiarioDTO.CONVERTER_DTO.apply(entity));
-		});
+		logProcesoDiarios.forEach(entity -> 
+			listLogProcesoDiarioDto.add(LogProcesoDiarioDTO.CONVERTER_DTO.apply(entity))
+		);
 		return listLogProcesoDiarioDto;
 	}
 	
@@ -156,7 +156,7 @@ public class LogProcesoDiarioImpl implements ILogProcesoDiarioService {
 		Date fecha = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
 		var logProcesoDiario = logProcesoDiarioRepository.findByCodigoProcesoAndFechaCreacion(codigoProceso, fecha);
 		if(Objects.isNull(logProcesoDiario)) {
-			auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION, 
+			auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION, 
 					parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO), 
 					Constantes.ESTADO_PROCESO_PROCESADO, 
 					ApiResponseCode.ERROR_LOGPROCESODIARIO_NO_ENCONTRADO.getDescription());

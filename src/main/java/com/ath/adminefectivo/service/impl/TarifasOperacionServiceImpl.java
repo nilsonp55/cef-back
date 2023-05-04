@@ -84,11 +84,7 @@ public class TarifasOperacionServiceImpl implements ITarifasOperacionService {
 		TarifasOperacion tarifaOperacionActualizado = tarifasOperacionRepository.save(tarifaOperacionEntity);
 		
 		if(!Objects.isNull(tarifaOperacionActualizado)) {
-			if(tarifaOperacionEntity.getEstado() == Dominios.ESTADO_GENERAL_ELIMINADO) {
-				return true;
-			}else {
-				return false;
-			}
+			return (tarifaOperacionEntity.getEstado() == Dominios.ESTADO_GENERAL_ELIMINADO);
 		}else {
 			return false;
 		}
@@ -100,15 +96,9 @@ public class TarifasOperacionServiceImpl implements ITarifasOperacionService {
 		log.debug("codigoBanco = "+codigoBanco+" codigoTdv = "+codigoTdv);
 		List<TarifasOperacion> tarifasOperacionEntity = tarifasOperacionRepository.findByBancoAndTransportadoraAndComisionAndFajado(codigoBanco, codigoTdv);
 		List<TarifasOperacionDTO> tarifasOperacionDTO = new ArrayList<>();
-		tarifasOperacionEntity.forEach(tarifaEntity -> {
-			tarifasOperacionDTO.add(TarifasOperacionDTO.CONVERTER_DTO.apply(tarifaEntity));
-		});
+		tarifasOperacionEntity.forEach(tarifaEntity -> 
+			tarifasOperacionDTO.add(TarifasOperacionDTO.CONVERTER_DTO.apply(tarifaEntity))
+		);
 		return tarifasOperacionDTO;
 	}
-
-	
-	
-
-
-	
 }

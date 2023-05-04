@@ -107,9 +107,6 @@ public class BancosServiceImpl implements IBancosService {
 		if (!Objects.isNull(bancoOpt)) {
 			return BancosDTO.CONVERTER_DTO.apply(bancoOpt);
 		} else {
-//			throw new NegocioException(ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getCode(),
-//					ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getDescription(),
-//					ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getHttpStatus());
 			return null;
 		}
 	}
@@ -147,9 +144,9 @@ public class BancosServiceImpl implements IBancosService {
 	public List<BancosDTO> getBancosPorAval(boolean esAval) {
 		List<Bancos> bancos = bancosRepository.findByEsAVAL(esAval);
 		List<BancosDTO> bancosDTO = new ArrayList<>();
-		bancos.forEach(banco ->{
-			bancosDTO.add(BancosDTO.CONVERTER_DTO.apply(banco));
-		});
+		bancos.forEach(banco ->
+			bancosDTO.add(BancosDTO.CONVERTER_DTO.apply(banco))
+		);
 		return bancosDTO;
 	}
 }

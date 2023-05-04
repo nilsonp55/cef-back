@@ -29,7 +29,7 @@ QuerydslPredicateExecutor<ValoresLiquidados>{
 	 * @return bayron.perez
 	 */
 	@Procedure(name = "armar_parametros_liquida")
-	String armar_parametros_liquida(@Param("fecha") Date fecha);
+	String armarParametrosLiquida(@Param("fecha") Date fecha);
 	
 	/**
 	 * Metodo encargado de ejecutar la funcion de la base de datos para 
@@ -38,7 +38,7 @@ QuerydslPredicateExecutor<ValoresLiquidados>{
 	 * @return bayron.perez
 	 */
 	@Procedure(name = "liquidar_costos")
-	String liquidar_costos(@Param("parametro") Integer parametro);
+	String liquidarCostos(@Param("parametro") Integer parametro);
 	
 	/**
 	 * Metodo que se encarga de obtener los valores liquidados por el procedimiento almacenado
@@ -53,6 +53,6 @@ QuerydslPredicateExecutor<ValoresLiquidados>{
 	@Query(value = "SELECT COUNT(*) FROM valores_liquidados WHERE id_seq_grupo = ?1", nativeQuery = true)
 	int consultarCantidadValoresLiquidadosByIdSeqGrupo(Integer idSeqGroup);
 	
-	@Query(value = "SELECT COUNT(*) FROM errores_costos	WHERE ID_SEQ_GRUPO = ?1", nativeQuery = true)
+	@Query(value = "SELECT COUNT(*) FROM errores_costos WHERE ID_SEQ_GRUPO = ?1", nativeQuery = true)
 	int consultarCantidadErroresValoresLiquidadosByIdSeqGrupo(Integer idSeqGroup);
 }

@@ -736,7 +736,7 @@ public enum ApiResponseCode {
 		return code;
 	}
 
-	public void setCode(String code) {
+	void setCode(String code) {
 		this.code = code;
 	}
 
@@ -744,7 +744,7 @@ public enum ApiResponseCode {
 		return description;
 	}
 
-	public void setDescription(String description) {
+	void setDescription(String description) {
 		this.description = description;
 	}
 
@@ -752,7 +752,7 @@ public enum ApiResponseCode {
 		return httpStatus;
 	}
 
-	public void setHttpStatus(HttpStatus httpStatus) {
+	void setHttpStatus(HttpStatus httpStatus) {
 		this.httpStatus = httpStatus;
 	}
 

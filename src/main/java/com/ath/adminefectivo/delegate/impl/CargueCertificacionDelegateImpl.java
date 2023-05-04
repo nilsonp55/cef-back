@@ -259,10 +259,8 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 			String idModeloArchivo, String mascaraArchivo) {
 		
 		Date fechaDatos = validacionArchivoService.obtenerFechaArchivo(archivo, mascaraArchivo);
-		ArchivosCargadosDTO archivosCargadosDTO = ArchivosCargadosDTO.builder().estadoCargue(estado).nombreArchivo(archivo)
+		return ArchivosCargadosDTO.builder().estadoCargue(estado).nombreArchivo(archivo)
                 .idModeloArchivo(idModeloArchivo).fechaArchivo(fechaDatos).build();
-		return archivosCargadosDTO;
-
 	}
 	
 	/**
@@ -305,10 +303,10 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 		
 		List<ValidacionArchivoDTO> validacionesArchivos = new ArrayList<>();
 		this.consultarArchivos(Constantes.ESTADO_CARGUE_PENDIENTE, Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_CERTIFICACION)
-				.forEach(archivoCerti -> {
+				.forEach(archivoCerti -> 
 					validacionesArchivos.add(
-							this.procesarArchivo(archivoCerti.getIdModeloArchivo(), archivoCerti.getNombreArchivo()));
-				});
+							this.procesarArchivo(archivoCerti.getIdModeloArchivo(), archivoCerti.getNombreArchivo()))
+				);
 		log.info("Archivos a procesar: {}", validacionesArchivos.size());
 		
 		this.procesarValidacionRealizada(bitacoraDTO, validacionesArchivos);

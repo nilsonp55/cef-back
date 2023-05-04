@@ -329,17 +329,17 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 		String resultado = conciliacionOperacionesRepository.validarcierreconciliacion();
 		
 		if(resultado.toUpperCase().startsWith("OK")) {
-			LogProcesoDiario LogProcesoDiario = logProcesoDiarioService.obtenerEntidadLogProcesoDiario(
+			LogProcesoDiario logProcesoDiario = logProcesoDiarioService.obtenerEntidadLogProcesoDiario(
 					Dominios.CODIGO_PROCESO_LOG_CONCILIACION);
 			LogProcesoDiarioDTO logProcesoDiarioDTO = new LogProcesoDiarioDTO();
-			logProcesoDiarioDTO.setIdLogProceso(LogProcesoDiario.getIdLogProceso());
+			logProcesoDiarioDTO.setIdLogProceso(logProcesoDiario.getIdLogProceso());
 			logProcesoDiarioDTO.setCodigoProceso(Dominios.CODIGO_PROCESO_LOG_CONCILIACION);
 			logProcesoDiarioDTO.setEstado(Constantes.REGISTRO_ACTIVO);
 			logProcesoDiarioDTO.setFechaFinalizacion(new Date());
 			logProcesoDiarioDTO.setFechaModificacion(new Date());
-			logProcesoDiarioDTO.setFechaCreacion(LogProcesoDiario.getFechaCreacion());
-			logProcesoDiarioDTO.setUsuarioCreacion(LogProcesoDiario.getUsuarioCreacion());
-			logProcesoDiarioDTO.setUsuarioModificacion(LogProcesoDiario.getUsuarioModificacion());
+			logProcesoDiarioDTO.setFechaCreacion(logProcesoDiario.getFechaCreacion());
+			logProcesoDiarioDTO.setUsuarioCreacion(logProcesoDiario.getUsuarioCreacion());
+			logProcesoDiarioDTO.setUsuarioModificacion(logProcesoDiario.getUsuarioModificacion());
 			logProcesoDiarioDTO.setEstadoProceso(Dominios.ESTADO_PROCESO_DIA_COMPLETO);
 			logProcesoDiarioService.actualizarLogProcesoDiario(logProcesoDiarioDTO);
 			return true;

@@ -34,9 +34,9 @@ public class ErroresContablesServiceImpl implements IErroresContablesService{
 	public List<ErroresContablesDTO> consultarErroresContablesByFechaAndTipoProceso(Date fechaFin, String tipoProceso) {
 		List<ErroresContables> listadoErroresContablesEntity = erroresContablesRepository.findByFechaBetweenAndTipoProceso(fechaFin, tipoProceso);
 		List<ErroresContablesDTO> listadoErroresContablesDTO = new ArrayList<>();
-		listadoErroresContablesEntity.forEach(errorContableEntity -> {
-			listadoErroresContablesDTO.add(ErroresContablesDTO.CONVERTER_DTO.apply(errorContableEntity));
-		});
+		listadoErroresContablesEntity.forEach(errorContableEntity ->
+			listadoErroresContablesDTO.add(ErroresContablesDTO.CONVERTER_DTO.apply(errorContableEntity))
+		);
 		
 		return listadoErroresContablesDTO;
 	}
@@ -55,9 +55,9 @@ public class ErroresContablesServiceImpl implements IErroresContablesService{
 	@Override
 	public List<TransaccionesInternasDTO> generarRespuestaProcesoContables() {
 		List<TransaccionesInternasDTO> transaccionesInternasDTO = new ArrayList<>();
-		erroresContablesRepository.fnc_generar_proceso_contables().forEach(idTransaccion ->{
-			transaccionesInternasDTO.add(transaccionesInternasService.getTransaccionesInternasById(idTransaccion));
-		});
+		erroresContablesRepository.fncGenerarProcesoContables().forEach(idTransaccion ->
+			transaccionesInternasDTO.add(transaccionesInternasService.getTransaccionesInternasById(idTransaccion))
+		);
 		
 		return transaccionesInternasDTO;
 	}

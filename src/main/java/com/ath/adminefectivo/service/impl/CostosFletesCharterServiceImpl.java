@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.ParametrosLiquidacionCostoDTO;
-import com.ath.adminefectivo.dto.compuestos.costosCharterDTO;
+import com.ath.adminefectivo.dto.compuestos.CostosCharterDTO;
 import com.ath.adminefectivo.entities.ParametrosLiquidacionCosto;
 import com.ath.adminefectivo.repositories.ICostosFletesCharterRepository;
 import com.ath.adminefectivo.service.IBancosService;
@@ -49,7 +49,7 @@ public class CostosFletesCharterServiceImpl implements ICostosFleteCharterServic
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<ParametrosLiquidacionCostoDTO> ConsultarCostosFleteCharter(Date fechaInicial, Date fechaFinal) {
+	public List<ParametrosLiquidacionCostoDTO> consultarCostosFleteCharter(Date fechaInicial, Date fechaFinal) {
 
 		String escalaCharter = dominioService.valorTextoDominio(Constantes.DOMINIO_ESCALAS, Dominios.ESCALA_AEREO_CHARTER);
 		String escalaComercial = dominioService.valorTextoDominio(Constantes.DOMINIO_ESCALAS, Dominios.ESCALA_AEREO_COMERCIAL);
@@ -63,8 +63,7 @@ public class CostosFletesCharterServiceImpl implements ICostosFleteCharterServic
 				.findByEscalaAndFechaEjecucionBetween(escalaComercial, fechaInicial, fechaFinal));
 		
 		for (ParametrosLiquidacionCosto parametros : costoCharter) {
-			ParametrosLiquidacionCostoDTO parametrosDTO = new ParametrosLiquidacionCostoDTO();
-			parametrosDTO = ParametrosLiquidacionCostoDTO.CONVERTER_DTO.apply(parametros);
+			ParametrosLiquidacionCostoDTO parametrosDTO = ParametrosLiquidacionCostoDTO.CONVERTER_DTO.apply(parametros);
 			parametrosDTO.setNombreBanco(bancosService.getAbreviatura(parametros.getCodigoBanco()));
 			parametrosDTO.setNombreTdv(transportadorasService.getNombreTransportadora(
 					parametros.getCodigoTdv()));
@@ -79,8 +78,8 @@ public class CostosFletesCharterServiceImpl implements ICostosFleteCharterServic
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Boolean GrabarCostosFleteCharter(costosCharterDTO costosCharter) {		
-			valoresLiquidadosService.ActualizaCostosFletesCharter(costosCharter);
+	public Boolean grabarCostosFleteCharter(CostosCharterDTO costosCharter) {		
+			valoresLiquidadosService.actualizaCostosFletesCharter(costosCharter);
 		return true;
 	}
 

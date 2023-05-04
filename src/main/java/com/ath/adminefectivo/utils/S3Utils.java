@@ -41,7 +41,7 @@ import lombok.extern.log4j.Log4j2;
  */
 @Service
 @Log4j2
-public class s3Utils {
+public class S3Utils {
 
 	@Autowired
 	private AmazonS3 s3;
@@ -55,10 +55,10 @@ public class s3Utils {
 	 * 
 	 * @Miller Caro
 	 */
-	public void uploadFile(MultipartFile file, String key_name) {
+	public void uploadFile(MultipartFile file, String keyName) {
 		try {
 			File mainFile = new File(file.getOriginalFilename());
-			s3.putObject(bucketName, key_name, mainFile);
+			s3.putObject(bucketName, keyName, mainFile);
 		} catch (AmazonServiceException e) {
 			throw new NegocioException(ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getCode(),
 					ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getDescription(),
@@ -79,10 +79,9 @@ public class s3Utils {
 	public List<String> getObjectsFromS3() {
 		ListObjectsV2Result result = s3.listObjectsV2(bucketName);
 		List<S3ObjectSummary> objects = result.getObjectSummaries();
-		List<String> list = objects.stream().map(item -> {
-			return item.getKey();
-		}).collect(Collectors.toList());
-		return list;
+		return objects.stream().map(item -> 
+			item.getKey()
+		).collect(Collectors.toList());
 	}
 
 	/**
@@ -97,9 +96,9 @@ public class s3Utils {
 				.withDelimiter("/");
 		ListObjectsV2Result listing = s3.listObjectsV2(req);
 		List<S3ObjectSummary> objects = listing.getObjectSummaries();
-		List<String> list = objects.stream().map(item -> {
-			return item.getKey();
-		}).collect(Collectors.toList());
+		List<String> list = objects.stream().map(item -> 
+			item.getKey()
+		).collect(Collectors.toList());
 		List<String> list2 = new ArrayList<>();
 		String name;
 		for (int i = 0; i < list.size(); i++) {
@@ -170,30 +169,6 @@ public class s3Utils {
 		return salida;
 	}
 	
-
-	/**
-	 * Metodo encargado de realizar la conexion con AWS s3 antes de realiar cualquier ejecuci�n
-	 * Version prueba #1
-	 * @author Bayron Perez
-	 * @throws URISyntaxException
-	 */
-	public void conexionS3(String bucketName) {
-	  
-	BasicAWSCredentials credentials = new BasicAWSCredentials("AKIAZPUFXGZ5GEMGWLFZ", "HD1RM1Il0nAJYu2gNr1oYG6MtdBzafSKpf+1TtMM");
-		try {
-			ClientConfiguration config = new ClientConfiguration();
-			config.setProtocol(Protocol.HTTP);
-			config.setProxyHost("10.140.1.52");
-			config.setProxyPort(8002);
-			s3 = AmazonS3ClientBuilder.standard()
-					.withClientConfiguration(config).withRegion("us-east-1")
-					.withCredentials(new AWSStaticCredentialsProvider(credentials)).build();
-		} catch (Exception e) {
-			throw new NegocioException(ApiResponseCode.ERROR_ACCEDIENDO_S3.getCode(),
-					ApiResponseCode.ERROR_ACCEDIENDO_S3.getDescription(),
-					ApiResponseCode.ERROR_ACCEDIENDO_S3.getHttpStatus());
-		}		
-	}
 
 	/**
 	 * Metodo para mover un objeto de un bucket S3

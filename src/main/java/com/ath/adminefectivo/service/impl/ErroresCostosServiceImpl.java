@@ -20,8 +20,7 @@ public class ErroresCostosServiceImpl implements ErroresCostosService {
 	@Override
 	public List<ErroresCostos> obtenerErroresCostosByIdSeqGrupo(Integer idSeqGrupo) {
 		try {
-			List<ErroresCostos> errores = erroresCostosRepository.findBySeqGrupo(idSeqGrupo);
-			return errores;
+			return erroresCostosRepository.findBySeqGrupo(idSeqGrupo);
 		} catch (Exception e) {
 			throw new AplicationException(ApiResponseCode.ERROR_LIQUIDACION_COSTOS.getCode(),
 					ApiResponseCode.ERROR_LIQUIDACION_COSTOS.getDescription(),

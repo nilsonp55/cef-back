@@ -12,7 +12,7 @@ import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.ParametrosLiquidacionCostoDTO;
 import com.ath.adminefectivo.dto.ValorLiquidadoDTO;
 import com.ath.adminefectivo.dto.ValoresLiquidadosDTO;
-import com.ath.adminefectivo.dto.compuestos.costosCharterDTO;
+import com.ath.adminefectivo.dto.compuestos.CostosCharterDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.LogProcesoDiario;
 import com.ath.adminefectivo.entities.Puntos;
@@ -65,7 +65,7 @@ public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService 
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Boolean ActualizaCostosFletesCharter(costosCharterDTO costos) {
+	public Boolean actualizaCostosFletesCharter(CostosCharterDTO costos) {
 		Boolean estado = false;
 		try {
 			ValoresLiquidados valores = valoresLiquidadosRepository.consultarPorIdLiquidacion(costos.getIdLiquidacion());
@@ -74,8 +74,6 @@ public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService 
 						ApiResponseCode.ERROR_VALORES_LIQUIDADOS_NO_ENCONTRADO.getDescription(),
 						ApiResponseCode.ERROR_VALORES_LIQUIDADOS_NO_ENCONTRADO.getHttpStatus());
 			} else {
-				
-				//valores.setIdLiquidacion(costos.getIdLiquidacion());
 				valores.setParametrosLiquidacionCosto(parametrosLiquidacionCostosService.getParametrosLiquidacionCostosById(costos.getIdLiquidacion()));
 				valores.setCostoCharter(costos.getCostosCharter());
 				valoresLiquidadosRepository.save(valores);
@@ -99,7 +97,7 @@ public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService 
 
 		// Se valida que la conciliacion este cerrada para poder ejecutar el package
 		List<LogProcesoDiario> logProcesoDiarios = logProcesoDiarioRepository.findByFechaCreacion(fecha);
-		auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_LIQUIDACION, 
+		auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_LIQUIDACION, 
 				fecha, Constantes.ESTADO_PROCESO_INICIO, Constantes.ESTADO_PROCESO_PROCESO);
 
 		var procesoDiarioConciliacionCerrad = false;
@@ -107,29 +105,27 @@ public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService 
 		for (int i = 0; i < logProcesoDiarios.size(); i++) {
 			LogProcesoDiario item = logProcesoDiarios.get(i);
 			if (item.getCodigoProceso().equals(Dominios.CODIGO_PROCESO_LOG_CONCILIACION)) {
-				procesoDiarioConciliacionCerrad = item.getEstadoProceso().equals(Dominios.ESTADO_PROCESO_DIA_COMPLETO)
-						? true
-						: false;
+				procesoDiarioConciliacionCerrad = item.getEstadoProceso().equals(Dominios.ESTADO_PROCESO_DIA_COMPLETO);
 			}
 			if (item.getCodigoProceso().equals(Dominios.CODIGO_PROCESO_LOG_LIQUIDACION)) {
 				procesoDiarioLiquidacionPendiente = item.getEstadoProceso()
-						.equals(Dominios.ESTADO_PROCESO_DIA_PENDIENTE) ? true : false;
+						.equals(Dominios.ESTADO_PROCESO_DIA_PENDIENTE);
 			}
 		}
-		;
+		
 		if (procesoDiarioConciliacionCerrad && procesoDiarioLiquidacionPendiente) {
 			try {
 				// Se ejecutan procedimientos
-				String parametro = valoresLiquidadosRepository.armar_parametros_liquida(fecha);
+				String parametro = valoresLiquidadosRepository.armarParametrosLiquida(fecha);
 				
 				if (Integer.parseInt(parametro) > 0) {
-					auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_LIQUIDACION, 
+					auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_LIQUIDACION, 
 							fecha, Constantes.ESTADO_PROCESO_PROCESO, "Terminó armado de parámetros de liquidación");
 					
-					valoresLiquidadosRepository.liquidar_costos(Integer.parseInt(parametro));
+					valoresLiquidadosRepository.liquidarCostos(Integer.parseInt(parametro));
 
 				} else {
-					auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_LIQUIDACION,
+					auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_LIQUIDACION,
 							fecha, Constantes.ESTADO_PROCESO_ERROR,
 							ApiResponseCode.ERROR_PROCESO_CONSTO_VALORES_LIQUIDADOS_SIN_PARAM.getDescription());
 					throw new NegocioException(
@@ -137,11 +133,11 @@ public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService 
 							ApiResponseCode.ERROR_PROCESO_CONSTO_VALORES_LIQUIDADOS_SIN_PARAM.getDescription(),
 							ApiResponseCode.ERROR_PROCESO_CONSTO_VALORES_LIQUIDADOS_SIN_PARAM.getHttpStatus());
 				}
-				auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_LIQUIDACION, 
+				auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_LIQUIDACION, 
 						fecha, Constantes.ESTADO_PROCESO_PROCESADO, Constantes.ESTRUCTURA_OK);
 				return "Se proceso con exito";
 			} catch (Exception e) {
-				auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_LIQUIDACION,
+				auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_LIQUIDACION,
 						fecha, Constantes.ESTADO_PROCESO_ERROR, 
 						ApiResponseCode.ERROR_PROCESO_CONSTO_VALORES_LIQUIDADOS.getDescription());
 				
@@ -150,7 +146,7 @@ public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService 
 						ApiResponseCode.ERROR_PROCESO_CONSTO_VALORES_LIQUIDADOS.getHttpStatus());
 			}
 		} else {
-			auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_LIQUIDACION,
+			auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_LIQUIDACION,
 					fecha, Constantes.ESTADO_PROCESO_ERROR,
 					ApiResponseCode.ERROR_PROCESO_CONSTO_VALORES_LIQUIDADOS.getDescription());
 			throw new NegocioException(

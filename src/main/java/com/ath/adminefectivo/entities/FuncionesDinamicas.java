@@ -29,7 +29,7 @@ import lombok.NoArgsConstructor;
  * @author duvan.naranjo
  *
  */
-@NamedNativeQuery(name = "FuncionesDinamicas.ejecutar_procedimiento", 
+@NamedNativeQuery(name = "FuncionesDinamicas.ejecutarProcedimiento", 
 query = "SELECT * from ejecutar_procedimiento(:idfuncion, :parametros)", 
 resultSetMapping = "Mapping.ResultadoFuncionDinamicaDTO")
 @SqlResultSetMapping(name = "Mapping.ResultadoFuncionDinamicaDTO", classes = @ConstructorResult(targetClass = ResultadoFuncionDinamicaDTO.class, columns = {

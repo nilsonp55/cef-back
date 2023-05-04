@@ -164,13 +164,11 @@ public class CarguePreliminarDelegateImpl implements ICarguePreliminarDelegate {
 	private ArchivosCargadosDTO organizarDatosArchivo(String archivo, String estado,
 			String idModeloArchivo, String mascaraArchivo) {
 
-		ArchivosCargadosDTO archivosCargadosDTO = ArchivosCargadosDTO.builder()
+		return ArchivosCargadosDTO.builder()
 				.estadoCargue(estado)
 				.nombreArchivo(archivo)
 				.idModeloArchivo(idModeloArchivo)
 				.fechaArchivo(validacionArchivoService.obtenerFechaArchivo(archivo, mascaraArchivo)).build();
-		
-		return archivosCargadosDTO;
 	}
 	
 	/**

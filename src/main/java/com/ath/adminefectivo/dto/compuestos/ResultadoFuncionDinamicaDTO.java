@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ResultadoFuncionDinamicaDTO {
 		
-	private Integer id_funcion;
+	private Integer idFuncion;
 	
 	private Integer consecutivo;
 	

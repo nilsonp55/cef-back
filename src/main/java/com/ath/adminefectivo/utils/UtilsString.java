@@ -175,7 +175,7 @@ public class UtilsString {
 	 * @return boolean
 	 * @author duvan.naranjo
 	 */
-	public static boolean isNumero(String numero) {;
+	public static boolean isNumero(String numero) {
 
 		try {
 			Integer.parseInt(numero);
@@ -233,7 +233,7 @@ public class UtilsString {
 	 * @return boolean     
 	 * @author rparra     
 	 */    
-	public static Date ToDateWithHours(String str, List<String> listFormato) {
+	public static Date toDateWithHours(String str, List<String> listFormato) {
         String[] strArray;
         if (listFormato.isEmpty()) {
             strArray = new String[] { Constantes.FECHA_HORA_PATTERN_DD_MM_YYYY_HH_MM_SS };

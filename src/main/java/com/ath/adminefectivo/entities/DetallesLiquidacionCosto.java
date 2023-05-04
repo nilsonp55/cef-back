@@ -51,10 +51,4 @@ public class DetallesLiquidacionCosto {
 	@Column(name = "VALOR_DENOMINACION")
 	private Double valorDenominacion;
 	
-//	@OneToMany(mappedBy = "detallesLiquidacionCosto", cascade = CascadeType.PERSIST)
-//	private ParametrosLiquidacionCosto parametrosLiquidacionCosto;
-	
-//	@ManyToOne
-//	@JoinColumn(name = "ID_LIQUIDACION", nullable = false)
-//	private ParametrosLiquidacionCosto parametrosLiquidacionCosto;
 }

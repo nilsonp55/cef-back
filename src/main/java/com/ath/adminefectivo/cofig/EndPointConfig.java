@@ -10,20 +10,16 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 
 @Configuration
 @PropertySource("classpath:endpoint.properties")
-public class EndPointConfig   {
+public class EndPointConfig {
 
 	@Value("${aws.s3.region}")
 	private String region;
-	
+
 	@Value("${aws.s3.bucket}")
 	private String bucketName;
 
-    @Bean
-    AmazonS3 getS3Client() {
-        AmazonS3 client =
-                AmazonS3ClientBuilder.standard()
-                        .withRegion("us-east-1") // The first region to try your request against
-                        .build();
-        return client;
-    }
+	@Bean
+	AmazonS3 getS3Client() {
+		return AmazonS3ClientBuilder.standard().withRegion(region).build();
+	}
 }

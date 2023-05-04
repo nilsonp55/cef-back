@@ -12,6 +12,5 @@ public interface IDetalleOperacionesProgramadasRepository extends JpaRepository<
 	@Query("SELECT SUM(dop.valorDetalle) FROM DetalleOperacionesProgramadas dop "
 		 + "WHERE dop.operacionesProgramadas.idOperacion = ?1")
 	Double valorTotal(Integer idOperacion);
-
-//	List<DetalleOperacionesProgramadas> findByidOperacion(Integer idOperacion);
+	
 }

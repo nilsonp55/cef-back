@@ -48,10 +48,10 @@ public class BitacoraAutomaticosDTO {
 		var bitacoraAutomaticos = new BitacoraAutomaticos();
 		UtilsObjects.copiarPropiedades(t, bitacoraAutomaticos);
 		if(t.getDetallesProcesosAutomaticosDTO().size() > 0 || t.getDetallesProcesosAutomaticosDTO() != null) {
-			List<DetallesProcesoAutomatico> detallesProcesosAutomaticos = new ArrayList<DetallesProcesoAutomatico>();
-			t.getDetallesProcesosAutomaticosDTO().forEach(detalleProcesoAuto ->{
-				detallesProcesosAutomaticos.add(DetallesProcesoAutomaticoDTO.CONVERTER_ENTITY.apply(detalleProcesoAuto));
-			});
+			List<DetallesProcesoAutomatico> detallesProcesosAutomaticos = new ArrayList<>();
+			t.getDetallesProcesosAutomaticosDTO().forEach(detalleProcesoAuto ->
+				detallesProcesosAutomaticos.add(DetallesProcesoAutomaticoDTO.CONVERTER_ENTITY.apply(detalleProcesoAuto))
+			);
 			bitacoraAutomaticos.setDetallesProcesosAutomaticos(detallesProcesosAutomaticos);
 		}
 		return bitacoraAutomaticos;
@@ -65,11 +65,11 @@ public class BitacoraAutomaticosDTO {
 		UtilsObjects.copiarPropiedades(t, bitacoraAutomaticosDTO);
 		
 		if(t.getDetallesProcesosAutomaticos().size() > 0 || t.getDetallesProcesosAutomaticos() != null) {
-			List<DetallesProcesoAutomaticoDTO> detallesProcesosAutomaticosDTO = new ArrayList<DetallesProcesoAutomaticoDTO>();
-			t.getDetallesProcesosAutomaticos().forEach(detalleProcesoAutoDTO ->{
-				detallesProcesosAutomaticosDTO.add(DetallesProcesoAutomaticoDTO.CONVERTER_DTO.apply(detalleProcesoAutoDTO));
-			});
-			bitacoraAutomaticosDTO.setDetallesProcesosAutomaticosDTO(detallesProcesosAutomaticosDTO);
+			List<DetallesProcesoAutomaticoDTO> detallesProcesosAutomaticos = new ArrayList<>();
+			t.getDetallesProcesosAutomaticos().forEach(detalleProcesoAutoDTO ->
+				detallesProcesosAutomaticos.add(DetallesProcesoAutomaticoDTO.CONVERTER_DTO.apply(detalleProcesoAutoDTO))
+			);
+			bitacoraAutomaticosDTO.setDetallesProcesosAutomaticosDTO(detallesProcesosAutomaticos);
 		}
 		return bitacoraAutomaticosDTO;
 	};

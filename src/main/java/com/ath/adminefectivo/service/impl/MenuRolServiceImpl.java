@@ -55,8 +55,7 @@ public class MenuRolServiceImpl implements IMenuRolService{
 				.existsById(menuRol.getCodigo())) {		
 			throw new ConflictException(ApiResponseCode.ERROR_CUENTAS_PUC_EXIST.getDescription());		
 		}
-		MenuRol menuRolResponse = menuRolRepository.save(menuRol);
-		return menuRolResponse;
+		return menuRolRepository.save(menuRol);
 	}
 
 	/**
@@ -68,8 +67,7 @@ public class MenuRolServiceImpl implements IMenuRolService{
 				.existsById(menuRol.getCodigo())) {		
 			throw new ConflictException(ApiResponseCode.ERROR_CUENTAS_PUC_NO_EXIST.getDescription());		
 		}
-		MenuRol menuRolResponse = menuRolRepository.save(menuRol);
-		return menuRolResponse;
+		return menuRolRepository.save(menuRol);
 	}
 
 	/**

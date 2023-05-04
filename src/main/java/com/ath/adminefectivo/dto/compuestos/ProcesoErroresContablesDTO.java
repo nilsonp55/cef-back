@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ProcesoErroresContablesDTO {
 		
-	private List<ResultadoErroresContablesDTO> ErroresContablesActuales;
+	private List<ResultadoErroresContablesDTO> erroresContablesActuales;
 	
 	private List<TransaccionesInternasDTO> transaccionesInternas;
 	

@@ -56,10 +56,6 @@ public class PuntosDTO {
 		if(!Objects.isNull(t.getSitiosClientes())) {
 			puntosDTO.setSitiosClientes(SitiosClientesDTO.CONVERTER_DTO.apply(t.getSitiosClientes()));
 		}
-		
-//		if(!Objects.isNull(t.getPuntosCodigoTDV())) {
-//			puntosDTO.setPuntosCodigoTDV(PuntosCodigoTdvDTO.CONVERTER_DTO.apply(t.getPuntosCodigoTDV()));
-//		}
 			
 		if(!Objects.isNull(t.getFondos())) {
 			puntosDTO.setFondos(FondosDTO.CONVERTER_DTO.apply(t.getFondos()));
@@ -90,10 +86,6 @@ public class PuntosDTO {
 		if(!Objects.isNull(t.getSitiosClientes())) {
 			puntos.setSitiosClientes(SitiosClientesDTO.CONVERTER_ENTITY.apply(t.getSitiosClientes()));
 		}
-		
-//		if(!Objects.isNull(t.getPuntosCodigoTDV())) {
-//			puntosDTO.setPuntosCodigoTDV(PuntosCodigoTdvDTO.CONVERTER_DTO.apply(t.getPuntosCodigoTDV()));
-//		}
 			
 		if(!Objects.isNull(t.getFondos())) {
 			puntos.setFondos(FondosDTO.CONVERTER_ENTITY.apply(t.getFondos()));

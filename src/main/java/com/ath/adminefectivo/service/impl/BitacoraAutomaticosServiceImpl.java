@@ -1,6 +1,7 @@
 package com.ath.adminefectivo.service.impl;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +24,7 @@ public class BitacoraAutomaticosServiceImpl implements IBitacoraAutomaticosServi
 	 */
 	@Override
 	public List<BitacoraAutomaticosDTO> getBitacoraAutomaticos(Predicate predicate) {
-		// TODO Auto-generated method stub
-		return null;
+		return new ArrayList<>();
 	}
 
 	/**

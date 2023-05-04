@@ -71,10 +71,6 @@ public class ValoresLiquidados {
 	@Column(name = "ID_SEQ_GRUPO")
 	private Integer idSeqGrupo;
 	
-//	@JsonIgnore
-//	@OneToOne(mappedBy = "valoresLiquidados", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-//	private ParametrosLiquidacionCosto parametrosLiquidacionCosto;
-	
 	@OneToOne(mappedBy = "valoresLiquidados", cascade = CascadeType.PERSIST)
 	private ParametrosLiquidacionCosto parametrosLiquidacionCosto;
 	

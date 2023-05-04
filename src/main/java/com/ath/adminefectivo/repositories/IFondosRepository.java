@@ -78,7 +78,7 @@ public interface IFondosRepository extends JpaRepository<Fondos, Integer>, Query
 	 */
 	@Query(value = "SELECT "
 			+ "f.* "
-			+ "	FROM "
+			+ "FROM "
 			+ "fondos f, "
 			+ "puntos p "
 			+ "WHERE "

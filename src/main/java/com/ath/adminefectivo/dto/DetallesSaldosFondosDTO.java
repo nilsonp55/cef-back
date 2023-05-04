@@ -52,18 +52,7 @@ public class DetallesSaldosFondosDTO {
 		if(!Objects.isNull(t.getSaldosFondosDTO())) {
 			detallesSaldosFondos.setSaldosFondos(SaldosFondosDTO.CONVERTER_ENTITY.apply(t.getSaldosFondosDTO()));
 		}
-//		if(!Objects.isNull(t.getTransportadoraOrigenDTO())) {
-//			escalas.setTransportadoraOrigen(TransportadorasDTO.CONVERTER_ENTITY.apply(t.getTransportadoraOrigenDTO()));
-//		}
-//		if(!Objects.isNull(t.getCiudadOrigenDTO())) {
-//			escalas.setCiudadOrigen(CiudadesDTO.CONVERTER_ENTITY.apply(t.getCiudadOrigenDTO()));
-//		}
-//		if(!Objects.isNull(t.getTransportadoraDestinoDTO())) {
-//			escalas.setTransportadoraDestino(TransportadorasDTO.CONVERTER_ENTITY.apply(t.getTransportadoraDestinoDTO()));
-//		}
-//		if(!Objects.isNull(t.getCiudadDestinoDTO())) {
-//			escalas.setCiudadDestino(CiudadesDTO.CONVERTER_ENTITY.apply(t.getCiudadDestinoDTO()));
-//		}
+
 		return detallesSaldosFondos;
 	};
 
@@ -76,18 +65,6 @@ public class DetallesSaldosFondosDTO {
 		if(!Objects.isNull(t.getSaldosFondos())) {
 			detallesSaldosFondosDTO.setSaldosFondosDTO(SaldosFondosDTO.CONVERTER_DTO.apply(t.getSaldosFondos()));
 		}
-//		if(!Objects.isNull(t.getTransportadoraOrigen())) {
-//			escalasDTO.setTransportadoraOrigenDTO(TransportadorasDTO.CONVERTER_DTO.apply(t.getTransportadoraOrigen()));
-//		}
-//		if(!Objects.isNull(t.getCiudadOrigen())) {
-//			escalasDTO.setCiudadOrigenDTO(CiudadesDTO.CONVERTER_DTO.apply(t.getCiudadOrigen()));
-//		}
-//		if(!Objects.isNull(t.getTransportadoraDestino())) {
-//			escalasDTO.setTransportadoraDestinoDTO(TransportadorasDTO.CONVERTER_DTO.apply(t.getTransportadoraDestino()));
-//		}
-//		if(!Objects.isNull(t.getCiudadDestino())) {
-//			escalasDTO.setCiudadDestinoDTO(CiudadesDTO.CONVERTER_DTO.apply(t.getCiudadDestino()));
-//		}
 
 		return detallesSaldosFondosDTO;
 	};

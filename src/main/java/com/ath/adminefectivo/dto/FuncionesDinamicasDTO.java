@@ -55,9 +55,9 @@ public class FuncionesDinamicasDTO {
 		UtilsObjects.copiarPropiedades(t, funcionesDinamicas);
 		List<ParametrosFuncionesDinamicas> parametrosFuncionesDinamicas = new ArrayList<ParametrosFuncionesDinamicas>();
 		if(!t.getParametrosFuncionesDinamicasDTO().isEmpty()) {
-			t.getParametrosFuncionesDinamicasDTO().forEach(parametroFuncion ->{
-				parametrosFuncionesDinamicas.add(ParametrosFuncionesDinamicasDTO.CONVERTER_ENTITY.apply(parametroFuncion));
-			});
+			t.getParametrosFuncionesDinamicasDTO().forEach(parametroFuncion ->
+				parametrosFuncionesDinamicas.add(ParametrosFuncionesDinamicasDTO.CONVERTER_ENTITY.apply(parametroFuncion))
+			);
 		}
 		funcionesDinamicas.setParametrosFuncionesDinamicas(parametrosFuncionesDinamicas);
 		return funcionesDinamicas;
@@ -70,13 +70,13 @@ public class FuncionesDinamicasDTO {
 		var funcionesDinamicasDTO = new FuncionesDinamicasDTO();
 		UtilsObjects.copiarPropiedades(t, funcionesDinamicasDTO);
 		
-		List<ParametrosFuncionesDinamicasDTO> parametrosFuncionesDinamicasDTO = new ArrayList<ParametrosFuncionesDinamicasDTO>();
+		List<ParametrosFuncionesDinamicasDTO> parametrosFuncionesDinamicas = new ArrayList<>();
 		if(!t.getParametrosFuncionesDinamicas().isEmpty()) {
-			t.getParametrosFuncionesDinamicas().forEach(parametroFuncionDTO ->{
-				parametrosFuncionesDinamicasDTO.add(ParametrosFuncionesDinamicasDTO.CONVERTER_DTO.apply(parametroFuncionDTO));
-			});
+			t.getParametrosFuncionesDinamicas().forEach(parametroFuncionDTO ->
+				parametrosFuncionesDinamicas.add(ParametrosFuncionesDinamicasDTO.CONVERTER_DTO.apply(parametroFuncionDTO))
+			);
 		}
-		funcionesDinamicasDTO.setParametrosFuncionesDinamicasDTO(parametrosFuncionesDinamicasDTO);
+		funcionesDinamicasDTO.setParametrosFuncionesDinamicasDTO(parametrosFuncionesDinamicas);
 		return funcionesDinamicasDTO;
 	};
 }
