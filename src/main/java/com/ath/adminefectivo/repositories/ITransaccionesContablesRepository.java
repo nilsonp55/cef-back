@@ -40,7 +40,7 @@ public interface ITransaccionesContablesRepository extends JpaRepository<Transac
 	 * @return List<TransaccionesContables>
 	 * @author Miller.Caro
 	 */
-	List<TransaccionesContables> findByNaturaleza(String Naturaleza);
+	List<TransaccionesContables> findByNaturaleza(String naturaleza);
 	
 	
 	/**
@@ -156,10 +156,10 @@ public interface ITransaccionesContablesRepository extends JpaRepository<Transac
 			+ "'' ||','|| "
 			+ "CASE WHEN tc.referencia2 IS NULL THEN '' ELSE TRIM(tc.referencia2) END AS texto "
 			+ " FROM "
-			+ "	transacciones_contables tc, "
-			+ "	cuentas_puc cp, "
-			+ "	transacciones_internas ti, "
-			+ "	bancos b "
+			+ "transacciones_contables tc, "
+			+ "cuentas_puc cp, "
+			+ "transacciones_internas ti, "
+			+ "bancos b "
 			+ "WHERE "
 			+ "tc.cuenta_contable = cp.CUENTA_CONTABLE AND "
 			+ "tc.banco_aval = cp.banco_aval AND "
@@ -187,8 +187,8 @@ public interface ITransaccionesContablesRepository extends JpaRepository<Transac
 			+ "    CASE WHEN tc.tipo_identificacion IS NULL THEN '' WHEN tc.tipo_identificacion = 'NIT' THEN '31' ELSE  trim(tc.tipo_identificacion) END ||','|| "
 			+ "    '' ||','|| "
 			+ "    '' ||','|| "
-			+ "	CASE WHEN tc.valor IS NULL THEN '' ELSE CAST(tc.valor AS VARCHAR) end||','|| "
-			+ "	CASE WHEN tc.valor IS NULL THEN '' ELSE CAST(tc.valor AS VARCHAR) end||','|| "
+			+ "CASE WHEN tc.valor IS NULL THEN '' ELSE CAST(tc.valor AS VARCHAR) end||','|| "
+			+ "CASE WHEN tc.valor IS NULL THEN '' ELSE CAST(tc.valor AS VARCHAR) end||','|| "
 			+ "    '' ||','|| "
 			+ "    CASE WHEN tc.codigo_centro  IS NOT NULL AND (trim(tc.cuenta_contable) like '4%' or trim(tc.cuenta_contable) like '5%') THEN trim(tc.codigo_centro) ELSE '' END||','|| "
 			+ "    CASE WHEN tc.codigo_centro  IS NOT NULL AND (trim(tc.cuenta_contable) like '4%' or trim(tc.cuenta_contable) like '5%') THEN '' ELSE trim(tc.codigo_centro) END||','|| "
@@ -196,8 +196,8 @@ public interface ITransaccionesContablesRepository extends JpaRepository<Transac
 			+ "    '' ||','|| "
 			+ "    '' ||','|| "
 			+ " CASE WHEN tc.descripcion IS NULL THEN '' ELSE trim(tc.descripcion) END||','|| "
-			+ "	CASE WHEN tc.id_tercero IS NULL THEN '' ELSE CAST(tc.id_tercero AS VARCHAR) END||','||  "
-			+ "	CASE WHEN tc.nombre_tercero IS NULL THEN '' ELSE trim(tc.nombre_tercero) END AS texto	"
+			+ "CASE WHEN tc.id_tercero IS NULL THEN '' ELSE CAST(tc.id_tercero AS VARCHAR) END||','||  "
+			+ "CASE WHEN tc.nombre_tercero IS NULL THEN '' ELSE trim(tc.nombre_tercero) END AS texto	"
 			+ "FROM "
 			+ "transacciones_contables tc, "
 			+ "cuentas_puc cp, "

@@ -38,7 +38,7 @@ public class DominioMaestro {
 	private String descripcion;
 	
 	@Column(name = "TIPO_CONTENIDO")
-	private char tipo_contenido;
+	private char tipoContenido;
 	
 	@Column(name = "ESTADO")
 	private String estado;

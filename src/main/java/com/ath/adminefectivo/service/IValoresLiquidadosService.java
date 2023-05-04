@@ -2,7 +2,7 @@ package com.ath.adminefectivo.service;
 
 import com.ath.adminefectivo.dto.ValorLiquidadoDTO;
 import com.ath.adminefectivo.dto.ValoresLiquidadosDTO;
-import com.ath.adminefectivo.dto.compuestos.costosCharterDTO;
+import com.ath.adminefectivo.dto.compuestos.CostosCharterDTO;
 
 public interface IValoresLiquidadosService {
 
@@ -12,7 +12,7 @@ public interface IValoresLiquidadosService {
 	 * @return ValoresLiquidados
 	 * @author prv_ccastano
 	 */
-	Boolean ActualizaCostosFletesCharter(costosCharterDTO costosCharter);
+	Boolean actualizaCostosFletesCharter(CostosCharterDTO costosCharter);
 	
 	/**
 	 * Servicio que ejecuta los procesos de costos

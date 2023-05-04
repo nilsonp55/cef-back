@@ -33,7 +33,7 @@ public class TdvDenominCantidadDTO {
 
 	private String familia;
 
-	private int cantidad_por_denom;
+	private int cantidadPorDenom;
 
 	private int estado;
 	

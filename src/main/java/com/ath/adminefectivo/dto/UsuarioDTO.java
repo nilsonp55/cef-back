@@ -50,9 +50,9 @@ public class UsuarioDTO {
 		usuario.setTipoUsario(t.getTipoUsario());
 		usuario.setEstado(t.getEstado());
 		
-		Rol rol = new Rol();
-		rol.setIdRol(t.getRol().getIdRol());
-		usuario.setRol(rol);		
+		Rol r = new Rol();
+		r.setIdRol(t.getRol().getIdRol());
+		usuario.setRol(r);		
 		
 		return usuario;
 	};

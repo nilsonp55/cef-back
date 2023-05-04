@@ -62,7 +62,7 @@ public class AuditoriaProcesosServiceImpl implements IAuditoriaProcesosService {
 	 */
 	@Override
 	@Transactional
-	public void ActualizarAuditoriaProceso(String codigoProceso, Date fechaSistema, String estado, String mensaje) {
+	public void actualizarAuditoriaProceso(String codigoProceso, Date fechaSistema, String estado, String mensaje) {
 		
 		AuditoriaProcesos auditoriaProceso = auditoriaProcesosRepository.findById(new AuditoriaProcesosPK(codigoProceso, fechaSistema)).orElse(null);
 		
@@ -113,9 +113,9 @@ public class AuditoriaProcesosServiceImpl implements IAuditoriaProcesosService {
 	@Override
 	public void crearTodosAuditoriaProcesos(Date fechaSistema) {
 		List<String> dominiosAuditoria = dominioService.consultaListValoresPorDominio(Constantes.DOMINIO_AUDITORIA_PROCESOS);
-		dominiosAuditoria.forEach(dominioAudi ->{
-			this.crearAuditoriaProceso(dominioAudi, fechaSistema);
-		});
+		dominiosAuditoria.forEach(dominioAudi ->
+			this.crearAuditoriaProceso(dominioAudi, fechaSistema)
+		);
 	}
 	
 	

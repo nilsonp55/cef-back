@@ -29,9 +29,9 @@ public class PuntosCostosServiceImpl implements IPuntosCostosService {
 	public List<PuntosCostosDTO> getPuntosCostos(Predicate predicate) {
 		var puntosCostosEntity = puntosCostosRepository.findAll(predicate);
 		List<PuntosCostosDTO> puntosCostosDTO = new ArrayList<>();
-		puntosCostosEntity.forEach(puntoCosto ->{
-			puntosCostosDTO.add(PuntosCostosDTO.CONVERTER_DTO.apply(puntoCosto));
-		});
+		puntosCostosEntity.forEach(puntoCosto ->
+			puntosCostosDTO.add(PuntosCostosDTO.CONVERTER_DTO.apply(puntoCosto))
+		);
 		return puntosCostosDTO;
 	}
 	
@@ -77,12 +77,7 @@ public class PuntosCostosServiceImpl implements IPuntosCostosService {
 		PuntosCostos puntosCostosActualizado = puntosCostosRepository.save(puntosCostosEntity);
 		
 		if(!Objects.isNull(puntosCostosActualizado)) {
-			if(puntosCostosActualizado.getEstado() == Dominios.ESTADO_GENERAL_ELIMINADO) {
-				return true;
-			}else {
-				return false;
-			}
-			
+			return (puntosCostosActualizado.getEstado() == Dominios.ESTADO_GENERAL_ELIMINADO);			
 		}else {
 			return false;
 		}

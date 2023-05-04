@@ -80,11 +80,7 @@ public class EscalasServiceImpl implements IEscalasService {
 		Escalas escalasActualizado = escalasRepository.save(escalasEntity);
 		
 		if(!Objects.isNull(escalasActualizado)) {
-			if(escalasActualizado.getEstado() == Dominios.ESTADO_GENERAL_ELIMINADO) {
-				return true;
-			}else {
-				return false;
-			}
+			return (escalasActualizado.getEstado() == Dominios.ESTADO_GENERAL_ELIMINADO);
 			
 		}else {
 			return false;

@@ -29,7 +29,7 @@ public class DominioMaestroDto {
 	
 	private String descripcion;
 	
-	private char tipo_contenido;
+	private char tipoContenido;
 	
 	private String estado;
 	

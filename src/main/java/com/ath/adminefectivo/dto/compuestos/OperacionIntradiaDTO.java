@@ -25,10 +25,4 @@ public class OperacionIntradiaDTO implements Serializable {
 	
 	private String entradaSalida;
 	
-//	private BancosDTO banco;
-//	
-//	private OperacionesProgramadasDTO operacionProgramada;
-	
-	
-	
 }

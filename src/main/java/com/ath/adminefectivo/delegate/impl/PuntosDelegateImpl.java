@@ -112,8 +112,7 @@ public class PuntosDelegateImpl implements IPuntosDelegate{
 	 * {@inheritDoc}
 	 */
 	@Override
-	public PuntosDTO actualizarPunto(CreatePuntosDTO rreatePuntosDTO) {
-		// TODO Auto-generated method stub
+	public PuntosDTO actualizarPunto(CreatePuntosDTO createPuntosDTO) {
 		return null;
 	}
 

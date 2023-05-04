@@ -34,10 +34,6 @@ public class Oficinas {
 	@Column(name = "CODIGO_OFICINA")
 	private Integer codigoOficina;
 	
-	//@ManyToOne
-	//@JoinColumn(name = "COD_BANCO_AVAL", nullable = false)
-	//private Bancos codBancoAval;
-	
 	@Column(name = "BANCO_AVAL")
 	private Integer bancoAval;
 	
@@ -52,7 +48,6 @@ public class Oficinas {
 	
 	@Column(name = "TARIFA_VERIFICACION")
 	private Double tarifaVerificacion;
-	
 	
 	@OneToOne
 	@JoinColumn(name = "CODIGO_PUNTO", nullable = false)

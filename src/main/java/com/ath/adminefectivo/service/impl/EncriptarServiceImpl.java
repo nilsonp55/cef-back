@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -22,7 +21,7 @@ import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.service.IDominioService;
 import com.ath.adminefectivo.service.IEncriptarService;
 import com.ath.adminefectivo.service.IParametroService;
-import com.ath.adminefectivo.utils.s3Utils;
+import com.ath.adminefectivo.utils.S3Utils;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -39,7 +38,7 @@ public class EncriptarServiceImpl implements IEncriptarService {
 	IParametroService parametroService;
 	
 	@Autowired
-	s3Utils s3utils;
+	S3Utils s3utils;
 	
 	
 	/**
@@ -61,7 +60,6 @@ public class EncriptarServiceImpl implements IEncriptarService {
 				textoEncriptado = rsa.encrypt(bfRead);
 				bw.write(textoEncriptado);
 			}
-			bw.close();
 
 		} catch (Exception e) {
 			log.error("Encriptando archivo: {} - path: {} - mesnaje: {}", nombreArchivo, path, e.getMessage());
@@ -127,16 +125,10 @@ public class EncriptarServiceImpl implements IEncriptarService {
 		try {
 			while ((textoEncriptado = br.readLine()) != null) {
 					String textoDesencriptado;
-					try {
-						textoDesencriptado = rsa.decrypt(textoEncriptado);
-						resultado.add(textoDesencriptado.split(delimitador));
-					} catch (Exception e) {
-						throw new NegocioException(ApiResponseCode.ERROR_DESENCRIPTANDO_CADENA.getCode(),
-								ApiResponseCode.ERROR_DESENCRIPTANDO_CADENA.getDescription()+ " - "+ e.getMessage(),
-								ApiResponseCode.ERROR_DESENCRIPTANDO_CADENA.getHttpStatus());
-					}
+					textoDesencriptado = rsa.decrypt(textoEncriptado);
+					resultado.add(textoDesencriptado.split(delimitador));
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new NegocioException(ApiResponseCode.ERROR_DESENCRIPTANDO_CADENA.getCode(),
 					ApiResponseCode.ERROR_DESENCRIPTANDO_CADENA.getDescription()+ " - "+ e.getMessage(),
 					ApiResponseCode.ERROR_DESENCRIPTANDO_CADENA.getHttpStatus());

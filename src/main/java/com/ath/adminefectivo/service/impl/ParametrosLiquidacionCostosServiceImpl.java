@@ -42,12 +42,12 @@ public class ParametrosLiquidacionCostosServiceImpl implements IParametrosLiquid
 		
 		List<ParametrosLiquidacionCostoDTO> respuesta = new ArrayList<>();
 		
-		parametrosLiquidacion.forEach(parametroLiquidacion ->{
-			respuesta.add(ParametrosLiquidacionCostoDTO.CONVERTER_DTO.apply(parametroLiquidacion));
-		});
-		respuesta.forEach(x ->{
-			x.setValoresLiquidadosDTO(valoresLiquidadosService.consultarValoresLiquidadosPorIdLiquidacion(x.getIdLiquidacion()));
-		});
+		parametrosLiquidacion.forEach(parametroLiquidacion ->
+			respuesta.add(ParametrosLiquidacionCostoDTO.CONVERTER_DTO.apply(parametroLiquidacion))
+		);
+		respuesta.forEach(x ->
+			x.setValoresLiquidadosDTO(valoresLiquidadosService.consultarValoresLiquidadosPorIdLiquidacion(x.getIdLiquidacion()))
+		);
 		
 		return respuesta;
 	}

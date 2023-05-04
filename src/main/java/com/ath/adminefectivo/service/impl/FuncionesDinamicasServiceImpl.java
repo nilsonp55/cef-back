@@ -26,9 +26,9 @@ public class FuncionesDinamicasServiceImpl implements IFuncionesDinamicasService
 		List<FuncionesDinamicas> funcionesDinamicasEntity = funcionesDinamicasRepository.findByEstado(1);
 		
 		List<FuncionesDinamicasDTO> funcionesDinamicasDTO = new ArrayList<>();
-		funcionesDinamicasEntity.forEach(funcionDinamicas ->{
-			funcionesDinamicasDTO.add(FuncionesDinamicasDTO.CONVERTER_DTO.apply(funcionDinamicas));
-		});
+		funcionesDinamicasEntity.forEach(funcionDinamicas ->
+			funcionesDinamicasDTO.add(FuncionesDinamicasDTO.CONVERTER_DTO.apply(funcionDinamicas))
+		);
 		return funcionesDinamicasDTO;
 	}
 
@@ -37,11 +37,11 @@ public class FuncionesDinamicasServiceImpl implements IFuncionesDinamicasService
 	 */
 	@Override
 	public List<String> ejecutarFuncionDinamica(int idFuncion, String parametros) {
-		List<ResultadoFuncionDinamicaDTO> respuesta =funcionesDinamicasRepository.ejecutar_procedimiento(idFuncion, parametros); 
+		List<ResultadoFuncionDinamicaDTO> respuesta =funcionesDinamicasRepository.ejecutarProcedimiento(idFuncion, parametros); 
 		List<String> resultado = new ArrayList<>();
-		respuesta.forEach(item ->{
-			resultado.add(item.getResultado());
-		});
+		respuesta.forEach(item ->
+			resultado.add(item.getResultado())
+		);
 		return resultado;
 	}
 

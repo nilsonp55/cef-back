@@ -36,8 +36,8 @@ public class TransaccionesInternasServiceImpl implements ITransaccionesInternasS
 	 */
 	@Override
 	public List<TransaccionesInternas> getAllTransaccionesInternas() {
-		// TODO Auto-generated method stub
-		return null;
+		log.info("Not implement getAllTransaccionesInternas");
+		return new ArrayList<>();
 	}
 
 	/**
@@ -62,8 +62,7 @@ public class TransaccionesInternasServiceImpl implements ITransaccionesInternasS
 	 */
 	@Override
 	public void deleteTransaccionesInternasById(String idTransaccionesInternas) {
-		// TODO Auto-generated method stub
-
+		log.info("Not implement deleteTransaccionesInternasById:{} ", idTransaccionesInternas);
 	}
 
 	/**
@@ -87,7 +86,7 @@ public class TransaccionesInternasServiceImpl implements ITransaccionesInternasS
 	@Override
 	public boolean generarMovimientosContables(Date fechaInicio, Date fechaFin, String tipoContabilidad,
 			int estadoContabilidadGenerado) {
-		return transaccionesInternasRepository.fnc_transcciones_contables(fechaInicio, fechaFin,
+		return transaccionesInternasRepository.fncTransccionesContables(fechaInicio, fechaFin,
 				tipoContabilidad, estadoContabilidadGenerado);
 	}
 
@@ -130,9 +129,9 @@ public class TransaccionesInternasServiceImpl implements ITransaccionesInternasS
 		List<TransaccionesInternas> listadoTransaccionesInternas = transaccionesInternasRepository
 				.findByFechaBetween(fechaInicio, fechaFin);
 		
-		listadoTransaccionesInternas.forEach(transaccionInterna ->{
-			transaccionesInternasRepository.delete(transaccionInterna);
-		});
+		listadoTransaccionesInternas.forEach(transaccionInterna ->
+			transaccionesInternasRepository.delete(transaccionInterna)
+		);
 	}
 
 }

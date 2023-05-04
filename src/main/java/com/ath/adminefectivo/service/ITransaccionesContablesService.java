@@ -64,7 +64,7 @@ public interface ITransaccionesContablesService {
 	 * @return List<TransaccionesContablesDTO>
 	 * @author Miller.Caro
 	 */
-	List<TransaccionesContablesDTO> getTransaccionesContablesByNaturaleza(String Naturaleza);
+	List<TransaccionesContablesDTO> getTransaccionesContablesByNaturaleza(String naturaleza);
 	
 	/**
 	 * Servicio encargado de obtener las transacciones internas debito y credito

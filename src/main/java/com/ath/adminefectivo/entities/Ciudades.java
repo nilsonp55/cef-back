@@ -41,9 +41,4 @@ public class Ciudades {
 	@Column(name = "COBRO_IVA", nullable = true)
 	private Boolean cobroIva;
 	
-	
-	
-//	@OneToMany(mappedBy = "ciudades", cascade = CascadeType.PERSIST)
-//	private List<Puntos> puntos;
-	
 }

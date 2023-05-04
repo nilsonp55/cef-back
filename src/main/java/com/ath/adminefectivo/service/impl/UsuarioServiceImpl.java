@@ -54,8 +54,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
 				.existsById(usuario.getIdUsuario())) {		
 			throw new ConflictException(ApiResponseCode.ERROR_CUENTAS_PUC_EXIST.getDescription());		
 		}
-		Usuario usuarioResponse = usuarioRepository.save(usuario);
-		return usuarioResponse;
+		return usuarioRepository.save(usuario);
 	}
 
 	/**
@@ -67,8 +66,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
 				.existsById(usuario.getIdUsuario())) {		
 			throw new ConflictException(ApiResponseCode.ERROR_CUENTAS_PUC_NO_EXIST.getDescription());		
 		}
-		Usuario usuarioResponse = usuarioRepository.save(usuario);
-		return usuarioResponse;
+		return usuarioRepository.save(usuario);
 	}
 
 	/**

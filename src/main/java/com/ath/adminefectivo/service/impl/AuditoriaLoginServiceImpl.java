@@ -24,9 +24,9 @@ public class AuditoriaLoginServiceImpl implements AuditoriaLoginService {
 	public List<AuditoriaLoginDTO> getAllAuditoriaLogin(Predicate predicate) {
 		var auditorias = auditoriaLoginRepository.findAll(predicate);
 		List<AuditoriaLoginDTO> auditoriasDto = new ArrayList<>();
-		auditorias.forEach(entity -> {
-			auditoriasDto.add(AuditoriaLoginDTO.CONVERTER_DTO.apply(entity));
-		});
+		auditorias.forEach(entity -> 
+			auditoriasDto.add(AuditoriaLoginDTO.CONVERTER_DTO.apply(entity))
+		);
 		return auditoriasDto;
 	}
 

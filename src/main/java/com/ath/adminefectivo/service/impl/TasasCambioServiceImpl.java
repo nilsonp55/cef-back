@@ -47,8 +47,7 @@ public class TasasCambioServiceImpl implements TasasCambioService {
 	 */
 	@Override
 	public TasasCambio postTasasCambio(TasasCambio tasasCambio) {
-		TasasCambio tasasCambioResponse = tasasCambioRepository.save(tasasCambio);
-		return tasasCambioResponse;
+		return tasasCambioRepository.save(tasasCambio);
 	}
 
 	/**
@@ -56,8 +55,7 @@ public class TasasCambioServiceImpl implements TasasCambioService {
 	 */
 	@Override
 	public TasasCambio putTasasCambio(TasasCambio tasasCambio) {
-		TasasCambio tasasCambioResponse = tasasCambioRepository.save(tasasCambio);
-		return tasasCambioResponse;
+		return tasasCambioRepository.save(tasasCambio);
 	}
 
 	/**

@@ -30,7 +30,7 @@ public class GenerarArchivoController {
 	GenerarArchivoDelegate generarArchivoDelegate;
 	
 	@GetMapping(value = "${endpoints.GenerarArchivo.generar}")
-	  public ResponseEntity<InputStreamResource> GenerarContabilidadCierre(
+	  public ResponseEntity<InputStreamResource> generarContabilidadCierre(
 			@RequestParam(value = "fecha") Date fecha,
 			@RequestParam(value = "tipoContabilidad") String tipoContabilidad,
 			@RequestParam(value = "codBanco") int codBanco

@@ -24,7 +24,7 @@ public class RegistroTipo1ArchivosFondosDTO {
 	
 	private Date fechaEjecucion;
 	
-	private Integer banco_aval;
+	private Integer bancoAval;
 	
 	private String codigoDane;
 

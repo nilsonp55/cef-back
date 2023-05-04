@@ -38,12 +38,12 @@ public class MenuRolDTO {
 	 * @author cesar.castano
 	 */
 	public static final Function<MenuRol, MenuRolDTO> CONVERTER_DTO = (MenuRol t) -> {
-		var MenuRolDto = new MenuRolDTO();
-		MenuRolDto.setCodigo(t.getCodigo());
-		MenuRolDto.setMenu(t.getMenu());
-		MenuRolDto.setEstado(t.getEstado());
-		MenuRolDto.setIdRol(t.getRol().getIdRol());
-		return MenuRolDto;
+		MenuRolDTO menuRolDto = new MenuRolDTO();
+		menuRolDto.setCodigo(t.getCodigo());
+		menuRolDto.setMenu(t.getMenu());
+		menuRolDto.setEstado(t.getEstado());
+		menuRolDto.setIdRol(t.getRol().getIdRol());
+		return menuRolDto;
 	};
 	
 	/**
@@ -51,15 +51,15 @@ public class MenuRolDTO {
 	 * @author cesar.castano
 	 */
 	public static final Function<MenuRolDTO, MenuRol> CONVERTER_ENTITY = (MenuRolDTO t) -> {
-		var MenuRol = new MenuRol();
-		MenuRol.setCodigo(t.getCodigo());
-		MenuRol.setMenu(t.getMenu());
-		MenuRol.setEstado(t.getEstado());
+		MenuRol menuRolDto = new MenuRol();
+		menuRolDto.setCodigo(t.getCodigo());
+		menuRolDto.setMenu(t.getMenu());
+		menuRolDto.setEstado(t.getEstado());
 		
-		Rol rol = new Rol();
-		rol.setIdRol(t.getRol().getIdRol());
-		MenuRol.setRol(rol);
+		Rol r = new Rol();
+		r.setIdRol(t.getRol().getIdRol());
+		menuRolDto.setRol(r);
 
-		return MenuRol;
+		return menuRolDto;
 	};
 }

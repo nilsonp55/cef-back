@@ -97,7 +97,7 @@ public class CiudadServiceImpl implements ICiudadesService {
 		if (Objects.isNull(ciudadOpt)) {
 			Ciudades ciudadBrinks = ciudadesRepository.findByCodigoBrinks(Integer.parseInt(codigo));
 			if (Objects.isNull(ciudadBrinks)) {
-				auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+				auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
 						fechaProceso, Constantes.ESTADO_PROCESO_ERROR,
 						ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getDescription());
 

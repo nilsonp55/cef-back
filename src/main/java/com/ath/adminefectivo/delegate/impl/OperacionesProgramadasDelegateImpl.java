@@ -68,7 +68,7 @@ public class OperacionesProgramadasDelegateImpl implements IOperacionesProgramad
 					.getArchivosCargadosSinProcesar(
 					definicionArchivo.getIdMaestroDefinicionArchivo().toUpperCase().trim());
 			
-			if (!Objects.isNull(listadoArchivosCargados)) {
+			if (!listadoArchivosCargados.isEmpty()) {
 				operacionesProgramadasService.generarOperacionesProgramadas(listadoArchivosCargados);	
 			}
 		}

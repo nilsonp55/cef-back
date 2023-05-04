@@ -165,18 +165,8 @@ public interface IOperacionesProgramadasRepository
 	 * @return OperacionIntradiaDTO
 	 * @author duvan.naranjo
 	 */
-//	@Query("select fo.bancoAVAL, op.codigoPuntoOrigen, op.entradaSalida "
-//			+ "from OperacionesProgramadas op, Fondos fo, Bancos ba "
-//			+ "where fo.codigoPunto = op.codigoFondoTDV "
-//			+ "and ba.codigoPunto = op.codigoPuntoOrigen "
-//			+ "and ba.esAVAL = false "	
-//			+ "and op.tipoOperacion in (:tipoOperacion) "
-//			+ "and op.entradaSalida = :entradaSalida "
-//			+ "and op.fechaProgramacion between  :fechaInicio and :fechaFin "
-//			+ "group by fo.bancoAVAL, op.codigoPuntoOrigen, op.entradaSalida ")
 	@Query(nativeQuery = true)
-	List<OperacionIntradiaDTO> consultaOperacionesIntradia_Entrada(@Param("fechaInicio") Date fechaInicio, @Param("fechaFin") Date fechaFin, @Param("entradaSalida") String entradaSalida, @Param("tipoOperacion") String tipoOperacion);
-//	List<intradiaPruebaDTO> consultarOperacionesIntradiaEntrada(@Param("fechaInicio") Date fechaInicio, @Param("fechaFin") Date fechaFin, @Param("entradaSalida") String entradaSalida, @Param("tipoOperacion") String tipoOperacion);
+	List<OperacionIntradiaDTO> consultaOperacionesIntradiaEntrada(@Param("fechaInicio") Date fechaInicio, @Param("fechaFin") Date fechaFin, @Param("entradaSalida") String entradaSalida, @Param("tipoOperacion") String tipoOperacion);
 
 	/**
 	 * Retorna el id de un bancoAval yla operacion programada perteneciente al banco
@@ -189,17 +179,8 @@ public interface IOperacionesProgramadasRepository
 	 * @return OperacionIntradiaDTO
 	 * @author duvan.naranjo
 	 */
-//	@Query("select fo.bancoAVAL, op.codigoPuntoDestino, op.entradaSalida  "
-//			+ "from OperacionesProgramadas op, Fondos fo, Bancos ba "
-//			+ "where fo.codigoPunto = op.codigoFondoTDV "
-//			+ "and ba.codigoPunto = op.codigoPuntoDestino "
-//			+ "and ba.esAVAL = false "
-//			+ "and op.tipoOperacion in (:tipoOperacion) "
-//			+ "and op.entradaSalida = :entradaSalida "
-//			+ "and op.fechaProgramacion between  :fechaInicio and :fechaFin "
-//			+ "group by fo.bancoAVAL, op.codigoPuntoDestino, op.entradaSalida  ")
 	@Query(nativeQuery = true)
-	List<OperacionIntradiaDTO> consultaOperacionesIntradia_Salida(@Param("fechaInicio") Date fechaInicio, @Param("fechaFin") Date fechaFin, @Param("entradaSalida") String entradaSalida, @Param("tipoOperacion") String tipoOperacion);
+	List<OperacionIntradiaDTO> consultaOperacionesIntradiaSalida(@Param("fechaInicio") Date fechaInicio, @Param("fechaFin") Date fechaFin, @Param("entradaSalida") String entradaSalida, @Param("tipoOperacion") String tipoOperacion);
 
 	@Query("SELECT op FROM OperacionesProgramadas op where idOperacion in (SELECT DISTINCT "
 			+" ti.idOperacion "
@@ -217,7 +198,7 @@ public interface IOperacionesProgramadasRepository
 	 * @author duvan.naranjo
 	 */
 	@Procedure(name = "reabrir_certificaciones")
-	public String reabrir_certificaciones();
+	public String reabrirCertificaciones();
 	
 	/**
 	 * Procedimiento encargado de ejecutar la repaertura del cierre definitiva
@@ -225,7 +206,7 @@ public interface IOperacionesProgramadasRepository
 	 * @author duvan.naranjo
 	 */
 	@Procedure(name = "reabrir_definitiva")
-	public String reabrir_definitiva();
+	public String reabrirDefinitiva();
 	
 	/**
 	 * Procedimiento encargado de ejecutar la repaertura del cierre preliminar
@@ -233,7 +214,7 @@ public interface IOperacionesProgramadasRepository
 	 * @author duvan.naranjo
 	 */
 	@Procedure(name = "reabrir_preliminar")
-	public String reabrir_preliminar();
+	public String reabrirPreliminar();
 	
 	/**
 	 * Procedimiento encargado de ejecutar la repaertura del cierre preliminar
@@ -241,9 +222,6 @@ public interface IOperacionesProgramadasRepository
 	 * @author duvan.naranjo
 	 */
 	@Procedure(name = "reabrir_conciliaciones")
-	public String reabrir_conciliaciones();
+	public String reabrirConciliaciones();
 	
-//	List<intradiaPruebaDTO> consultarOperacionesIntradiaSalida(@Param("fechaInicio") Date fechaInicio, @Param("fechaFin") Date fechaFin, @Param("entradaSalida") String entradaSalida, @Param("tipoOperacion") String tipoOperacion);
-	
-
 }

@@ -44,7 +44,7 @@ public interface ITransaccionesInternasRepository extends JpaRepository<Transacc
 	 * @return duvan.naranjo
 	 */
 	@Procedure(name = "fnc_transcciones_contables")
-	boolean fnc_transcciones_contables(@Param("p_fechaInicio") Date fechaInicio, @Param("p_fechaFin") Date fechaFin, @Param("p_tipoContabilidad") String tipoContabilidad,
+	boolean fncTransccionesContables(@Param("p_fechaInicio") Date fechaInicio, @Param("p_fechaFin") Date fechaFin, @Param("p_tipoContabilidad") String tipoContabilidad,
 			@Param("p_estado") int estadoContabilidadGenerado);
 
 	
@@ -84,7 +84,7 @@ public interface ITransaccionesInternasRepository extends JpaRepository<Transacc
 	 * @author duvan.naranjo
 	 */
 	@Query(value = "SELECT "
-			+ "	CASE WHEN count(1) > 0 THEN "
+			+ "CASE WHEN count(1) > 0 THEN "
 			+ "TRUE "
 			+ "ELSE "
 			+ "FALSE "

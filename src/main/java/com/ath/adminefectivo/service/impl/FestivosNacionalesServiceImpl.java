@@ -105,9 +105,7 @@ public class FestivosNacionalesServiceImpl implements IFestivosNacionalesService
 				.existsById(festivosNacionales.getFecha())) {		
 			throw new ConflictException("Festivo nacional ya existe");		
 		}
-		FestivosNacionales festivosNacionalesResponse = 
-				festivosNacionalesRepository.save(festivosNacionales);
-		return festivosNacionalesResponse;
+		return festivosNacionalesRepository.save(festivosNacionales);
 	}
 	
 	/**

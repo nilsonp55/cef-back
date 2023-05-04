@@ -19,7 +19,6 @@ public class CierreContabilidadServiceImpl implements ICierreContabilidadService
 	
 	@Autowired
 	ITransaccionesInternasService transaccionesInternasService;
-	
 
 	/**
 	 * {@inheritDoc}
@@ -27,7 +26,6 @@ public class CierreContabilidadServiceImpl implements ICierreContabilidadService
 	@Override
 	public boolean validacionTipoContabilidad(String tipoContabilidad) {
 		LogProcesoDiario cierrePre;
-		//String cierrePre;
 		if(tipoContabilidad.equals("PM")) {
 			//aqui se valida que la carga preliminar este cerrada
 			cierrePre = logProceso.obtenerEntidadLogProcesoDiario(Dominios.CODIGO_PROCESO_LOG_PRELIMINAR);
