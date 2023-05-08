@@ -4,23 +4,7 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.function.Function;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-
-import com.ath.adminefectivo.entities.Bancos;
-import com.ath.adminefectivo.entities.Ciudades;
-import com.ath.adminefectivo.entities.ConfContableEntidades;
-import com.ath.adminefectivo.entities.OperacionesProgramadas;
-import com.ath.adminefectivo.entities.Puntos;
-import com.ath.adminefectivo.entities.TiposCentrosCostos;
 import com.ath.adminefectivo.entities.TransaccionesContables;
-import com.ath.adminefectivo.entities.TransaccionesInternas;
-import com.ath.adminefectivo.entities.Transportadoras;
-import com.ath.adminefectivo.utils.UtilsObjects;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

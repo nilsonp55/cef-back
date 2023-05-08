@@ -2,20 +2,9 @@ package com.ath.adminefectivo.dto;
 
 
 import java.util.Date;
-import java.util.Objects;
 import java.util.function.Function;
 
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-
-import com.ath.adminefectivo.entities.Bancos;
-import com.ath.adminefectivo.entities.Ciudades;
 import com.ath.adminefectivo.entities.ClasificacionCostos;
-import com.ath.adminefectivo.entities.Escalas;
-import com.ath.adminefectivo.entities.PuntosCostos;
-import com.ath.adminefectivo.entities.TarifasOperacion;
-import com.ath.adminefectivo.entities.Transportadoras;
 import com.ath.adminefectivo.utils.UtilsObjects;
 
 import lombok.AllArgsConstructor;

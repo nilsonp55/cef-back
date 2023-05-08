@@ -106,7 +106,6 @@ public class LogProcesoMensualImpl implements ILogProcesoMensualService {
 						
 						logProcesoPorCrear.setIdLog(null);
 						logProcesoPorCrear.setFechaCreacion(new Date());
-						//logProcesoPorCrear.setFechaCierre(  Date.from(  LocalDate.now().with(    TemporalAdjusters.lastDayOfMonth() )  )  );
 						log.debug("El último día de este mes es: " + LocalDate.now().with( TemporalAdjusters.lastDayOfMonth() ));
 						
 					}else {
@@ -151,15 +150,11 @@ public class LogProcesoMensualImpl implements ILogProcesoMensualService {
 				fecha = ""+i+"/"+mes+"/"+anio;
 				if(!logProcesoMensualRepository.existenLiquidacionCostoDiariaByFecha(format.parse(fecha))) {
 					return false;
-				};
+				}
 			}
-			
-			
 		} catch (ParseException e) {
-			log.debug(e.getMessage());
+			log.error("Failed to validarLiquidacionCostoDiaria: {}", e);
 		}
 		return true;
 	}
-
-
 }

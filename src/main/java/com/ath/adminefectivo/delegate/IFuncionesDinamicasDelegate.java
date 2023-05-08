@@ -2,9 +2,7 @@ package com.ath.adminefectivo.delegate;
 
 import java.util.List;
 
-import com.ath.adminefectivo.dto.BancosDTO;
 import com.ath.adminefectivo.dto.FuncionesDinamicasDTO;
-import com.querydsl.core.types.Predicate;
 
 /**
  * Delegate que expone los servicios referente a las funciones dinamicas

@@ -15,12 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.CertificadasNoConciliadasDTO;
-import com.ath.adminefectivo.dto.CiudadesDTO;
 import com.ath.adminefectivo.dto.FechasConciliacionDTO;
 import com.ath.adminefectivo.dto.LogProcesoDiarioDTO;
 import com.ath.adminefectivo.dto.ParametrosConciliacionDTO;
 import com.ath.adminefectivo.dto.ProgramadasNoConciliadasDTO;
-import com.ath.adminefectivo.dto.PuntosDTO;
 import com.ath.adminefectivo.dto.ResumenConciliacionesDTO;
 import com.ath.adminefectivo.dto.UpdateCertificadasFallidasDTO;
 import com.ath.adminefectivo.dto.UpdateProgramadasFallidasDTO;
@@ -331,17 +329,17 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 		String resultado = conciliacionOperacionesRepository.validarcierreconciliacion();
 		
 		if(resultado.toUpperCase().startsWith("OK")) {
-			LogProcesoDiario LogProcesoDiario = logProcesoDiarioService.obtenerEntidadLogProcesoDiario(
+			LogProcesoDiario logProcesoDiario = logProcesoDiarioService.obtenerEntidadLogProcesoDiario(
 					Dominios.CODIGO_PROCESO_LOG_CONCILIACION);
 			LogProcesoDiarioDTO logProcesoDiarioDTO = new LogProcesoDiarioDTO();
-			logProcesoDiarioDTO.setIdLogProceso(LogProcesoDiario.getIdLogProceso());
+			logProcesoDiarioDTO.setIdLogProceso(logProcesoDiario.getIdLogProceso());
 			logProcesoDiarioDTO.setCodigoProceso(Dominios.CODIGO_PROCESO_LOG_CONCILIACION);
 			logProcesoDiarioDTO.setEstado(Constantes.REGISTRO_ACTIVO);
 			logProcesoDiarioDTO.setFechaFinalizacion(new Date());
 			logProcesoDiarioDTO.setFechaModificacion(new Date());
-			logProcesoDiarioDTO.setFechaCreacion(LogProcesoDiario.getFechaCreacion());
-			logProcesoDiarioDTO.setUsuarioCreacion(LogProcesoDiario.getUsuarioCreacion());
-			logProcesoDiarioDTO.setUsuarioModificacion(LogProcesoDiario.getUsuarioModificacion());
+			logProcesoDiarioDTO.setFechaCreacion(logProcesoDiario.getFechaCreacion());
+			logProcesoDiarioDTO.setUsuarioCreacion(logProcesoDiario.getUsuarioCreacion());
+			logProcesoDiarioDTO.setUsuarioModificacion(logProcesoDiario.getUsuarioModificacion());
 			logProcesoDiarioDTO.setEstadoProceso(Dominios.ESTADO_PROCESO_DIA_COMPLETO);
 			logProcesoDiarioService.actualizarLogProcesoDiario(logProcesoDiarioDTO);
 			return true;

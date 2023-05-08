@@ -3,7 +3,6 @@ package com.ath.adminefectivo.dto;
 import java.util.function.Function;
 
 import com.ath.adminefectivo.entities.Bancos;
-import com.ath.adminefectivo.entities.ConfContableEntidades;
 import com.ath.adminefectivo.entities.CuentasPuc;
 import com.ath.adminefectivo.entities.TiposCentrosCostos;
 import com.ath.adminefectivo.entities.TiposCuentas;
@@ -63,9 +62,9 @@ public class CuentasPucDTO {
 		tiposCentrosCosto.setTipoCentro(t.getTiposCentrosCostos().getTipoCentro());
 		cuentasPuc.setTiposCentrosCostos(tiposCentrosCosto);
 		
-		TiposCuentas tiposCuentas = new TiposCuentas();
-		tiposCuentas.setTipoCuenta(t.getTiposCuentas().getTipoCuenta());
-		cuentasPuc.setTiposCuentas(tiposCuentas);
+		TiposCuentas tc = new TiposCuentas();
+		tc.setTipoCuenta(t.getTiposCuentas().getTipoCuenta());
+		cuentasPuc.setTiposCuentas(tc);
 		
 		return cuentasPuc;
 		
@@ -94,9 +93,9 @@ public class CuentasPucDTO {
 		tiposCentrosCosto.setTipoCentro(t.getTiposCentrosCostos().getTipoCentro());
 		cuentasPuc.setTiposCentrosCostos(tiposCentrosCosto);
 		
-		TiposCuentasDTO tiposCuentas = new TiposCuentasDTO();
-		tiposCuentas.setTipoCuenta(t.getTiposCuentas().getTipoCuenta());
-		cuentasPuc.setTiposCuentas(tiposCuentas);
+		TiposCuentasDTO tc = new TiposCuentasDTO();
+		tc.setTipoCuenta(t.getTiposCuentas().getTipoCuenta());
+		cuentasPuc.setTiposCuentas(tc);
 		
 		return cuentasPuc;
 	};

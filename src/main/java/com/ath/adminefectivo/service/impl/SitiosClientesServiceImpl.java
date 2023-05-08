@@ -7,9 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.dto.SitiosClientesDTO;
-import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.SitiosClientes;
-import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.repositories.ISitiosClientesRepository;
 import com.ath.adminefectivo.service.ISitiosClientesService;
 import com.querydsl.core.types.Predicate;

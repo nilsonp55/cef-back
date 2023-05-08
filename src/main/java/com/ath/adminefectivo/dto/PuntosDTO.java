@@ -1,17 +1,9 @@
 package com.ath.adminefectivo.dto;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
-import com.ath.adminefectivo.entities.Bancos;
-import com.ath.adminefectivo.entities.CajerosATM;
-import com.ath.adminefectivo.entities.Fondos;
-import com.ath.adminefectivo.entities.Oficinas;
 import com.ath.adminefectivo.entities.Puntos;
-import com.ath.adminefectivo.entities.PuntosCodigoTDV;
-import com.ath.adminefectivo.entities.SitiosClientes;
 import com.ath.adminefectivo.utils.UtilsObjects;
 
 import lombok.AllArgsConstructor;
@@ -64,10 +56,6 @@ public class PuntosDTO {
 		if(!Objects.isNull(t.getSitiosClientes())) {
 			puntosDTO.setSitiosClientes(SitiosClientesDTO.CONVERTER_DTO.apply(t.getSitiosClientes()));
 		}
-		
-//		if(!Objects.isNull(t.getPuntosCodigoTDV())) {
-//			puntosDTO.setPuntosCodigoTDV(PuntosCodigoTdvDTO.CONVERTER_DTO.apply(t.getPuntosCodigoTDV()));
-//		}
 			
 		if(!Objects.isNull(t.getFondos())) {
 			puntosDTO.setFondos(FondosDTO.CONVERTER_DTO.apply(t.getFondos()));
@@ -98,10 +86,6 @@ public class PuntosDTO {
 		if(!Objects.isNull(t.getSitiosClientes())) {
 			puntos.setSitiosClientes(SitiosClientesDTO.CONVERTER_ENTITY.apply(t.getSitiosClientes()));
 		}
-		
-//		if(!Objects.isNull(t.getPuntosCodigoTDV())) {
-//			puntosDTO.setPuntosCodigoTDV(PuntosCodigoTdvDTO.CONVERTER_DTO.apply(t.getPuntosCodigoTDV()));
-//		}
 			
 		if(!Objects.isNull(t.getFondos())) {
 			puntos.setFondos(FondosDTO.CONVERTER_ENTITY.apply(t.getFondos()));

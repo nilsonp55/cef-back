@@ -46,10 +46,6 @@ public class Puntos {
 	@Column(name = "CODIGO_CIUDAD")
 	private String codigoCiudad;
 	
-//	@ManyToOne
-//	@JoinColumn(name = "CODIGO_CIUDAD", insertable = false, updatable = false)
-//	private Ciudades ciudades;
-	
 	@Column(name = "ESTADO")
 	private String estado;
 	

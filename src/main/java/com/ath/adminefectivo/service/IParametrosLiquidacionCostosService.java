@@ -3,11 +3,9 @@ package com.ath.adminefectivo.service;
 import java.util.Date;
 import java.util.List;
 
-import com.ath.adminefectivo.dto.EscalasDTO;
 import com.ath.adminefectivo.dto.ParametrosLiquidacionCostoDTO;
 import com.ath.adminefectivo.dto.compuestos.EstimadoClasificacionCostosDTO;
 import com.ath.adminefectivo.entities.ParametrosLiquidacionCosto;
-import com.querydsl.core.types.Predicate;
 
 public interface IParametrosLiquidacionCostosService {
 

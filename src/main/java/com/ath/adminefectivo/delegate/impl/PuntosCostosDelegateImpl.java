@@ -6,11 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.delegate.IPuntosCostosDelegate;
-import com.ath.adminefectivo.delegate.ITarifasOperacionDelegate;
 import com.ath.adminefectivo.dto.PuntosCostosDTO;
-import com.ath.adminefectivo.dto.TarifasOperacionDTO;
 import com.ath.adminefectivo.service.IPuntosCostosService;
-import com.ath.adminefectivo.service.ITarifasOperacionService;
 import com.querydsl.core.types.Predicate;
 
 @Service

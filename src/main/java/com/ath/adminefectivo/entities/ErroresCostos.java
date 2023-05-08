@@ -32,13 +32,13 @@ public class ErroresCostos {
 	@Id
 	@Column(name = "ID_ERRORES_COSTOS")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id_errores_costos;
+	private Integer idErroresCostos;
 	
 	@Column(name = "FECHA")
 	private Date fecha;
 	
 	@Column(name = "MENSAJE_ERROR")
-	private String mensaje_error;
+	private String mensajeError;
 	
 	@Column(name = "ID_SEQ_GRUPO")
 	private Integer seqGrupo;

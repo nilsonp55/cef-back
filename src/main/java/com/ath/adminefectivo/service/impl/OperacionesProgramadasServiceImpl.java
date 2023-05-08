@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.ArchivosCargadosDTO;
-import com.ath.adminefectivo.dto.BancosDTO;
 import com.ath.adminefectivo.dto.CiudadesDTO;
 import com.ath.adminefectivo.dto.DetallesDefinicionArchivoDTO;
 import com.ath.adminefectivo.dto.FechasConciliacionDTO;
@@ -144,11 +143,11 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	ICiudadesRepository ciudadesRepository;
 
 	private OperacionesProgramadasDTO operaciones;
-	private List<OperacionesProgramadas> operacionesp;
 	private List<TransportadorasDTO> listaTransportadoras;
 	private List<FondosDTO> listaFondos;
 	private List<PuntosDTO> listaPuntos;
 	private List<CiudadesDTO> listaCiudades;
+	private static final String USER1 = "user1";
 
 	/**
 	 * {@inheritDoc}
@@ -207,7 +206,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 			programadas.setEntradaSalida(programadas.getEntradaSalida());
 			programadas.setNombreFondoTDV(puntosService.getNombrePunto(dominioService.valorTextoDominio(
 									Constantes.DOMINIO_TIPOS_PUNTO, 
-									Dominios.TIPOS_PUNTO_FONDO), programadas.getCodigoFondoTDV()));;
+									Dominios.TIPOS_PUNTO_FONDO), programadas.getCodigoFondoTDV()));
 
 		}
 		return new PageImpl<>(operacionesProgramadasList.getContent().stream()
@@ -258,7 +257,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	 */
 	@Override
 	public List<OperacionesProgramadas> obtenerOperacionesProgramadas() {
-		operacionesp = operacionesProgramadasRepository.conciliacionAutomatica(
+		List<OperacionesProgramadas> operacionesp = operacionesProgramadasRepository.conciliacionAutomatica(
 				dominioService.valorTextoDominio(Constantes.DOMINIO_ESTADO_CONCILIACION,
 												Dominios.ESTADO_CONCILIACION_NO_CONCILIADO));
 		if (Objects.isNull(operacionesp)) {
@@ -340,8 +339,8 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	 */
 	@Override
 	public List<OperacionIntradiaDTO> consultarOperacionesIntradia(Date fechaInicio, Date fechaFin) {
-		List<OperacionIntradiaDTO> listadoOperacionesIntradia = operacionesProgramadasRepository.consultaOperacionesIntradia_Entrada(fechaInicio, fechaFin, "ENTRADA", "VENTA");
-		listadoOperacionesIntradia.addAll(operacionesProgramadasRepository.consultaOperacionesIntradia_Salida(fechaInicio, fechaFin, "SALIDA", "VENTA"));				
+		List<OperacionIntradiaDTO> listadoOperacionesIntradia = operacionesProgramadasRepository.consultaOperacionesIntradiaEntrada(fechaInicio, fechaFin, "ENTRADA", "VENTA");
+		listadoOperacionesIntradia.addAll(operacionesProgramadasRepository.consultaOperacionesIntradiaSalida(fechaInicio, fechaFin, "SALIDA", "VENTA"));				
 		
 		return listadoOperacionesIntradia;
 
@@ -355,9 +354,9 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		List<OperacionesProgramadas> listadoOperacionesProgramadas = operacionesProgramadasRepository.obtenerConErroresContables(tipoContabilidad);
 		List<OperacionesProgramadasDTO> listadoOperacionesProgramadasDTO = new ArrayList<>();
 		
-		listadoOperacionesProgramadas.forEach(operacion ->{
-			listadoOperacionesProgramadasDTO.add(OperacionesProgramadasDTO.CONVERTER_DTO.apply(operacion));
-		});;
+		listadoOperacionesProgramadas.forEach(operacion ->
+			listadoOperacionesProgramadasDTO.add(OperacionesProgramadasDTO.CONVERTER_DTO.apply(operacion))
+		);
 		return listadoOperacionesProgramadasDTO;
 	}
 	
@@ -368,13 +367,13 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	@Transactional			   
 	public String reabrirCierrePorAgrupador(String agrupador) {
 		if(agrupador.equals(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_CERTIFICACION)) {
-			return operacionesProgramadasRepository.reabrir_certificaciones();
+			return operacionesProgramadasRepository.reabrirCertificaciones();
 		}else if(agrupador.equals(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_DEFINITIVO)) {
-			return operacionesProgramadasRepository.reabrir_definitiva();
+			return operacionesProgramadasRepository.reabrirDefinitiva();
 		}else if(agrupador.equals(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_PRELIMINARES)) {
-			return operacionesProgramadasRepository.reabrir_preliminar();
+			return operacionesProgramadasRepository.reabrirPreliminar();
 		}else if(agrupador.equals(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_CONCILIACION)) {
-			return operacionesProgramadasRepository.reabrir_conciliaciones();
+			return operacionesProgramadasRepository.reabrirConciliaciones();
 		}
 		return "Agrupador no existente. ";
 	}
@@ -589,8 +588,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
         DetallesDefinicionArchivoDTO detalle = detallesArchivo.stream()
                 .filter(deta -> deta.getNombreCampo().toUpperCase().equals(nombreCampo)).findFirst().orElse(null);
         if (!Objects.isNull(detalle)) {
-            String cobroBR = contenido[detalle.getId().getNumeroCampo() - 1].trim();
-            return cobroBR;
+            return contenido[detalle.getId().getNumeroCampo() - 1].trim();
         }
         return null;
     }
@@ -1083,7 +1081,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 						.equals(Constantes.CAMPO_DETALLE_ARCHIVO_TASA))
 				.findFirst().orElse(null).getId().getNumeroCampo() - 1].trim();
 
-		List<String> listaDominioFecha = new ArrayList<String>();
+		List<String> listaDominioFecha = new ArrayList<>();
 		listaDominioFecha.add("MM/dd/yyyy");
 		
 		operacionesProgramadasDTO.setFechaProgramacion(UtilsString.convertirFecha(fechaProgramacion,listaDominioFecha));
@@ -1136,26 +1134,6 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 			return dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_OPERACION, Dominios.TIPO_OPERA_INTERCAMBIO);
 		} else if (tipoOperacion.toUpperCase().trim().contains(Dominios.TIPO_OPERA_TRASLADO)) {
 			return dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_OPERACION, Dominios.TIPO_OPERA_TRASLADO);
-		}
-		return null;
-	}
-
-	/**
-	 * Metodo encargado de realizar la filtracion de un detalle por nombre campo
-	 * para obtener el banco por una abreviatura
-	 * 
-	 * @param contenido
-	 * @param detallesArchivo
-	 * @param nombreCampo
-	 * @return BancosDTO
-	 * @author duvan.naranjo
-	 */
-	private BancosDTO consultarBancoPorDetalle(String[] contenido, List<DetallesDefinicionArchivoDTO> detallesArchivo,
-			String nombreCampo) {
-		DetallesDefinicionArchivoDTO detalle = detallesArchivo.stream()
-				.filter(deta -> deta.getNombreCampo().toUpperCase().equals(nombreCampo)).findFirst().orElse(null);
-		if (!Objects.isNull(detalle)) {
-			return bancosService.findBancoByAbreviatura(contenido[detalle.getId().getNumeroCampo() - 1].trim());
 		}
 		return null;
 	}
@@ -1416,32 +1394,30 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 					operaciones.setTipoServicio(determinarTipoServicio(contenido, detalleArchivo));
 				}
 				operaciones.setTipoTransporte(null);
-				operaciones.setUsuarioCreacion("User1");
-				operaciones.setUsuarioModificacion("User1");
+				operaciones.setUsuarioCreacion(USER1);
+				operaciones.setUsuarioModificacion(USER1);
 				operaciones.setValorTotal(asignarValorTotal(shipIn, shipOut));
 				operaciones.setIdServicio(orderId);
 				operaciones.setEsCambio(false);
-				operaciones = crearDetalleOperacionesProgramadas(contenido, idOperacion, detalleArchivo);
+				operaciones = crearDetalleOperacionesProgramadas(contenido, detalleArchivo);
 				OperacionesProgramadas op =  OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(operaciones);
-				
-				
+								
 				var operacionesP = operacionesProgramadasRepository.save(
 						OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(operaciones));
-				idOperacion = operacionesP.getIdOperacion();
 				op.getDetalleOperacionesProgramadas().forEach(detalle -> {
 					detalle.setOperacionesProgramadas(operacionesP);
 					detalleOperacionesProgramadasRepository.save(detalle);
 			});
-				operacionesP.getDetalleOperacionesProgramadas().forEach(operacion ->{
-					operacion.setOperacionesProgramadas(operacionesP);
-				});
+				operacionesP.getDetalleOperacionesProgramadas().forEach(operacion ->
+					operacion.setOperacionesProgramadas(operacionesP)
+				);
 			}
 		}else {
 			if (Long.parseLong(shipIn) + Long.parseLong(shipOut) != 0){
 				operaciones = OperacionesProgramadasDTO.CONVERTER_DTO.apply(operacionesProg);
 				operaciones.setValorTotal(operaciones.getValorTotal() + asignarValorTotal(shipIn, shipOut));
                 idOperacion = operacionesProg.getIdOperacion();
-				operaciones = crearDetalleOperacionesProgramadas(contenido, idOperacion, detalleArchivo);
+				operaciones = crearDetalleOperacionesProgramadas(contenido, detalleArchivo);
 				
 				OperacionesProgramadas op =  OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(operaciones);
 				
@@ -1451,9 +1427,9 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 				});
 
 				var operacionesP = operacionesProgramadasRepository.save(op);
-				operacionesP.getDetalleOperacionesProgramadas().forEach(operacion ->{
-					operacion.setOperacionesProgramadas(operacionesP);
-				});
+				operacionesP.getDetalleOperacionesProgramadas().forEach(operacion ->
+					operacion.setOperacionesProgramadas(operacionesP)
+				);
 			}
 		}
 		return operaciones;
@@ -1553,7 +1529,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		
 		String[] referenceId = determinarReferencedId(contenido, detalleArchivo);
 		Integer codigoPunto = bancosService.getCodigoPuntoBanco(Integer.parseInt(referenceId[1]));
-		Integer cliente = clientesCorporativosService.getCodigoCliente(codigoPunto, referenceId[2].trim());
+		clientesCorporativosService.getCodigoCliente(codigoPunto, referenceId[2].trim());
 		return 9999;
 	}
 
@@ -1577,13 +1553,13 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
      * @return Integer
      * @author cesar.castano
      */
-	private Double asignarValorTotal(String ShipIn, String ShipOut) {
+	private Double asignarValorTotal(String shipIn, String shipOut) {
 		Double valorTotal = 0.0;
-		if(!ShipIn.equals("0")) {
-			valorTotal = Double.parseDouble(ShipIn);
+		if(!shipIn.equals("0")) {
+			valorTotal = Double.parseDouble(shipIn);
 		}else {
-			if(!ShipOut.equals("0")) {
-				valorTotal = Double.parseDouble(ShipOut);
+			if(!shipOut.equals("0")) {
+				valorTotal = Double.parseDouble(shipOut);
 			}
 		}
 		return valorTotal;
@@ -1639,7 +1615,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
      */
 	private Date asignarFechaHora(String contenido) {
 		List<String> listadoFechas = dominioService.consultaListValoresPorDominio(Constantes.DOMINIO_FORMATO_FECHA_HORA);
-		return UtilsString.ToDateWithHours(contenido, listadoFechas);
+		return UtilsString.toDateWithHours(contenido, listadoFechas);
 		
 	}
 
@@ -1719,7 +1695,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	 * @author cesar.castano
 	 */
 	private OperacionesProgramadasDTO crearDetalleOperacionesProgramadas(String[] contenido, 
-			Integer idOperacion, List<DetallesDefinicionArchivoDTO> detalleArchivo) {
+			List<DetallesDefinicionArchivoDTO> detalleArchivo) {
 		
 		String shipIn = determinarShipIn(contenido, detalleArchivo);
 		String shipOut = determinarShipOut(contenido, detalleArchivo);
@@ -1746,9 +1722,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		}
 		
 		operaciones.getDetalleOperacionesProgramadasDTO().add(detalleOperacionesDTO);		
-		
-		
-		
+
 		return operaciones;
 	}
 
@@ -1792,29 +1766,6 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	}
 
 	/**
-	 * Metodo encargado de actualizar el valor total en OperacionesProgramadas
-	 * 
-	 * @param idArchivoCargado
-	 * @author cesar.castano
-	 */
-	private void actualizarValorTotalOficinas(Integer idArchivoCargado) {
-		List<OperacionesProgramadas> operacionesP = operacionesProgramadasRepository.
-				findByIdArchivoCargado(idArchivoCargado);
-		if(operacionesP.isEmpty()) {
-			throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getDescription(),
-					ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getHttpStatus());
-		}else {
-			for (OperacionesProgramadas operacionesProgramadas : operacionesP) {
-				Double valorDetalle = detalleOperacionesProgramadasService.obtenerValorDetalle(
-						operacionesProgramadas.getIdOperacion());
-				operacionesProgramadas.setValorTotal(valorDetalle);
-				operacionesProgramadasRepository.save(operacionesProgramadas);
-			}
-		}
-	}
-
-	/**
 	 * Metodo que se encarga de persistir en la tabla de OperacionesProgramadas, el
 	 * archivo plano de CAJEROS
 	 * 
@@ -1824,60 +1775,60 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	private OperacionesProgramadasDTO procesarArchivoCajeros(String[] contenido,
 					List<DetallesDefinicionArchivoDTO> detalleArchivo, ArchivosCargadosDTO archivo) {
 		
-		var operaciones = new OperacionesProgramadasDTO();
+		OperacionesProgramadasDTO op = new OperacionesProgramadasDTO();
 		String transportadora = determinarTransportadora(contenido, detalleArchivo, 
 								Constantes.CAMPO_DETALLE_ARCHIVO_TRANSPORTADORA);
 		String nombreBanco = determinarNombreBanco(contenido, detalleArchivo);
 		String ciudad = determinarCiudad(contenido, detalleArchivo, 
 								Constantes.CAMPO_DETALLE_ARCHIVO_CIUDAD);
 		ciudad = ciudadesRepository.findByNombreCiudadFiserv(ciudad).getNombreCiudad();
-		operaciones.setCodigoFondoTDV(fondosService.getCodigoFondo(
+		op.setCodigoFondoTDV(fondosService.getCodigoFondo(
 											transportadora, 
 											dominioService.valorTextoDominio(Constantes.DOMINIO_TIPOS_PUNTO, 
 																				Dominios.TIPOS_PUNTO_BANCO), 
 											nombreBanco, 
 											ciudad)
 											.getCodigoPunto());
-		operaciones.setEntradaSalida(Constantes.SALIDA);
-		operaciones.setCodigoPuntoOrigen(fondosService.getCodigoFondo(
+		op.setEntradaSalida(Constantes.SALIDA);
+		op.setCodigoPuntoOrigen(fondosService.getCodigoFondo(
 											transportadora, 
 											dominioService.valorTextoDominio(Constantes.DOMINIO_TIPOS_PUNTO, 
 																				Dominios.TIPOS_PUNTO_BANCO), 
 											nombreBanco, 
 											ciudad)
 											.getCodigoPunto());
-		operaciones.setCodigoPuntoDestino(cajerosService.getCodigoPunto(
+		op.setCodigoPuntoDestino(cajerosService.getCodigoPunto(
 											determinarReference(contenido, detalleArchivo)));
-		operaciones.setEstadoConciliacion(dominioService.valorTextoDominio(
+		op.setEstadoConciliacion(dominioService.valorTextoDominio(
 											Constantes.DOMINIO_ESTADO_CONCILIACION,
 											Dominios.ESTADO_CONCILIACION_NO_CONCILIADO));
-		operaciones.setEstadoOperacion(dominioService.valorTextoDominio(
+		op.setEstadoOperacion(dominioService.valorTextoDominio(
 											Constantes.DOMINIO_ESTADOS_OPERACION,
 											Dominios.ESTADOS_OPERA_EJECUTADO));
-		operaciones.setFechaCreacion(new Date());
+		op.setFechaCreacion(new Date());
 		Date fechaDestino = determinarFechaDestino(contenido, detalleArchivo, 
 											Constantes.CAMPO_DETALLE_ARCHIVO_FECHA_ENTREGA);
-		operaciones.setFechaDestino(fechaDestino);
-		operaciones.setFechaModificacion(new Date());
-		operaciones.setFechaOrigen(fechaDestino);
-		operaciones.setFechaProgramacion(fechaDestino);
-		operaciones.setIdArchivoCargado(archivo.getIdArchivo().intValue());
-		operaciones.setIdNegociacion(null);
-		operaciones.setIdOperacionRelac(null);
-		operaciones.setTasaNegociacion(null);
-		operaciones.setTipoOperacion(dominioService.valorTextoDominio(
+		op.setFechaDestino(fechaDestino);
+		op.setFechaModificacion(new Date());
+		op.setFechaOrigen(fechaDestino);
+		op.setFechaProgramacion(fechaDestino);
+		op.setIdArchivoCargado(archivo.getIdArchivo().intValue());
+		op.setIdNegociacion(null);
+		op.setIdOperacionRelac(null);
+		op.setTasaNegociacion(null);
+		op.setTipoOperacion(dominioService.valorTextoDominio(
 											Constantes.DOMINIO_TIPO_OPERACION,
 											Dominios.TIPO_OPERA_PROVISION));
-		operaciones.setTipoServicio(dominioService.valorTextoDominio(
+		op.setTipoServicio(dominioService.valorTextoDominio(
 											Constantes.DOMINIO_TIPO_SERVICIO,
 											Dominios.TIPO_SERVICIO_PROGRAMADA));
-		operaciones.setTipoTransporte(null);
-		operaciones.setUsuarioCreacion("User1");
-		operaciones.setUsuarioModificacion("User1");
-		operaciones.setValorTotal(Double.parseDouble(determinarValor(contenido, detalleArchivo)));
-		operaciones.setIdServicio(determinarNumeroOrden(contenido, detalleArchivo));
+		op.setTipoTransporte(null);
+		op.setUsuarioCreacion("User1");
+		op.setUsuarioModificacion("User1");
+		op.setValorTotal(Double.parseDouble(determinarValor(contenido, detalleArchivo)));
+		op.setIdServicio(determinarNumeroOrden(contenido, detalleArchivo));
 		operacionesProgramadasRepository.save(OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(operaciones));
-		return operaciones;
+		return op;
 	}
 	
 	
@@ -1996,10 +1947,10 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	 */
 	private Date determinarFechaDestino(String[] contenido, 
 										List<DetallesDefinicionArchivoDTO> detalleArchivo,
-										String Constante) {
+										String constante) {
 		return asignarFecha(contenido[detalleArchivo.stream()
 		    				    .filter(deta -> deta.getNombreCampo().toUpperCase().trim()
-		    				    .equals(Constante))
+		    				    .equals(constante))
 		    				    .findFirst().orElse(null).getId().getNumeroCampo() - 1].trim());
 	}
 

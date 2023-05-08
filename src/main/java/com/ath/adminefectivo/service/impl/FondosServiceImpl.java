@@ -142,9 +142,9 @@ public class FondosServiceImpl implements IFondosService {
 					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO_TDV_AVAL.getHttpStatus());
 
 		}else {
-			fondosEntity.forEach(fondo ->{
-				fondosDTO.add(FondosDTO.CONVERTER_DTO.apply(fondo));
-			});
+			fondosEntity.forEach(fondo ->
+				fondosDTO.add(FondosDTO.CONVERTER_DTO.apply(fondo))
+			);
 		}
 		return fondosDTO;
 	}

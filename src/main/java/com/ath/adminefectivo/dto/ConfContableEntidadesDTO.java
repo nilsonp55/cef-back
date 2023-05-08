@@ -2,10 +2,8 @@ package com.ath.adminefectivo.dto;
 
 import java.util.Objects;
 import java.util.function.Function;
-import com.ath.adminefectivo.entities.Bancos;
-import com.ath.adminefectivo.entities.Puntos;
+
 import com.ath.adminefectivo.entities.ConfContableEntidades;
-import com.ath.adminefectivo.entities.Transportadoras;
 import com.ath.adminefectivo.utils.UtilsObjects;
 
 import lombok.AllArgsConstructor;

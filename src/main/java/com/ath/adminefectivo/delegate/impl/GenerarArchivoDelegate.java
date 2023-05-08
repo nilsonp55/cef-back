@@ -1,6 +1,5 @@
 package com.ath.adminefectivo.delegate.impl;
 
-import java.io.ByteArrayOutputStream;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,7 @@ import com.ath.adminefectivo.delegate.IGenerarArchivoDelegate;
 import com.ath.adminefectivo.dto.compuestos.RespuestaGenerarArchivoDTO;
 import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.impl.TransaccionesContablesServiceImpl;
-import com.ath.adminefectivo.service.impl.generarArchivoServiceimpl;
+import com.ath.adminefectivo.service.impl.GenerarArchivoServiceimpl;
 
 /**
  * Delegate responsable del manejo, consulta y para generar
@@ -28,7 +27,7 @@ public class GenerarArchivoDelegate implements IGenerarArchivoDelegate {
 	IParametroService parametroService;
 	
 	@Autowired
-	generarArchivoServiceimpl generarArchivoService;
+	GenerarArchivoServiceimpl generarArchivoService;
 	
 	@Autowired
 	TransaccionesContablesServiceImpl transaccionesContablesService; 

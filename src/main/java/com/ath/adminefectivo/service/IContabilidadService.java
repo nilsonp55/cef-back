@@ -3,17 +3,10 @@ package com.ath.adminefectivo.service;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
-import com.ath.adminefectivo.dto.ArchivosCargadosDTO;
 import com.ath.adminefectivo.dto.OperacionesProgramadasDTO;
 import com.ath.adminefectivo.dto.TransaccionesInternasDTO;
 import com.ath.adminefectivo.dto.compuestos.ContabilidadDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionIntradiaDTO;
-import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoDTO;
-import com.ath.adminefectivo.entities.ArchivosCargados;
-import com.querydsl.core.types.Predicate;
 
 /**
  * Interfaz de los servicios referentes a los archivosCargados

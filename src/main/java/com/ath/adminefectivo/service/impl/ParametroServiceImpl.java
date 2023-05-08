@@ -71,7 +71,7 @@ public class ParametroServiceImpl implements IParametroService {
 			try {
 				return Integer.valueOf(parametroOpt.get().getValor());
 			} catch (NumberFormatException e) {
-				auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION, 
+				auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION, 
 						parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO), 
 						Constantes.ESTADO_PROCESO_PROCESADO, 
 						ApiResponseCode.ERROR_PARAMETRO_NO_ENTERO.getDescription());
@@ -81,7 +81,7 @@ public class ParametroServiceImpl implements IParametroService {
 						ApiResponseCode.ERROR_PARAMETRO_NO_ENTERO.getHttpStatus());
 			}
 		} else {
-			auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION, 
+			auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION, 
 					parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO), 
 					Constantes.ESTADO_PROCESO_PROCESADO, 
 					ApiResponseCode.ERROR_PARAMETRO_NOT_FOUND.getDescription());

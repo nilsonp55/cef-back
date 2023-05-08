@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.ath.adminefectivo.dto.ParametrosLiquidacionCostoDTO;
-import com.ath.adminefectivo.dto.compuestos.costosCharterDTO;
+import com.ath.adminefectivo.dto.compuestos.CostosCharterDTO;
 
 public interface ICostosFleteCharterService {
 
@@ -16,7 +16,7 @@ public interface ICostosFleteCharterService {
 	 * @return List<ParametrosLiquidacionCostoDTO>
 	 * @author prv_ccastano
 	 */
-	List<ParametrosLiquidacionCostoDTO> ConsultarCostosFleteCharter(Date fechaInicial, Date fechaFinal);
+	List<ParametrosLiquidacionCostoDTO> consultarCostosFleteCharter(Date fechaInicial, Date fechaFinal);
 
 	/**
 	 * Servicio que consulta y actualiza los costos del flete por charter
@@ -24,5 +24,5 @@ public interface ICostosFleteCharterService {
 	 * @return Boolean
 	 * @author prv_ccastano
 	 */
-	Boolean GrabarCostosFleteCharter(costosCharterDTO costosCharter);
+	Boolean grabarCostosFleteCharter(CostosCharterDTO costosCharter);
 }

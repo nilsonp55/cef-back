@@ -27,17 +27,15 @@ public class ContenidoRegistroCargadoDTO {
 	
 	private Date fechaAprobacion;
 	
-	private String ReferencedID;
+	private String referencedID;
 	
-	private String DescripcionCortaPunto;
+	private String descripcionCortaPunto;
 	
 	private String userFile1Entidad;
 	
 	private String userFile2Ciudad;
 	
 	private String userFile3Transportadora;
-	
-//	private String codigoMoneda;
 	
 	private String shipIn;
 	

@@ -1,6 +1,5 @@
 package com.ath.adminefectivo.service.impl;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -12,7 +11,6 @@ import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.TasasCambio;
 import com.ath.adminefectivo.entities.TasasCambioPK;
 import com.ath.adminefectivo.exception.AplicationException;
-import com.ath.adminefectivo.exception.ConflictException;
 import com.ath.adminefectivo.repositories.TasasCambioRepository;
 import com.ath.adminefectivo.service.TasasCambioService;
 import com.querydsl.core.types.Predicate;
@@ -49,8 +47,7 @@ public class TasasCambioServiceImpl implements TasasCambioService {
 	 */
 	@Override
 	public TasasCambio postTasasCambio(TasasCambio tasasCambio) {
-		TasasCambio tasasCambioResponse = tasasCambioRepository.save(tasasCambio);
-		return tasasCambioResponse;
+		return tasasCambioRepository.save(tasasCambio);
 	}
 
 	/**
@@ -58,8 +55,7 @@ public class TasasCambioServiceImpl implements TasasCambioService {
 	 */
 	@Override
 	public TasasCambio putTasasCambio(TasasCambio tasasCambio) {
-		TasasCambio tasasCambioResponse = tasasCambioRepository.save(tasasCambio);
-		return tasasCambioResponse;
+		return tasasCambioRepository.save(tasasCambio);
 	}
 
 	/**

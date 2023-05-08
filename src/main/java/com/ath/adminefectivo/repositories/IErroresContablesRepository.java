@@ -27,7 +27,7 @@ public interface IErroresContablesRepository extends JpaRepository<ErroresContab
 	 */
 	@Query(value = "SELECT ec.* from errores_contables ec, "
 			+ " transacciones_internas ti "
-			+ "	where "
+			+ "where "
 			+ "ec.fecha  = ?1 and "
 			+ "ec.id_transacciones_internas = ti.id_transacciones_internas and "
 			+ "ti.tipo_proceso = ?2 ", nativeQuery = true )
@@ -45,7 +45,7 @@ public interface IErroresContablesRepository extends JpaRepository<ErroresContab
 
 	@Query(value ="SELECT * "
 			+ " from fnc_generar_proceso_contables()", nativeQuery = true)
-	public List<Long> fnc_generar_proceso_contables();
+	public List<Long> fncGenerarProcesoContables();
 
 	/**
 	 * Metodo encargado de consultar los errores existentes para la 
@@ -56,7 +56,7 @@ public interface IErroresContablesRepository extends JpaRepository<ErroresContab
 	 */
 	@Query(value = "SELECT * "
 			+ "FROM "
-			+ "	errores_contables ec "
+			+ "errores_contables ec "
 			+ "WHERE "
 			+ "ec.id_transacciones_internas = ?1 ", nativeQuery = true )
 	public List<ErroresContables> findByTransaccionInterna(long idTransaccionesInternas);

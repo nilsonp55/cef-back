@@ -1,6 +1,7 @@
 package com.ath.adminefectivo.service.impl;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -17,8 +18,7 @@ public class DetallesProcesoAutomaticoServiceImpl implements IDetallesProcesoAut
 	 */
 	@Override
 	public List<DetallesProcesoAutomaticoDTO> getDetallesProcesoAutomatico(Predicate predicate) {
-		// TODO Auto-generated method stub
-		return null;
+		return new ArrayList<>();
 	}
 
 	

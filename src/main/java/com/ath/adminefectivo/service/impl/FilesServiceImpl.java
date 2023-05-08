@@ -24,7 +24,7 @@ import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.service.IFilesService;
 import com.ath.adminefectivo.service.IParametroService;
-import com.ath.adminefectivo.utils.s3Utils;
+import com.ath.adminefectivo.utils.S3Utils;
 
 @Service
 public class FilesServiceImpl implements IFilesService {
@@ -36,7 +36,7 @@ public class FilesServiceImpl implements IFilesService {
 	IParametroService parametroService;
 
 	@Autowired
-	private s3Utils s3Util;
+	private S3Utils s3Util;
 
 	/**
 	 * {@inheritDoc}
@@ -87,7 +87,7 @@ public class FilesServiceImpl implements IFilesService {
 	public DownloadDTO downloadFile(DownloadDTO download) {
 		String path = download.getUrl();
 		try {
-			if(s3Bucket) {
+			if(Boolean.TRUE.equals(s3Bucket)) {
 				if (s3Util.consultarArchivo(path)) {
 					final InputStream streamReader = s3Util.downloadFile(path);
 					download.setFile(streamReader);
@@ -113,7 +113,7 @@ public class FilesServiceImpl implements IFilesService {
 	@Override
 	public Boolean eliminarArchivo(String url) {
 		try {
-			if(s3Bucket) {
+			if(Boolean.TRUE.equals(s3Bucket)) {
 				s3Util.deleteObjectBucket(url);
 			}else {
 				Files.delete(Path.of(url));
@@ -133,7 +133,7 @@ public class FilesServiceImpl implements IFilesService {
 	public List<String> obtenerContenidoCarpeta(String url) {
 
 		List<String> contenidoCarpeta;
-		if (s3Bucket) {
+		if (Boolean.TRUE.equals(s3Bucket)) {
 			contenidoCarpeta = s3Util.getObjectsFromPathS3(url);
 		} else {
 			File carpeta = new File(url);
@@ -160,7 +160,7 @@ public class FilesServiceImpl implements IFilesService {
 		nombreArchivo = arregloNombre[0].concat("-" + postfijo);
 		Path destinoPath = FileSystems.getDefault().getPath(urlDestino, nombreArchivo.concat("." + arregloNombre[1]));
 		try {
-			if(s3Bucket) {
+			if(Boolean.TRUE.equals(s3Bucket)) {
 				s3Util.moverObjeto(origenPath.toString(), destinoPath.toString());
 			}else {
 				Files.move(origenPath, destinoPath);

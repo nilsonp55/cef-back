@@ -32,7 +32,6 @@ import com.ath.adminefectivo.repositories.IRegistrosCargadosRepository;
 import com.ath.adminefectivo.service.IArchivosCargadosService;
 import com.ath.adminefectivo.service.IMaestroDefinicionArchivoService;
 import com.ath.adminefectivo.service.IParametroService;
-import com.ath.adminefectivo.utils.UtilsString;
 import com.querydsl.core.types.Predicate;
 
 import lombok.extern.log4j.Log4j2;
@@ -224,12 +223,12 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 				.findByEstadoCargueAndIdModeloArchivo(Dominios.ESTADO_VALIDACION_CORRECTO, idModeloArchivo);
 
 		if (!Objects.isNull(archivosCargados)) {
-			archivosCargados.forEach(arch -> {
-				resultado.add(ArchivosCargadosDTO.CONVERTER_DTO.apply(arch));
-			});
+			archivosCargados.forEach(arch -> 
+				resultado.add(ArchivosCargadosDTO.CONVERTER_DTO.apply(arch))
+			);
 			return resultado;
 		}
-		return null;
+		return new ArrayList<>();
 	}
 	
 	/**

@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
 
@@ -37,6 +36,6 @@ public interface IFuncionesDinamicasRepository extends JpaRepository<FuncionesDi
 	 * @return
 	 */
 	@Query(nativeQuery = true)
-	List<ResultadoFuncionDinamicaDTO> ejecutar_procedimiento(@Param("idfuncion") int idfuncion,@Param("parametros") String parametros);
+	List<ResultadoFuncionDinamicaDTO> ejecutarProcedimiento(@Param("idfuncion") int idfuncion,@Param("parametros") String parametros);
 
 }

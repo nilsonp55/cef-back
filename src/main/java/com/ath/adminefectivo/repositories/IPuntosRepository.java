@@ -72,5 +72,5 @@ public interface IPuntosRepository extends JpaRepository<Puntos, Integer>, Query
 	+ "inner join ClientesCorporativos c on c.codigoCliente = s.codigoCliente and "
 	+ "c.identificacion = '9999999999' "
 	+ "where p.tipoPunto ='CLIENTE' and c.codigoBancoAval = ?1")
-	public Puntos obtenerCodigoPunto(Integer codigo_aval);
+	public Puntos obtenerCodigoPunto(Integer codigoAval);
 }

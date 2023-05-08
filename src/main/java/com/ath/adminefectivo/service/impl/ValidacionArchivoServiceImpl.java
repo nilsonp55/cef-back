@@ -238,7 +238,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 				case "AC": {
 					fecha = nombreArchivo.substring(5, 11);
 					mascaraFecha = maestroDefinicion.getMascaraArch().substring(8, 14);
-					formatoFecha = new ArrayList<String>();
+					formatoFecha = new ArrayList<>();
 					formatoFecha.add(mascaraFecha);
 					if (!UtilsString.isFecha(fecha, formatoFecha)) {
 						throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
@@ -250,7 +250,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 				case "BS": {
 					fecha = nombreArchivo.substring(8, 14);
 					mascaraFecha = maestroDefinicion.getMascaraArch().substring(13, 19);
-					formatoFecha = new ArrayList<String>();
+					formatoFecha = new ArrayList<>();
 					formatoFecha.add(mascaraFecha);
 					if (!UtilsString.isFecha(fecha, formatoFecha)) {
 						throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
@@ -262,7 +262,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 				case "BI": {
 					fecha = nombreArchivo.substring(8, 14);
 					mascaraFecha = maestroDefinicion.getMascaraArch().substring(13, 19);
-					formatoFecha = new ArrayList<String>();
+					formatoFecha = new ArrayList<>();
 					formatoFecha.add(mascaraFecha);
 					if (!UtilsString.isFecha(fecha, formatoFecha)) {
 						throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
@@ -283,7 +283,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 						}
 					}
 					mascaraFecha = maestroDefinicion.getMascaraArch().substring(19, 27);
-					formatoFecha = new ArrayList<String>();
+					formatoFecha = new ArrayList<>();
 					formatoFecha.add(mascaraFecha);
 					if (!UtilsString.isFecha(fecha, formatoFecha)) {
 						throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
@@ -301,7 +301,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 						mascaraFecha = maestroDefinicion.getMascaraArch().substring(5, 13);
 					}
 					
-					formatoFecha = new ArrayList<String>();
+					formatoFecha = new ArrayList<>();
 					formatoFecha.add(mascaraFecha);
 					if (!UtilsString.isFecha(fecha, formatoFecha)) {
 						throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
@@ -432,10 +432,8 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 				case "SC": {
 					if(nombreArchivo.contains("VILLAS")) {
 						fecha = nombreArchivo.substring(4, 14);
-						mascaraFecha = mascaraArchivo.substring(5, 13)+"yy";
 					}else {
 						fecha = nombreArchivo.substring(4, 12);
-						mascaraFecha = mascaraArchivo.substring(5, 13);
 					}
 					mascaraFecha = mascaraArchivo.substring(5, 13);
 					fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);

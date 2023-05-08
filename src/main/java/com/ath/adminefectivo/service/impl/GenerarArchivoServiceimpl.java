@@ -18,27 +18,23 @@ import com.ath.adminefectivo.dto.RespuestaContableDTO;
 import com.ath.adminefectivo.dto.compuestos.RespuestaGenerarArchivoDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.exception.NegocioException;
-import com.ath.adminefectivo.repositories.impl.GenerarArchivoRepository;
 import com.ath.adminefectivo.service.IFestivosNacionalesService;
 import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.ITransaccionesContablesService;
 import com.ath.adminefectivo.service.IgenerarArchivoService;
-import com.ath.adminefectivo.utils.s3Utils;
+import com.ath.adminefectivo.utils.S3Utils;
 
 import lombok.extern.log4j.Log4j2;
 
 @Service
 @Log4j2
-public class generarArchivoServiceimpl implements IgenerarArchivoService {
-
-	@Autowired
-	GenerarArchivoRepository generarArchivoRepository;
+public class GenerarArchivoServiceimpl implements IgenerarArchivoService {
 
 	@Autowired
 	ITransaccionesContablesService transaccionesContablesService;
 
 	@Autowired
-	s3Utils s3utils;
+	S3Utils s3utils;
 
 	@Autowired
 	IParametroService parametrosService;
@@ -63,13 +59,11 @@ public class generarArchivoServiceimpl implements IgenerarArchivoService {
 			XSSFWorkbook workbook = new XSSFWorkbook();
 			ByteArrayOutputStream stream = new ByteArrayOutputStream();
 			Sheet sheet = (Sheet) workbook.createSheet("transaccionesContables");
-			Row row = sheet.createRow(0);
-
-			RespuestaContableDTO dtoContable = new RespuestaContableDTO();
+			
 			for (int i = 0; i < listaContable.size(); i++) {
 
-				row = sheet.createRow(i);
-				dtoContable = listaContable.get(i);
+				Row row = sheet.createRow(i);
+				RespuestaContableDTO dtoContable = listaContable.get(i);
 
 				//NUEVO  ARCHIVO
 				int naturalezaNum = 0;

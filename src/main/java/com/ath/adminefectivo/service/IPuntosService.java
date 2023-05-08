@@ -165,7 +165,7 @@ public interface IPuntosService {
 	 * @return Puntos
 	 * @author cesar.castano
 	 */
-	Puntos getEntidadPunto(Integer codigo_banco_aval);
+	Puntos getEntidadPunto(Integer codigoBancoAval);
 	
 	Puntos crearPunto(Puntos punto);
 	

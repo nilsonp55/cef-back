@@ -29,7 +29,7 @@ import com.ath.adminefectivo.dto.response.ResponseADE;
 public class CierreContabilidadController {
 
 	@Autowired
-	ICierreContabilidadDelegate CierreContabilidadDelegate;
+	ICierreContabilidadDelegate cierreContabilidadDelegate;
 
 	/**
 	 * Metodo encargado de realizar el cierre contabilidad AM pm
@@ -40,7 +40,7 @@ public class CierreContabilidadController {
 	 * @author Miller.Caro
 	 */	
 	@GetMapping(value = "${endpoints.CierreContabilidad.cerrar}")
-	public ResponseEntity<ApiResponseADE<List<RespuestaContableDTO>>> GenerarContabilidadCierre(
+	public ResponseEntity<ApiResponseADE<List<RespuestaContableDTO>>> generarContabilidadCierre(
 			@RequestParam(value = "fechaSistema") Date fechaSistema,
 			@RequestParam(value = "tipoContabilidad") String tipoContabilidad,
 			@RequestParam(value = "codBanco") int codBanco,
@@ -48,7 +48,7 @@ public class CierreContabilidadController {
 			) 
 	
 	{
-		List<RespuestaContableDTO> consultas = CierreContabilidadDelegate.cerrarContabilidad(tipoContabilidad, codBanco, fase);
+		List<RespuestaContableDTO> consultas = cierreContabilidadDelegate.cerrarContabilidad(tipoContabilidad, codBanco, fase);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consultas, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));

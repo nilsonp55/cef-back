@@ -2,13 +2,7 @@ package com.ath.adminefectivo.service;
 
 import java.util.List;
 
-import org.springframework.data.jpa.repository.query.Procedure;
-import org.springframework.data.repository.query.Param;
-
-import com.ath.adminefectivo.dto.BancosDTO;
 import com.ath.adminefectivo.dto.FuncionesDinamicasDTO;
-import com.ath.adminefectivo.dto.PuntosDTO;
-import com.querydsl.core.types.Predicate;
 
 public interface IFuncionesDinamicasService {
 

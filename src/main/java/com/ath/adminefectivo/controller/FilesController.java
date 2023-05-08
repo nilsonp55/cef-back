@@ -32,7 +32,7 @@ import com.ath.adminefectivo.dto.response.ResponseADE;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.service.IMaestroDefinicionArchivoService;
 import com.ath.adminefectivo.service.IParametroService;
-import com.ath.adminefectivo.utils.s3Utils;
+import com.ath.adminefectivo.utils.S3Utils;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -145,7 +145,7 @@ public class FilesController {
 			@RequestPart("tipoCargue") String tipoCargue) {
 		log.debug("tipocargue: {}", tipoCargue);
 		try {
-			s3Utils utils = new s3Utils();
+			S3Utils utils = new S3Utils();
 			List<MaestrosDefinicionArchivoDTO> agrup = maestroDefinicionArchivoService
 					.consultarDefinicionArchivoByAgrupador(Constantes.ESTADO_MAESTRO_DEFINICION_ACTIVO, tipoCargue);
 			String param = parametroService.valorParametro(Parametros.RUTA_ARCHIVOS_PENDIENTES);
