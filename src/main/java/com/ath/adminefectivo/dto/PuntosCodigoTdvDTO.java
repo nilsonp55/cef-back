@@ -9,6 +9,7 @@ import com.ath.adminefectivo.utils.UtilsObjects;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.ToString;
 import lombok.NoArgsConstructor;
 
 /**
@@ -20,6 +21,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class PuntosCodigoTdvDTO {
 
 	private Integer idPuntoCodigoTdv;
