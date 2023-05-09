@@ -14,6 +14,8 @@ import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
 
+import lombok.extern.log4j.Log4j2;
+
 /**
  * Clase encargada de capturar los errores y poderlos transformar y perzonalizar
  *
@@ -21,6 +23,7 @@ import com.ath.adminefectivo.dto.response.ResponseADE;
  */
 @ControllerAdvice
 @RestController
+@Log4j2
 public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
 
 	/**
@@ -34,7 +37,7 @@ public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(Exception.class)
 	public final ResponseEntity<ApiResponseADE<ExceptionResponse>> manejarTodasExcepciones(Exception exception,
 			WebRequest request) {
-		exception.printStackTrace();
+		log.error("manejarTodasExcepciones: {}", exception.getMessage());
 		return ResponseEntity.status(ApiResponseCode.GENERIC_ERROR.getHttpStatus())
 				.body(new ApiResponseADE<ExceptionResponse>(null, ResponseADE.builder().code(ApiResponseCode.GENERIC_ERROR.getCode())
 								.description(ApiResponseCode.GENERIC_ERROR.getDescription())
@@ -53,6 +56,7 @@ public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
 	 */
 	@ExceptionHandler(NotFoundException.class)
 	public ResponseEntity<ExceptionResponse> manejarModeloNotFoundException(NotFoundException ex, WebRequest request) {
+		log.error("manejarModeloNotFoundException: {}", ex.getMessage());
 		ExceptionResponse er = new ExceptionResponse(LocalDateTime.now(), ex.getMessage(),
 				request.getDescription(false));
 		return new ResponseEntity<>(er, HttpStatus.NOT_FOUND);
@@ -68,6 +72,7 @@ public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
 	 */
 	@ExceptionHandler(ConflictException.class)
 	public ResponseEntity<ExceptionResponse> manejarModeloConflict(ConflictException ex, WebRequest request) {
+		log.error("manejarModeloConflict: {}", ex.getMessage());
 		ExceptionResponse er = new ExceptionResponse(LocalDateTime.now(), ex.getMessage(),
 				request.getDescription(false));
 		return new ResponseEntity<>(er, HttpStatus.CONFLICT);
@@ -86,7 +91,7 @@ public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(NegocioException.class)
 	public ResponseEntity<ApiResponseADE<ExceptionResponse>> manejarExcepcionesNegocio(NegocioException exception,
 			WebRequest request) {
-		exception.printStackTrace();
+		log.error("manejarExcepcionesNegocio: {}", exception.getMessage());
 		return ResponseEntity.status(exception.getStatus())
 				.body(new ApiResponseADE<ExceptionResponse>(null, ResponseADE.builder().code(exception.getCode())
 						.description(exception.getMessage()).source(request.getDescription(false)).build()));
@@ -104,7 +109,7 @@ public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(AplicationException.class)
 	public ResponseEntity<ApiResponseADE<ExceptionResponse>> manejarExcepcionesDeAplicacin(AplicationException exception,
 			WebRequest request) {
-		exception.printStackTrace();
+		log.error("manejarExcepcionesDeAplicacin: {}", exception.getMessage());
 		return ResponseEntity.status(exception.getStatus())
 				.body(new ApiResponseADE<ExceptionResponse>(null, ResponseADE.builder().code(exception.getCode())
 						.description(ApiResponseCode.GENERIC_ERROR.getDescription()).source(request.getDescription(false)).build()));

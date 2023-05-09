@@ -26,7 +26,10 @@ import com.ath.adminefectivo.service.IFilesService;
 import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.utils.S3Utils;
 
+import lombok.extern.log4j.Log4j2;
+
 @Service
+@Log4j2
 public class FilesServiceImpl implements IFilesService {
 
 	private static final String TEMPORAL_URL = "C:\\Ath\\Docs";
@@ -50,7 +53,7 @@ public class FilesServiceImpl implements IFilesService {
 			try {
 				Files.copy(file.getInputStream(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
 			} catch (IOException e) {
-				e.printStackTrace();
+				log.error("persistirArchvos: {}", e.getMessage());
 				return false;
 			}
 		}
@@ -70,7 +73,7 @@ public class FilesServiceImpl implements IFilesService {
 		try {
 			Files.copy(file.getInputStream(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error("persistirArchvo: {}", e.getMessage());
 			throw new NegocioException(ApiResponseCode.ERROR_ARCHIVOS_NO_EXISTE_BD.getCode(),
 					ApiResponseCode.ERROR_ARCHIVOS_NO_EXISTE_BD.getDescription(),
 					ApiResponseCode.ERROR_ARCHIVOS_NO_EXISTE_BD.getHttpStatus());
@@ -98,7 +101,7 @@ public class FilesServiceImpl implements IFilesService {
 				download.setFile(recurso.getInputStream());
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error("downloadFile: {}", e.getMessage());
 			throw new NegocioException(ApiResponseCode.ERROR_ARCHIVOS_NO_EXISTE_BD.getCode(),
 					ApiResponseCode.ERROR_ARCHIVOS_NO_EXISTE_BD.getDescription(),
 					ApiResponseCode.ERROR_ARCHIVOS_NO_EXISTE_BD.getHttpStatus());
