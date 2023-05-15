@@ -46,9 +46,9 @@ public class PuntosCodigoTdvController {
 	 */
 	@GetMapping(value = "${endpoints.PuntosCodigoTdv.consultar}")
 	public ResponseEntity<ApiResponseADE<Page<PuntosCodigoTdvDTO>>> getPuntosCodigoTDV(
-			@QuerydslPredicate(root = PuntosCodigoTDV.class) Predicate predicate, Pageable page) {
+			@QuerydslPredicate(root = PuntosCodigoTDV.class) Predicate predicate, Pageable page, String busqueda) {
 		
-		var consulta = puntosCodigoTdvService.getPuntosCodigoTDV(predicate, page);
+		var consulta = puntosCodigoTdvService.getPuntosCodigoTDV(predicate, page, busqueda);
 		
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
