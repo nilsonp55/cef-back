@@ -16,7 +16,6 @@ import com.ath.adminefectivo.entities.Fondos;
 import com.ath.adminefectivo.entities.Oficinas;
 import com.ath.adminefectivo.entities.Puntos;
 import com.ath.adminefectivo.entities.SitiosClientes;
-import com.ath.adminefectivo.service.IDominioService;
 import com.ath.adminefectivo.service.IPuntosService;
 import com.querydsl.core.types.Predicate;
 
@@ -26,9 +25,6 @@ public class PuntosDelegateImpl implements IPuntosDelegate{
 	@Autowired
 	IPuntosService puntosService;
 	
-	@Autowired
-	IDominioService dominioService;
-
 	/**
 	 * {@inheritDoc}
 	 */

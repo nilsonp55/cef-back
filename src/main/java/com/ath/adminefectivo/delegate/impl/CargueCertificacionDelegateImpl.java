@@ -25,14 +25,11 @@ import com.ath.adminefectivo.dto.DownloadDTO;
 import com.ath.adminefectivo.dto.MaestrosDefinicionArchivoDTO;
 import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
+import com.ath.adminefectivo.entities.MaestroDefinicionArchivo;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.service.IArchivosCargadosService;
 import com.ath.adminefectivo.service.IBitacoraAutomaticosService;
-import com.ath.adminefectivo.service.IDominioService;
-
-import com.ath.adminefectivo.entities.MaestroDefinicionArchivo;
 import com.ath.adminefectivo.service.IFestivosNacionalesService;
-
 import com.ath.adminefectivo.service.IFilesService;
 import com.ath.adminefectivo.service.ILecturaArchivoService;
 import com.ath.adminefectivo.service.ILogProcesoDiarioService;
@@ -74,9 +71,6 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	
 	@Autowired
 	IBitacoraAutomaticosService bitacoraAutomaicosService;
-	
-	@Autowired
-	IDominioService dominioService;
 	
 	@Autowired
 	IFestivosNacionalesService festivosNacionalesService;
