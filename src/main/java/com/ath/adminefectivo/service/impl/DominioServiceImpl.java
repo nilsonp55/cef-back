@@ -17,7 +17,10 @@ import com.ath.adminefectivo.repositories.DominioRepository;
 import com.ath.adminefectivo.service.IDominioService;
 import com.querydsl.core.types.Predicate;
 
+import lombok.EqualsAndHashCode;
+
 @Service
+@EqualsAndHashCode
 public class DominioServiceImpl implements IDominioService {
 
 	@Autowired
