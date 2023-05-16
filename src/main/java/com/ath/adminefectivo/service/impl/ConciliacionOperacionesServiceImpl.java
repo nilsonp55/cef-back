@@ -217,6 +217,7 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	public Boolean updateOperacionesCertificadasFallidas(UpdateCertificadasFallidasDTO updateCertificadasFallidasDTO) {
 
 		if(Objects.isNull(updateCertificadasFallidasDTO.getIdCertificacion())) {
+			log.error("Not IdCertificacion: {}", updateCertificadasFallidasDTO.getValor());
 			throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_UPDATE_NULL.getCode(),
 					ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_UPDATE_NULL.getDescription(),
 					ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_UPDATE_NULL.getHttpStatus());
@@ -230,10 +231,11 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 				certificadas.setValorTotal(updateCertificadasFallidasDTO.getValor());
 				operacionesCertificadasRepository.save(certificadas);
 			} catch (Exception e) {
-				e.getMessage();
+				log.error("Failed to update Operaciones Certificadas Fallidas: {}", e.getMessage());
 			}
 			return true;
 		} else {
+			log.error("IdCertificacion not found: {}", updateCertificadasFallidasDTO.getIdCertificacion());
 			throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getDescription(),
 					ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getHttpStatus());
