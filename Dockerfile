@@ -18,6 +18,9 @@ ENV schema=${ENV_SCHEMA}
 ENV bucket=${ENV_BUCKET}
 ENV region=${ENV_REGION}
 
+RUN useradd controlefect
+USER controlefect
+
 COPY ${JAR_FILE} app.jar
 
 ENTRYPOINT ["java","-jar","/app.jar"]
