@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ath.adminefectivo.delegate.IParametroDelegate;
 import com.ath.adminefectivo.dto.ParametroDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
@@ -31,12 +30,8 @@ import com.querydsl.core.types.Predicate;
 public class ParametroController {
 	
 	@Autowired
-	IParametroDelegate parametroDelegate;
-	
-	@Autowired
 	IParametroService parametroService;
 	
-
 	/**
 	 * Servicio encargado de retornar la consulta de todos los Parametros del aplicativo
 	 * 
@@ -45,7 +40,7 @@ public class ParametroController {
 	 */
 	@GetMapping(value = "${endpoints.Parametro.consultar}")
 	public ResponseEntity<ApiResponseADE<List<ParametroDTO>>> getParametros(@QuerydslPredicate(root = Parametro.class) Predicate predicate) {
-		var consulta = parametroDelegate.getParametros(predicate);
+		var consulta = parametroService.getParametros(predicate);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));

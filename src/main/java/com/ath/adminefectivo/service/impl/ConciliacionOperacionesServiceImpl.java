@@ -33,17 +33,14 @@ import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.IConciliacionOperacionesRepository;
 import com.ath.adminefectivo.repositories.IOperacionesCertificadasRepository;
 import com.ath.adminefectivo.repositories.IOperacionesProgramadasRepository;
-import com.ath.adminefectivo.service.IBancosService;
 import com.ath.adminefectivo.service.ICiudadesService;
 import com.ath.adminefectivo.service.IConciliacionOperacionesService;
 import com.ath.adminefectivo.service.IConciliacionServiciosService;
 import com.ath.adminefectivo.service.IDominioService;
-import com.ath.adminefectivo.service.IFondosService;
 import com.ath.adminefectivo.service.ILogProcesoDiarioService;
 import com.ath.adminefectivo.service.IOperacionesCertificadasService;
 import com.ath.adminefectivo.service.IOperacionesProgramadasService;
 import com.ath.adminefectivo.service.IPuntosService;
-import com.ath.adminefectivo.service.ITransportadorasService;
 import com.querydsl.core.types.Predicate;
 
 import lombok.Setter;
@@ -76,17 +73,8 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	IConciliacionOperacionesRepository conciliacionOperacionesRepository;
 	
 	@Autowired
-	IFondosService fondoService;
-	
-	@Autowired
-	IBancosService bancosService;
-	
-	@Autowired
 	IPuntosService puntosService;
-	
-	@Autowired
-	ITransportadorasService transportadorasService;
-	
+
 	@Autowired
 	ILogProcesoDiarioService logProcesoDiarioService;
 	

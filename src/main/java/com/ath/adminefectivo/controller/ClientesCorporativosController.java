@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ath.adminefectivo.delegate.IClientesCorporativosDelegate;
 import com.ath.adminefectivo.dto.ClientesCorporativosDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
 import com.ath.adminefectivo.entities.ClientesCorporativos;
+import com.ath.adminefectivo.service.IClientesCorporativosService;
 import com.querydsl.core.types.Predicate;
 
 /**
@@ -27,7 +27,7 @@ import com.querydsl.core.types.Predicate;
 public class ClientesCorporativosController {
 
 	@Autowired
-	IClientesCorporativosDelegate clientesCorporativosDelegate;
+	IClientesCorporativosService clientesCorporativosService;
 	
 	/**
 	 * Servicio encargado de retornar la consulta de todos los Clientes Corporativos
@@ -39,7 +39,7 @@ public class ClientesCorporativosController {
 	public ResponseEntity<ApiResponseADE<List<ClientesCorporativosDTO>>> getClientesCorporativos(
 			@QuerydslPredicate(root = ClientesCorporativos.class) Predicate predicate) {
 		
-		List<ClientesCorporativosDTO> consulta = clientesCorporativosDelegate.getClientesCorporativos(predicate);
+		List<ClientesCorporativosDTO> consulta = clientesCorporativosService.getClientesCorporativos(predicate);
 		
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())

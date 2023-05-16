@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ath.adminefectivo.delegate.ICajerosDelegate;
 import com.ath.adminefectivo.dto.CajerosDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
 import com.ath.adminefectivo.entities.Cajeros;
+import com.ath.adminefectivo.service.ICajerosService;
 import com.querydsl.core.types.Predicate;
 
 /**
@@ -27,7 +27,7 @@ import com.querydsl.core.types.Predicate;
 public class CajerosController {
 
 	@Autowired
-	ICajerosDelegate cajerosDelegate;
+	ICajerosService cajerosService;
 	
 	/**
 	 * Servicio encargado de retornar la consulta de todos los Cajeros
@@ -39,7 +39,7 @@ public class CajerosController {
 	public ResponseEntity<ApiResponseADE<List<CajerosDTO>>> getCajeros(
 			@QuerydslPredicate(root = Cajeros.class) Predicate predicate) {
 		
-		List<CajerosDTO> consulta = cajerosDelegate.getCajeros(predicate);
+		List<CajerosDTO> consulta = cajerosService.getCajeros(predicate);
 		
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())

@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ath.adminefectivo.delegate.IEncriptarDelegate;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
+import com.ath.adminefectivo.service.IEncriptarService;
 import com.ath.adminefectivo.service.IParametroService;
 
 /**
@@ -24,7 +24,7 @@ import com.ath.adminefectivo.service.IParametroService;
 public class EncriptarController {
 
 	@Autowired
-	IEncriptarDelegate encriptarDelegate;
+	IEncriptarService encriptarService;
 	
 	@Autowired
 	IParametroService parametros;
@@ -37,7 +37,7 @@ public class EncriptarController {
 	 */
 	@PostMapping(value = "${endpoints.Encriptar.encriptar}")
 	public ResponseEntity<ApiResponseADE<String>> encriptarArchivo(@RequestParam(name = "path") String path, @RequestParam(name = "nombreArchivo") String nombreArchivo) {
-		String consulta = encriptarDelegate.encriptarArchivo(path, nombreArchivo);
+		String consulta = encriptarService.encriptarArchivo(path, nombreArchivo);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
@@ -45,7 +45,7 @@ public class EncriptarController {
 	
 	@PostMapping(value = "${endpoints.Encriptar.desencriptar}")
 	public ResponseEntity<ApiResponseADE<String>> desencriptarArchivo(@RequestParam(name = "path") String path, @RequestParam(name = "nombreArchivo") String nombreArchivo) {
-		String consulta = encriptarDelegate.desencriptarArchivo(path, nombreArchivo);
+		String consulta = encriptarService.desencriptarArchivo(path, nombreArchivo);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
@@ -54,7 +54,7 @@ public class EncriptarController {
 	
 	@GetMapping(value = "${endpoints.Encriptar.generarLlaves}")
 	public ResponseEntity<ApiResponseADE<String>> generarLlaves() {
-		String consulta = encriptarDelegate.generarLlaves();
+		String consulta = encriptarService.generarLlaves();
 
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())

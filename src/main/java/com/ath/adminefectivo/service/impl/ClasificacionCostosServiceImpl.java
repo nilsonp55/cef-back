@@ -19,7 +19,6 @@ import com.ath.adminefectivo.entities.ClasificacionCostos;
 import com.ath.adminefectivo.repositories.IClasificacionCostosRepository;
 import com.ath.adminefectivo.service.IBancosService;
 import com.ath.adminefectivo.service.IClasificacionCostosService;
-import com.ath.adminefectivo.service.IFondosService;
 import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.IParametrosLiquidacionCostosService;
 import com.ath.adminefectivo.service.ITarifasOperacionService;
@@ -35,9 +34,6 @@ public class ClasificacionCostosServiceImpl implements IClasificacionCostosServi
 	
 	@Autowired
 	IParametroService parametroService;
-	
-	@Autowired
-	IFondosService fondosService;
 	
 	@Autowired
 	IParametrosLiquidacionCostosService parametrosLiquidacionCostosService;

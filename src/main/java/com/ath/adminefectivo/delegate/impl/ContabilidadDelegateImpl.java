@@ -28,8 +28,6 @@ import com.ath.adminefectivo.service.IErroresContablesService;
 import com.ath.adminefectivo.service.IFestivosNacionalesService;
 import com.ath.adminefectivo.service.IOperacionesProgramadasService;
 import com.ath.adminefectivo.service.IParametroService;
-import com.ath.adminefectivo.service.ITransaccionesInternasService;
-import com.ath.adminefectivo.service.impl.LogProcesoDiarioImpl;
 import com.ath.adminefectivo.utils.UtilsString;
 
 import lombok.extern.log4j.Log4j2;
@@ -43,10 +41,7 @@ public class ContabilidadDelegateImpl implements IContabilidadDelegate {
 	
 	@Autowired
 	IContabilidadService contabilidadService;
-	
-	@Autowired
-	ITransaccionesInternasService transaccionesInternas;
-	
+		
 	@Autowired
 	IParametroService parametroService;
 	
@@ -58,9 +53,6 @@ public class ContabilidadDelegateImpl implements IContabilidadDelegate {
 	
 	@Autowired
 	IErroresContablesService erroresContablesService;
-	
-	@Autowired
-	LogProcesoDiarioImpl logProceso;
 	
 	@Autowired
 	ICierreContabilidadService cierreContabilidadService;

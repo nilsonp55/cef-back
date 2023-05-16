@@ -16,7 +16,6 @@ import com.ath.adminefectivo.repositories.ICostosFletesCharterRepository;
 import com.ath.adminefectivo.service.IBancosService;
 import com.ath.adminefectivo.service.ICostosFleteCharterService;
 import com.ath.adminefectivo.service.IDominioService;
-import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.IPuntosService;
 import com.ath.adminefectivo.service.ITransportadorasService;
 import com.ath.adminefectivo.service.IValoresLiquidadosService;
@@ -38,9 +37,6 @@ public class CostosFletesCharterServiceImpl implements ICostosFleteCharterServic
 	
 	@Autowired
 	IPuntosService puntosService;
-	
-	@Autowired
-	IParametroService parametroService;
 	
 	@Autowired
 	IDominioService dominioService;

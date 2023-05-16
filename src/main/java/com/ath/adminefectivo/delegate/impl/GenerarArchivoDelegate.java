@@ -9,7 +9,6 @@ import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.delegate.IGenerarArchivoDelegate;
 import com.ath.adminefectivo.dto.compuestos.RespuestaGenerarArchivoDTO;
 import com.ath.adminefectivo.service.IParametroService;
-import com.ath.adminefectivo.service.impl.TransaccionesContablesServiceImpl;
 import com.ath.adminefectivo.service.impl.GenerarArchivoServiceimpl;
 
 /**
@@ -21,17 +20,13 @@ import com.ath.adminefectivo.service.impl.GenerarArchivoServiceimpl;
 
 @Service
 public class GenerarArchivoDelegate implements IGenerarArchivoDelegate {
-	
-	
+		
 	@Autowired
 	IParametroService parametroService;
 	
 	@Autowired
 	GenerarArchivoServiceimpl generarArchivoService;
 	
-	@Autowired
-	TransaccionesContablesServiceImpl transaccionesContablesService; 
-
 	@Override
 	public RespuestaGenerarArchivoDTO generarArchivo(String tipoContabilidad, int codBanco) {
 	

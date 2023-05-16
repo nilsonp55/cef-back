@@ -15,8 +15,6 @@ import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.IConciliacionOperacionesRepository;
 import com.ath.adminefectivo.service.IConciliacionServiciosService;
-import com.ath.adminefectivo.service.IOperacionesCertificadasService;
-import com.ath.adminefectivo.service.IOperacionesProgramadasService;
 import com.ath.adminefectivo.service.IParametroService;
 
 @Service
@@ -25,12 +23,6 @@ public class ConciliacionServiciosServiceImpl implements IConciliacionServiciosS
 	@Autowired
 	IConciliacionOperacionesRepository conciliacionServiciosRepository;
 
-	@Autowired
-	IOperacionesProgramadasService operacionesProgramadasService;
-
-	@Autowired
-	IOperacionesCertificadasService operacionesCertificadasService;
-	
 	@Autowired
 	IParametroService parametroService;
 	

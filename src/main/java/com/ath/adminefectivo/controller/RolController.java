@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ath.adminefectivo.delegate.IRolDelegate;
 import com.ath.adminefectivo.dto.RolDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
+import com.ath.adminefectivo.service.IRolService;
 
 /**
  * Controlador responsable de exponer los metodos referentes a los Roles 
@@ -24,8 +24,7 @@ import com.ath.adminefectivo.dto.response.ResponseADE;
 public class RolController {
 	
 	@Autowired
-	IRolDelegate rolDelegate;
-	
+	IRolService rolService;	
 
 	/**
 	 * Servicio encargado de retornar la consulta de todos los roles del aplicativo
@@ -35,7 +34,7 @@ public class RolController {
 	 */
 	@GetMapping(value = "${endpoints.Rol.consultar}")
 	public ResponseEntity<ApiResponseADE<List<RolDTO>>> getRoles() {
-		var consulta = rolDelegate.getRoles() ;
+		var consulta = rolService.getRoles() ;
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));

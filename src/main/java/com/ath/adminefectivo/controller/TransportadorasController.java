@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ath.adminefectivo.delegate.ITransportadorasDelegate;
 import com.ath.adminefectivo.dto.TransportadorasDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
 import com.ath.adminefectivo.entities.Transportadoras;
+import com.ath.adminefectivo.service.ITransportadorasService;
 import com.querydsl.core.types.Predicate;
 
 /**
@@ -27,7 +27,7 @@ import com.querydsl.core.types.Predicate;
 public class TransportadorasController {
 
 	@Autowired
-	ITransportadorasDelegate transportadorasDelegate;
+	ITransportadorasService transportadorasService;
 
 	/**
 	 * Servicio encargado de retornar la consulta de todos las Transportadoras
@@ -40,7 +40,7 @@ public class TransportadorasController {
 	public ResponseEntity<ApiResponseADE<List<TransportadorasDTO>>> getTransportadoras(
 			@QuerydslPredicate(root = Transportadoras.class) Predicate predicate) {
 		
-		List<TransportadorasDTO> consulta = transportadorasDelegate.getTransportadoras(predicate);
+		List<TransportadorasDTO> consulta = transportadorasService.getTransportadoras(predicate);
 		
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())

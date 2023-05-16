@@ -16,11 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ath.adminefectivo.delegate.IDominioMaestroDelegate;
 import com.ath.adminefectivo.dto.DominioMaestroDto;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
+import com.ath.adminefectivo.service.IDominioMaestroService;
 
 /**
  * Controlador responsable de exponer los metodos referentes a la creacioon de los
@@ -33,7 +33,7 @@ import com.ath.adminefectivo.dto.response.ResponseADE;
 public class DominiosMaestroController {
 
 	@Autowired
-	IDominioMaestroDelegate dominioMaestroDelegate;
+	IDominioMaestroService dominioMaestroService;
 	
 	
 	/**
@@ -47,7 +47,7 @@ public class DominiosMaestroController {
 	public ResponseEntity<ApiResponseADE<List<DominioMaestroDto>>> obtenerDominiosMaestro(
 			@RequestParam("estado") String estado) {
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ApiResponseADE<List<DominioMaestroDto>>(dominioMaestroDelegate.obtenerDominiosMaestro(estado),
+				.body(new ApiResponseADE<List<DominioMaestroDto>>(dominioMaestroService.obtenerDominiosMaestro(estado),
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 								.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
@@ -55,7 +55,7 @@ public class DominiosMaestroController {
 	@GetMapping(value = "${endpoints.DominiosMaestro.obtener}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<List<DominioMaestroDto>>> obtenerTodosDominiosMaestro() {
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ApiResponseADE<List<DominioMaestroDto>>(dominioMaestroDelegate.obtenerTodosDominiosMaestro(),
+				.body(new ApiResponseADE<List<DominioMaestroDto>>(dominioMaestroService.obtenerTodosDominiosMaestro(),
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 								.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
@@ -71,7 +71,7 @@ public class DominiosMaestroController {
 	public ResponseEntity<ApiResponseADE<DominioMaestroDto>> obtenerDominioMaestroById(
 			@PathVariable("id") String id) {
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ApiResponseADE<DominioMaestroDto>(dominioMaestroDelegate.obtenerDominioMaestroById(id),
+				.body(new ApiResponseADE<DominioMaestroDto>(dominioMaestroService.obtenerDominioMaestroById(id),
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 								.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
@@ -87,7 +87,7 @@ public class DominiosMaestroController {
 	public ResponseEntity<ApiResponseADE<DominioMaestroDto>> persistirDominioMaestro(@RequestBody DominioMaestroDto dominioMaestroDto) {
 
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ApiResponseADE<DominioMaestroDto>(dominioMaestroDelegate.persistirDominioMaestro(dominioMaestroDto),
+				.body(new ApiResponseADE<DominioMaestroDto>(dominioMaestroService.persistirDominioMaestro(dominioMaestroDto),
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 								.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
@@ -103,7 +103,7 @@ public class DominiosMaestroController {
 	public ResponseEntity<ApiResponseADE<DominioMaestroDto>> actualizarDominioMaestro(@RequestBody DominioMaestroDto dominioMaestroDto) {
 
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ApiResponseADE<DominioMaestroDto>(dominioMaestroDelegate.actualizarDominioMaestro(dominioMaestroDto),
+				.body(new ApiResponseADE<DominioMaestroDto>(dominioMaestroService.actualizarDominioMaestro(dominioMaestroDto),
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 								.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
@@ -119,7 +119,7 @@ public class DominiosMaestroController {
 	@DeleteMapping(value = "${endpoints.DominiosMaestro.eliminar}/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<Boolean>> eliminarDominioMaestro(@PathVariable("id") String id) {
 
-		var dominioEliminado = dominioMaestroDelegate.eliminarDominioMaestro(id);
+		var dominioEliminado = dominioMaestroService.eliminarDominioMaestro(id);
 		return ResponseEntity.status(HttpStatus.OK).body(
 				new ApiResponseADE<>(dominioEliminado, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));

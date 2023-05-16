@@ -26,7 +26,6 @@ import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.service.IDetalleDefinicionArchivoService;
 import com.ath.adminefectivo.service.IDominioService;
 import com.ath.adminefectivo.service.IMotorReglasService;
-import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.IValidacionArchivoService;
 import com.ath.adminefectivo.utils.UtilsString;
 
@@ -46,9 +45,6 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 
 	@Autowired
 	IDetalleDefinicionArchivoService detalleDefinicionArchivoService;
-
-	@Autowired
-	IParametroService parametroServiceImpl;
 
 	@Autowired
 	IDominioService dominioService;

@@ -16,12 +16,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ath.adminefectivo.delegate.ITarifasOperacionDelegate;
 import com.ath.adminefectivo.dto.TarifasOperacionDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
 import com.ath.adminefectivo.entities.TarifasOperacion;
+import com.ath.adminefectivo.service.ITarifasOperacionService;
 import com.querydsl.core.types.Predicate;
 
 /**
@@ -33,7 +33,7 @@ import com.querydsl.core.types.Predicate;
 public class TarifasOperacionController {
 
 	@Autowired
-	ITarifasOperacionDelegate tarifasOperacionDelegate;
+	ITarifasOperacionService tarifasOperacionService;
 
 	/**
 	 * Servicio encargado de retornar la consulta de todas las tarifas operacion
@@ -43,7 +43,7 @@ public class TarifasOperacionController {
 	 */
 	@GetMapping(value = "${endpoints.TarifasOperacion.consultar}")
 	public ResponseEntity<ApiResponseADE<Page<TarifasOperacionDTO>>> getTarifasOperacion(@QuerydslPredicate(root = TarifasOperacion.class) Predicate predicate, Pageable page) {
-		Page<TarifasOperacionDTO> consulta = tarifasOperacionDelegate.getTarifasOperacion(predicate, page);
+		Page<TarifasOperacionDTO> consulta = tarifasOperacionService.getTarifasOperacion(predicate, page);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
@@ -60,7 +60,7 @@ public class TarifasOperacionController {
 	public ResponseEntity<ApiResponseADE<TarifasOperacionDTO>> guardarTarifasOperacion(@RequestBody TarifasOperacionDTO tarifasOperacionDTO) {
 
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ApiResponseADE<TarifasOperacionDTO>(tarifasOperacionDelegate.guardarTarifasOperacion(tarifasOperacionDTO),
+				.body(new ApiResponseADE<TarifasOperacionDTO>(tarifasOperacionService.guardarTarifasOperacion(tarifasOperacionDTO),
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 
@@ -74,7 +74,7 @@ public class TarifasOperacionController {
 	 */
 	@GetMapping(value = "${endpoints.TarifasOperacion.consultar}/{id}")
 	public ResponseEntity<ApiResponseADE<TarifasOperacionDTO>> getPunto(@RequestParam("id") Integer idTarifaOperacion) {
-		TarifasOperacionDTO consulta = tarifasOperacionDelegate.getTarifasOperacionById(idTarifaOperacion);
+		TarifasOperacionDTO consulta = tarifasOperacionService.getTarifasOperacionById(idTarifaOperacion);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
@@ -88,7 +88,7 @@ public class TarifasOperacionController {
 	 */
 	@PutMapping(value = "${endpoints.TarifasOperacion.actualizar}")
 	public ResponseEntity<ApiResponseADE<TarifasOperacionDTO>> actualizar(@RequestBody TarifasOperacionDTO tarifasOperacionDTO) {
-		TarifasOperacionDTO consulta = tarifasOperacionDelegate.actualizarTarifasOperacion(tarifasOperacionDTO);
+		TarifasOperacionDTO consulta = tarifasOperacionService.actualizarTarifasOperacion(tarifasOperacionDTO);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
@@ -102,7 +102,7 @@ public class TarifasOperacionController {
 	 */
 	@DeleteMapping(value = "${endpoints.TarifasOperacion.eliminar}/{id}")
 	public ResponseEntity<ApiResponseADE<Boolean>> eliminar(@RequestParam("id") Integer idTarifaOperacion) {
-		boolean consulta = tarifasOperacionDelegate.eliminarTarifasOperacion(idTarifaOperacion);
+		boolean consulta = tarifasOperacionService.eliminarTarifasOperacion(idTarifaOperacion);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));

@@ -5,23 +5,23 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.ath.adminefectivo.delegate.IPuntosCostosDelegate;
 import com.ath.adminefectivo.dto.PuntosCostosDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
 import com.ath.adminefectivo.entities.PuntosCostos;
+import com.ath.adminefectivo.service.IPuntosCostosService;
 import com.querydsl.core.types.Predicate;
 
 /**
@@ -33,7 +33,7 @@ import com.querydsl.core.types.Predicate;
 public class PuntosCostosController {
 
 	@Autowired
-	IPuntosCostosDelegate puntosCostosDelegate;
+	IPuntosCostosService puntosCostosService;
 
 	/**
 	 * Servicio encargado de retornar la consulta de todos los puntos costos
@@ -43,7 +43,7 @@ public class PuntosCostosController {
 	 */
 	@GetMapping(value = "${endpoints.PuntosCostos.consultar}")
 	public ResponseEntity<ApiResponseADE<List<PuntosCostosDTO>>> getPuntosCostos(@QuerydslPredicate(root = PuntosCostos.class) Predicate predicate) {
-		List<PuntosCostosDTO> consulta = puntosCostosDelegate.getPuntosCostos(predicate);
+		List<PuntosCostosDTO> consulta = puntosCostosService.getPuntosCostos(predicate);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
@@ -60,7 +60,7 @@ public class PuntosCostosController {
 	public ResponseEntity<ApiResponseADE<PuntosCostosDTO>> guardarPuntosCostos(@RequestBody PuntosCostosDTO puntosCostosDTO) {
 
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ApiResponseADE<PuntosCostosDTO>(puntosCostosDelegate.guardarPuntosCostos(puntosCostosDTO),
+				.body(new ApiResponseADE<PuntosCostosDTO>(puntosCostosService.guardarPuntosCostos(puntosCostosDTO),
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 
@@ -74,7 +74,7 @@ public class PuntosCostosController {
 	 */
 	@GetMapping(value = "${endpoints.PuntosCostos.consultar}/{id}")
 	public ResponseEntity<ApiResponseADE<PuntosCostosDTO>> getPuntoById(@RequestParam("id") Integer idPuntosCostos) {
-		PuntosCostosDTO consulta = puntosCostosDelegate.getPuntosCostosById(idPuntosCostos);
+		PuntosCostosDTO consulta = puntosCostosService.getPuntosCostosById(idPuntosCostos);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
@@ -88,7 +88,7 @@ public class PuntosCostosController {
 	 */
 	@PutMapping(value = "${endpoints.PuntosCostos.actualizar}")
 	public ResponseEntity<ApiResponseADE<PuntosCostosDTO>> actualizar(@RequestBody PuntosCostosDTO puntosCostosDTO) {
-		PuntosCostosDTO consulta = puntosCostosDelegate.actualizarPuntosCostos(puntosCostosDTO);
+		PuntosCostosDTO consulta = puntosCostosService.actualizarPuntosCostos(puntosCostosDTO);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
@@ -102,7 +102,7 @@ public class PuntosCostosController {
 	 */
 	@DeleteMapping(value = "${endpoints.PuntosCostos.eliminar}/{id}")
 	public ResponseEntity<ApiResponseADE<Boolean>> eliminar(@RequestParam("id") Integer idPuntosCostos) {
-		boolean consulta = puntosCostosDelegate.eliminarPuntosCostos(idPuntosCostos);
+		boolean consulta = puntosCostosService.eliminarPuntosCostos(idPuntosCostos);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
