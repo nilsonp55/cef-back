@@ -17,7 +17,10 @@ import com.ath.adminefectivo.service.IDominioService;
 import com.ath.adminefectivo.service.IOperacionesCertificadasService;
 import com.ath.adminefectivo.service.IOperacionesProgramadasService;
 
+import lombok.extern.log4j.Log4j2;
+
 @Service
+@Log4j2
 public class ConciliacionServiciosHistoricoServiceImpl implements IConciliacionServiciosHistoricoService{
 
 	@Autowired
@@ -56,7 +59,7 @@ public class ConciliacionServiciosHistoricoServiceImpl implements IConciliacionS
 			conciliacionServiciosHistoricoRepository
 					.save(ConciliacionServiciosHistoricoDTO.CONVERTER_ENTITY.apply(conciliacion));
 		} catch (Exception e) {
-			e.getMessage();
+			log.error("Failed to create registro en conciliacion historico: {}", e.getMessage());
 		}
 		return true;
 	}
