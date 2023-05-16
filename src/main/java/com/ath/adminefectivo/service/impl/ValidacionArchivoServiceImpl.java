@@ -694,7 +694,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 	 */
 	private void obtenerTipoRegistro(MaestrosDefinicionArchivoDTO maestroDefinicion,
 			ValidacionLineasDTO validacionLineasDTO) {
-		log.debug("Descripcion archivo:{} - validacion lineas: {}", maestroDefinicion.getDescripcionArch(), validacionLineasDTO.toString());
+		log.debug("Establecer tipo de formato por linea " );
 		if (maestroDefinicion.isMultiformato()) {
 			try {
 				Integer tipo = Integer

@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -19,12 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.AmazonServiceException;
-import com.amazonaws.ClientConfiguration;
-import com.amazonaws.Protocol;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.ListObjectsV2Request;
 import com.amazonaws.services.s3.model.ListObjectsV2Result;
 import com.amazonaws.services.s3.model.S3Object;
@@ -227,31 +222,30 @@ public class S3Utils {
 	}
 	
 	public void convertAndSaveArchivoEnBytes(MultipartFile archivo, String key, String nombreArchivo) {
-
+		log.info("file to convert: {}", nombreArchivo);
+		FileOutputStream fos = null;
 		try {
+			
 			String pathArchivo = key+nombreArchivo;
-
-			byte[] bytearr = archivo.getBytes();
-			log.debug("byte length: " + bytearr.length);
-			log.debug("Size : " + archivo.getSize());
-
 			File file = new File(pathArchivo);
 			file.createNewFile();
-			FileOutputStream fos = new FileOutputStream(file);
-			fos.write(archivo.getBytes());
-			fos.close();     
+			fos = new FileOutputStream(new File(pathArchivo));
+			byte[] bytearr = archivo.getBytes();
+			log.debug("byte length: {} - Size: {}", bytearr.length, archivo.getSize());			
+			fos.write(archivo.getBytes());			
 			s3.putObject(bucketName, pathArchivo, file);
 			
-		} catch (AmazonServiceException e) {
+		} catch (SdkClientException | IOException e) {
 			throw new NegocioException(ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getCode(),
 					ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getDescription(),
 					ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getHttpStatus());
-		} catch (Exception e) {
-			throw new NegocioException(ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getCode(),
-					ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getDescription(),
-					ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getHttpStatus());
+		} finally {
+			if(fos != null)
+				try {
+					fos.close();
+				} catch (IOException e) {
+					log.error("closed file: {}", e.getMessage());
+				}
 		}
-
 	}
-
 }
