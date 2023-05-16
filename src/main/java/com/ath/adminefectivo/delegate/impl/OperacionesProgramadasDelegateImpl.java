@@ -19,7 +19,6 @@ import com.ath.adminefectivo.entities.ArchivosCargados;
 import com.ath.adminefectivo.entities.LogProcesoDiario;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.service.IArchivosCargadosService;
-import com.ath.adminefectivo.service.IFestivosNacionalesService;
 import com.ath.adminefectivo.service.ILogProcesoDiarioService;
 import com.ath.adminefectivo.service.IMaestroDefinicionArchivoService;
 import com.ath.adminefectivo.service.IOperacionesProgramadasService;
@@ -42,9 +41,6 @@ public class OperacionesProgramadasDelegateImpl implements IOperacionesProgramad
 	
 	@Autowired
 	IParametroService parametroService;
-
-	@Autowired
-	IFestivosNacionalesService festivosNacionalesService;
 	
 	/**
 	 * {@inheritDoc}

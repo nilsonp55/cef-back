@@ -48,7 +48,6 @@ import com.ath.adminefectivo.service.ICajerosService;
 import com.ath.adminefectivo.service.ICiudadesService;
 import com.ath.adminefectivo.service.IClientesCorporativosService;
 import com.ath.adminefectivo.service.IDetalleDefinicionArchivoService;
-import com.ath.adminefectivo.service.IDetalleOperacionesProgramadasService;
 import com.ath.adminefectivo.service.IDominioService;
 import com.ath.adminefectivo.service.IFondosService;
 import com.ath.adminefectivo.service.ILecturaArchivoService;
@@ -59,7 +58,6 @@ import com.ath.adminefectivo.service.IOperacionesProgramadasService;
 import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.IPuntosService;
 import com.ath.adminefectivo.service.IRegistrosCargadosService;
-import com.ath.adminefectivo.service.ISitiosClientesService;
 import com.ath.adminefectivo.service.ITransportadorasService;
 import com.ath.adminefectivo.utils.UtilsString;
 import com.querydsl.core.types.Predicate;
@@ -102,7 +100,6 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	@Autowired
 	IDetalleDefinicionArchivoService detalleDefinicionArchivoService;
 	
-
 	@Autowired
 	IDetalleOperacionesProgramadasRepository detalleOperacionesProgramadasRepository;
 
@@ -119,9 +116,6 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	IBancosService bancosService;
 
 	@Autowired
-	ISitiosClientesService sitiosClientesService;
-
-	@Autowired
 	ICajerosService cajerosService;
 
 	@Autowired
@@ -129,9 +123,6 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
 	@Autowired
 	IClientesCorporativosService clientesCorporativosService;
-
-	@Autowired
-	IDetalleOperacionesProgramadasService detalleOperacionesProgramadasService;
 	
 	@Autowired
 	IParametroService parametroService;
@@ -1235,7 +1226,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 					.findFirst().orElse(null);
 			if (Objects.isNull(punto)) {
 				throw new NegocioException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
-						ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription()+ "Punto no encontrado para tipo banco, es un punto = "+ punto.getNombrePunto(),
+						ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription()+ "Punto no encontrado para codigo fondo" + codigoFondoTDV,
 						ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
 			}
 			return punto.getNombrePunto();
@@ -1332,7 +1323,6 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	private OperacionesProgramadasDTO procesarArchivoOficinas(String[] contenido,
 			List<DetallesDefinicionArchivoDTO> detalleArchivo, ArchivosCargadosDTO archivo) {
 
-		Integer idOperacion = 0;
 		String orderId = determinarOrderId(contenido, detalleArchivo);
 		String shipIn = determinarShipIn(contenido, detalleArchivo);
 		String shipOut = determinarShipOut(contenido, detalleArchivo);
@@ -1416,7 +1406,6 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 			if (Long.parseLong(shipIn) + Long.parseLong(shipOut) != 0){
 				operaciones = OperacionesProgramadasDTO.CONVERTER_DTO.apply(operacionesProg);
 				operaciones.setValorTotal(operaciones.getValorTotal() + asignarValorTotal(shipIn, shipOut));
-                idOperacion = operacionesProg.getIdOperacion();
 				operaciones = crearDetalleOperacionesProgramadas(contenido, detalleArchivo);
 				
 				OperacionesProgramadas op =  OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(operaciones);

@@ -28,9 +28,7 @@ import com.ath.adminefectivo.entities.id.FallasRegistroPK;
 import com.ath.adminefectivo.entities.id.RegistrosCargadosPK;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.ArchivosCargadosRepository;
-import com.ath.adminefectivo.repositories.IRegistrosCargadosRepository;
 import com.ath.adminefectivo.service.IArchivosCargadosService;
-import com.ath.adminefectivo.service.IMaestroDefinicionArchivoService;
 import com.ath.adminefectivo.service.IParametroService;
 import com.querydsl.core.types.Predicate;
 
@@ -42,12 +40,6 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 
 	@Autowired
 	ArchivosCargadosRepository archivosCargadosRepository;
-	
-	@Autowired
-	IRegistrosCargadosRepository registrosCargadosRepository;
-
-	@Autowired
-	IMaestroDefinicionArchivoService maestroDefinicionArchivoService;
 	
 	@Autowired
 	IParametroService parametrosService;

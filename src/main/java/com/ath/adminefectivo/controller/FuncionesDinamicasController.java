@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ath.adminefectivo.delegate.IFuncionesDinamicasDelegate;
 import com.ath.adminefectivo.dto.FuncionesDinamicasDTO;
 import com.ath.adminefectivo.dto.compuestos.RequestFuncionesDinamicasDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
+import com.ath.adminefectivo.service.IFuncionesDinamicasService;
 
 /**
  * Controlador responsable de exponer los metodos referentes a las Funciones Dinamicas
@@ -28,7 +28,7 @@ import com.ath.adminefectivo.dto.response.ResponseADE;
 public class FuncionesDinamicasController {
 
 	@Autowired
-	IFuncionesDinamicasDelegate funcionesDinamicasDelegate;
+	IFuncionesDinamicasService funcionesDinamicasService;
 	
 	/**
 	 * Servicio encargado de retornar la consulta de todas las funciones 
@@ -40,7 +40,7 @@ public class FuncionesDinamicasController {
 	@GetMapping(value = "${endpoints.FuncionesDinamicas.consultar}")
 	public ResponseEntity<ApiResponseADE<List<FuncionesDinamicasDTO>>> obtenerFuncionesDinamicas() {
 		
-		List<FuncionesDinamicasDTO> consulta = funcionesDinamicasDelegate.obtenerFuncionesDinamicasActivas();
+		List<FuncionesDinamicasDTO> consulta = funcionesDinamicasService.obtenerFuncionesDinamicasActivas();
 		
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
@@ -58,7 +58,7 @@ public class FuncionesDinamicasController {
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<List<String>>> ejecutarFuncionDinamica(@RequestBody RequestFuncionesDinamicasDTO requestFuncionesDinamicasDTO) {
 		
-		List<String> consulta = funcionesDinamicasDelegate.ejecutarFuncionDinamica(requestFuncionesDinamicasDTO.getIdFuncion(), requestFuncionesDinamicasDTO.getParametros());
+		List<String> consulta = funcionesDinamicasService.ejecutarFuncionDinamica(requestFuncionesDinamicasDTO.getIdFuncion(), requestFuncionesDinamicasDTO.getParametros());
 		
 		return ResponseEntity.status(HttpStatus.OK)	
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())

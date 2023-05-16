@@ -24,7 +24,6 @@ import com.ath.adminefectivo.repositories.IGeneralRepository;
 import com.ath.adminefectivo.service.IArchivosCargadosService;
 import com.ath.adminefectivo.service.IFilesService;
 import com.ath.adminefectivo.service.IMaestroDefinicionArchivoService;
-import com.ath.adminefectivo.service.IMotorReglasService;
 import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.IValidacionArchivoService;
 
@@ -50,10 +49,7 @@ public class FilesDelegateImpl implements IFilesDelegate {
 
 	@Autowired
 	IValidacionArchivoService validacionArchivoService;
-	
-	@Autowired
-	IMotorReglasService motorReglasService;
- 
+		 
 	@Autowired
 	IGeneralRepository generalRepository;
 

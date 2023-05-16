@@ -16,7 +16,6 @@ import com.ath.adminefectivo.entities.ArchivosCargados;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.ArchivosCargadosRepository;
 import com.ath.adminefectivo.service.IAuditoriaProcesosService;
-import com.ath.adminefectivo.service.IConciliacionOperacionesService;
 import com.ath.adminefectivo.service.ILogProcesoDiarioService;
 import com.ath.adminefectivo.service.IOperacionesCertificadasService;
 import com.ath.adminefectivo.service.IParametroService;
@@ -35,9 +34,6 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 
 	@Autowired
 	IParametroService parametroService;
-
-	@Autowired
-	IConciliacionOperacionesService conciliacionOperacionesService;
 	
 	@Autowired
 	IAuditoriaProcesosService auditoriaProcesosService;

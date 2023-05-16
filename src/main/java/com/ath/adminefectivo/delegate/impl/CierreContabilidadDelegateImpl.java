@@ -13,7 +13,6 @@ import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.impl.CierreContabilidadServiceImpl;
-import com.ath.adminefectivo.service.impl.LogProcesoDiarioImpl;
 import com.ath.adminefectivo.service.impl.TransaccionesContablesServiceImpl;
 
 @Service
@@ -24,9 +23,6 @@ public class CierreContabilidadDelegateImpl implements ICierreContabilidadDelega
 
 	@Autowired
 	TransaccionesContablesServiceImpl transaccionesContablesService;
-
-	@Autowired
-	LogProcesoDiarioImpl logProceso;
 
 	@Autowired
 	CierreContabilidadServiceImpl cierreContabilidadService;

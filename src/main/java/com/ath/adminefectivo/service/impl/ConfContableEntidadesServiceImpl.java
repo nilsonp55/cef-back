@@ -25,8 +25,7 @@ public class ConfContableEntidadesServiceImpl implements IConfContableEntidadesS
 
 	@Autowired
 	IConfContableEntidadesRepository iConfContableEntidadesRepository;
-	
-	
+		
 	@Override
 	public List<ConfContableEntidadesDTO> getAllConfContableEntidades(Predicate predicate) {
 		var cuentas = iConfContableEntidadesRepository.findAll(predicate);

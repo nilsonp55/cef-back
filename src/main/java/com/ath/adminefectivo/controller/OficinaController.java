@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ath.adminefectivo.delegate.IOficinasDelegate;
 import com.ath.adminefectivo.dto.OficinasDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
 import com.ath.adminefectivo.entities.Oficinas;
+import com.ath.adminefectivo.service.IOficinasService;
 import com.querydsl.core.types.Predicate;
 
 /**
@@ -27,7 +27,7 @@ import com.querydsl.core.types.Predicate;
 public class OficinaController {
 
 	@Autowired
-	IOficinasDelegate oficinasDelegate;
+	IOficinasService oficinasService;
 	
 	/**
 	 * Servicio encargado de retornar la consulta de todas las Oficinas
@@ -38,7 +38,7 @@ public class OficinaController {
 	@GetMapping(value = "${endpoints.Oficinas.consultar}")
 	public ResponseEntity<ApiResponseADE<List<OficinasDTO>>> getOficinas(
 			@QuerydslPredicate(root = Oficinas.class) Predicate predicate) {
-		List<OficinasDTO> consulta = oficinasDelegate.getOficinas(predicate);
+		List<OficinasDTO> consulta = oficinasService.getOficinas(predicate);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));

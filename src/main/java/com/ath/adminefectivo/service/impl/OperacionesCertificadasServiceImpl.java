@@ -44,7 +44,6 @@ import com.ath.adminefectivo.service.IOperacionesCertificadasService;
 import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.IPuntosCodigoTdvService;
 import com.ath.adminefectivo.service.IPuntosService;
-import com.ath.adminefectivo.service.ITransportadorasService;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -57,9 +56,6 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 
 	@Autowired
 	IFondosService fondosService;
-
-	@Autowired
-	ITransportadorasService transportadoraService;
 
 	@Autowired
 	IDominioService dominioService;
