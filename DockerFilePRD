@@ -4,9 +4,12 @@ EXPOSE 8080
 ENV url=jdbc:postgresql://awue1athcef-prd-rds-01.cnmfhaabn9bp.us-east-1.rds.amazonaws.com:5432/ctrefc
 ENV user=athadmin
 ENV pass=AWSATHCEFPRD
+ENV schema=controlefect
 ENV bucket=awue1athcef-prd-interfaces
 ENV region=us-east-1
 
+RUN useradd controlefect
+USER controlefect
 ARG JAR_FILE=target/admin-efectivo-0.0.1-SNAPSHOT.jar
 ADD ${JAR_FILE} app.jar
 ENTRYPOINT ["java","-jar","/app.jar"]
