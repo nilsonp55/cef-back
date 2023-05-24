@@ -18,8 +18,8 @@ ENV schema=${ENV_SCHEMA}
 ENV bucket=${ENV_BUCKET}
 ENV region=${ENV_REGION}
 
-RUN useradd controlefect
-USER controlefect
+RUN addgroup --system javauser && adduser -S -s /usr/sbin/nologin -G javauser javauser
+USER javauser
 
 COPY ${JAR_FILE} app.jar
 
