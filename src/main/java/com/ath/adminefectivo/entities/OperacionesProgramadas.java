@@ -41,7 +41,7 @@ import lombok.Setter;
 	  		+ "and ba.es_aval  = false "
 	  		+ "and op.tipo_operacion  in (:tipoOperacion) "
 	  		+ "and op.entrada_salida  = :entradaSalida "
-	  		+ "and op.fecha_programacion  between  :fechaInicio and :fechaFin "
+	  		+ "and op.fecha_origen  between  :fechaInicio and :fechaFin "
 	  		+ "group by fo.banco_aval, op.codigo_punto_destino, op.entrada_salida  ", 
 	  resultSetMapping = "Mapping.OperacionIntradiaDTO")
 
@@ -53,7 +53,7 @@ query = "select fo.banco_aval as bancoAVAL, op.codigo_punto_origen as codigoPunt
 		+ "and ba.es_aval  = false "
 		+ "and op.tipo_operacion  in (:tipoOperacion) "
 		+ "and op.entrada_salida  = :entradaSalida "
-		+ "and op.fecha_programacion  between  :fechaInicio and :fechaFin "
+		+ "and op.fecha_origen  between  :fechaInicio and :fechaFin "
 		+ "group by fo.banco_aval, op.codigo_punto_origen, op.entrada_salida  ", 
 		resultSetMapping = "Mapping.OperacionIntradiaDTO")
 @SqlResultSetMapping(name = "Mapping.OperacionIntradiaDTO", classes = @ConstructorResult(targetClass = OperacionIntradiaDTO.class, columns = {
