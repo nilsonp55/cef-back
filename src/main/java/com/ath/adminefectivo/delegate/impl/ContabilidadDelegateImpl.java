@@ -78,10 +78,11 @@ public class ContabilidadDelegateImpl implements IContabilidadDelegate {
 			
 			int resultado = contabilidadService.generarContabilidad(tipoContabilidad, operacionesProgramadas);
 			
-			List<OperacionIntradiaDTO> listadoOperacionesProgramadasIntradia = operacionesProgramadasService.consultarOperacionesIntradia(fechaProcesoInicial, fechaProcesoFin);	
-			contabilidadService.generarContabilidadIntradia(tipoContabilidad, listadoOperacionesProgramadasIntradia, resultado);
+			if ("PM".equals(tipoContabilidad) )  {
+				List<OperacionIntradiaDTO> listadoOperacionesProgramadasIntradia = operacionesProgramadasService.consultarOperacionesIntradia(fechaProcesoInicial, fechaProcesoFin);	
+				contabilidadService.generarContabilidadIntradia(tipoContabilidad, listadoOperacionesProgramadasIntradia, resultado);
+			}
 			resultado = contabilidadService.generarMovimientosContables(fechaSistema, fechaSistema, tipoContabilidad, Dominios.ESTADO_CONTABILIDAD_GENERADO);
-		
 			
 			if(resultado > 0) {
 				return contabilidadService.generarRespuestaContabilidad(fechaSistema, tipoContabilidad, "MENSAJE EXITOSO");
