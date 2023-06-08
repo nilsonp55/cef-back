@@ -471,8 +471,8 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 					registro.getBancoAval(), registro.getCodigoDane());
 			if(!codigoServicio.equals(SIN_CODIGO_SERVICIO)) {
 				certificadas = operacionesCertificadasRepository
-						.findByCodigoFondoTDVAndCodigoPuntoOrigenAndCodigoPuntoDestinoAndCodigoServicioTdvAndEntradaSalidaAndFechaEjecucion(codigoPuntoDestino, codigoPuntoOrigen,
-								codigoPuntoDestino, codigoServicio, Constantes.NOMBRE_ENTRADA, registro.getFechaEjecucion());
+						.findByCodigoFondoTDVAndCodigoPuntoOrigenAndCodigoPuntoDestinoAndCodigoServicioTdvAndEntradaSalidaAndFechaEjecucionAndCodigoPropioTDV(codigoPuntoDestino, codigoPuntoOrigen,
+								codigoPuntoDestino, codigoServicio, Constantes.NOMBRE_ENTRADA, registro.getFechaEjecucion(), codigoPropio);
 			}
 			
 		} else {
@@ -483,8 +483,8 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 			
 			if(!codigoServicio.equals(SIN_CODIGO_SERVICIO)) {
 				certificadas = operacionesCertificadasRepository
-						.findByCodigoFondoTDVAndCodigoPuntoOrigenAndCodigoPuntoDestinoAndCodigoServicioTdvAndEntradaSalidaAndFechaEjecucion(codigoPuntoOrigen, codigoPuntoDestino,
-								codigoPuntoOrigen, codigoServicio, Constantes.NOMBRE_SALIDA, registro.getFechaEjecucion());	
+						.findByCodigoFondoTDVAndCodigoPuntoOrigenAndCodigoPuntoDestinoAndCodigoServicioTdvAndEntradaSalidaAndFechaEjecucionAndCodigoPropioTDV(codigoPuntoOrigen, codigoPuntoDestino,
+								codigoPuntoOrigen, codigoServicio, Constantes.NOMBRE_SALIDA, registro.getFechaEjecucion(), codigoPropio);	
 			}
 			
 		}

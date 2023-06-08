@@ -76,6 +76,7 @@ public class CargueDefinitivoDelegateImpl implements ICargueDefinitivoDelegate {
 	public Boolean persistirArchvoCargado(MultipartFile file) {
 		var url = filesService.persistirArchvo(file);
 		ArchivosCargadosDTO archivo = ArchivosCargadosDTO.builder().nombreArchivo(file.getOriginalFilename())
+				.nombreArchivoUpper(file.getOriginalFilename().toUpperCase())
 				.fechaInicioCargue(new Date()).estado(Constantes.REGISTRO_ACTIVO).contentType(file.getContentType())
 				.estadoCargue(Constantes.ESTADO_CARGUE_PENDIENTE).url(url).build();
 

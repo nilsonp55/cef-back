@@ -57,6 +57,9 @@ public class ArchivosCargados {
 	@Column(name = "NOMBRE_ARCHIVO")
 	private String nombreArchivo;
 	
+	@Column(name = "NOMBRE_ARCHIVO_UPPER")
+	private String nombreArchivoUpper;
+	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "FECHA_ARCHIVO")
 	private Date fechaArchivo;	

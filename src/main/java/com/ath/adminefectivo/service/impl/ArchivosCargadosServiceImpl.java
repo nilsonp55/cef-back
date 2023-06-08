@@ -174,6 +174,7 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 				.estadoCargue(validacionArchivo.getEstadoValidacion())
 				.idModeloArchivo(validacionArchivo.getMaestroDefinicion().getIdMaestroDefinicionArchivo())
 				.nombreArchivo(validacionArchivo.getNombreArchivo())
+				.nombreArchivoUpper(validacionArchivo.getNombreArchivo().toUpperCase())
 				.numeroErrores(validacionArchivo.getNumeroErrores())
 				.numeroRegistros(validacionArchivo.getNumeroRegistros())
 				.fechaArchivo(fechaGuardar)
@@ -368,8 +369,8 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 	private void cambiarEstadoArchivoOK (ValidacionArchivoDTO validacionArchivo) {
 		
 		List<ArchivosCargados> archivosCargados = archivosCargadosRepository
-				.getRegistrosCargadosPorNombreyEstado(Dominios.ESTADO_VALIDACION_CORRECTO, 
-						validacionArchivo.getNombreArchivo(),
+				.getRegistrosCargadosPorEstadoCargueyNombreUpperyModelo(Dominios.ESTADO_VALIDACION_CORRECTO, 
+						validacionArchivo.getNombreArchivo().toUpperCase(),
 						validacionArchivo.getMaestroDefinicion().getIdMaestroDefinicionArchivo());
 
 		if (!Objects.isNull(archivosCargados)) {
