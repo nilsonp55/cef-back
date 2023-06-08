@@ -9,8 +9,8 @@ Repositorio para la aplicacion Spring Boot de Control de Efectivo.
 Para desplegar el proyecto en ambiente local de desarrollo se deben contar con las siguientes herramientas y programas
 
 1. Instalado **JDK** version 17
-2. Instalado **maven**  
-3. Cliente de **Git** 
+2. Instalado **MAVEN**  
+3. Cliente de **GIT** 
 4. Cuenta ATH habilitada en Artifactory Nexus ([link](https://devops-nexus.ath.net/))
 5. Cuenta ATH habilitada en el repositorio Github ([link](https://devops-github.ath.net/))
 
