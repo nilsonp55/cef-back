@@ -38,6 +38,8 @@ public class ArchivosCargadosDTO {
 	@NotNull(message = "(General.nombreArchivo)")
 	private String nombreArchivo;
 	
+	private String nombreArchivoUpper;
+	
 	@NotNull(message = "(General.fechaArchivo)")
 	private Date fechaArchivo;
 	

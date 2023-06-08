@@ -103,6 +103,20 @@ public interface ArchivosCargadosRepository
 	List<ArchivosCargados> getRegistrosCargadosPorNombreyEstado(String estadoCargue, String nombreArchivo, String idModeloArchivo);
 
 	/**
+	 * Consulta de un archivo cargado en un estado , con un nombre determinado 
+	 * y que pertenece a un idModelo
+	 * @param estadoCargue
+	 * @param nombreArchivo
+	 * @param idModeloArchivo
+	 * @return List<ArchivosCargados>
+	 * @author rparra
+	 */
+	@Query("select ac from ArchivosCargados ac "
+		 + "where estadoCargue = ?1 and nombreArchivoUpper = ?2 and "
+		 + "idModeloArchivo = ?3")
+	List<ArchivosCargados> getRegistrosCargadosPorEstadoCargueyNombreUpperyModelo(String estadoCargue, String nombreArchivo, String idModeloArchivo);
+
+	/**
 	 * Consulta encargada de filtrar los archivos cargados
 	 * por una fecha de archivo
 	 * 

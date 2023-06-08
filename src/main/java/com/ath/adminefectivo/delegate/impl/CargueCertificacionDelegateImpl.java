@@ -84,6 +84,7 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	public Boolean persistirArchvoCargado(MultipartFile file) {
 		var url = filesService.persistirArchvo(file);
 		ArchivosCargadosDTO archivo = ArchivosCargadosDTO.builder().nombreArchivo(file.getOriginalFilename())
+				.nombreArchivoUpper(file.getOriginalFilename().toUpperCase())
 				.fechaInicioCargue(new Date()).estado(Constantes.REGISTRO_ACTIVO).contentType(file.getContentType())
 				.estadoCargue(Constantes.ESTADO_CARGUE_PENDIENTE).url(url).build();
 
@@ -254,6 +255,7 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 		
 		Date fechaDatos = validacionArchivoService.obtenerFechaArchivo(archivo, mascaraArchivo);
 		return ArchivosCargadosDTO.builder().estadoCargue(estado).nombreArchivo(archivo)
+				.nombreArchivoUpper(archivo.toUpperCase())
                 .idModeloArchivo(idModeloArchivo).fechaArchivo(fechaDatos).build();
 	}
 	
