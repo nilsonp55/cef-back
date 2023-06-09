@@ -86,7 +86,7 @@ public class TransaccionesInternasServiceImpl implements ITransaccionesInternasS
 	@Override
 	public boolean generarMovimientosContables(Date fechaInicio, Date fechaFin, String tipoContabilidad,
 			int estadoContabilidadGenerado) {
-		return transaccionesInternasRepository.fncTransccionesContables(fechaInicio, fechaFin,
+		return transaccionesInternasRepository.fnc_transacciones_contables(fechaInicio, fechaFin,
 				tipoContabilidad, estadoContabilidadGenerado);
 	}
 

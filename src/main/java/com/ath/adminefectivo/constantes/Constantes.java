@@ -680,7 +680,7 @@ public static final String DELETE_SEPARADORES = "";
 	 * Se generaron las operaciones programadas de forma exitosa.
 	 */
 	public static final String MENSAJE_GENERO_OPERACIONES_PROGRAMADAS_CORRECTO = "Se han generado las operaciones programadas de forma correcta.";
-	
+	public static final int ID_GENERICO = 99999;
 	
 	/**
 	 * Se generaron las clasificacion de costos de forma exitosa.
