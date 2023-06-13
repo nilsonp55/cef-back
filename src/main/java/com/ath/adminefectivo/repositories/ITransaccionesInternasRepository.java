@@ -43,8 +43,8 @@ public interface ITransaccionesInternasRepository extends JpaRepository<Transacc
 	 * @param estadoContabilidadGenerado
 	 * @return duvan.naranjo
 	 */
-	@Procedure(name = "fnc_transcciones_contables")
-	boolean fncTransccionesContables(@Param("p_fechaInicio") Date fechaInicio, @Param("p_fechaFin") Date fechaFin, @Param("p_tipoContabilidad") String tipoContabilidad,
+	@Procedure(name = "fnc_transacciones_contables")
+	boolean fnc_transacciones_contables(@Param("p_fecha_inicio") Date fechaInicio, @Param("p_fecha_fin") Date fechaFin, @Param("p_tipo_estado") String tipoContabilidad,
 			@Param("p_estado") int estadoContabilidadGenerado);
 
 	

@@ -24,7 +24,7 @@ public interface IContabilidadService {
 	 * @return int
 	 * @author duvan.naranjo
 	 */
-	int generarContabilidad(String tipoProceso, List<OperacionesProgramadasDTO> listadoOperacionesProgramadas);
+	int generarContabilidad(String tipoProceso, List<OperacionesProgramadasDTO> listadoOperacionesProgramadas, Date fechaSistema);
 
 	/**
 	 * Servicio encargado de generar los movimientos contables de la contabilidad basado en las transacciones 
@@ -51,7 +51,7 @@ public interface IContabilidadService {
 	 * @author duvan.naranjo
 	 */
 	int generarContabilidadIntradia(String tipoContabilidad,
-			List<OperacionIntradiaDTO> listadoOperacionesProgramadasIntradia, int consecutivoDia);
+			List<OperacionIntradiaDTO> listadoOperacionesProgramadasIntradia, int consecutivoDia, Date fechaSistema);
 
 	/**
 	 * 

@@ -156,21 +156,7 @@ public interface IOperacionesProgramadasRepository
 	
 	/**
 	 * Retorna el id de un bancoAval yla operacion programada perteneciente al banco
-	 * en la fecha recibida para el tipo operacion recibido y tipo de entrada o salida
-	 * 
-	 * @param fechaInicio
-	 * @param fechaFin
-	 * @param entradaSalida
-	 * @param tipoOperacion
-	 * @return OperacionIntradiaDTO
-	 * @author duvan.naranjo
-	 */
-	@Query(nativeQuery = true)
-	List<OperacionIntradiaDTO> consultaOperacionesIntradiaEntrada(@Param("fechaInicio") Date fechaInicio, @Param("fechaFin") Date fechaFin, @Param("entradaSalida") String entradaSalida, @Param("tipoOperacion") String tipoOperacion);
-
-	/**
-	 * Retorna el id de un bancoAval yla operacion programada perteneciente al banco
-	 * en la fecha recibida para el tipo operacion recibido y tipo de entrada o salida
+	 * en la fecha recibida para el tipo operacion recibido y que es salida (Venta)
 	 * 
 	 * @param fechaInicio
 	 * @param fechaFin
