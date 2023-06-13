@@ -1,6 +1,5 @@
 package com.ath.adminefectivo.service.impl;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -196,57 +195,30 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 	 * @param operacionProgramada
 	 * @return
 	 */
-	private List<TransaccionesInternasDTO> procesarRegistrosContabilidadIntradia(String tipoContabilidad,
+	private void procesarRegistrosContabilidadIntradia(String tipoContabilidad,
 			OperacionIntradiaDTO operacionIntradia, Date fechaSistema) {
 		
-		List<TransaccionesInternasDTO> listadoTransaccionesInternas = new ArrayList<>();
 		long valorImpuesto = 0;
-		
-		if (operacionIntradia.getEntradaSalida().equals(Constantes.VALOR_ENTRADA)) {
-			TransaccionesInternasDTO operacionIntradia21 = generarTransaccionInternaIntradia(tipoContabilidad, 21,
-					operacionIntradia, fechaSistema);	
-			
-			if (isCiudadCobroIVA(operacionIntradia.getCodigoPunto()) && operacionIntradia.getBancoAVAL() == Constantes.BANCO_BOGOTA) {
-				TransaccionesInternasDTO operacionIntradia22 = generarTransaccionInternaIntradia(tipoContabilidad, 22,
-						operacionIntradia, fechaSistema);
-				operacionIntradia22
-						.setValor(this.calcularValorConImpuesto(operacionIntradia21.getValor(), Dominios.IMPUESTO_IVA));
-				operacionIntradia22.setTipoImpuesto(Integer.valueOf(Dominios.IMPUESTO_IVA));
-				listadoTransaccionesInternas.add(operacionIntradia22);
-				valorImpuesto = operacionIntradia22.getValor();
-			}
-			operacionIntradia21.setValor(operacionIntradia21.getValor() - valorImpuesto);
-			listadoTransaccionesInternas.add(operacionIntradia21);
+		TransaccionesInternasDTO operacionIntradia11 = generarTransaccionInternaIntradia(tipoContabilidad, 11,	operacionIntradia, fechaSistema);
 
-			TransaccionesInternasDTO operacionIntradia23 = generarTransaccionInternaIntradia(tipoContabilidad, 23,
-					operacionIntradia, fechaSistema);
-			operacionIntradia23.setCodigoComision(null);
-			operacionIntradia23.setMedioPago(Dominios.MEDIOS_PAGO_ABONO);
-			listadoTransaccionesInternas.add(operacionIntradia23);
-
-		} else if (operacionIntradia.getEntradaSalida().equals(Constantes.VALOR_SALIDA)) {
-			TransaccionesInternasDTO operacionIntradia11 = generarTransaccionInternaIntradia(tipoContabilidad, 11,
-					operacionIntradia, fechaSistema);
-
-			if (isCiudadCobroIVA(operacionIntradia.getCodigoPunto()) && operacionIntradia.getBancoAVAL() == Constantes.BANCO_BOGOTA ) {
-				TransaccionesInternasDTO operacionIntradia12 = generarTransaccionInternaIntradia(tipoContabilidad, 12,
-						operacionIntradia, fechaSistema);
-				operacionIntradia12
-						.setValor(this.calcularValorConImpuesto(operacionIntradia11.getValor(), Dominios.IMPUESTO_IVA));
-				operacionIntradia12.setTipoImpuesto(Integer.valueOf(Dominios.IMPUESTO_IVA));
-				listadoTransaccionesInternas.add(operacionIntradia12);
-				valorImpuesto = operacionIntradia12.getValor();
-			}
-			operacionIntradia11.setValor(operacionIntradia11.getValor() - valorImpuesto);
-			listadoTransaccionesInternas.add(operacionIntradia11);
-
-			TransaccionesInternasDTO operacionIntradia13 = generarTransaccionInternaIntradia(tipoContabilidad, 13,
-					operacionIntradia, fechaSistema);
-			operacionIntradia13.setCodigoComision(null);
-			operacionIntradia13.setMedioPago(Dominios.MEDIOS_PAGO_CARGO_A_CUENTA);
-			listadoTransaccionesInternas.add(operacionIntradia13);
+		if (isCiudadCobroIVA(operacionIntradia.getCodigoPunto()) && operacionIntradia.getBancoAVAL() == Constantes.BANCO_BOGOTA ) {
+			TransaccionesInternasDTO operacionIntradia12 = generarTransaccionInternaIntradia(tipoContabilidad, 12, operacionIntradia, fechaSistema);
+			operacionIntradia12.setValor(this.calcularValorConImpuesto(operacionIntradia11.getValor(), Dominios.IMPUESTO_IVA));
+			operacionIntradia12.setTipoImpuesto(Integer.valueOf(Dominios.IMPUESTO_IVA));
+			transaccionesInternasService.saveTransaccionesInternasById(operacionIntradia12);
+			valorImpuesto = operacionIntradia12.getValor();
 		}
-		return listadoTransaccionesInternas;
+		
+		// el valor de la comisión intraday es el valor parametrizado menos el impuesto liquidado
+		operacionIntradia11.setValor(operacionIntradia11.getValor() - valorImpuesto);
+		transaccionesInternasService.saveTransaccionesInternasById(operacionIntradia11);
+
+		TransaccionesInternasDTO operacionIntradia13 = generarTransaccionInternaIntradia(tipoContabilidad, 13,
+				operacionIntradia, fechaSistema);
+		operacionIntradia13.setCodigoComision(null);
+		operacionIntradia13.setMedioPago(Dominios.MEDIOS_PAGO_DESCUENTO);
+		transaccionesInternasService.saveTransaccionesInternasById(operacionIntradia13);
+		
 	}
 
 	/**
