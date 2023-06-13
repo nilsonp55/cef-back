@@ -330,9 +330,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	 */
 	@Override
 	public List<OperacionIntradiaDTO> consultarOperacionesIntradia(Date fechaInicio, Date fechaFin) {
-		List<OperacionIntradiaDTO> listadoOperacionesIntradia = operacionesProgramadasRepository.consultaOperacionesIntradiaSalida(fechaInicio, fechaFin, "SALIDA", "VENTA");				
-		return listadoOperacionesIntradia;
-
+		return operacionesProgramadasRepository.consultaOperacionesIntradiaSalida(fechaInicio, fechaFin, "SALIDA", "VENTA");
 	}
 	
 	/**
