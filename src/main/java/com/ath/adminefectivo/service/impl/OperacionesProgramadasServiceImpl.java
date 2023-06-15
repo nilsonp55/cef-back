@@ -177,6 +177,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 			try {
 				programadas.getConciliacionServicios().get(0);
 			} catch (Exception e) {
+				log.error("Failed getConciliacionServicios(): {} - {}", programadas.getIdOperacion(), e);
 				throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_CONCILIADA_SIN_SERVICIOS.getCode(),
 						ApiResponseCode.ERROR_OPERACIONES_CONCILIADA_SIN_SERVICIOS.getDescription(),
 						ApiResponseCode.ERROR_OPERACIONES_CONCILIADA_SIN_SERVICIOS.getHttpStatus());
