@@ -60,6 +60,7 @@ import com.ath.adminefectivo.service.IPuntosService;
 import com.ath.adminefectivo.service.IRegistrosCargadosService;
 import com.ath.adminefectivo.service.ITransportadorasService;
 import com.ath.adminefectivo.utils.UtilsString;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 
 import lombok.AllArgsConstructor;
@@ -171,7 +172,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	public Page<OperacionesProgramadasNombresDTO> getNombresProgramadasConciliadas(
 			Page<OperacionesProgramadas> operacionesProgramadasList, Predicate predicate, Pageable page) {
 
-		this.getListados(predicate);
+		this.getListados(new BooleanBuilder().not());
 		for (OperacionesProgramadas programadas : operacionesProgramadasList) {
 			
 			try {
