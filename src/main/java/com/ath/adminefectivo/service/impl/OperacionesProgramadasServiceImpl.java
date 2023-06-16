@@ -176,30 +176,26 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 			
 			try {
 				programadas.getConciliacionServicios().get(0);
+				// Obtiene nombres de transportadora y Banco dueño del fondo
+				programadas.setNombreTransportadora(this.getNombreTransportadora(programadas.getCodigoFondoTDV()));
+				programadas.setNombreBanco(this.getNombreBanco(programadas.getCodigoFondoTDV()));
+				// Obtiene nombres de tipo origen y nombre ciudad origen
+				programadas.setNombrePuntoOrigen(this.getNombrePunto(programadas.getCodigoPuntoOrigen()));
+				programadas.setNombreCiudadOrigen(this.getNombreCiudad(programadas.getCodigoPuntoOrigen()));
+				// Obtiene nombres de tipo destino y nombre ciudad destino
+				programadas.setNombrePuntoDestino(this.getNombrePunto(programadas.getCodigoPuntoDestino()));
+				programadas.setNombreCiudadDestino(this.getNombreCiudad(programadas.getCodigoPuntoDestino()));
+				programadas.setFechaEjecucion(programadas.getFechaOrigen());
+				// Obtiene datos de la tabla de Conciliacion Servicios
+				programadas.setTipoConciliacion(programadas.getConciliacionServicios().get(0).getTipoConciliacion());
+				programadas.setIdConciliacion(programadas.getConciliacionServicios().get(0).getIdConciliacion());
+				programadas.setEntradaSalida(programadas.getEntradaSalida());
+				programadas.setNombreFondoTDV(puntosService.getNombrePunto(dominioService.valorTextoDominio(
+										Constantes.DOMINIO_TIPOS_PUNTO, 
+										Dominios.TIPOS_PUNTO_FONDO), programadas.getCodigoFondoTDV()));
 			} catch (Exception e) {
 				log.error("Failed getConciliacionServicios(): {} - {}", programadas.getIdOperacion(), e);
-				throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_CONCILIADA_SIN_SERVICIOS.getCode(),
-						ApiResponseCode.ERROR_OPERACIONES_CONCILIADA_SIN_SERVICIOS.getDescription(),
-						ApiResponseCode.ERROR_OPERACIONES_CONCILIADA_SIN_SERVICIOS.getHttpStatus());
 			}
-			// Obtiene nombres de transportadora y Banco dueño del fondo
-			programadas.setNombreTransportadora(this.getNombreTransportadora(programadas.getCodigoFondoTDV()));
-			programadas.setNombreBanco(this.getNombreBanco(programadas.getCodigoFondoTDV()));
-			// Obtiene nombres de tipo origen y nombre ciudad origen
-			programadas.setNombrePuntoOrigen(this.getNombrePunto(programadas.getCodigoPuntoOrigen()));
-			programadas.setNombreCiudadOrigen(this.getNombreCiudad(programadas.getCodigoPuntoOrigen()));
-			// Obtiene nombres de tipo destino y nombre ciudad destino
-			programadas.setNombrePuntoDestino(this.getNombrePunto(programadas.getCodigoPuntoDestino()));
-			programadas.setNombreCiudadDestino(this.getNombreCiudad(programadas.getCodigoPuntoDestino()));
-			programadas.setFechaEjecucion(programadas.getFechaOrigen());
-			// Obtiene datos de la tabla de Conciliacion Servicios
-			programadas.setTipoConciliacion(programadas.getConciliacionServicios().get(0).getTipoConciliacion());
-			programadas.setIdConciliacion(programadas.getConciliacionServicios().get(0).getIdConciliacion());
-			programadas.setEntradaSalida(programadas.getEntradaSalida());
-			programadas.setNombreFondoTDV(puntosService.getNombrePunto(dominioService.valorTextoDominio(
-									Constantes.DOMINIO_TIPOS_PUNTO, 
-									Dominios.TIPOS_PUNTO_FONDO), programadas.getCodigoFondoTDV()));
-
 		}
 		return new PageImpl<>(operacionesProgramadasList.getContent().stream()
                 .map(OperacionesProgramadasNombresDTO.CONVERTER_DTO)
