@@ -21,22 +21,20 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.ArchivosCargadosDTO;
-import com.ath.adminefectivo.dto.CiudadesDTO;
 import com.ath.adminefectivo.dto.DetallesDefinicionArchivoDTO;
 import com.ath.adminefectivo.dto.FechasConciliacionDTO;
-import com.ath.adminefectivo.dto.FondosDTO;
 import com.ath.adminefectivo.dto.LogProcesoDiarioDTO;
 import com.ath.adminefectivo.dto.MaestrosDefinicionArchivoDTO;
 import com.ath.adminefectivo.dto.OperacionesProgramadasDTO;
 import com.ath.adminefectivo.dto.PuntosDTO;
 import com.ath.adminefectivo.dto.RegistrosCargadosDTO;
-import com.ath.adminefectivo.dto.TransportadorasDTO;
 import com.ath.adminefectivo.dto.compuestos.DetalleOperacionesDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionIntradiaDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionesProgramadasNombresDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.Fondos;
 import com.ath.adminefectivo.entities.OperacionesProgramadas;
+import com.ath.adminefectivo.entities.Puntos;
 import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.ICiudadesRepository;
@@ -60,7 +58,6 @@ import com.ath.adminefectivo.service.IPuntosService;
 import com.ath.adminefectivo.service.IRegistrosCargadosService;
 import com.ath.adminefectivo.service.ITransportadorasService;
 import com.ath.adminefectivo.utils.UtilsString;
-import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 
 import lombok.extern.log4j.Log4j2;
@@ -125,20 +122,12 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
 	private IDominioService dominioService;
 	private OperacionesProgramadasDTO operaciones;
-	private List<TransportadorasDTO> listaTransportadoras;
-	private List<FondosDTO> listaFondos;
-	private List<PuntosDTO> listaPuntos;
-	private List<CiudadesDTO> listaCiudades;
-	private static final String USER1 = "user1";
-	private String TIPO_PUNTO_FONDO;
-	
+	private static final String USER1 = "user1";	
 	
 	public OperacionesProgramadasServiceImpl(IDominioService dominioService) {
 		super();
 		this.dominioService = dominioService;
-		TIPO_PUNTO_FONDO = dominioService.valorTextoDominio(
-				Constantes.DOMINIO_TIPOS_PUNTO, 
-				Dominios.TIPOS_PUNTO_FONDO);
+		
 	}
 
 	/**
@@ -172,26 +161,28 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	public Page<OperacionesProgramadasNombresDTO> getNombresProgramadasConciliadas(
 			Page<OperacionesProgramadas> operacionesProgramadasList, Predicate predicate, Pageable page) {
 
-		this.getListados(new BooleanBuilder().not());
+		
 		for (OperacionesProgramadas programadas : operacionesProgramadasList) {
 			
 			try {
 				programadas.getConciliacionServicios().get(0);
 				// Obtiene nombres de transportadora y Banco dueño del fondo
-				programadas.setNombreTransportadora(this.getNombreTransportadora(programadas.getCodigoFondoTDV()));
-				programadas.setNombreBanco(this.getNombreBanco(programadas.getCodigoFondoTDV()));
+				programadas.setNombreTransportadora(programadas.getTdv());
+				programadas.setNombreBanco(programadas.getBancoAVAL());
 				// Obtiene nombres de tipo origen y nombre ciudad origen
-				programadas.setNombrePuntoOrigen(this.getNombrePunto(programadas.getCodigoPuntoOrigen()));
-				programadas.setNombreCiudadOrigen(this.getNombreCiudad(programadas.getCodigoPuntoOrigen()));
+				Puntos punto = puntosService.getPuntoById(programadas.getCodigoPuntoOrigen());
+				programadas.setNombrePuntoOrigen(punto.getNombrePunto());
+				programadas.setNombreCiudadOrigen(ciudadService.getCiudadPorCodigoDane(punto.getCodigoCiudad()).getNombreCiudad());
 				// Obtiene nombres de tipo destino y nombre ciudad destino
-				programadas.setNombrePuntoDestino(this.getNombrePunto(programadas.getCodigoPuntoDestino()));
-				programadas.setNombreCiudadDestino(this.getNombreCiudad(programadas.getCodigoPuntoDestino()));
+				punto = puntosService.getPuntoById(programadas.getCodigoPuntoDestino());
+				programadas.setNombrePuntoDestino(punto.getNombrePunto());
+				programadas.setNombreCiudadDestino(ciudadService.getCiudadPorCodigoDane(punto.getCodigoCiudad()).getNombreCiudad());
 				programadas.setFechaEjecucion(programadas.getFechaOrigen());
 				// Obtiene datos de la tabla de Conciliacion Servicios
 				programadas.setTipoConciliacion(programadas.getConciliacionServicios().get(0).getTipoConciliacion());
 				programadas.setIdConciliacion(programadas.getConciliacionServicios().get(0).getIdConciliacion());
-				programadas.setEntradaSalida(programadas.getEntradaSalida());
-				programadas.setNombreFondoTDV(this.getNombrePunto(programadas.getCodigoFondoTDV()));
+				punto = puntosService.getPuntoById(programadas.getCodigoFondoTDV());
+				programadas.setNombreFondoTDV(punto.getNombrePunto());
 			} catch (Exception e) {
 				log.error("Failed getConciliacionServicios(): {} - {}", programadas.getIdOperacion(), e);
 			}
@@ -1182,127 +1173,6 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 			return puntoBancoDestino.getCodigoPunto();
 		}
 		return null;
-	}
-
-	/**
-	 * Metodo que consiste en obtener los listados de transportadoras, puntos
-	 * codigo, puntos y ciudades en memoria
-	 * 
-	 * @param predicate
-	 * @author cesar.castano
-	 */
-	private void getListados(Predicate predicate) {
-
-		this.listaTransportadoras = transportadorasService.getTransportadoras(predicate);
-		this.listaFondos = fondosService.getFondos(predicate);
-		this.listaPuntos = puntosService.getPuntos(predicate);
-		this.listaCiudades = ciudadService.getCiudades(predicate);
-	}
-
-	/**
-	 * Metodo que obtiene el nombre del punto de una lista cuando el codigo punto es
-	 * un Banco
-	 * 
-	 * @param codigoFondoTDV
-	 * @return String
-	 * @author cesar.castano
-	 */
-	private String getNombreBanco(Integer codigoFondoTDV) {
-		FondosDTO fondos = listaFondos.stream().filter(fondo -> fondo.getCodigoPunto().equals(codigoFondoTDV))
-				.findFirst().orElse(null);
-		if (!Objects.isNull(fondos)) {
-			var punto = listaPuntos.stream()
-					.filter(puntoT -> puntoT.getCodigoPunto().equals(fondos.getBancoAVAL())
-							&& puntoT.getTipoPunto().equals(dominioService
-									.valorTextoDominio(Constantes.DOMINIO_TIPOS_PUNTO, Dominios.TIPOS_PUNTO_BANCO)))
-					.findFirst().orElse(null);
-			if (Objects.isNull(punto)) {
-				throw new NegocioException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
-						ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription()+ "Punto no encontrado para codigo fondo" + codigoFondoTDV,
-						ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
-			}
-			return punto.getNombrePunto();
-		} else {
-			throw new NegocioException(ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getDescription()+" Fondo no encontrado para codigo fondo = "+codigoFondoTDV,
-					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getHttpStatus());
-		}
-	}
-
-	/**
-	 * Metodo que se encarga de obtener el nombre de la transportadora de la lista
-	 * de transportadoras
-	 * 
-	 * @param codigoFondoTDV
-	 * @return String
-	 * @author cesar.castano
-	 */
-	private String getNombreTransportadora(Integer codigoFondoTDV) {
-		FondosDTO fondos = listaFondos.stream().filter(fondo -> fondo.getCodigoPunto().equals(codigoFondoTDV))
-				.findFirst().orElse(null);
-		if (!Objects.isNull(fondos)) {
-			TransportadorasDTO transportadora = listaTransportadoras.stream()
-					.filter(trans -> trans.getCodigo().equals(fondos.getTdv())).findFirst().orElse(null);
-			if (!Objects.isNull(transportadora)) {
-				return transportadora.getNombreTransportadora();
-			} else {
-				throw new NegocioException(ApiResponseCode.ERROR_TRANSPORTADORAS_NO_ENCONTRADO.getCode(),
-						ApiResponseCode.ERROR_TRANSPORTADORAS_NO_ENCONTRADO.getDescription(),
-						ApiResponseCode.ERROR_TRANSPORTADORAS_NO_ENCONTRADO.getHttpStatus());
-			}
-		} else {
-			throw new NegocioException(ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getDescription() + " fondo no encontrado para fondo = "+codigoFondoTDV,
-					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getHttpStatus());
-		}
-	}
-
-	/**
-	 * Metodo que se encarga de obtener el nombre del punto de la lista de puntos
-	 * 
-	 * @param tipoPunto
-	 * @param codigoPunto
-	 * @return String
-	 * @author cesar.castano
-	 */
-	private String getNombrePunto(Integer codigoPunto) {
-		PuntosDTO puntos = listaPuntos.stream().filter(punto -> 
-			punto.getCodigoPunto().equals(codigoPunto)).findFirst().orElse(null);
-		if(!Objects.isNull(puntos)) {
-			return puntos.getNombrePunto();
-		} else {
-			throw new NegocioException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription()+ " Punto no encontrado con codigo punto = "+codigoPunto,
-					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
-		}
-	}
-
-	/**
-	 * Metodo que se encarga de obtener el nombre de la ciudad de la lista de
-	 * ciudades
-	 * 
-	 * @param codigoPunto
-	 * @return String
-	 * @author cesar.castano
-	 */
-	private String getNombreCiudad(Integer codigoPunto) {
-		PuntosDTO puntos = listaPuntos.stream().filter(punto -> punto.getCodigoPunto().equals(codigoPunto)).findFirst()
-				.orElse(null);
-		if (!Objects.isNull(puntos)) {
-			CiudadesDTO ciudad = listaCiudades.stream()
-					.filter(ciud -> ciud.getCodigoDANE().equals(puntos.getCodigoCiudad())).findFirst().orElse(null);
-			if (Objects.isNull(ciudad)) {
-				throw new NegocioException(ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getCode(),
-						ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getDescription(),
-						ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getHttpStatus());
-			} else {
-				return ciudad.getNombreCiudad();
-			}
-		} else {
-			throw new NegocioException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription() + " Punto no encontrado para codigoPunto = "+codigoPunto,
-					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
-		}
 	}
 
 	/**
