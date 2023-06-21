@@ -57,7 +57,6 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	@Autowired
 	IOperacionesCertificadasRepository operacionesCertificadasRepository;
 
-	@Autowired
 	IDominioService dominioService;
 
 	@Autowired
@@ -83,6 +82,15 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 
 	List<OperacionesProgramadas> operacionesp;
 	List<OperacionesCertificadas> operacionesc;
+	
+	private String ESTADO_CONCILIACION_CONCILIADO;
+	
+	public ConciliacionOperacionesServiceImpl(IDominioService dominioService) {
+		super();
+		this.dominioService = dominioService;
+		ESTADO_CONCILIACION_CONCILIADO = dominioService.valorTextoDominio(
+				Constantes.DOMINIO_ESTADO_CONCILIACION, Dominios.ESTADO_CONCILIACION_CONCILIADO);
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -90,16 +98,15 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	@Override
 	public Page<OperacionesProgramadasNombresDTO> getOperacionesConciliadas(Predicate predicate, Pageable page) {
 
-		Page<OperacionesProgramadas> operacionesProgramadas = operacionesProgramadasRepository.
-				findByEstadoConciliacion(dominioService.valorTextoDominio(
-						Constantes.DOMINIO_ESTADO_CONCILIACION, Dominios.ESTADO_CONCILIACION_CONCILIADO), page);
+		Page<OperacionesProgramadas> operacionesProgramadas = operacionesProgramadasRepository
+				.findAll(predicate, page);
 		if (operacionesProgramadas.isEmpty()) {
 			throw new NegocioException(ApiResponseCode.ERROR_CONCILIADOS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_CONCILIADOS_NO_ENCONTRADO.getDescription(),
 					ApiResponseCode.ERROR_CONCILIADOS_NO_ENCONTRADO.getHttpStatus());
 		} else {
-			return operacionesProgramadasService.getNombresProgramadasConciliadas(
-					operacionesProgramadas, predicate, page);
+			return operacionesProgramadasService.getNombresProgramadasConciliadas(operacionesProgramadas, predicate,
+					page);
 		}
 	}
 
