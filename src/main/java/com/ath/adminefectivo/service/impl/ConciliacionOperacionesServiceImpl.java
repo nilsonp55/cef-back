@@ -40,6 +40,7 @@ import com.ath.adminefectivo.service.IDominioService;
 import com.ath.adminefectivo.service.ILogProcesoDiarioService;
 import com.ath.adminefectivo.service.IOperacionesCertificadasService;
 import com.ath.adminefectivo.service.IOperacionesProgramadasService;
+import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.IPuntosService;
 import com.querydsl.core.types.Predicate;
 
@@ -56,8 +57,6 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 
 	@Autowired
 	IOperacionesCertificadasRepository operacionesCertificadasRepository;
-
-	IDominioService dominioService;
 
 	@Autowired
 	IOperacionesProgramadasService operacionesProgramadasService;
@@ -79,17 +78,43 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	
 	@Autowired
 	ICiudadesService ciudadService;
+	
+	@Autowired
+	IParametroService parametroService;
 
+	//IDominioService dominioService;
 	List<OperacionesProgramadas> operacionesp;
 	List<OperacionesCertificadas> operacionesc;
-	
+	private String ESTADO_CONCILIACION_NO_CONCILIADO;
 	private String ESTADO_CONCILIACION_CONCILIADO;
+	private String TIPO_CONCILIACION_MANUAL;
+	private String ESTADO_CONCILIACION_CANCELADA;
+	private String ESTADO_CONCILIACION_FALLIDA;
+	private String ESTADO_CONCILIACION_FUERA_DE_CONCILIACION; 
+	private String ESTADO_CONCILIACION_POSPUESTA;
+	private String TIPO_CONCILIACION_AUTOMATICA;
 	
 	public ConciliacionOperacionesServiceImpl(IDominioService dominioService) {
 		super();
-		this.dominioService = dominioService;
-		ESTADO_CONCILIACION_CONCILIADO = dominioService.valorTextoDominio(
-				Constantes.DOMINIO_ESTADO_CONCILIACION, Dominios.ESTADO_CONCILIACION_CONCILIADO);
+		//this.dominioService = dominioService;
+		ESTADO_CONCILIACION_NO_CONCILIADO = dominioService.valorTextoDominio(Constantes.DOMINIO_ESTADO_CONCILIACION,
+				Dominios.ESTADO_CONCILIACION_NO_CONCILIADO);
+		ESTADO_CONCILIACION_CONCILIADO = dominioService.valorTextoDominio(Constantes.DOMINIO_ESTADO_CONCILIACION,
+				Dominios.ESTADO_CONCILIACION_CONCILIADO);
+		TIPO_CONCILIACION_MANUAL = dominioService.valorTextoDominio(
+				Constantes.DOMINIO_TIPOS_CONCILIACION,
+				Dominios.TIPO_CONCILIACION_MANUAL);
+		ESTADO_CONCILIACION_CANCELADA = dominioService.valorTextoDominio(
+				Constantes.DOMINIO_ESTADO_CONCILIACION, Dominios.ESTADO_CONCILIACION_CANCELADA);
+		ESTADO_CONCILIACION_FALLIDA = dominioService.valorTextoDominio(Constantes.DOMINIO_ESTADO_CONCILIACION,
+				Dominios.ESTADO_CONCILIACION_FALLIDA);
+		ESTADO_CONCILIACION_FUERA_DE_CONCILIACION = dominioService.valorTextoDominio(
+				Constantes.DOMINIO_ESTADO_CONCILIACION, Dominios.ESTADO_CONCILIACION_FUERA_DE_CONCILIACION);
+		ESTADO_CONCILIACION_POSPUESTA = dominioService.valorTextoDominio(
+				Constantes.DOMINIO_ESTADO_CONCILIACION, Dominios.ESTADO_CONCILIACION_POSPUESTA);
+		TIPO_CONCILIACION_AUTOMATICA = dominioService.valorTextoDominio(
+				Constantes.DOMINIO_TIPOS_CONCILIACION,
+				Dominios.TIPO_CONCILIACION_AUTOMATICA);
 	}
 
 	/**
@@ -97,7 +122,7 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	 */
 	@Override
 	public Page<OperacionesProgramadasNombresDTO> getOperacionesConciliadas(Predicate predicate, Pageable page) {
-
+				
 		Page<OperacionesProgramadas> operacionesProgramadas = operacionesProgramadasRepository
 				.findAll(predicate, page);
 		if (operacionesProgramadas.isEmpty()) {
@@ -245,24 +270,18 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	public Boolean conciliacionManual(List<ParametrosConciliacionDTO> conciliacionManualDTO) {
 
 		for (ParametrosConciliacionDTO elemento : conciliacionManualDTO) {
-			var conciliaciones = operacionesProgramadasRepository.conciliacionManual(
-					dominioService.valorTextoDominio(Constantes.DOMINIO_ESTADO_CONCILIACION,
-							Dominios.ESTADO_CONCILIACION_NO_CONCILIADO),
+			var conciliaciones = operacionesProgramadasRepository.conciliacionManual(ESTADO_CONCILIACION_NO_CONCILIADO,
 					elemento.getIdOperacion(), elemento.getIdCertificacion());
 			if (Objects.isNull(conciliaciones)) {
 				throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_A_CONCILIAR_NO_ENCONTRADO.getCode(),
 						ApiResponseCode.ERROR_OPERACIONES_A_CONCILIAR_NO_ENCONTRADO.getDescription(),
 						ApiResponseCode.ERROR_OPERACIONES_A_CONCILIAR_NO_ENCONTRADO.getHttpStatus());
-			} 
+			}
 			operacionesProgramadasService.actualizarEstadoEnProgramadas(elemento.getIdOperacion(),
-						dominioService.valorTextoDominio(Constantes.DOMINIO_ESTADO_CONCILIACION,
-								Dominios.ESTADO_CONCILIACION_CONCILIADO));
+					ESTADO_CONCILIACION_CONCILIADO);
 			operacionesCertificadasService.actualizarEstadoEnCertificadas(elemento.getIdCertificacion(),
-						dominioService.valorTextoDominio(Constantes.DOMINIO_ESTADO_CONCILIACION,
-										Dominios.ESTADO_CONCILIACION_CONCILIADO));
-			elemento.setTipoConciliacion(dominioService.valorTextoDominio(
-									Constantes.DOMINIO_TIPOS_CONCILIACION,
-									Dominios.TIPO_CONCILIACION_MANUAL));
+					ESTADO_CONCILIACION_CONCILIADO);
+			elemento.setTipoConciliacion(TIPO_CONCILIACION_MANUAL);
 			conciliacionServicesService.crearRegistroConciliacion(elemento);
 		}
 		return true;
@@ -275,32 +294,24 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	public ResumenConciliacionesDTO consultaResumenConciliaciones(FechasConciliacionDTO fechaConciliacion) {
 		var resumenConciliaciones = new ResumenConciliacionesDTO();
 		resumenConciliaciones.setCertificadasNoConciliadas(operacionesCertificadasService
-				.numeroOperacionesPorEstadoFechaYConciliable(fechaConciliacion, dominioService.valorTextoDominio(
-						Constantes.DOMINIO_ESTADO_CONCILIACION, Dominios.ESTADO_CONCILIACION_NO_CONCILIADO), Constantes.SI));
+				.numeroOperacionesPorEstadoFechaYConciliable(fechaConciliacion, ESTADO_CONCILIACION_NO_CONCILIADO, Constantes.SI));
 		
 		resumenConciliaciones.setCertificadasNoConciliables(operacionesCertificadasService
-				.numeroOperacionesPorEstadoFechaYConciliable(fechaConciliacion, dominioService.valorTextoDominio(
-						Constantes.DOMINIO_ESTADO_CONCILIACION, Dominios.ESTADO_CONCILIACION_NO_CONCILIADO), Constantes.NO));
+				.numeroOperacionesPorEstadoFechaYConciliable(fechaConciliacion, ESTADO_CONCILIACION_NO_CONCILIADO, Constantes.NO));
 		
-		resumenConciliaciones.setConciliadas(operacionesProgramadasRepository.countByEstadoConciliacionAndFechaOrigenBetween
-                (dominioService.valorTextoDominio(Constantes.DOMINIO_ESTADO_CONCILIACION, Dominios.ESTADO_CONCILIACION_CONCILIADO),
+		resumenConciliaciones.setConciliadas(operacionesProgramadasRepository.countByEstadoConciliacionAndFechaOrigenBetween(ESTADO_CONCILIACION_CONCILIADO,
                         fechaConciliacion.getFechaConciliacionInicial(), fechaConciliacion.getFechaConciliacionFinal() ));
 		resumenConciliaciones.setConciliacionesCanceladas(operacionesProgramadasService
-				.numeroOperacionesPorEstadoyFecha(fechaConciliacion, dominioService.valorTextoDominio(
-						Constantes.DOMINIO_ESTADO_CONCILIACION, Dominios.ESTADO_CONCILIACION_CANCELADA)));
+				.numeroOperacionesPorEstadoyFecha(fechaConciliacion, ESTADO_CONCILIACION_CANCELADA));
 		resumenConciliaciones.setConciliacionesFallidas(operacionesProgramadasService.
 				numeroOperacionesPorEstadoyFecha(
-				fechaConciliacion, dominioService.valorTextoDominio(Constantes.DOMINIO_ESTADO_CONCILIACION,
-						Dominios.ESTADO_CONCILIACION_FALLIDA)));
+				fechaConciliacion, ESTADO_CONCILIACION_FALLIDA));
 		resumenConciliaciones.setConciliacionesFueraConciliacion(operacionesProgramadasService
-				.numeroOperacionesPorEstadoyFecha(fechaConciliacion, dominioService.valorTextoDominio(
-						Constantes.DOMINIO_ESTADO_CONCILIACION, Dominios.ESTADO_CONCILIACION_FUERA_DE_CONCILIACION)));
+				.numeroOperacionesPorEstadoyFecha(fechaConciliacion, ESTADO_CONCILIACION_FUERA_DE_CONCILIACION));
 		resumenConciliaciones.setConciliacionesPospuestas(operacionesProgramadasService
-				.numeroOperacionesPorEstadoyFecha(fechaConciliacion, dominioService.valorTextoDominio(
-						Constantes.DOMINIO_ESTADO_CONCILIACION, Dominios.ESTADO_CONCILIACION_POSPUESTA)));
+				.numeroOperacionesPorEstadoyFecha(fechaConciliacion, ESTADO_CONCILIACION_POSPUESTA));
 		resumenConciliaciones.setProgramadasNoConciliadas(operacionesProgramadasService
-				.numeroOperacionesPorEstadoyFecha(fechaConciliacion, dominioService.valorTextoDominio(
-						Constantes.DOMINIO_ESTADO_CONCILIACION, Dominios.ESTADO_CONCILIACION_NO_CONCILIADO)));
+				.numeroOperacionesPorEstadoyFecha(fechaConciliacion, ESTADO_CONCILIACION_NO_CONCILIADO));
 		return resumenConciliaciones;
 	}
 	
@@ -411,9 +422,7 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 
 			parametros.setIdOperacion(operacionesp.get(i).getIdOperacion());
 			parametros.setIdCertificacion(operaciones.getIdCertificacion());
-			parametros.setTipoConciliacion(dominioService.valorTextoDominio(
-										Constantes.DOMINIO_TIPOS_CONCILIACION,
-										Dominios.TIPO_CONCILIACION_AUTOMATICA));
+			parametros.setTipoConciliacion(TIPO_CONCILIACION_AUTOMATICA);
 			conciliacionServicesService.crearRegistroConciliacion(parametros);
 		}
 	}
@@ -425,8 +434,7 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	private void actualizaOperacionesProgramadas() {
 		for (var i = 0; i < operacionesp.size(); i++) {
 			operacionesProgramadasService.actualizarEstadoEnProgramadas(operacionesp.get(i).getIdOperacion(),
-				dominioService.valorTextoDominio(Constantes.DOMINIO_ESTADO_CONCILIACION,
-						Dominios.ESTADO_CONCILIACION_CONCILIADO));
+				ESTADO_CONCILIACION_CONCILIADO);
 		}
 	}
 
@@ -437,8 +445,7 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 	private void actualizaOperacionesCertificadas() {
 		for (var i = 0; i < operacionesc.size(); i++) {
 			operacionesCertificadasService.actualizarEstadoEnCertificadas(operacionesc.get(i).getIdCertificacion(), 
-					dominioService.valorTextoDominio(Constantes.DOMINIO_ESTADO_CONCILIACION,
-							Dominios.ESTADO_CONCILIACION_CONCILIADO));
+					ESTADO_CONCILIACION_CONCILIADO);
 		}
 	}
 }

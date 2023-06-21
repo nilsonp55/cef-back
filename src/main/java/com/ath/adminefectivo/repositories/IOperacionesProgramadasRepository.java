@@ -27,8 +27,9 @@ public interface IOperacionesProgramadasRepository
 	/**
 	 * Retorna una lista de operaciones programadas segun el estado de conciliacion
 	 * 
-	 * @param estadoConciliacion
-	 * @return List<OperacionesProgramadas>
+	 * @param predicate
+	 * @param page
+	 * @return Page<OperacionesProgramadas>
 	 * @author cesar.castano
 	 */
 	public Page<OperacionesProgramadas> findAll(Predicate predicate, Pageable page);
@@ -37,10 +38,12 @@ public interface IOperacionesProgramadasRepository
 	 * Retorna una lista de operaciones programadas segun el estado de conciliacion
 	 * 
 	 * @param estadoConciliacion
-	 * @return List<OperacionesProgramadas>
+	 * @return Page<OperacionesProgramadas>
 	 * @author cesar.castano
 	 */
 	public Page<OperacionesProgramadas> findByEstadoConciliacion(String estadoConciliacion, Pageable page);
+	
+	public Page<OperacionesProgramadas> findByFechaOrigen(Date fechaOrigen, Predicate predicate, Pageable page);
 
 	/**
 	 * Retorna una lista de operaciones programadas donde el estado de conciliacion
