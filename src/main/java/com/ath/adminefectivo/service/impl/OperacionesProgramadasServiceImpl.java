@@ -63,16 +63,8 @@ import com.ath.adminefectivo.utils.UtilsString;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Service
 @Log4j2
 public class OperacionesProgramadasServiceImpl implements IOperacionesProgramadasService {
@@ -91,9 +83,6 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
 	@Autowired
 	ICiudadesService ciudadService;
-
-	@Autowired
-	IDominioService dominioService;
 
 	@Autowired
 	IOficinasService oficinaService;
@@ -134,12 +123,23 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	@Autowired
 	ICiudadesRepository ciudadesRepository;
 
+	private IDominioService dominioService;
 	private OperacionesProgramadasDTO operaciones;
 	private List<TransportadorasDTO> listaTransportadoras;
 	private List<FondosDTO> listaFondos;
 	private List<PuntosDTO> listaPuntos;
 	private List<CiudadesDTO> listaCiudades;
 	private static final String USER1 = "user1";
+	private String TIPO_PUNTO_FONDO;
+	
+	
+	public OperacionesProgramadasServiceImpl(IDominioService dominioService) {
+		super();
+		this.dominioService = dominioService;
+		TIPO_PUNTO_FONDO = dominioService.valorTextoDominio(
+				Constantes.DOMINIO_TIPOS_PUNTO, 
+				Dominios.TIPOS_PUNTO_FONDO);
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -164,7 +164,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		}
 		return true;
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -191,9 +191,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 				programadas.setTipoConciliacion(programadas.getConciliacionServicios().get(0).getTipoConciliacion());
 				programadas.setIdConciliacion(programadas.getConciliacionServicios().get(0).getIdConciliacion());
 				programadas.setEntradaSalida(programadas.getEntradaSalida());
-				programadas.setNombreFondoTDV(puntosService.getNombrePunto(dominioService.valorTextoDominio(
-										Constantes.DOMINIO_TIPOS_PUNTO, 
-										Dominios.TIPOS_PUNTO_FONDO), programadas.getCodigoFondoTDV()));
+				programadas.setNombreFondoTDV(this.getNombrePunto(programadas.getCodigoFondoTDV()));
 			} catch (Exception e) {
 				log.error("Failed getConciliacionServicios(): {} - {}", programadas.getIdOperacion(), e);
 			}
@@ -1195,10 +1193,10 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	 */
 	private void getListados(Predicate predicate) {
 
-		this.setListaTransportadoras(transportadorasService.getTransportadoras(predicate));
-		this.setListaFondos(fondosService.getFondos(predicate));
-		this.setListaPuntos(puntosService.getPuntos(predicate));
-		this.setListaCiudades(ciudadService.getCiudades(predicate));
+		this.listaTransportadoras = transportadorasService.getTransportadoras(predicate);
+		this.listaFondos = fondosService.getFondos(predicate);
+		this.listaPuntos = puntosService.getPuntos(predicate);
+		this.listaCiudades = ciudadService.getCiudades(predicate);
 	}
 
 	/**
