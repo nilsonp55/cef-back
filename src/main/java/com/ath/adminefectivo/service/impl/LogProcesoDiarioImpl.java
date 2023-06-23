@@ -80,7 +80,7 @@ public class LogProcesoDiarioImpl implements ILogProcesoDiarioService {
 		int numProcesosDia = logProcesoDiarioRepository.countByFechaFinalizacionAndEstadoProceso(diaCierre,
 				Dominios.ESTADO_PROCESO_DIA_COMPLETO);
 
-		return numProcesosTotales == numProcesosDia;
+		return numProcesosTotales <= numProcesosDia;
 
 	}
 	
