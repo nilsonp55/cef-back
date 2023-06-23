@@ -491,13 +491,22 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 	private TransaccionesInternasDTO generarTransaccionInternaIntradia(String tipoProceso, Integer tipoTransaccion,
 			OperacionIntradiaDTO transaccionIntradia, Date fechaSistema) {
 		
-		TransaccionesInternasDTO transaccionInternaDTO = TransaccionesInternasDTO.builder().idOperacion(null)
-				.idGenerico(Constantes.ID_GENERICO).consecutivoDia(String.valueOf(consecutivoDia)).codigoMoneda("COP")
+		TransaccionesInternasDTO transaccionInternaDTO = TransaccionesInternasDTO.builder()
+				.idOperacion(null)
+				.idGenerico(Constantes.ID_GENERICO)
+				.consecutivoDia(String.valueOf(consecutivoDia))
+				.codigoMoneda("COP")
 				.valor(dominioService.valorNumericoDominio(Constantes.DOMINIO_COMISIONES, Dominios.COMISION_3).longValue())
-				.tasaEjeCop(1).tasaNoEje(1).tipoTransaccion(tipoTransaccion).tipoOperacion("VENTA")
-				.tipoProceso(tipoProceso).estado(Dominios.ESTADO_CONTABILIDAD_GENERADO).codigoComision(dominioService
-						.valorNumericoDominio(Constantes.DOMINIO_COMISIONES, Dominios.COMISION_3).intValue())
-				.esCambio(false).fecha(fechaSistema).build();
+				.tasaEjeCop(1)
+				.tasaNoEje(1)
+				.tipoTransaccion(tipoTransaccion)
+				.tipoOperacion("VENTA")
+				.tipoProceso(tipoProceso)
+				.estado(Dominios.ESTADO_CONTABILIDAD_GENERADO)
+				.codigoComision(Integer.valueOf(Dominios.COMISION_3))
+				.esCambio(false)
+				.fecha(fechaSistema)
+				.build();
 
 		BancosDTO bancoAval = bancosService.findBancoByCodigoPunto(transaccionIntradia.getBancoAVAL());
 		transaccionInternaDTO.setBancoAval(bancoAval);
