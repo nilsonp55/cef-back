@@ -109,7 +109,7 @@ public class CargueDefinitivoDelegateImpl implements ICargueDefinitivoDelegate {
 				fechaProceso, Constantes.ESTADO_PROCESO_PROCESO, Constantes.ESTADO_PROCESO_PROCESO);
 		
 		this.validacionesAchivoCargado(idMaestroDefinicion, nombreArchivo);
-		Long idArchivo = archivosCargadosService.persistirDetalleArchivoCargado(validacionArchivo, false);
+		Long idArchivo = archivosCargadosService.persistirDetalleArchivoCargado(validacionArchivo, false, false);
 
 		String urlDestino = (Objects.equals(this.validacionArchivo.getEstadoValidacion(),
 				Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO))

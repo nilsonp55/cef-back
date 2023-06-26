@@ -109,8 +109,9 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	 */
 	@Override
 	public ValidacionArchivoDTO validarArchivo(String idMaestroDefinicion, String nombreArchivo) {
-		validarLogProcesoDiario();
-		this.validacionesAchivoCargado(idMaestroDefinicion, nombreArchivo);
+		
+		boolean alcance = esProcesoDiarioCerrado();
+		this.validacionesAchivoCargado(idMaestroDefinicion, nombreArchivo, alcance);
 		return ValidacionArchivoDTO.conversionRespuesta(this.validacionArchivo);
 	}
 
@@ -120,9 +121,10 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	@Override
 	@Transactional
 	public ValidacionArchivoDTO procesarArchivo(String idMaestroDefinicion, String nombreArchivo) {
-		validarLogProcesoDiario();
-		this.validacionesAchivoCargado(idMaestroDefinicion, nombreArchivo);
-		Long idArchivo = archivosCargadosService.persistirDetalleArchivoCargado(validacionArchivo, false);
+		
+		boolean alcance = esProcesoDiarioCerrado();	
+		this.validacionesAchivoCargado(idMaestroDefinicion, nombreArchivo, alcance);
+		Long idArchivo = archivosCargadosService.persistirDetalleArchivoCargado(validacionArchivo, false, alcance);
 
 		String urlDestino = (Objects.equals(this.validacionArchivo.getEstadoValidacion(),
 				Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO))
@@ -221,7 +223,7 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	 * @return void
 	 * @author cesar.castano
 	 */
-	private void validacionesAchivoCargado(String idMaestroDefinicion, String nombreArchivo) {
+	private void validacionesAchivoCargado(String idMaestroDefinicion, String nombreArchivo, boolean alcance) {
 		this.validacionArchivo = new ValidacionArchivoDTO();
 		// Validaciones del archivo
 		var maestroDefinicion = maestroDefinicionArchivoService.consultarDefinicionArchivoById(idMaestroDefinicion);
@@ -235,8 +237,11 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 		List<String[]> contenido = lecturaArchivoService.leerArchivo(dowloadFile.getFile(), delimitador, maestroDefinicion);
 		
 		Date fechaActual = parametrosService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
-		Date fechaAnteriorHabil = festivosNacionalesService.consultarAnteriorHabil(fechaActual);
-		
+		Date fechaAnteriorHabil = festivosNacionalesService.consultarAnteriorHabil(fechaActual);	
+		// adicionar lógica para permitir archivos de alcance
+		if (alcance) {
+			fechaAnteriorHabil = festivosNacionalesService.consultarAnteriorHabil(fechaAnteriorHabil);
+		}
 		var fechaArchivo = validacionArchivoService.validarFechaArchivoBetween(nombreArchivo,
 				maestroDefinicion.getMascaraArch(), fechaActual, fechaAnteriorHabil);
 		
@@ -260,23 +265,25 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	}
 	
 	/**
-	 * Metodo encargado de validar el log de proceso diario
+	 * Metodo encargado de validar si laactividad esta cerrada en el log de procesos diarios
 	 * @author cesar.castano
 	 */
-	private void validarLogProcesoDiario() {
+	private boolean esProcesoDiarioCerrado() {
 		var log = logProcesoDiarioService.obtenerEntidadLogProcesoDiario(
 										Dominios.CODIGO_PROCESO_LOG_CERTIFICACION);
 		if (Objects.isNull(log)) {
 			throw new NegocioException(ApiResponseCode.ERROR_CODIGO_PROCESO_NO_EXISTE.getCode(),
 					ApiResponseCode.ERROR_CODIGO_PROCESO_NO_EXISTE.getDescription(),
 					ApiResponseCode.ERROR_CODIGO_PROCESO_NO_EXISTE.getHttpStatus());
-		}else {
-			if (log.getEstadoProceso().equals(Dominios.ESTADO_PROCESO_DIA_COMPLETO)) {
-				throw new NegocioException(ApiResponseCode.ERROR_PROCESO_YA_CERRADO.getCode(),
-						ApiResponseCode.ERROR_PROCESO_YA_CERRADO.getDescription(),
-						ApiResponseCode.ERROR_PROCESO_YA_CERRADO.getHttpStatus());
-			}
 		}
+		else {
+			if (log.getEstadoProceso().equals(Dominios.ESTADO_PROCESO_DIA_COMPLETO)) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}		
 	}
 	
 	/**
