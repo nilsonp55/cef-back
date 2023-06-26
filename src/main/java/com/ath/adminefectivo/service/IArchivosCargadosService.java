@@ -84,7 +84,7 @@ public interface IArchivosCargadosService {
 	 * @return Long
 	 * @author CamiloBenavides
 	 */
-	Long persistirDetalleArchivoCargado(ValidacionArchivoDTO validacionArchivo,  boolean soloErrores);
+	Long persistirDetalleArchivoCargado(ValidacionArchivoDTO validacionArchivo,  boolean soloErrores, boolean alcance);
 	
 	/**
 	 * Metodo encagado de obtener los archivos cargados actuales que no se han
@@ -146,4 +146,12 @@ public interface IArchivosCargadosService {
 	 * @author duvan.naranjo
 	 */
 	List<ArchivosCargados> consultarArchivosPorFecha(Date fechaActual);
+	
+	/**
+	 * Metodo encargado de realizar la consulta de archivos cargados por estado
+	 * @param estado
+	 * @return List<ArchivosCargadosDTO>
+	 * @author rafael.parra
+	 */
+	public List<ArchivosCargados> consultarArchivosPorEstadoCargue(String estado);
 }

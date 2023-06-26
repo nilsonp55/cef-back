@@ -10,5 +10,13 @@ public interface ICertificacionesDelegate {
 	 * @author cesar.castano
 	 */
 	Boolean procesarCertificaciones(String agrupador);
+	
+	/**
+	 * Metodo encargado de procesar los archivos de alcance a certificaciones
+	 * @param agrupador
+	 * @return String
+	 * @author rafael.parra
+	 */
+	String procesarAlcances();
 
 }

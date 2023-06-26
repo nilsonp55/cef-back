@@ -74,4 +74,11 @@ public interface IOperacionesCertificadasService {
 	 * @param estado
 	 */
 	Integer numeroOperacionesPorEstadoFechaYConciliable(FechasConciliacionDTO fechaConciliacion, String estado, String conciliable);
+	
+	/**
+	 * Servicio encargado de procesar los datos de los archivos de alcance a certificaciones
+	 * @return String
+	 * @author rafael.parra
+	 */
+	String procesarArchivosAlcance();
 }

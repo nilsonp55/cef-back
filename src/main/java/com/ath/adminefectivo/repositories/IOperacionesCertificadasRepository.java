@@ -145,5 +145,6 @@ public interface IOperacionesCertificadasRepository
 	@Procedure(name = "validarnoconciliables")
 	public boolean validarnoconciliables();
 
-	
+	@Procedure(procedureName = "compara_archivos_alcance_certifi")
+	public String procesarArchivosAlcance();													  
 }

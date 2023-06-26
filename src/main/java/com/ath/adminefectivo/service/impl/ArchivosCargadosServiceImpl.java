@@ -162,12 +162,12 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 	 */
 	@Override
 	@Transactional
-	public Long persistirDetalleArchivoCargado(ValidacionArchivoDTO validacionArchivo, boolean soloErrores) {
+	public Long persistirDetalleArchivoCargado(ValidacionArchivoDTO validacionArchivo, boolean soloErrores, boolean alcance) {
 		Date fechaGuardar;
 		fechaGuardar = parametrosService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
 
 		if (Dominios.ESTADO_VALIDACION_CORRECTO.equals(validacionArchivo.getEstadoValidacion()) ) {
-			this.cambiarEstadoArchivoOK(validacionArchivo);
+			this.cambiarEstadoArchivoOK(validacionArchivo, alcance);
 		}
 		ArchivosCargados archivosCargados = ArchivosCargados.builder()
 				.estado(Constantes.REGISTRO_ACTIVO)
@@ -230,6 +230,15 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 	@Override
 	public void actualizarArchivosCargados(ArchivosCargadosDTO archivosCargadosDTO) {
 		archivosCargadosRepository.save(ArchivosCargadosDTO.CONVERTER_ENTITY.apply(archivosCargadosDTO));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<ArchivosCargados> consultarArchivosPorEstadoCargue(String estado) {
+		return archivosCargadosRepository.findByEstadoCargue(estado);
+
 	}
 	
 	/**
@@ -361,27 +370,45 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 	}
 	
 	/**
-	 * Revisa si ya existe un archivo en estado OK para la fecha
-	 * Si existe le cambia el estado a REEMPLAZADO
+	 * Revisa si ya existe un archivo en estado OK o REPROCESO para la fecha
+	 * Si existe le cambia el estado a REEMPLAZADO o REEMPLAZADORP
 	 * @param validacionArchivo
 	 * @author RParra
 	 */
-	private void cambiarEstadoArchivoOK (ValidacionArchivoDTO validacionArchivo) {
+	private void cambiarEstadoArchivoOK (ValidacionArchivoDTO validacionArchivo, boolean alcance) {
 		
-		List<ArchivosCargados> archivosCargados = archivosCargadosRepository
+		if (alcance) {
+			List<ArchivosCargados> archivosCargados = archivosCargadosRepository
+					.getRegistrosCargadosPorEstadoCargueyNombreUpperyModelo(Dominios.ESTADO_VALIDACION_REPROCESO, 
+							validacionArchivo.getNombreArchivo().toUpperCase(),
+							validacionArchivo.getMaestroDefinicion().getIdMaestroDefinicionArchivo());
+
+			if (!Objects.isNull(archivosCargados)) {
+				archivosCargados.forEach(arch -> {
+					var archivoEntity = arch;
+					archivoEntity.setEstadoCargue(Dominios.ESTADO_VALIDACION_REEMPLAZADORP);
+					archivosCargadosRepository.save(archivoEntity);
+					
+				});	
+			}
+			else {
+				validacionArchivo.setEstadoValidacion(Dominios.ESTADO_VALIDACION_REPROCESO);
+			}
+		}
+		else {
+			List<ArchivosCargados> archivosCargados = archivosCargadosRepository
 				.getRegistrosCargadosPorEstadoCargueyNombreUpperyModelo(Dominios.ESTADO_VALIDACION_CORRECTO, 
 						validacionArchivo.getNombreArchivo().toUpperCase(),
 						validacionArchivo.getMaestroDefinicion().getIdMaestroDefinicionArchivo());
 
-		if (!Objects.isNull(archivosCargados)) {
-			archivosCargados.forEach(arch -> {
-				var archivoEntity = arch;
-				archivoEntity.setEstadoCargue(Dominios.ESTADO_VALIDACION_REEMPLAZADO);
-				archivosCargadosRepository.save(archivoEntity);
-				
-			});	
+			if (!Objects.isNull(archivosCargados)) {
+				archivosCargados.forEach(arch -> {
+					var archivoEntity = arch;
+					archivoEntity.setEstadoCargue(Dominios.ESTADO_VALIDACION_REEMPLAZADO);
+					archivosCargadosRepository.save(archivoEntity);			
+				});	
+			}
 		}
 	}
-
 
 }

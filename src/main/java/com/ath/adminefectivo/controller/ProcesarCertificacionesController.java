@@ -27,8 +27,7 @@ public class ProcesarCertificacionesController {
 	/**
 	 * Servicio encargado de procesar los archivos cargados de certificaciones y
 	 * persistirlos en la tabla de operaciones certificadas
-	 * @param modeloArchivo
-	 * @param idArchivo
+	 * @param agrupador
 	 * @return ResponseEntity<ApiResponseADE<Boolean>>
 	 * @author cesar.castano
 	 */
@@ -37,6 +36,21 @@ public class ProcesarCertificacionesController {
 			@RequestParam("agrupador") String agrupador) {
 
 		Boolean respuesta = certificacionesDelegate.procesarCertificaciones(agrupador);
+		
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ApiResponseADE<>(respuesta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+						.description(ApiResponseCode.SUCCESS.getDescription()).build()));	
+	}
+	
+	/**
+	 * Servicio encargado de procesar los archivos cargados por alcance de certificaciones 
+	 * @return ResponseEntity<ApiResponseADE<String>>
+	 * @author rafael.parra
+	 */
+	@GetMapping(value = "${endpoints.Certificaciones.procesarAlcances}")
+	public ResponseEntity<ApiResponseADE<String>> procesarAlcances() {
+
+		String respuesta = certificacionesDelegate.procesarAlcances();
 		
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(respuesta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())

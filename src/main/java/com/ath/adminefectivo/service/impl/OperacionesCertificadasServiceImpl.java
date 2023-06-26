@@ -228,6 +228,11 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	public void validarNoConciliables() {
 		operacionesCertificadasRepository.validarnoconciliables();
 	}
+	
+	@Override
+	public String  procesarArchivosAlcance() {
+		return operacionesCertificadasRepository.procesarArchivosAlcance();
+	}
 
 	/**
 	 * Metodo encargado de procesar los archivos de otros fondos (no Brinks)
@@ -286,7 +291,13 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 			}
 		}
 		procesarSobranteFaltanteNoBrinks();
-		elemento.setEstadoCargue(Dominios.ESTADO_VALIDACION_ACEPTADO);
+		
+		if ( Dominios.ESTADO_VALIDACION_REPROCESO.equals(elemento.getEstadoCargue()) ) {
+			elemento.setEstadoCargue(Dominios.ESTADO_VALIDACION_REPROCESADO);
+		}
+		else {
+			elemento.setEstadoCargue(Dominios.ESTADO_VALIDACION_ACEPTADO);
+		}
 		archivosCargadosService.actualizarArchivosCargados(elemento);
 	}
 
@@ -911,7 +922,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	 */
 	@Transactional
 	private void procesarArchivoBrinks(ArchivosCargados elemento, List<DetallesDefinicionArchivoDTO> detalleArchivo) {
-	
+		
 		var registro = new RegistroTipo1ArchivosFondosDTO();
 		for (var i = 0; i < elemento.getRegistrosCargados().size(); i++) {
 
@@ -993,7 +1004,12 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 			}
 		}
 		procesarSobranteFaltanteBrinks();
-		elemento.setEstadoCargue(Dominios.ESTADO_VALIDACION_ACEPTADO);
+		if ( Dominios.ESTADO_VALIDACION_REPROCESO.equals(elemento.getEstadoCargue()) ) {
+			elemento.setEstadoCargue(Dominios.ESTADO_VALIDACION_REPROCESADO);
+		}
+		else {
+			elemento.setEstadoCargue(Dominios.ESTADO_VALIDACION_ACEPTADO);
+		}
 		archivosCargadosService.actualizarArchivosCargados(elemento);
 	}
 
