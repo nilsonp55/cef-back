@@ -28,7 +28,7 @@ QuerydslPredicateExecutor<ValoresLiquidados>{
 	 * realizar el proceso de costos de armar parametros 
 	 * @return bayron.perez
 	 */
-	@Procedure(name = "armar_parametros_liquida")
+	@Procedure(procedureName = "armar_parametros_liquida")
 	String armarParametrosLiquida(@Param("fecha") Date fecha);
 	
 	/**
@@ -37,7 +37,7 @@ QuerydslPredicateExecutor<ValoresLiquidados>{
 	 * @param parametro
 	 * @return bayron.perez
 	 */
-	@Procedure(name = "liquidar_costos")
+	@Procedure(procedureName = "liquidar_costos")
 	String liquidarCostos(@Param("parametro") Integer parametro);
 	
 	/**

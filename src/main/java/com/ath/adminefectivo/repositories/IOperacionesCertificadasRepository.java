@@ -142,7 +142,7 @@ public interface IOperacionesCertificadasRepository
 	 */
 	List<OperacionesCertificadas> findByCodigoPuntoOrigenAndEntradaSalidaAndFechaEjecucion(Integer codigoPuntoOrigen, String entradaSalida, Date fechaEjecucion);
 
-	@Procedure(name = "validarnoconciliables")
+	@Procedure(procedureName = "validarnoconciliables")
 	public boolean validarnoconciliables();
 
 	@Procedure(procedureName = "compara_archivos_alcance_certifi")
