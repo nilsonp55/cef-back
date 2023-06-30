@@ -36,7 +36,7 @@ public interface IConciliacionOperacionesRepository
 	 * @return String
 	 * @author rafael.parra
 	 */
-	@Procedure(name = "validarcierreconciliacion")
+	@Procedure(procedureName = "validarcierreconciliacion")
 	String validarcierreconciliacion();
 	
 }

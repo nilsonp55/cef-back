@@ -186,7 +186,7 @@ public interface IOperacionesProgramadasRepository
 	 * @return String
 	 * @author duvan.naranjo
 	 */
-	@Procedure(name = "reabrir_certificaciones")
+	@Procedure(procedureName = "reabrir_certificaciones")
 	public String reabrirCertificaciones();
 	
 	/**
@@ -194,7 +194,7 @@ public interface IOperacionesProgramadasRepository
 	 * @return String
 	 * @author duvan.naranjo
 	 */
-	@Procedure(name = "reabrir_definitiva")
+	@Procedure(procedureName = "reabrir_definitiva")
 	public String reabrirDefinitiva();
 	
 	/**
@@ -202,7 +202,7 @@ public interface IOperacionesProgramadasRepository
 	 * @return String
 	 * @author duvan.naranjo
 	 */
-	@Procedure(name = "reabrir_preliminar")
+	@Procedure(procedureName = "reabrir_preliminar")
 	public String reabrirPreliminar();
 	
 	/**
@@ -210,7 +210,7 @@ public interface IOperacionesProgramadasRepository
 	 * @return String
 	 * @author duvan.naranjo
 	 */
-	@Procedure(name = "reabrir_conciliaciones")
+	@Procedure(procedureName = "reabrir_conciliaciones")
 	public String reabrirConciliaciones();
 	
 }

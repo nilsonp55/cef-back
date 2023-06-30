@@ -123,7 +123,7 @@ public interface ITransaccionesContablesRepository extends JpaRepository<Transac
 	 * @return String
 	 * @author rparra
 	 */
-	@Procedure(name = "generarcomprobantecontable")
+	@Procedure(procedureName = "generarcomprobantecontable")
 	String generarcomprobantecontable(@Param("pfechaproceso") Date fecha, @Param("ptipoproceso") String tipoContabilidad);
 	
 	/**
