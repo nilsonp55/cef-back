@@ -277,6 +277,9 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 						ApiResponseCode.ERROR_OPERACIONES_A_CONCILIAR_NO_ENCONTRADO.getDescription(),
 						ApiResponseCode.ERROR_OPERACIONES_A_CONCILIAR_NO_ENCONTRADO.getHttpStatus());
 			}
+		}
+		
+		for (ParametrosConciliacionDTO elemento : conciliacionManualDTO) {
 			operacionesProgramadasService.actualizarEstadoEnProgramadas(elemento.getIdOperacion(),
 					ESTADO_CONCILIACION_CONCILIADO);
 			operacionesCertificadasService.actualizarEstadoEnCertificadas(elemento.getIdCertificacion(),
