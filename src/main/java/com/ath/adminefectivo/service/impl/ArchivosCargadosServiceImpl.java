@@ -168,7 +168,10 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 
 		if (Dominios.ESTADO_VALIDACION_CORRECTO.equals(validacionArchivo.getEstadoValidacion()) ) {
 			this.cambiarEstadoArchivoOK(validacionArchivo, alcance);
-		}
+			if (alcance) {
+				validacionArchivo.setEstadoValidacion(Dominios.ESTADO_VALIDACION_REPROCESO);
+			}
+		}			
 		ArchivosCargados archivosCargados = ArchivosCargados.builder()
 				.estado(Constantes.REGISTRO_ACTIVO)
 				.estadoCargue(validacionArchivo.getEstadoValidacion())
@@ -390,9 +393,6 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 					archivosCargadosRepository.save(archivoEntity);
 					
 				});	
-			}
-			else {
-				validacionArchivo.setEstadoValidacion(Dominios.ESTADO_VALIDACION_REPROCESO);
 			}
 		}
 		else {
