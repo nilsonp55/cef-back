@@ -85,7 +85,7 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 					ApiResponseCode.ERROR_ARCHICOS_CARGADOS_NO_ENCONTRADO.getDescription(),
 					ApiResponseCode.ERROR_ARCHICOS_CARGADOS_NO_ENCONTRADO.getHttpStatus());
 		} else {
-			return operacionesCertificadasService.procesarArchivosAlcance();
+			return operacionesCertificadasService.procesarArchivosAlcance(archivosCargados);
 		}
 	}
 

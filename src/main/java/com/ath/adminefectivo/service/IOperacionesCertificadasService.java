@@ -77,8 +77,9 @@ public interface IOperacionesCertificadasService {
 	
 	/**
 	 * Servicio encargado de procesar los datos de los archivos de alcance a certificaciones
+	 * @param archivosCargados
 	 * @return String
 	 * @author rafael.parra
 	 */
-	String procesarArchivosAlcance();
+	String procesarArchivosAlcance(List<ArchivosCargados> archivosCargados);
 }

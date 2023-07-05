@@ -230,7 +230,18 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	}
 	
 	@Override
-	public String  procesarArchivosAlcance() {
+	public String  procesarArchivosAlcance(List<ArchivosCargados> archivosCargados) {
+
+		for (ArchivosCargados elemento : archivosCargados) {
+			List<DetallesDefinicionArchivoDTO> listadoDetalleArchivo = detalleDefinicionArchivoService
+					.consultarDetalleDefinicionArchivoByIdMaestro(elemento.getIdModeloArchivo());
+			if (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IBBCS)
+					|| elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IBMCS)) {
+				procesarArchivoBrinks(elemento, listadoDetalleArchivo);
+			} else {
+				procesarArchivoOtrosFondos(elemento, listadoDetalleArchivo);
+			}			
+		}
 		return operacionesCertificadasRepository.procesarArchivosAlcance();
 	}
 
