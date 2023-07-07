@@ -36,6 +36,7 @@ public interface IOperacionesCertificadasRepository
 	/**
 	 * Retorna el numero de operaciones certificadas segun un estado de conciliacion
 	 * y un rango de fechas
+	 * y un rango de fechas
 	 * 
 	 * @param estadoConciliacion
 	 * @param fechaInicial
@@ -104,9 +105,9 @@ public interface IOperacionesCertificadasRepository
 	 * @author cesar.castano
 	 */
 	OperacionesCertificadas 
-	findByCodigoFondoTDVAndCodigoPuntoOrigenAndCodigoPuntoDestinoAndCodigoServicioTdvAndEntradaSalidaAndFechaEjecucionAndCodigoPropioTDVAndIdArchivo
+	findByCodigoFondoTDVAndCodigoPuntoOrigenAndCodigoPuntoDestinoAndCodigoServicioTdvAndEntradaSalidaAndFechaEjecucionAndCodigoPropioTDVAndIdArchivoCargado
 			(Integer codigoFondoTDV, Integer codigoPuntoOrigen,Integer codigoPuntoDestino, String codigoServicio, String entradaSalida, 
-					Date fechaEjecucion, String codigoPropioTDV, Long IdArchivo);
+					Date fechaEjecucion, String codigoPropioTDV, Long idArchivoCargado);
 	
 	
 
