@@ -104,8 +104,9 @@ public interface IOperacionesCertificadasRepository
 	 * @author cesar.castano
 	 */
 	OperacionesCertificadas 
-	findByCodigoFondoTDVAndCodigoPuntoOrigenAndCodigoPuntoDestinoAndCodigoServicioTdvAndEntradaSalidaAndFechaEjecucionAndCodigoPropioTDV(Integer codigoFondoTDV, Integer codigoPuntoOrigen,
-			Integer codigoPuntoDestino, String codigoServicio, String entradaSalida, Date fechaEjecucion, String codigoPropioTDV);
+	findByCodigoFondoTDVAndCodigoPuntoOrigenAndCodigoPuntoDestinoAndCodigoServicioTdvAndEntradaSalidaAndFechaEjecucionAndCodigoPropioTDVAndIdArchivo
+			(Integer codigoFondoTDV, Integer codigoPuntoOrigen,Integer codigoPuntoDestino, String codigoServicio, String entradaSalida, 
+					Date fechaEjecucion, String codigoPropioTDV, Long IdArchivo);
 	
 	
 
