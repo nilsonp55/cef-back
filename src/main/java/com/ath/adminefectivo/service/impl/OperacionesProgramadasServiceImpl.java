@@ -1450,8 +1450,8 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		try {
 			DateFormat formato = new SimpleDateFormat(
 									dominioService.valorTextoDominio(
-									Constantes.DOMINIO_FORMATO_FECHA_HORA,
-									Dominios.FORMATO_FECHA_HORA_F5));
+									Constantes.DOMINIO_FORMATO_FECHA,
+									Dominios.FORMATO_FECHA_F4));
 			fecha = formato.parse(contenido);
 		} catch (ParseException e) {
 			e.getMessage();
