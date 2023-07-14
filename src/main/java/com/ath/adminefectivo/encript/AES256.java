@@ -96,9 +96,9 @@ public class AES256 {
 					parametroService.valorParametroEntero(Parametros.BYTES_AES));// BYTES_AES ALGORITMO_AES
 
 			SecretKey tmp = factory.generateSecret(spec);
-			SecretKeySpec secretKey = new SecretKeySpec(tmp.getEncoded(), "AES");
+			SecretKeySpec secretKeySpec = new SecretKeySpec(tmp.getEncoded(), "AES");
 			Cipher cipher = Cipher.getInstance(parametroService.valorParametro(Parametros.INSTANCIA_AES));
-			cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivspec);
+			cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivspec);
 
 			/* Retruns encrypted value. */
 			return Base64.getEncoder().encodeToString(cipher.doFinal(text.getBytes(StandardCharsets.UTF_8)));
@@ -122,9 +122,9 @@ public class AES256 {
 			/* PBEKeySpec class implements KeySpec interface. */
 			KeySpec spec = new PBEKeySpec(secretKey.toCharArray(), saltValue.getBytes(), 100000, parametroService.valorParametroEntero(Parametros.BYTES_AES));
 			SecretKey tmp = factory.generateSecret(spec);
-			SecretKeySpec secretKey = new SecretKeySpec(tmp.getEncoded(), "AES");
+			SecretKeySpec secretKeySpec = new SecretKeySpec(tmp.getEncoded(), "AES");
 			Cipher cipher = Cipher.getInstance(parametroService.valorParametro(Parametros.INSTANCIA_AES));
-			cipher.init(Cipher.DECRYPT_MODE, secretKey, ivspec);
+			cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivspec);
 			
 			/* Retruns decrypted value. */
 			return new String(cipher.doFinal(Base64.getDecoder().decode(text)));
