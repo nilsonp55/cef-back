@@ -68,8 +68,8 @@ public class AES256 {
 	private PrivateKey privateKey = null;
 	private PublicKey publicKey = null;
 
-	private String SecretKey;
-	private String SaltValue;
+	private String secretKey;
+	private String saltValue;
 
 	private String instanceAlgorith = "AES/GCM/NoPadding";
 	
@@ -77,8 +77,8 @@ public class AES256 {
 
 	public AES256(IParametroService parametroService) {
 		this.parametroService = parametroService;
-		this.SecretKey = parametroService.valorParametro(Parametros.VALUE_SECRET_KEY);
-		this.SaltValue = parametroService.valorParametro(Parametros.SALT_VALUE);
+		this.secretKey = parametroService.valorParametro(Parametros.VALUE_SECRET_KEY);
+		this.saltValue = parametroService.valorParametro(Parametros.SALT_VALUE);
 	}
 
 	public String encryptAES(String text) {
@@ -92,7 +92,7 @@ public class AES256 {
 			SecretKeyFactory factory = SecretKeyFactory.getInstance(parametroService.valorParametro(Parametros.AES256));
 
 			/* PBEKeySpec class implements KeySpec interface. */
-			KeySpec spec = new PBEKeySpec(SecretKey.toCharArray(), SaltValue.getBytes(), 100000,
+			KeySpec spec = new PBEKeySpec(secretKey.toCharArray(), saltValue.getBytes(), 100000,
 					parametroService.valorParametroEntero(Parametros.BYTES_AES));// BYTES_AES ALGORITMO_AES
 
 			SecretKey tmp = factory.generateSecret(spec);
@@ -120,7 +120,7 @@ public class AES256 {
 			SecretKeyFactory factory = SecretKeyFactory.getInstance(parametroService.valorParametro(Parametros.AES256));
 			
 			/* PBEKeySpec class implements KeySpec interface. */
-			KeySpec spec = new PBEKeySpec(SecretKey.toCharArray(), SaltValue.getBytes(), 100000, parametroService.valorParametroEntero(Parametros.BYTES_AES));
+			KeySpec spec = new PBEKeySpec(secretKey.toCharArray(), saltValue.getBytes(), 100000, parametroService.valorParametroEntero(Parametros.BYTES_AES));
 			SecretKey tmp = factory.generateSecret(spec);
 			SecretKeySpec secretKey = new SecretKeySpec(tmp.getEncoded(), "AES");
 			Cipher cipher = Cipher.getInstance(parametroService.valorParametro(Parametros.INSTANCIA_AES));
