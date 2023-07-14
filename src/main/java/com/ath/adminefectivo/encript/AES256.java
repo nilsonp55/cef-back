@@ -32,7 +32,6 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.ath.adminefectivo.constantes.Constantes;
@@ -64,14 +63,13 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class AES256 {
 
-	@Autowired
-	IParametroService parametroService;
+	private	IParametroService parametroService;
 
 	private PrivateKey privateKey = null;
 	private PublicKey publicKey = null;
 
-	private String SecretKey = "";
-	private String SaltValue = "";
+	private String SecretKey;
+	private String SaltValue;
 
 	private String instanceAlgorith = "AES/GCM/NoPadding";
 	
@@ -79,7 +77,8 @@ public class AES256 {
 
 	public AES256(IParametroService parametroService) {
 		this.parametroService = parametroService;
-		this.setKeys();
+		this.SecretKey = parametroService.valorParametro(Parametros.VALUE_SECRET_KEY);
+		this.SaltValue = parametroService.valorParametro(Parametros.SALT_VALUE);
 	}
 
 	public String encryptAES(String text) {
@@ -186,18 +185,11 @@ public class AES256 {
 					ApiResponseCode.ERROR_INSERTANDO_LLAVE_PUBLICA_RSA.getHttpStatus());
 		}
 		String nombreArchivoLLavePublica = parametroService.valorParametro(Constantes.NAME_PUBLIC_KEY_RSA);
-		String nombreArchivoLLavePrivada = parametroService.valorParametro(Constantes.NAME_PRIVATE_KEY_RSA);
 		try(BufferedWriter archivoPublico = new BufferedWriter(
 					new OutputStreamWriter(new FileOutputStream(nombreArchivoLLavePublica))) ) {
 			archivoPublico.write(publicKeysS);
 		} catch (IOException e) {
 			log.error("Guardando archivo publico: {}", e.getMessage());
-		}
-		try(BufferedWriter archivoPrivado = new BufferedWriter(
-					new OutputStreamWriter(new FileOutputStream(nombreArchivoLLavePrivada)))) {
-			archivoPrivado.write(privateKeyS);
-		} catch (IOException e) {
-			log.error("Guardando archivo privado: {}", e.getMessage());
 		}
 
 	}
@@ -254,11 +246,6 @@ public class AES256 {
 	public String getPublicKeyString() {
 		X509EncodedKeySpec encodedPublicKey = new X509EncodedKeySpec(this.publicKey.getEncoded());
 		return bytesToString(encodedPublicKey.getEncoded());
-	}
-
-	public void setKeys() {
-		this.SecretKey = parametroService.valorParametro(Parametros.SECRET_KEY);
-		this.SaltValue = parametroService.valorParametro(Parametros.SALT_VALUE);
 	}
 
 	public void setPrivateKeyString(String key) throws NoSuchAlgorithmException, InvalidKeySpecException {
