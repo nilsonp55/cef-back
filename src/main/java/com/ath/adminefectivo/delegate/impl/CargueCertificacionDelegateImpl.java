@@ -277,12 +277,7 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 					ApiResponseCode.ERROR_CODIGO_PROCESO_NO_EXISTE.getHttpStatus());
 		}
 		else {
-			if (log.getEstadoProceso().equals(Dominios.ESTADO_PROCESO_DIA_COMPLETO)) {
-				return true;
-			}
-			else {
-				return false;
-			}
+			return log.getEstadoProceso().equals(Dominios.ESTADO_PROCESO_DIA_COMPLETO);
 		}		
 	}
 	
