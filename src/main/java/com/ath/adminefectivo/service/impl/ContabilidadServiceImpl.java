@@ -201,7 +201,7 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 		long valorImpuesto = 0;
 		TransaccionesInternasDTO operacionIntradia11 = generarTransaccionInternaIntradia(tipoContabilidad, 11,	operacionIntradia, fechaSistema);
 
-		if (isCiudadCobroIVA(operacionIntradia.getCodigoPunto()) && operacionIntradia.getBancoAVAL() == Constantes.BANCO_BOGOTA ) {
+		if ( operacionIntradia.getBancoAVAL() == Constantes.BANCO_BOGOTA ) {
 			TransaccionesInternasDTO operacionIntradia12 = generarTransaccionInternaIntradia(tipoContabilidad, 12, operacionIntradia, fechaSistema);
 			operacionIntradia12.setValor(this.calcularValorConImpuesto(operacionIntradia11.getValor(), Dominios.IMPUESTO_IVA));
 			operacionIntradia12.setTipoImpuesto(Integer.valueOf(Dominios.IMPUESTO_IVA));
