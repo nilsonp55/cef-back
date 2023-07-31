@@ -268,7 +268,7 @@ public class PuntosServiceImpl implements IPuntosService {
 	@Override
 	public Boolean getEntidadPuntoBanrep(String tipoPunto, Integer codigoPunto) {
 		var puntosOpt = puntosRepository.findByCodigoPuntoAndTipoPunto(codigoPunto, tipoPunto);
-		return Objects.isNull(puntosOpt);
+		return !Objects.isNull(puntosOpt);
 	}
 
 	/**

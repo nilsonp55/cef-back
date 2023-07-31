@@ -612,10 +612,10 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 			}
 		}
 		if (tipoOperacion.isEmpty()) {
-			if (Boolean.TRUE.equals(fondosService.getCodigoPuntoFondo(codigoPunto))) {
+			if (fondosService.getCodigoPuntoFondo(codigoPunto)) {
 				tipoOperacion = dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_OPERACION,
 						Dominios.TIPO_OPERA_TRASLADO);
-			} else if (Boolean.TRUE.equals(bancosService.getCodigoPunto(codigoPunto))) {
+			} else if (bancosService.getCodigoPunto(codigoPunto)) {
 				tipoOperacion = dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_OPERACION,
 						Dominios.TIPO_OPERA_VENTA);
 			}
@@ -624,8 +624,17 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	}
 
 	private String procesarOperacionOtros(Integer codigoPunto) {
-		return "TRASLADO";
-
+		var tipoOperacion = "";
+		var punto = puntosService.getPuntoById(	codigoPunto);
+		if (!Objects.isNull(punto) && "BANCO".equals(punto.getTipoPunto()) ) {
+			tipoOperacion = dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_OPERACION,
+					Dominios.TIPO_OPERA_VENTA);
+		}
+		else {
+			tipoOperacion = dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_OPERACION,
+					Dominios.TIPO_OPERA_TRASLADO);
+		}
+		return tipoOperacion;
 	}
 
 	/**
@@ -637,9 +646,9 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	 */
 	private String procesarProvisiones(Integer codigoPunto) {
 		var tipoOperacion = "";
-		if (Boolean.TRUE.equals(oficinaService.getCodigoPuntoOficina(codigoPunto))
-				|| Boolean.TRUE.equals(clientesCorporativosService.getCodigoPuntoCliente(codigoPunto))
-				|| Boolean.TRUE.equals(cajerosService.getCodigoPuntoCajero(codigoPunto))) {
+		if (oficinaService.getCodigoPuntoOficina(codigoPunto)
+				|| clientesCorporativosService.getCodigoPuntoCliente(codigoPunto)
+				|| cajerosService.getCodigoPuntoCajero(codigoPunto)) {
 			tipoOperacion = dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_OPERACION,
 					Dominios.TIPO_OPERA_PROVISION);
 		}
@@ -655,9 +664,9 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	 */
 	private String procesarRecolleciones(Integer codigoPunto) {
 		var tipoOperacion = "";
-		if (Boolean.TRUE.equals(oficinaService.getCodigoPuntoOficina(codigoPunto))
-				|| Boolean.TRUE.equals(clientesCorporativosService.getCodigoPuntoCliente(codigoPunto))
-				|| Boolean.TRUE.equals(cajerosService.getCodigoPuntoCajero(codigoPunto))) {
+		if (oficinaService.getCodigoPuntoOficina(codigoPunto)
+				|| clientesCorporativosService.getCodigoPuntoCliente(codigoPunto)
+				|| cajerosService.getCodigoPuntoCajero(codigoPunto)) {
 			tipoOperacion = dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_OPERACION,
 					Dominios.TIPO_OPERA_RECOLECCION);
 		}
@@ -673,9 +682,9 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	 */
 	private String procesarConsignaciones(Integer codigoPunto) {
 		var tipoOperacion = "";
-		if (Boolean.TRUE.equals(puntosService.getEntidadPuntoBanrep(
+		if (puntosService.getEntidadPuntoBanrep(
 				dominioService.valorTextoDominio(Constantes.DOMINIO_TIPOS_PUNTO, Dominios.TIPOS_PUNTO_BAN_REP),
-				codigoPunto))) {
+				codigoPunto)) {
 			tipoOperacion = dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_OPERACION,
 					Dominios.TIPO_OPERA_CONSIGNACION);
 		}
@@ -691,9 +700,9 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	 */
 	private String procesarRetiros(Integer codigoPunto) {
 		var tipoOperacion = "";
-		if (Boolean.TRUE.equals(puntosService.getEntidadPuntoBanrep(
+		if (puntosService.getEntidadPuntoBanrep(
 				dominioService.valorTextoDominio(Constantes.DOMINIO_TIPOS_PUNTO, Dominios.TIPOS_PUNTO_BAN_REP),
-				codigoPunto))) {
+				codigoPunto)) {
 			tipoOperacion = dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_OPERACION,
 					Dominios.TIPO_OPERA_RETIRO);
 		}
