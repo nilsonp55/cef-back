@@ -41,7 +41,7 @@ public class CiudadServiceImpl implements ICiudadesService {
 	 */
 	@Override
 	public List<CiudadesDTO> getCiudades(Predicate predicate) {
-		var ciudades = ciudadesRepository.findAll(predicate);
+		var ciudades = ciudadesRepository.findAllByOrderByNombreCiudadAsc();
 		List<CiudadesDTO> listCiudadesDto = new ArrayList<>();
 		ciudades.forEach(entity -> listCiudadesDto.add(CiudadesDTO.CONVERTER_DTO.apply(entity)));
 		return listCiudadesDto;
