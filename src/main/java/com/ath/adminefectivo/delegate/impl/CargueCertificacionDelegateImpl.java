@@ -124,17 +124,18 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 		
 		boolean alcance = esProcesoDiarioCerrado();	
 		this.validacionesAchivoCargado(idMaestroDefinicion, nombreArchivo, alcance);
-		Long idArchivo = archivosCargadosService.persistirDetalleArchivoCargado(validacionArchivo, false, alcance);
-
-		String urlDestino = (Objects.equals(this.validacionArchivo.getEstadoValidacion(),
-				Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO))
-						? parametrosService.valorParametro(Parametros.RUTA_ARCHIVOS_ERRADOS)
-						: parametrosService.valorParametro(Parametros.RUTA_ARCHIVOS_PROCESADOS);
-
-		this.filesService.moverArchivos(this.validacionArchivo.getUrl(),
-				this.validacionArchivo.getMaestroDefinicion().getUbicacion().concat(urlDestino),
-				this.validacionArchivo.getNombreArchivo(),idArchivo.toString());
-
+		if ( !Objects.equals(this.validacionArchivo.getEstadoValidacion(), Dominios.ESTADO_VALIDACION_FUTURO )) {
+			Long idArchivo = archivosCargadosService.persistirDetalleArchivoCargado(validacionArchivo, false, alcance);
+	
+			String urlDestino = (Objects.equals(this.validacionArchivo.getEstadoValidacion(),
+					Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO))
+							? parametrosService.valorParametro(Parametros.RUTA_ARCHIVOS_ERRADOS)
+							: parametrosService.valorParametro(Parametros.RUTA_ARCHIVOS_PROCESADOS);
+	
+			this.filesService.moverArchivos(this.validacionArchivo.getUrl(),
+					this.validacionArchivo.getMaestroDefinicion().getUbicacion().concat(urlDestino),
+					this.validacionArchivo.getNombreArchivo(),idArchivo.toString());
+		}
 		return ValidacionArchivoDTO.conversionRespuesta(this.validacionArchivo);
 	}
 
@@ -238,20 +239,28 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 		
 		Date fechaActual = parametrosService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
 		Date fechaAnteriorHabil = festivosNacionalesService.consultarAnteriorHabil(fechaActual);	
-		// adicionar lógica para permitir archivos de alcance
-		if (alcance) {
-			fechaAnteriorHabil = festivosNacionalesService.consultarAnteriorHabil(fechaAnteriorHabil);
-		}
+		Date fechaAnteriorHabil2 = festivosNacionalesService.consultarAnteriorHabil(fechaAnteriorHabil);	
+		
 		var fechaArchivo = validacionArchivoService.validarFechaArchivoBetween(nombreArchivo,
 				maestroDefinicion.getMascaraArch(), fechaActual, fechaAnteriorHabil);
 		
-		this.validacionArchivo = ValidacionArchivoDTO.builder().nombreArchivo(nombreArchivo)
-				.descripcion(maestroDefinicion.getDescripcionArch()).fechaArchivo(fechaArchivo)
-				.maestroDefinicion(maestroDefinicion).url(url)
-				.numeroRegistros(obtenerBumeroRegistros(maestroDefinicion, contenido.size())).build();
-		if (this.validarCantidadRegistros(maestroDefinicion, this.validacionArchivo.getNumeroRegistros())) {
-			this.validacionArchivo = validacionArchivoService.validar(maestroDefinicion, contenido,
-					validacionArchivo);
+		if (fechaArchivo.compareTo(fechaAnteriorHabil) <= 0) {
+		
+			this.validacionArchivo = ValidacionArchivoDTO.builder().nombreArchivo(nombreArchivo)
+					.descripcion(maestroDefinicion.getDescripcionArch()).fechaArchivo(fechaArchivo)
+					.maestroDefinicion(maestroDefinicion).url(url)
+					.numeroRegistros(obtenerBumeroRegistros(maestroDefinicion, contenido.size())).build();
+			if (this.validarCantidadRegistros(maestroDefinicion, this.validacionArchivo.getNumeroRegistros())) {
+				this.validacionArchivo = validacionArchivoService.validar(maestroDefinicion, contenido,
+						validacionArchivo);
+			}
+			if (fechaArchivo.compareTo(fechaAnteriorHabil2) <= 0 || alcance) {
+				this.validacionArchivo.setEstadoValidacion(Dominios.ESTADO_VALIDACION_REPROCESO);
+			}
+		}
+		else {
+			this.validacionArchivo.setEstadoValidacion(Dominios.ESTADO_VALIDACION_FUTURO);
+			this.validacionArchivo.setDescripcionErrorEstructura("Archivo con fecha futura, no se procesa");
 		}
 	}
 

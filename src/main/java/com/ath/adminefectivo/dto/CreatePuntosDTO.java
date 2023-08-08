@@ -28,6 +28,7 @@ public class CreatePuntosDTO {
 	private String tipoPunto;
 	private String nombrePunto;
 	private String codigoCiudad;
+	private String estado;
 
 	//Bancos
 	private Integer codigoCompensacion;

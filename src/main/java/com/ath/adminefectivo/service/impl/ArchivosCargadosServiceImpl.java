@@ -166,11 +166,9 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 		Date fechaGuardar;
 		fechaGuardar = parametrosService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
 
-		if (Dominios.ESTADO_VALIDACION_CORRECTO.equals(validacionArchivo.getEstadoValidacion()) ) {
+		if (Dominios.ESTADO_VALIDACION_CORRECTO.equals(validacionArchivo.getEstadoValidacion()) 
+				|| Dominios.ESTADO_VALIDACION_REPROCESO.equals(validacionArchivo.getEstadoValidacion())) {
 			this.cambiarEstadoArchivoOK(validacionArchivo, alcance);
-			if (alcance) {
-				validacionArchivo.setEstadoValidacion(Dominios.ESTADO_VALIDACION_REPROCESO);
-			}
 		}			
 		ArchivosCargados archivosCargados = ArchivosCargados.builder()
 				.estado(Constantes.REGISTRO_ACTIVO)
@@ -380,7 +378,7 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 	 */
 	private void cambiarEstadoArchivoOK (ValidacionArchivoDTO validacionArchivo, boolean alcance) {
 		
-		if (alcance) {
+		if (validacionArchivo.getEstadoValidacion() == Dominios.ESTADO_VALIDACION_REPROCESO) {
 			List<ArchivosCargados> archivosCargados = archivosCargadosRepository
 					.getRegistrosCargadosPorEstadoCargueyNombreUpperyModelo(Dominios.ESTADO_VALIDACION_REPROCESO, 
 							validacionArchivo.getNombreArchivo().toUpperCase(),

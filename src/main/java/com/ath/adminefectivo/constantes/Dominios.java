@@ -126,6 +126,7 @@ public final class Dominios {
 	public static final String ESTADO_VALIDACION_REPROCESO = "REPROCESO";
 	public static final String ESTADO_VALIDACION_REPROCESADO = "REPROCESADO";
 	public static final String ESTADO_VALIDACION_REEMPLAZADORP = "REEMPLAZADORP";
+	public static final String ESTADO_VALIDACION_FUTURO = "FUTURO";
 	
 	/**
 	 * Dominio de agrupamiento de los detalles de archivo
