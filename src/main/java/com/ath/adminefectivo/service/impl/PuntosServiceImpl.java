@@ -286,6 +286,26 @@ public class PuntosServiceImpl implements IPuntosService {
 			return puntos;
 	}
 
-
-
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Puntos validarPuntoActualizar(Integer codigoPunto, String tipoPunto) {
+	
+		var punto = puntosRepository.getById(codigoPunto);
+		if (!Objects.isNull(punto) ) {
+			if (!punto.getTipoPunto().equals(tipoPunto)) {
+				throw new NegocioException(ApiResponseCode.ERROR_TIPO_PUNTO_DIFERENTE.getCode(),
+						ApiResponseCode.ERROR_TIPO_PUNTO_DIFERENTE.getDescription(),
+						ApiResponseCode.ERROR_TIPO_PUNTO_DIFERENTE.getHttpStatus());
+			}
+		}
+		else {
+			throw new NegocioException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
+					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
+		}
+		return punto;
+	}
+		
 }

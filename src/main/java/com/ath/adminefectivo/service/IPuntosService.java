@@ -169,4 +169,14 @@ public interface IPuntosService {
 	
 	Puntos crearPunto(Puntos punto);
 	
+	/**
+	 * Valida que un punto sea del tipo dado.
+	 * 
+	 * @param codigoPunto
+	 * @param tipo punto
+	 * @return Puntos
+	 * @author rafael.parra
+	 */
+	Puntos validarPuntoActualizar(Integer codigoPunto, String tipoPunto);
+	
 }
