@@ -48,8 +48,8 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 		auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION, 
 				fechaProceso, Constantes.ESTADO_PROCESO_INICIO, Constantes.ESTADO_PROCESO_INICIO);
 		
-		List<ArchivosCargados> archivosCargados = archivosCargadosService
-				.listadoArchivosCargadosSinProcesarDefinitiva(agrupador, fechaProceso, Dominios.ESTADO_VALIDACION_CORRECTO);
+		List<Long> archivosCargados = archivosCargadosService
+				.listadoIdArchivosCargados(agrupador, fechaProceso, Dominios.ESTADO_VALIDACION_CORRECTO);
 		if (archivosCargados.isEmpty()) {
 			auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION, 
 					fechaProceso, Constantes.ESTADO_PROCESO_ERROR, 
@@ -59,7 +59,7 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 					ApiResponseCode.ERROR_ARCHICOS_CARGADOS_NO_ENCONTRADO.getHttpStatus());
 		} else {
 			validarLogProcesoDiario();
-			validarExistenciaArchivos(archivosCargados, fechaProceso);
+			validarExistenciaArchivos(archivosCargados.size(), fechaProceso);
 			operacionesCertificadasService.procesarArchivosCertificaciones(archivosCargados);
 			
 			// siguiente l�nea, incluye conciliaci�n autom�tica (en procedimientos de BD)
@@ -124,10 +124,10 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 	 * @param archivosCargados
 	 * @author prv_ccastano
 	 */
-	private void validarExistenciaArchivos(List<ArchivosCargados> archivosCargados, Date fechaProceso) {
+	private void validarExistenciaArchivos(Integer numArchivosCargados, Date fechaProceso) {
 		
 		Integer valor = parametroService.valorParametroEntero(Constantes.NUMERO_MINIMO_ARCHIVOS_PARA_CIERRE);
-		if (archivosCargados.size() < valor) {
+		if ( numArchivosCargados < valor) {
 			auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
 					fechaProceso, Constantes.ESTADO_PROCESO_ERROR, 
 					ApiResponseCode.ERROR_NO_CUMPLE_MINIMO_ARCHIVOS_CARGADOS_CERTIFICACION.getDescription());

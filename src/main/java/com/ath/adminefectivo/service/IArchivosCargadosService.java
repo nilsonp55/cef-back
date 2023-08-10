@@ -48,6 +48,8 @@ public interface IArchivosCargadosService {
 	 */
 	ArchivosCargadosDTO consultarArchivo(Long idArchivo);
 	
+	ArchivosCargados consultarArchivoById(Long idArchivo);
+
 	/**
 	 * Metodo encargado de eliminar logicamente un archivo
 	 * 
@@ -84,28 +86,28 @@ public interface IArchivosCargadosService {
 	 * @return Long
 	 * @author CamiloBenavides
 	 */
-	Long persistirDetalleArchivoCargado(ValidacionArchivoDTO validacionArchivo,  boolean soloErrores, boolean alcance);
-	
+	Long persistirDetalleArchivoCargado(ValidacionArchivoDTO validacionArchivo, boolean soloErrores, boolean alcance);
+
 	/**
 	 * Metodo encagado de obtener los archivos cargados actuales que no se han
-	 * procesado o generado el debido proceso de las operaciones programadas a traves
-	 * del tipo de archivo cargado
+	 * procesado o generado el debido proceso de las operaciones programadas a
+	 * traves del tipo de archivo cargado
 	 * 
 	 * @param idModeloArchivo
 	 * @return List<ArchivosCargadosDTO>
 	 * @author duvan.naranjo
 	 */
 	List<ArchivosCargadosDTO> getArchivosCargadosSinProcesar(String idModeloArchivo);
-	
+
 	/**
 	 * Metodo encagado de actualizar el archivo
 	 * 
 	 * @param archivosCargadosDTO
-	 * @return 
+	 * @return
 	 * @author duvan.naranjo
 	 */
 	void actualizarArchivosCargados(ArchivosCargadosDTO archivosCargadosDTO);
-	
+
 	/**
 	 * Servicio encargado de consultar los archivos cargados por filtro y con
 	 * paginación
@@ -121,34 +123,46 @@ public interface IArchivosCargadosService {
 	 * Metodo encagado de listar los archivos cargados sin procesar de definitiva
 	 * 
 	 * @param archivosCargadosDTO
-	 * @return 
+	 * @return
 	 * @author duvan.naranjo
 	 */
 
-	List<ArchivosCargados> listadoArchivosCargadosSinProcesarDefinitiva(String agrupador,
-			Date fecha, String estado);
-	
+	List<ArchivosCargados> listadoArchivosCargadosSinProcesarDefinitiva(String agrupador, Date fecha, String estado);
+
+	/**
+	 * Metodo encagado de listar los id de archivos cargadosen una fcha, con tipo de
+	 * agrupador y que estꮠen un estado de cargue especco
+	 * 
+	 * @param String agrupador
+	 * @param Date   fecha
+	 * @param String estado
+	 * @return List<Long>
+	 * @author rafael.parra
+	 */
+	List<Long> listadoIdArchivosCargados(String agrupador, Date fecha, String estado);
+
 	/**
 	 * Metodo encagado de actualizar el archivo
 	 * 
 	 * @param archivosCargadosDTO
-	 * @return 
+	 * @return
 	 * @author duvan.naranjo
 	 */
 	void actualizarArchivosCargados(ArchivosCargados archivosCargados);
-	
+
 	/**
-	 * Metodo encargado de realizar la consulta por archivos cargados 
-	 * segun una fecha que corresponda
+	 * Metodo encargado de realizar la consulta por archivos cargados segun una
+	 * fecha que corresponda
 	 * 
 	 * @param fechaActual
 	 * @return List<ArchivosCargadosDTO>
 	 * @author duvan.naranjo
 	 */
 	List<ArchivosCargados> consultarArchivosPorFecha(Date fechaActual);
-	
+
 	/**
 	 * Metodo encargado de realizar la consulta de archivos cargados por estado
+	 * 
 	 * @param estado
 	 * @return List<ArchivosCargadosDTO>
 	 * @author rafael.parra
