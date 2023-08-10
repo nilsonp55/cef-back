@@ -24,26 +24,22 @@ public class GenerarArchivoController {
 	 * @param fecha,tipoContabilidad,codBanco, o numero de bancos
 	 * @return ResponseEntity<ApiResponseADE<String>>
 	 * @author Miller.Caro
+	 * @author prv_nparra
 	 */
-	
+
 	@Autowired
 	GenerarArchivoDelegate generarArchivoDelegate;
-	
+
 	@GetMapping(value = "${endpoints.GenerarArchivo.generar}")
-	  public ResponseEntity<InputStreamResource> generarContabilidadCierre(
-			@RequestParam(value = "fecha") Date fecha,
+	public ResponseEntity<InputStreamResource> generarContabilidadCierre(@RequestParam(value = "fecha") Date fecha,
 			@RequestParam(value = "tipoContabilidad") String tipoContabilidad,
-			@RequestParam(value = "codBanco") int codBanco
-			) {
-		RespuestaGenerarArchivoDTO archivo =generarArchivoDelegate.generarArchivo(tipoContabilidad, codBanco);
- 		 HttpHeaders headers = new HttpHeaders();
- 		 headers.add("Content-Disposition", "attachment; filename="+archivo.getNombreArchivo());
- 		ByteArrayInputStream bais =	new ByteArrayInputStream(archivo.getArchivoBytes().toByteArray());
-		 return ResponseEntity.ok().headers(headers).body(new InputStreamResource(bais));
-		 
+			@RequestParam(value = "codBanco") int codBanco) {
+		RespuestaGenerarArchivoDTO archivo = generarArchivoDelegate.generarArchivo(tipoContabilidad, codBanco);
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Access-Control-Expose-Headers", "Content-Disposition");
+		headers.add("Content-Disposition", "attachment; filename=" + archivo.getNombreArchivo());
+		ByteArrayInputStream bais = new ByteArrayInputStream(archivo.getArchivoBytes().toByteArray());
+		return ResponseEntity.ok().headers(headers).body(new InputStreamResource(bais));
+
 	}
 }
-
-
-
-
