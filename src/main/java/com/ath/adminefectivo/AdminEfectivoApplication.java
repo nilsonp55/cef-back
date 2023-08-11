@@ -12,5 +12,4 @@ public class AdminEfectivoApplication {
 		TimeZone.setDefault(TimeZone.getTimeZone("GMT-5"));
 		SpringApplication.run(AdminEfectivoApplication.class, args);
 	}
-
 }
