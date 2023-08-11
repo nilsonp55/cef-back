@@ -96,7 +96,7 @@ public interface ArchivosCargadosRepository extends JpaRepository<ArchivosCargad
 	 * @return List<Long>
 	 * @author rafael.parra
 	 */
-	@Query("select ac.id_archivo from ArchivosCargados ac " + "where estadoCargue = ?3 and fechaArchivo = ?2 and "
+	@Query("select ac.idArchivo from ArchivosCargados ac where estadoCargue = ?3 and fechaArchivo = ?2 and "
 			+ "idModeloArchivo IN (select idMaestroDefinicionArchivo from MaestroDefinicionArchivo "
 			+ "where agrupador = ?1)")
 	List<Long> getIdArchivosCargadosPorAgrupadorFechaEstado(String agrupador, Date fecha, String estado);
