@@ -168,8 +168,7 @@ public class UtilsString {
 	}
 
 	/**
-	 * Valida si el valor es un numero en caso de que no sea un numero
-	 * retorna falso
+	 * Valida si el valor es un numero en caso de que no sea un numero retorna falso
 	 * 
 	 * @param numero
 	 * @return boolean
@@ -180,11 +179,12 @@ public class UtilsString {
 		try {
 			Integer.parseInt(numero);
 			return true;
-		} catch (NumberFormatException  e) {
+		} catch (NumberFormatException e) {
 			return false;
 		}
 
 	}
+
 	/**
 	 * recibe un string y lo convierte en tipo date segun los dominios existentes
 	 * 
@@ -196,7 +196,7 @@ public class UtilsString {
 	public static Date convertirFecha(String fecha, List<String> listaDominioFecha) {
 		String[] strArray = new String[listaDominioFecha.size()];
 		strArray = listaDominioFecha.toArray(strArray);
-		if(isFecha(fecha, listaDominioFecha)) {
+		if (isFecha(fecha, listaDominioFecha)) {
 			try {
 				return DateUtils.parseDateStrictly(fecha, strArray);
 			} catch (ParseException e) {
@@ -207,7 +207,7 @@ public class UtilsString {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * recibe una fecha, le resta un dia y devuelve nueva fecha
 	 * 
@@ -222,29 +222,29 @@ public class UtilsString {
 		calendar.add(Calendar.DAY_OF_YEAR, dias);
 		return calendar.getTime();
 	}
-	
-	/**     
-	 * Retorna valor Date si la cadena de texto corresponde a una fecha con horas, 
-	 * y minutos recibe una lista de formatos de fecha validos.  Si no cumple el formato     
-	 * retorna nulo    
-	 *       
-	 * @param str    
-	 * @param listFormato     
-	 * @return boolean     
-	 * @author rparra     
-	 */    
+
+	/**
+	 * Retorna valor Date si la cadena de texto corresponde a una fecha con horas, y
+	 * minutos recibe una lista de formatos de fecha validos. Si no cumple el
+	 * formato retorna nulo
+	 * 
+	 * @param str
+	 * @param listFormato
+	 * @return boolean
+	 * @author rparra
+	 */
 	public static Date toDateWithHours(String str, List<String> listFormato) {
-        String[] strArray;
-        if (listFormato.isEmpty()) {
-            strArray = new String[] { Constantes.FECHA_HORA_PATTERN_DD_MM_YYYY_HH_MM_SS };
-        } else {
-            strArray = new String[listFormato.size()];
-            strArray = listFormato.toArray(strArray);
-        }
-        try {
-        	return DateUtils.parseDate(str, strArray);
-        } catch (Exception e) {
-            return null;
-        }
-    }
+		String[] strArray;
+		if (listFormato.isEmpty()) {
+			strArray = new String[] { Constantes.FECHA_HORA_PATTERN_DD_MM_YYYY_HH_MM_SS };
+		} else {
+			strArray = new String[listFormato.size()];
+			strArray = listFormato.toArray(strArray);
+		}
+		try {
+			return DateUtils.parseDate(str, strArray);
+		} catch (Exception e) {
+			return null;
+		}
+	}
 }
