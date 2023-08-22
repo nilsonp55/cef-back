@@ -268,13 +268,14 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 				break;
 			}
 			case "TH": {
-				if (nombreArchivo.length() == 23) {
-					fecha = nombreArchivo.substring(11, 19);
-				} else {
-					if (nombreArchivo.length() == 24) {
-						fecha = nombreArchivo.substring(12, 20);
-					} else {
-						fecha = nombreArchivo.substring(14, 22);
+				if(nombreArchivo.length() == 26) {
+					fecha = nombreArchivo.substring(14, 22);
+				}else {
+					if(nombreArchivo.length() == 27) {
+						fecha = nombreArchivo.substring(15, 23);
+					}
+					else {
+						fecha = nombreArchivo.substring(17, 25);
 					}
 				}
 				mascaraFecha = maestroDefinicion.getMascaraArch().substring(19, 27);
