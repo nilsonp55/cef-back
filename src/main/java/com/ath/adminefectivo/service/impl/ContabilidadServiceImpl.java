@@ -199,21 +199,21 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 			OperacionIntradiaDTO operacionIntradia, Date fechaSistema) {
 		
 		long valorImpuesto = 0;
-		TransaccionesInternasDTO operacionIntradia11 = generarTransaccionInternaIntradia(tipoContabilidad, 11,	operacionIntradia, fechaSistema);
+		TransaccionesInternasDTO operacionIntradia11 = generarTransaccionInternaIntradia(tipoContabilidad, "C",	operacionIntradia, fechaSistema);
 
-		if ( operacionIntradia.getBancoAVAL() == Constantes.BANCO_BOGOTA ) {
-			TransaccionesInternasDTO operacionIntradia12 = generarTransaccionInternaIntradia(tipoContabilidad, 12, operacionIntradia, fechaSistema);
+		if ( Constantes.BANCO_BOGOTA.equals(operacionIntradia.getBancoAVAL()) && Constantes.NOMBRE_SALIDA.equals(operacionIntradia.getEntradaSalida())) {
+			TransaccionesInternasDTO operacionIntradia12 = generarTransaccionInternaIntradia(tipoContabilidad, "I", operacionIntradia, fechaSistema);
 			operacionIntradia12.setValor(this.calcularValorConImpuesto(operacionIntradia11.getValor(), Dominios.IMPUESTO_IVA));
 			operacionIntradia12.setTipoImpuesto(Integer.valueOf(Dominios.IMPUESTO_IVA));
 			transaccionesInternasService.saveTransaccionesInternasById(operacionIntradia12);
 			valorImpuesto = operacionIntradia12.getValor();
 		}
 		
-		// el valor de la comisión intraday es el valor parametrizado menos el impuesto liquidado
+		// el valor de la comision intraday es el valor parametrizado menos el impuesto liquidado
 		operacionIntradia11.setValor(operacionIntradia11.getValor() - valorImpuesto);
 		transaccionesInternasService.saveTransaccionesInternasById(operacionIntradia11);
 
-		TransaccionesInternasDTO operacionIntradia13 = generarTransaccionInternaIntradia(tipoContabilidad, 13,
+		TransaccionesInternasDTO operacionIntradia13 = generarTransaccionInternaIntradia(tipoContabilidad, "P",
 				operacionIntradia, fechaSistema);
 		operacionIntradia13.setCodigoComision(null);
 		operacionIntradia13.setMedioPago(Dominios.MEDIOS_PAGO_DESCUENTO);
@@ -483,14 +483,18 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 	/**
 	 * 
 	 * @param tipoProceso
-	 * @param tipoTransaccion
+	 * @param tipoConcepto  ("C" comision, "I" impuesto, "P" Pago) 
 	 * @param operacionProgramada
 	 * @param codigoPunto
 	 * @return TransaccionesInternasDTO
 	 */
-	private TransaccionesInternasDTO generarTransaccionInternaIntradia(String tipoProceso, Integer tipoTransaccion,
+	private TransaccionesInternasDTO generarTransaccionInternaIntradia(String tipoProceso, String tipoConcepto,
 			OperacionIntradiaDTO transaccionIntradia, Date fechaSistema) {
 		
+		Integer tipoTransaccion = Constantes.NOMBRE_SALIDA.equals(transaccionIntradia.getEntradaSalida()) ? 11 : 21 ;
+		if (tipoConcepto != "C" ) {
+			tipoTransaccion = "I".equals(tipoConcepto) ? tipoTransaccion + 1 : tipoTransaccion + 2 ;
+		}
 		TransaccionesInternasDTO transaccionInternaDTO = TransaccionesInternasDTO.builder()
 				.idOperacion(null)
 				.idGenerico(Constantes.ID_GENERICO)

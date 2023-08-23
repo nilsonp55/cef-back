@@ -126,7 +126,7 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 		this.validacionesAchivoCargado(idMaestroDefinicion, nombreArchivo, alcance);
 		if ( !Objects.equals(this.validacionArchivo.getEstadoValidacion(), Dominios.ESTADO_VALIDACION_FUTURO )) {
 			Long idArchivo = archivosCargadosService.persistirDetalleArchivoCargado(validacionArchivo, false, alcance);
-	
+			this.validacionArchivo.setIdArchivo(idArchivo); 
 			String urlDestino = (Objects.equals(this.validacionArchivo.getEstadoValidacion(),
 					Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO))
 							? parametrosService.valorParametro(Parametros.RUTA_ARCHIVOS_ERRADOS)
@@ -135,6 +135,9 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 			this.filesService.moverArchivos(this.validacionArchivo.getUrl(),
 					this.validacionArchivo.getMaestroDefinicion().getUbicacion().concat(urlDestino),
 					this.validacionArchivo.getNombreArchivo(),idArchivo.toString());
+		}
+		else {
+			this.validacionArchivo.setIdArchivo((long) 0); 
 		}
 		return ValidacionArchivoDTO.conversionRespuesta(this.validacionArchivo);
 	}
@@ -244,12 +247,12 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 		var fechaArchivo = validacionArchivoService.validarFechaArchivoBetween(nombreArchivo,
 				maestroDefinicion.getMascaraArch(), fechaActual, fechaAnteriorHabil);
 		
-		if (fechaArchivo.compareTo(fechaAnteriorHabil) <= 0) {
+		this.validacionArchivo = ValidacionArchivoDTO.builder().nombreArchivo(nombreArchivo)
+				.descripcion(maestroDefinicion.getDescripcionArch()).fechaArchivo(fechaArchivo)
+				.maestroDefinicion(maestroDefinicion).url(url)
+				.numeroRegistros(obtenerBumeroRegistros(maestroDefinicion, contenido.size())).build();
 		
-			this.validacionArchivo = ValidacionArchivoDTO.builder().nombreArchivo(nombreArchivo)
-					.descripcion(maestroDefinicion.getDescripcionArch()).fechaArchivo(fechaArchivo)
-					.maestroDefinicion(maestroDefinicion).url(url)
-					.numeroRegistros(obtenerBumeroRegistros(maestroDefinicion, contenido.size())).build();
+		if (fechaArchivo.compareTo(fechaAnteriorHabil) <= 0) {
 			if (this.validarCantidadRegistros(maestroDefinicion, this.validacionArchivo.getNumeroRegistros())) {
 				this.validacionArchivo = validacionArchivoService.validar(maestroDefinicion, contenido,
 						validacionArchivo);
