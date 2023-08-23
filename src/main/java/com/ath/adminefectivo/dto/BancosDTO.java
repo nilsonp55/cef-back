@@ -33,6 +33,8 @@ public class BancosDTO {
 	
 	private String nombreBanco;
 	
+	private Boolean cobraIntraday;
+	
 	/**
 	 * Funcion que retorna la entidad recibiendo un DTO *
 	 */

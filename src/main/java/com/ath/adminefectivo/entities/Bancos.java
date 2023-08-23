@@ -46,6 +46,9 @@ public class Bancos {
 	@Column(name = "NOMBRE_BANCO")
 	private String nombreBanco;
 	
+	@Column(name = "COBRA_INTRADAY")
+	private Boolean cobraIntraday;
+	
 	@OneToOne
 	@JoinColumn(name = "COD_PUNTO")
 	private Puntos puntos;

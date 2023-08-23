@@ -70,6 +70,8 @@ public class OperacionesCertificadasDTO {
 	
 	private String codigoPropioTDV;
 	
+	private String moneda;
+	
 	/**
 	 * Funcion que convierte el archivo DTO OperacionesCertificadasDTO a Entity OperacionesCertificadas
 	 * @author cesar.castano

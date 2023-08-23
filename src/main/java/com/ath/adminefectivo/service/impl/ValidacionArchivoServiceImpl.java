@@ -270,7 +270,8 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 			case "TH": {
 				if(nombreArchivo.length() == 26) {
 					fecha = nombreArchivo.substring(14, 22);
-				}else {
+				}
+				else {
 					if(nombreArchivo.length() == 27) {
 						fecha = nombreArchivo.substring(15, 23);
 					}
@@ -381,65 +382,65 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 		try {
 			switch (inicioNombre) {
 
-			case "AC": {
-				fecha = nombreArchivo.substring(5, 11);
-				mascaraFecha = mascaraArchivo.substring(8, 14);
-				fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
-				break;
-			}
-			case "BS": {
-				fecha = nombreArchivo.substring(8, 14);
-				mascaraFecha = mascaraArchivo.substring(13, 19);
-				fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
-				break;
-			}
-			case "BI": {
-				fecha = nombreArchivo.substring(8, 14);
-				mascaraFecha = mascaraArchivo.substring(13, 19);
-				fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
-				break;
-			}
-			case "TH": {
-				if (nombreArchivo.length() == 23) {
-					fecha = nombreArchivo.substring(11, 19);
-				} else {
-					if (nombreArchivo.length() == 24) {
-						fecha = nombreArchivo.substring(12, 20);
-					} else {
+				case "AC": {
+					fecha = nombreArchivo.substring(5, 11);
+					mascaraFecha = mascaraArchivo.substring(8, 14);
+					fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
+					break;
+				}
+				case "BS": {
+					fecha = nombreArchivo.substring(8, 14);
+					mascaraFecha = mascaraArchivo.substring(13, 19);
+					fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
+					break;
+				}
+				case "BI": {
+					fecha = nombreArchivo.substring(8, 14);
+					mascaraFecha = mascaraArchivo.substring(13, 19);
+					fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
+					break;
+				}
+				case "TH": {
+					if (nombreArchivo.length() == 26) {
 						fecha = nombreArchivo.substring(14, 22);
+					} else {
+						if (nombreArchivo.length() == 27) {
+							fecha = nombreArchivo.substring(15, 23);
+						} else {
+							fecha = nombreArchivo.substring(17, 25);
+						}
+					}
+					mascaraFecha = mascaraArchivo.substring(19, 27);
+					fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
+	
+					break;
+				}
+				case "SC": {
+					if (nombreArchivo.contains("VILLAS")) {
+						fecha = nombreArchivo.substring(4, 14);
+					} else {
+						fecha = nombreArchivo.substring(4, 12);
+					}
+					mascaraFecha = mascaraArchivo.substring(5, 13);
+					fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
+					break;
+				}
+				default: {
+					String[] arregloMascara = mascaraArchivo.split(Constantes.SEPARADOR_FECHA_ARCHIVO);
+					var arregloNombre = nombreArchivo
+							.replace(Constantes.SEPARADOR_FECHA_ARCHIVO, Constantes.SEPARADOR_EXTENSION_ARCHIVO)
+							.split(Constantes.REGEX_PUNTO);
+					if (arregloMascara[1].length() == arregloNombre[1].length()
+							|| arregloMascara[1].length() - arregloNombre[1].length() == 1) {
+						fechaArchivo = new SimpleDateFormat(arregloMascara[1]).parse(arregloNombre[1]);
 					}
 				}
-				mascaraFecha = mascaraArchivo.substring(19, 27);
-				fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
-
-				break;
 			}
-			case "SC": {
-				if (nombreArchivo.contains("VILLAS")) {
-					fecha = nombreArchivo.substring(4, 14);
-				} else {
-					fecha = nombreArchivo.substring(4, 12);
-				}
-				mascaraFecha = mascaraArchivo.substring(5, 13);
-				fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
-				break;
-			}
-			default: {
-				String[] arregloMascara = mascaraArchivo.split(Constantes.SEPARADOR_FECHA_ARCHIVO);
-				var arregloNombre = nombreArchivo
-						.replace(Constantes.SEPARADOR_FECHA_ARCHIVO, Constantes.SEPARADOR_EXTENSION_ARCHIVO)
-						.split(Constantes.REGEX_PUNTO);
-				if (arregloMascara[1].length() == arregloNombre[1].length()
-						|| arregloMascara[1].length() - arregloNombre[1].length() == 1) {
-					fechaArchivo = new SimpleDateFormat(arregloMascara[1]).parse(arregloNombre[1]);
-				}
-			}
-			}
-
+	
 		} catch (ParseException | NullPointerException | ArrayIndexOutOfBoundsException e) {
 			fechaArchivo = null;
 		}
-
+	
 		return fechaArchivo;
 	}
 

@@ -171,6 +171,21 @@ public interface IOperacionesProgramadasRepository
 	@Query(nativeQuery = true)
 	List<OperacionIntradiaDTO> consultaOperacionesIntradiaSalida(@Param("fechaInicio") Date fechaInicio, @Param("fechaFin") Date fechaFin, @Param("entradaSalida") String entradaSalida, @Param("tipoOperacion") String tipoOperacion);
 
+	/**
+	 * Retorna el id de un bancoAval yla operacion programada perteneciente al banco
+	 * en la fecha recibida para el tipo operacion recibido y que es salida (Venta)
+	 * 
+	 * @param fechaInicio
+	 * @param fechaFin
+	 * @param entradaSalida
+	 * @param tipoOperacion
+	 * @return OperacionIntradiaDTO
+	 * @author duvan.naranjo
+	 */
+	@Query(nativeQuery = true)
+	List<OperacionIntradiaDTO> consultaOperacionesIntradiaEntrada(@Param("fechaInicio") Date fechaInicio, @Param("fechaFin") Date fechaFin, @Param("entradaSalida") String entradaSalida, @Param("tipoOperacion") String tipoOperacion);
+
+	
 	@Query("SELECT op FROM OperacionesProgramadas op where idOperacion in (SELECT DISTINCT "
 			+" ti.idOperacion "
 			+ "FROM ErroresContables ec, "
