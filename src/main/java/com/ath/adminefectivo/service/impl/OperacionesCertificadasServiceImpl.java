@@ -609,32 +609,32 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	 * @author cesar.castano
 	 */
 	private String asignarTipoOperacion(String entradaSalida, Integer codPuntoOrigen, Integer codPuntoDestino, String tdv, Integer bancoAval,
-			String codigoDane) {
+            String codigoDane) {
 
-		var tipoOperacion = "";
-		
-		if (entradaSalida.equals(Constantes.NOMBRE_SALIDA)) {
-			tipoOperacion = procesarProvisiones(codPuntoDestino);
-			if (tipoOperacion.isEmpty()) {
-				tipoOperacion = procesarConsignaciones(codPuntoDestino);
-				if (tipoOperacion.isEmpty()) {
-					this.procesarOperacionOtros(codPuntoDestino);
-				}
-			}
-		} else {
-			if (entradaSalida.equals(Constantes.NOMBRE_ENTRADA)) {
-				tipoOperacion = procesarRecolleciones(codPuntoOrigen);
-				if (tipoOperacion.isEmpty()) {
-					tipoOperacion = procesarRetiros(codPuntoOrigen);
-					if (tipoOperacion.isEmpty()) {
-						this.procesarOperacionOtros(codPuntoOrigen);
-					}
-				}
-			}
-		}
+        var tipoOperacion = "";
+        
+        if (entradaSalida.equals(Constantes.NOMBRE_SALIDA)) {
+            tipoOperacion = procesarProvisiones(codPuntoDestino);
+            if (tipoOperacion.isEmpty()) {
+                tipoOperacion = procesarConsignaciones(codPuntoDestino);
+                if (tipoOperacion.isEmpty()) {
+                    tipoOperacion = this.procesarOperacionOtros(codPuntoDestino);
+                }
+            }
+        } else {
+            if (entradaSalida.equals(Constantes.NOMBRE_ENTRADA)) {
+                tipoOperacion = procesarRecolleciones(codPuntoOrigen);
+                if (tipoOperacion.isEmpty()) {
+                    tipoOperacion = procesarRetiros(codPuntoOrigen);
+                    if (tipoOperacion.isEmpty()) {
+                        tipoOperacion = this.procesarOperacionOtros(codPuntoOrigen);
+                    }
+                }
+            }
+        }
 
-		return tipoOperacion;
-	}
+        return tipoOperacion;
+    }
 
 	private String procesarOperacionOtros(Integer codigoPunto) {
 		var tipoOperacion = "";
