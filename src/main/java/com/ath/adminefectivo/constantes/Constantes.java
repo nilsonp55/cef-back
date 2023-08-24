@@ -53,6 +53,7 @@ public final class Constantes {
 	public static final String NAME_PRIVATE_KEY_RSA = "NAME_PRIVATE_KEY";
 	public static final Integer ESTADO_REGISTRO_ACTIVO = 1;
 	public static final Integer ESTADO_REGISTRO_INACTIVO = 2;
+	public static final Integer TIPO_MONEDA_BRINKS = 3;
 
 
 	/**
@@ -692,4 +693,5 @@ public static final String DELETE_SEPARADORES = "";
 	
 	public static final String MIN_DENOM_COP = "MIN_DENOM_COP";
 	public static final Integer BANCO_BOGOTA = 297;
+	public static final String MONEDA_COP = "COP";
 }

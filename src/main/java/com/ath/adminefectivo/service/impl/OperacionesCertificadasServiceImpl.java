@@ -28,6 +28,7 @@ import com.ath.adminefectivo.entities.ArchivosCargados;
 import com.ath.adminefectivo.entities.Fondos;
 import com.ath.adminefectivo.entities.OperacionesCertificadas;
 import com.ath.adminefectivo.entities.RegistrosCargados;
+import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.IOperacionesCertificadasRepository;
 import com.ath.adminefectivo.service.IArchivosCargadosService;
@@ -456,10 +457,10 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 					|| (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IATCS))
 					|| (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IPRCS))) {
 				operaciones.setValorTotal(asignarValorTotal(fila, Constantes.INICIA_DENOMINACION_OTROS_FONDOS, longitud));
-				operaciones.setMoneda(asignarMoneda(fila, Constantes.INICIA_DENOMINACION_OTROS_FONDOS));
+				operaciones.setMoneda(Constantes.MONEDA_COP);
 			} else {
 				operaciones.setValorTotal(asignarValorTotal(fila, Constantes.INICIA_DENOMINACION_BRINKS, longitud));
-				operaciones.setMoneda(asignarMoneda(fila, Constantes.INICIA_DENOMINACION_BRINKS));
+				operaciones.setMoneda(asignarMoneda(fila, Constantes.TIPO_MONEDA_BRINKS));
 			}
 			
 			if (!operaciones.getValorTotal().equals(0.0)) {
@@ -752,13 +753,12 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	 */
 	private String asignarMoneda(String[] fila, Integer numeroInicia) {
         
-		String moneda = "COP";
-        if (numeroInicia.compareTo(Constantes.INICIA_DENOMINACION_BRINKS) == 0 ) {
-            moneda = dominioService.valorTextoDominio(Constantes.DOMINIO_DIVISAS, fila[4].trim());
-            if (Objects.isNull(moneda)) {
-            	moneda = "COP";
-            }
-        }         		
+		String moneda = Constantes.MONEDA_COP;
+		try {
+            moneda = dominioService.valorTextoDominio(Constantes.DOMINIO_DIVISAS, fila[numeroInicia].trim());
+    	} catch(AplicationException ae) {
+    		log.error("asignarMoneda: {}", ae.getMessage());
+    	}         		
         return moneda;
     }
 
