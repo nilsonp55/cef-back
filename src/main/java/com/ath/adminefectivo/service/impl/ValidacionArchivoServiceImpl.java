@@ -277,6 +277,11 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 					}
 					else {
 						fecha = nombreArchivo.substring(17, 25);
+						if(nombreArchivo.length() == 29) {
+							fecha = nombreArchivo.substring(17, 25);
+						} else {
+							fecha = null;
+						}
 					}
 				}
 				mascaraFecha = maestroDefinicion.getMascaraArch().substring(19, 27);
