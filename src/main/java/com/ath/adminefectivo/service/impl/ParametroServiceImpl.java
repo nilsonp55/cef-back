@@ -28,9 +28,6 @@ public class ParametroServiceImpl implements IParametroService {
 	
 	@Autowired
 	IAuditoriaProcesosService auditoriaProcesosService;
-	
-	@Autowired
-	IParametroService parametroService;
 
 	/**
 	 * {@inheritDoc}
@@ -72,7 +69,7 @@ public class ParametroServiceImpl implements IParametroService {
 				return Integer.valueOf(parametroOpt.get().getValor());
 			} catch (NumberFormatException e) {
 				auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION, 
-						parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO), 
+						valorParametroDate(Constantes.FECHA_DIA_PROCESO), 
 						Constantes.ESTADO_PROCESO_PROCESADO, 
 						ApiResponseCode.ERROR_PARAMETRO_NO_ENTERO.getDescription());
 				
@@ -82,7 +79,7 @@ public class ParametroServiceImpl implements IParametroService {
 			}
 		} else {
 			auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION, 
-					parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO), 
+					valorParametroDate(Constantes.FECHA_DIA_PROCESO), 
 					Constantes.ESTADO_PROCESO_PROCESADO, 
 					ApiResponseCode.ERROR_PARAMETRO_NOT_FOUND.getDescription());
 			

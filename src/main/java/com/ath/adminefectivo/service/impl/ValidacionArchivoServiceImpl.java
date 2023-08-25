@@ -336,7 +336,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 
 		Date fechaArchivo = this.obtenerFechaArchivo(nombreArchivo, mascaraArchivo);
 
-		if (!Objects.nonNull(fechaArchivo)) {
+		if (Objects.isNull(fechaArchivo)) {
 
 			throw new NegocioException(ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getCode(),
 					ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getDescription(),
@@ -360,7 +360,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 
 		Date fechaArchivo = this.obtenerFechaArchivo(nombreArchivo, mascaraArchivo);
 
-		if (!Objects.nonNull(fechaArchivo)) {
+		if (Objects.isNull(fechaArchivo)) {
 
 			throw new NegocioException(ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getCode(),
 					ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getDescription(),
@@ -376,10 +376,10 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 	public Date obtenerFechaArchivo(String nombreArchivo, String mascaraArchivo) {
 
 		Date fechaArchivo = null;
-		String inicioNombre = mascaraArchivo.substring(0, 2);
 		String fecha;
 		String mascaraFecha;
 		try {
+			String inicioNombre = mascaraArchivo.substring(0, 2);											
 			switch (inicioNombre) {
 
 				case "AC": {
@@ -425,7 +425,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 					fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
 					break;
 				}
-				default: {
+				case "PR": {
 					String[] arregloMascara = mascaraArchivo.split(Constantes.SEPARADOR_FECHA_ARCHIVO);
 					var arregloNombre = nombreArchivo
 							.replace(Constantes.SEPARADOR_FECHA_ARCHIVO, Constantes.SEPARADOR_EXTENSION_ARCHIVO)
@@ -434,6 +434,10 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 							|| arregloMascara[1].length() - arregloNombre[1].length() == 1) {
 						fechaArchivo = new SimpleDateFormat(arregloMascara[1]).parse(arregloNombre[1]);
 					}
+				}
+				default: {
+					fechaArchivo = new Date();
+					
 				}
 			}
 	
