@@ -284,7 +284,11 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 						}
 					}
 				}
-				mascaraFecha = maestroDefinicion.getMascaraArch().substring(19, 27);
+				if(Objects.nonNull(fecha)) {
+					mascaraFecha = maestroDefinicion.getMascaraArch().substring(19, 27);
+				} else {
+					mascaraFecha = "";
+				}
 				formatoFecha = new ArrayList<>();
 				formatoFecha.add(mascaraFecha);
 				if (!UtilsString.isFecha(fecha, formatoFecha)) {
