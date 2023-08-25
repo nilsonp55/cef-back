@@ -22,11 +22,14 @@ import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
 
+import lombok.extern.log4j.Log4j2;
+
 /**
  * Controlador responsable de exponer los metodos referentes al proceso de carga
  * de certificaciones
  * @author cesar.castano
  */
+@Log4j2
 @RestController
 @RequestMapping("${endpoints.CargueCertificacion}")
 public class CargueCertificacionController {
@@ -136,7 +139,7 @@ public class CargueCertificacionController {
 	public ResponseEntity<ApiResponseADE<List<ArchivosCargadosDTO>>> consultarArchivosCargaCertificacion(
 					@RequestParam("estado") String estado, 
 					@RequestParam("idMaestroDefinicion") String agrupador) {
-		
+		log.info("Estado: {}, MaestroDefinicion: {}", estado, agrupador);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<List<ArchivosCargadosDTO>>(cargueCertificacionDelegate.consultarArchivos(estado, agrupador),
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())

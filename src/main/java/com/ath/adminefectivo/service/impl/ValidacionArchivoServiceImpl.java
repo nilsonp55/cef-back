@@ -407,12 +407,19 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 						if (nombreArchivo.length() == 27) {
 							fecha = nombreArchivo.substring(15, 23);
 						} else {
-							fecha = nombreArchivo.substring(17, 25);
+							if(nombreArchivo.length() == 29) {
+								fecha = nombreArchivo.substring(17, 25);
+							} else {
+								fecha = null;
+							}							
 						}
 					}
-					mascaraFecha = mascaraArchivo.substring(19, 27);
-					fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
-	
+					if(Objects.nonNull(fecha)) {
+						mascaraFecha = mascaraArchivo.substring(19, 27);
+						fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
+					} else {
+						fechaArchivo = new Date();
+					}
 					break;
 				}
 				case "SC": {
@@ -441,7 +448,8 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 				}
 			}
 	
-		} catch (ParseException | NullPointerException | ArrayIndexOutOfBoundsException e) {
+		} catch (Exception e) {
+			log.error("Exception: {}", e);
 			fechaArchivo = null;
 		}
 	
