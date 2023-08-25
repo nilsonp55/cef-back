@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -110,7 +111,11 @@ public class UtilsString {
 	public static boolean isFecha(String str, List<String> listFormato) {
 		String[] strArray = new String[listFormato.size()];
 		strArray = listFormato.toArray(strArray);
-
+		
+		if(Objects.isNull(str)) {
+			return false;
+		}
+		
 		try {
 			DateUtils.parseDate(str, strArray);
 			return true;
