@@ -111,19 +111,53 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	public ValidacionArchivoDTO validarArchivo(String idMaestroDefinicion, String nombreArchivo) {
 		
 		boolean alcance = esProcesoDiarioCerrado();
-		this.validacionesAchivoCargado(idMaestroDefinicion, nombreArchivo, alcance);
+		Date fechaActual = parametrosService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
+		Date fechaAnteriorHabil = festivosNacionalesService.consultarAnteriorHabil(fechaActual);	
+		Date fechaAnteriorHabil2 = festivosNacionalesService.consultarAnteriorHabil(fechaAnteriorHabil);	
+		this.validacionesAchivoCargado(idMaestroDefinicion, nombreArchivo, alcance,fechaActual,fechaAnteriorHabil,fechaAnteriorHabil2);
 		return ValidacionArchivoDTO.conversionRespuesta(this.validacionArchivo);
 	}
 
+	
+	/**
+	 * procesa archivo y captura posibles excepciones sin relanzarlas
+	 */
+	private ValidacionArchivoDTO procesarArchivoSinExcep(String idMaestroDefinicion, String nombreArchivo, boolean alcance, 
+															Date fechaActual, Date fechaAnteriorHabil, Date fechaAnteriorHabil2) {
+		ValidacionArchivoDTO validacionArchivo = new ValidacionArchivoDTO();
+		try {
+			return this.procesarArchivo2(idMaestroDefinicion, nombreArchivo, alcance, fechaActual, fechaAnteriorHabil, fechaAnteriorHabil2);
+		} catch (NegocioException | NullPointerException e) {
+			log.error("Error validando nombre o fecha de archivo: {} -error: {}", this.validacionArchivo.getNombreArchivo(), e);
+			this.validacionArchivo.setIdArchivo((long) 0); 
+			this.validacionArchivo.setEstadoValidacion("FALLIDO");
+			this.validacionArchivo.setDescripcionErrorEstructura("Error validando nombre o fecha de archivo");
+		}
+		return validacionArchivo;
+	}
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	@Transactional
+	@Override		   
 	public ValidacionArchivoDTO procesarArchivo(String idMaestroDefinicion, String nombreArchivo) {
 		
+		Date fechaActual = parametrosService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
+		Date fechaAnteriorHabil = festivosNacionalesService.consultarAnteriorHabil(fechaActual);	
+		Date fechaAnteriorHabil2 = festivosNacionalesService.consultarAnteriorHabil(fechaAnteriorHabil);	
 		boolean alcance = esProcesoDiarioCerrado();	
-		this.validacionesAchivoCargado(idMaestroDefinicion, nombreArchivo, alcance);
+		var validacionArchivo = this.procesarArchivo2(idMaestroDefinicion, nombreArchivo, alcance, fechaActual, fechaAnteriorHabil, fechaAnteriorHabil2);
+		return validacionArchivo;
+	}
+	
+	/**
+	 * Procesamiento de un archivo dentro de una transaccion */
+	@Transactional	
+	private ValidacionArchivoDTO procesarArchivo2(String idMaestroDefinicion, String nombreArchivo, boolean alcance, 
+									Date fechaActual, Date fechaAnteriorHabil, Date fechaAnteriorHabil2) {
+		
+		this.validacionesAchivoCargado(idMaestroDefinicion, nombreArchivo, alcance,fechaActual,fechaAnteriorHabil,fechaAnteriorHabil2);
 		if ( !Objects.equals(this.validacionArchivo.getEstadoValidacion(), Dominios.ESTADO_VALIDACION_FUTURO )) {
 			Long idArchivo = archivosCargadosService.persistirDetalleArchivoCargado(validacionArchivo, false, alcance);
 			this.validacionArchivo.setIdArchivo(idArchivo); 
@@ -227,7 +261,8 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	 * @return void
 	 * @author cesar.castano
 	 */
-	private void validacionesAchivoCargado(String idMaestroDefinicion, String nombreArchivo, boolean alcance) {
+	private void validacionesAchivoCargado(String idMaestroDefinicion, String nombreArchivo, boolean alcance, 
+												Date fechaActual, Date fechaAnteriorHabil, Date fechaAnteriorHabil2) {		
 		this.validacionArchivo = new ValidacionArchivoDTO();
 		// Validaciones del archivo
 		var maestroDefinicion = maestroDefinicionArchivoService.consultarDefinicionArchivoById(idMaestroDefinicion);
@@ -240,18 +275,16 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 		String delimitador = lecturaArchivoService.obtenerDelimitadorArchivo(maestroDefinicion);
 		List<String[]> contenido = lecturaArchivoService.leerArchivo(dowloadFile.getFile(), delimitador, maestroDefinicion);
 		
-		Date fechaActual = parametrosService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
-		Date fechaAnteriorHabil = festivosNacionalesService.consultarAnteriorHabil(fechaActual);	
-		Date fechaAnteriorHabil2 = festivosNacionalesService.consultarAnteriorHabil(fechaAnteriorHabil);	
-		
-		var fechaArchivo = validacionArchivoService.validarFechaArchivoBetween(nombreArchivo,
-				maestroDefinicion.getMascaraArch(), fechaActual, fechaAnteriorHabil);
-		
+
 		this.validacionArchivo = ValidacionArchivoDTO.builder().nombreArchivo(nombreArchivo)
-				.descripcion(maestroDefinicion.getDescripcionArch()).fechaArchivo(fechaArchivo)
+				.descripcion(maestroDefinicion.getDescripcionArch())
 				.maestroDefinicion(maestroDefinicion).url(url)
 				.numeroRegistros(obtenerBumeroRegistros(maestroDefinicion, contenido.size())).build();
 		
+		var fechaArchivo = validacionArchivoService.validarFechaArchivoBetween(nombreArchivo,
+				maestroDefinicion.getMascaraArch(), fechaActual, fechaAnteriorHabil);
+		this.validacionArchivo.setFechaArchivo(fechaArchivo);
+				
 		if (fechaArchivo.compareTo(fechaAnteriorHabil) <= 0) {
 			if (this.validarCantidadRegistros(maestroDefinicion, this.validacionArchivo.getNumeroRegistros())) {
 				this.validacionArchivo = validacionArchivoService.validar(maestroDefinicion, contenido,
@@ -305,6 +338,9 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 		
 		// crea el registro en bitacora de automaticos
 		Date fechaActual = parametrosService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
+		Date fechaAnteriorHabil = festivosNacionalesService.consultarAnteriorHabil(fechaActual);	
+		Date fechaAnteriorHabil2 = festivosNacionalesService.consultarAnteriorHabil(fechaAnteriorHabil);
+		boolean alcance = esProcesoDiarioCerrado();	
 		log.info("Procesar archivos de Certificacion, fecha: {}", fechaActual.toString());
 		
 		BitacoraAutomaticosDTO bitacoraDTO = BitacoraAutomaticosDTO.builder()
@@ -315,9 +351,10 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 		this.consultarArchivos(Constantes.ESTADO_CARGUE_PENDIENTE, Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_CERTIFICACION)
 				.forEach(archivoCerti -> 
 					validacionesArchivos.add(
-							this.procesarArchivo(archivoCerti.getIdModeloArchivo(), archivoCerti.getNombreArchivo()))
+							this.procesarArchivoSinExcep(archivoCerti.getIdModeloArchivo(), archivoCerti.getNombreArchivo(),
+															alcance, fechaActual,fechaAnteriorHabil,fechaAnteriorHabil2))
 				);
-		log.info("Archivos a procesar: {}", validacionesArchivos.size());
+		log.info("Archivos procesados: {}", validacionesArchivos.size());
 		
 		this.procesarValidacionRealizada(bitacoraDTO, validacionesArchivos);
 		bitacoraDTO.setFechaHoraFinal(new Date());
