@@ -445,6 +445,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 							|| arregloMascara[1].length() - arregloNombre[1].length() == 1) {
 						fechaArchivo = new SimpleDateFormat(arregloMascara[1]).parse(arregloNombre[1]);
 					}
+					break;
 				}
 				default: {
 					fechaArchivo = new Date();
