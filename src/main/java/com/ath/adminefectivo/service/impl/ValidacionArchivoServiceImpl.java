@@ -276,7 +276,6 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 						fecha = nombreArchivo.substring(15, 23);
 					}
 					else {
-						fecha = nombreArchivo.substring(17, 25);
 						if(nombreArchivo.length() == 29) {
 							fecha = nombreArchivo.substring(17, 25);
 						} else {
@@ -284,11 +283,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 						}
 					}
 				}
-				if(Objects.nonNull(fecha)) {
-					mascaraFecha = maestroDefinicion.getMascaraArch().substring(19, 27);
-				} else {
-					mascaraFecha = "";
-				}
+				mascaraFecha = maestroDefinicion.getMascaraArch().substring(19, 27);
 				formatoFecha = new ArrayList<>();
 				formatoFecha.add(mascaraFecha);
 				if (!UtilsString.isFecha(fecha, formatoFecha)) {
