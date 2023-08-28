@@ -789,9 +789,11 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	private void procesarSobranteFaltanteBrinks() {
 		for (var i = 0; i < listaAjustesValor.size(); i++) {
 			if (listaAjustesValor.get(i).getTipoAjuste().equals(Constantes.SOBRANTE_BRINKS)) {
+				log.info("Procesar sobrantes Brinks");
 				actualizarValorSobrante(listaAjustesValor.get(i).getNombrePunto(), listaAjustesValor.get(i).getValor());
 			} else {
 				if (listaAjustesValor.get(i).getTipoAjuste().equals(Constantes.FALTANTE_BRINKS)) {
+					log.info("Procesar faltantes Brinks");
 					actualizarValorFaltante(listaAjustesValor.get(i).getNombrePunto(),
 							listaAjustesValor.get(i).getValor());
 				}
@@ -968,7 +970,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	 */
 	@Transactional
 	private void procesarArchivoBrinks(ArchivosCargados elemento, List<DetallesDefinicionArchivoDTO> detalleArchivo) {
-		
+		log.info("Archivo: {}", elemento.getNombreArchivo());
 		var registro = new RegistroTipo1ArchivosFondosDTO();
 		for (var i = 0; i < elemento.getRegistrosCargados().size(); i++) {
 
@@ -1058,6 +1060,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 		else {
 			elemento.setEstadoCargue(Dominios.ESTADO_VALIDACION_ACEPTADO);
 		}
+		log.info("Actualizar archivos cargados: {}", elemento.getNombreArchivo());
 		archivosCargadosService.actualizarArchivosCargados(elemento);
 	}
 
