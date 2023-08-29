@@ -3,7 +3,6 @@ package com.ath.adminefectivo.factory;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import javax.annotation.PostConstruct;
 
@@ -27,8 +26,6 @@ public class ReglaSQL implements ITipoReglaInterface {
 	IParametroService parametroService;
 
 	private String sqlBaseMotor;
-
-	private List<ResultadoReglaDTO> resultadosReglas = new ArrayList<>();
 	
 	@PostConstruct
 	private void cargueInicial() {
@@ -37,22 +34,13 @@ public class ReglaSQL implements ITipoReglaInterface {
 
 	@Override
 	public boolean ejecutarRegla(ReglasDetalleArchivoDTO reglaVO, String valorCampo) {
+		List<ResultadoReglaDTO> resultadosReglas = new ArrayList<>();
+		String consulta = MessageFormat.format(this.sqlBaseMotor, reglaVO.getTablasAUsar(),
+				reglaVO.getExpresionSQL());
 
-		ResultadoReglaDTO resultadoPrevio = resultadosReglas.stream()
-				.filter(x -> Objects.equals(x.getIdRegla(), reglaVO.getIdRegla())
-						&& Objects.equals(x.getParametro(), valorCampo))
-				.findAny().orElse(null);
+		var resultadoConsulta = generalRepository.ejecutarQueryNativa(consulta, valorCampo);
+		resultadosReglas.add(new ResultadoReglaDTO(reglaVO.getIdRegla(), valorCampo, resultadoConsulta));
+		return resultadoConsulta;
 
-		if (Objects.nonNull(resultadoPrevio)) {
-			return resultadoPrevio.isResultado();
-		} else {
-			String consulta = MessageFormat.format(this.sqlBaseMotor, reglaVO.getTablasAUsar(),
-					reglaVO.getExpresionSQL());
-
-			var resultadoConsulta = generalRepository.ejecutarQueryNativa(consulta, valorCampo);
-			resultadosReglas.add(new ResultadoReglaDTO(reglaVO.getIdRegla(), valorCampo, resultadoConsulta));
-			return resultadoConsulta;
-
-		}
 	}
 }

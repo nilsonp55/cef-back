@@ -685,11 +685,13 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
 		OperacionesProgramadasDTO operacionesProgramadaConsignacion = this.generarOperacionConsignacion(contenido,
 				detallesArchivo, archivo, true);
-		var codigoPuntoDestino = this.consultarBancoPorCiudad(contenido, detallesArchivo,
+		var codigoPuntoOrigen = this.consultarBancoPorCiudad(contenido, detallesArchivo,
 				Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN);
-		operacionesProgramadaConsignacion.setCodigoPuntoDestino(codigoPuntoDestino);
+		operacionesProgramadaConsignacion.setCodigoPuntoDestino(codigoPuntoOrigen);
 		OperacionesProgramadasDTO operacionesProgramadaRetiro = this.generarOperacionRetiro(contenido, detallesArchivo,
 				archivo, true);
+		var codigoPuntoDestino = this.consultarBancoPorCiudad(contenido, detallesArchivo,
+				Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO);
 		operacionesProgramadaRetiro.setCodigoPuntoOrigen(codigoPuntoDestino);
 		operacionesProgramadaRetiro.setEsCambio(true);
 		operacionesProgramadaConsignacion.setEsCambio(true);
