@@ -1,13 +1,13 @@
 #/bin/bash
 
 ### Env variables 
-set ENV_URL="jdbc:postgresql://awue1athcef-pt-rds-cluster.c59hzuikncxn.us-east-1.rds.amazonaws.com:5432/ctrefc"
-set ENV_USER="controlefect"
-set ENV_PASS="123"
+set ARG_URL="jdbc:postgresql://db:5432/ctrefc"
+set ENV_USER=controlefect
+set ENV_PASS="123546"
 set ENV_SCHEMA="controlefect"
 set ENV_BUCKET="awue1athcef-pt-interfaces"
 set ENV_REGION="us-east-1"
-set JAR_FILE="target/admin-efectivo-0.0.1-SNAPSHOT.jar"
+set JAR_FILE=./target/admin-efectivo-*.jar
 
 ### build spring boot app with maven 
 #./mvnw clean verify 
@@ -16,9 +16,4 @@ set JAR_FILE="target/admin-efectivo-0.0.1-SNAPSHOT.jar"
 #set ENV_PASS="$(aws secretsmanager get-secret-value --secret-id awue1athcef-pt-rds-secrets --query SecretString --output text --region us-east-1)" 
 
 ### Build docker image
-docker build --build-arg ENV_URL=$ENV_URL,ENV_USER=$ENV_USER,ENV_SCHEMA=$ENV_SCHEMA,ENV_BUCKET=$ENV_BUCKET,ENV_REGION=$ENV_REGION,JAR_FILE=$JAR_FILE -t 652041729658.dkr.ecr.us-east-1.amazonaws.com/awue1athcef-pt-ecr-fargate:latest .
-
-### upload docker image to aws ECR
-#aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 652041729658.dkr.ecr.us-east-1.amazonaws.com
-#docker push 652041729658.dkr.ecr.us-east-1.amazonaws.com/awue1athcef-pt-ecr-fargate:latest
-
+docker build --build-arg ENV_URL=jdbc:postgresql://db:5432/ctrefc --build-arg ENV_USER=controlefect --build-arg ENV_PASS=123546 --build-arg ENV_SCHEMA=public --build-arg ENV_BUCKET=awue1athcef-pt-interfaces --build-arg ENV_REGION=us-east-1 --build-arg JAR_FILE=target/admin-efectivo-*.jar -t awue1athcef-pt-ecr-fargate:latest .
