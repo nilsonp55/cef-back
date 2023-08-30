@@ -47,7 +47,7 @@ import lombok.Setter;
 	  resultSetMapping = "Mapping.OperacionIntradiaDTO")
 
 @NamedNativeQuery(name = "OperacionesProgramadas.consultaOperacionesIntradiaEntrada", 
-query = "select fo.banco_aval as bancoAVAL, op.codigo_punto_destino as codigoPunto, op.entrada_salida as entradaSalida "
+query = "select fo.banco_aval as bancoAVAL, op.codigo_punto_origen as codigoPunto, op.entrada_salida as entradaSalida "
 		+ "from operaciones_programadas  op, fondos fo, bancos ba "
 		+ "where fo.codigo_punto  = op.codigo_fondo_tdv  "
 		+ "and ba.codigo_punto  = op.codigo_punto_origen  "
@@ -56,7 +56,7 @@ query = "select fo.banco_aval as bancoAVAL, op.codigo_punto_destino as codigoPun
 		+ "and op.tipo_operacion  in (:tipoOperacion) "
 		+ "and op.entrada_salida  = :entradaSalida "
 		+ "and op.fecha_origen  between  :fechaInicio and :fechaFin "
-		+ "group by fo.banco_aval, op.codigo_punto_destino, op.entrada_salida  ", 
+		+ "group by fo.banco_aval, op.codigo_punto_origen, op.entrada_salida  ", 
 resultSetMapping = "Mapping.OperacionIntradiaDTO")
 
 @SqlResultSetMapping(name = "Mapping.OperacionIntradiaDTO", classes = @ConstructorResult(targetClass = OperacionIntradiaDTO.class, columns = {
