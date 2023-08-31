@@ -205,8 +205,10 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 			String inicialMascara = nombreArchivo.substring(0, 2);
 			MaestroDefinicionArchivo maestroDefinicion = maestroDefinicionArchivoService
 									.consultarInicialMascara(inicialMascara);
-			listArchivosCargados.add(organizarDatosArchivo(x, estado, 
+			if (Objects.nonNull(inicialMascara)) {
+				listArchivosCargados.add(organizarDatosArchivo(x, estado, 
 					maestroDefinicion.getIdMaestroDefinicionArchivo(), maestroDefinicion.getMascaraArch()));
+			}
 		});
 		listArchivosCargados.sort(Comparator.comparing(ArchivosCargadosDTO::getFechaArchivo,
 				Comparator.nullsLast(Comparator.naturalOrder())));
