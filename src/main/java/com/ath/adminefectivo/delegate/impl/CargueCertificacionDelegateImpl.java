@@ -98,6 +98,7 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	 */
 	@Override
 	public Boolean eliminarArchivo(String nombreArchivo, String idMaestroArchivo) {
+		log.info("eliminarArchivo: {} - idMaestro: {}", nombreArchivo, idMaestroArchivo);
 		var maestrosDefinicion = maestroDefinicionArchivoService.consultarDefinicionArchivoById(idMaestroArchivo);
 		String carpeta = parametrosService.valorParametro("RUTA_ARCHIVOS_PENDIENTES");
 		String file = maestrosDefinicion.getUbicacion() + carpeta + nombreArchivo;
