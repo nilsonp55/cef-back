@@ -179,4 +179,12 @@
 			<url>https://devops-nexus.ath.net/repository/centralizacion-efectivo-group/</url>
 		</repository>
 	</distributionManagement>
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<properties>
+				<app.env>dev</app.env>
+			</properties>
+		</profile>
+	</profiles>
 </project>
