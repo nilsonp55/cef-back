@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import org.apache.poi.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -191,9 +192,10 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 	}
 
 	/**
-	 * 
-	 * @param operacionProgramada
-	 * @return
+	 *
+	 * @param tipoContabilidad
+	 * @param operacionIntradia
+	 * @param fechaSistema
 	 */
 	private void procesarRegistrosContabilidadIntradia(String tipoContabilidad,
 			OperacionIntradiaDTO operacionIntradia, Date fechaSistema) {
@@ -481,18 +483,18 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param tipoProceso
-	 * @param tipoConcepto  ("C" comision, "I" impuesto, "P" Pago) 
-	 * @param operacionProgramada
-	 * @param codigoPunto
-	 * @return TransaccionesInternasDTO
+	 * @param tipoConcepto ("C" comision, "I" impuesto, "P" Pago)
+	 * @param transaccionIntradia
+	 * @param fechaSistema
+	 * @return
 	 */
 	private TransaccionesInternasDTO generarTransaccionInternaIntradia(String tipoProceso, String tipoConcepto,
 			OperacionIntradiaDTO transaccionIntradia, Date fechaSistema) {
 		
-		Integer tipoTransaccion = Constantes.NOMBRE_SALIDA.equals(transaccionIntradia.getEntradaSalida()) ? 11 : 21 ;
-		if (tipoConcepto != "C" ) {
+		int tipoTransaccion = Constantes.NOMBRE_SALIDA.equals(transaccionIntradia.getEntradaSalida()) ? 11 : 21 ;
+		if ( Objects.equals(tipoConcepto, "C") ) {
 			tipoTransaccion = "I".equals(tipoConcepto) ? tipoTransaccion + 1 : tipoTransaccion + 2 ;
 		}
 		TransaccionesInternasDTO transaccionInternaDTO = TransaccionesInternasDTO.builder()

@@ -121,10 +121,17 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 
 	/**
 	 * procesa archivo y captura posibles excepciones sin relanzarlas
+	 * @param idMaestroDefinicion
+	 * @param nombreArchivo
+	 * @param alcance
+	 * @param fechaActual
+	 * @param fechaAnteriorHabil
+	 * @param fechaAnteriorHabil2
+	 * @return
 	 */
 	private ValidacionArchivoDTO procesarArchivoSinExcep(String idMaestroDefinicion, String nombreArchivo, boolean alcance,
 														 Date fechaActual, Date fechaAnteriorHabil, Date fechaAnteriorHabil2) {
-		ValidacionArchivoDTO validacionArchivo = new ValidacionArchivoDTO();
+
 		try {
 			return this.procesarArchivo2(idMaestroDefinicion, nombreArchivo, alcance, fechaActual, fechaAnteriorHabil, fechaAnteriorHabil2);
 		} catch (NegocioException | NullPointerException e) {
@@ -138,7 +145,10 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 
 
 	/**
-	 * {@inheritDoc}
+	 *
+	 * @param idMaestroDefinicion
+	 * @param nombreArchivo
+	 * @return
 	 */
 	@Override
 	public ValidacionArchivoDTO procesarArchivo(String idMaestroDefinicion, String nombreArchivo) {
@@ -147,12 +157,19 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 		Date fechaAnteriorHabil = festivosNacionalesService.consultarAnteriorHabil(fechaActual);
 		Date fechaAnteriorHabil2 = festivosNacionalesService.consultarAnteriorHabil(fechaAnteriorHabil);
 		boolean alcance = esProcesoDiarioCerrado();
-		var validacionArchivo = this.procesarArchivo2(idMaestroDefinicion, nombreArchivo, alcance, fechaActual, fechaAnteriorHabil, fechaAnteriorHabil2);
-		return validacionArchivo;
+		return this.procesarArchivo2(idMaestroDefinicion, nombreArchivo, alcance, fechaActual, fechaAnteriorHabil, fechaAnteriorHabil2);
 	}
 
 	/**
-	 * Procesamiento de un archivo dentro de una transaccion */
+	 * Procesamiento de un archivo dentro de una transaccion
+	 * @param idMaestroDefinicion
+	 * @param nombreArchivo
+	 * @param alcance
+	 * @param fechaActual
+	 * @param fechaAnteriorHabil
+	 * @param fechaAnteriorHabil2
+	 * @return
+	 */
 	@Transactional
 	public ValidacionArchivoDTO procesarArchivo2(String idMaestroDefinicion, String nombreArchivo, boolean alcance,
 												 Date fechaActual, Date fechaAnteriorHabil, Date fechaAnteriorHabil2) {

@@ -165,7 +165,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Boolean procesarArchivosCertificaciones(List<Long> IdsArchivosCargados) {
+	public Boolean procesarArchivosCertificaciones(List<Long> idsArchivosCargados) {
 
 		this.fechaProceso = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
 		int cuenta = 0; 
@@ -174,7 +174,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 														Dominios.ESTADO_CONCILIACION_NO_CONCILIADO);
 		this.fechaHoy = new Date();
 
-		for (Long elementoId : IdsArchivosCargados) {
+		for (Long elementoId : idsArchivosCargados) {
 			try {
 				cuenta = cuenta + 1;
 				// leer los registros de cada archivo
@@ -267,8 +267,8 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	 * @author cesar.castano
 	 */
 	@Transactional
-	private void procesarArchivoOtrosFondos(ArchivosCargados elemento,
-			List<DetallesDefinicionArchivoDTO> detalleArchivo) {
+	public void procesarArchivoOtrosFondos(ArchivosCargados elemento,
+										   List<DetallesDefinicionArchivoDTO> detalleArchivo) {
 
 		var registro = new RegistroTipo1ArchivosFondosDTO();
 
@@ -332,7 +332,6 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	 * @param fila
 	 * @param detalleArchivo
 	 * @param tipoRegistro
-	 * @param registro
 	 * @author cesar.castano
 	 */
 	private void procesarRegistroTipo5(String[] fila, List<DetallesDefinicionArchivoDTO> detalleArchivo,
@@ -446,7 +445,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 			operaciones.setFechaModificacion(this.fechaHoy);
 			operaciones.setIdArchivoCargado(elemento.getIdArchivo());
 			operaciones.setTipoOperacion(asignarTipoOperacion(entradaSal, codigoPuntoOrigenDestino.getCodigoPuntoOrigen(),
-					codigoPuntoOrigenDestino.getCodigoPuntoDestino(), registro.getTdv(),registro.getBancoAval(), registro.getCodigoDane()));
+					codigoPuntoOrigenDestino.getCodigoPuntoDestino()));
 			operaciones
 					.setTipoServicio(dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_SERVICIO, tipoServicio));
 			operaciones.setUsuarioCreacion(USER1);
@@ -486,9 +485,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	 * Metodo encargado de obtener el codigo Punto Destino y Origen
 	 * 
 	 * @param entradaSalida
-	 * @param codigoPunto
 	 * @param codigoPropio
-	 * @param tdv
 	 * @param codigoServicio
 	 * @return CodigoPuntoOrigenDestinoDTO
 	 */
@@ -560,7 +557,6 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	/**
 	 * Metodo encargado de asignar el codigo fondo TDV del registro tipo 01
 	 * 
-	 * @param fila
 	 * @return Fondos
 	 * @author cesar.castano
 	 */
@@ -602,14 +598,11 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 
 	/**
 	 * Metodo encargado de asignar el tipo de operacion
-	 * 
-	 * @param fila
-	 * @param tdv
+	 *
 	 * @return String
 	 * @author cesar.castano
 	 */
-	private String asignarTipoOperacion(String entradaSalida, Integer codPuntoOrigen, Integer codPuntoDestino, String tdv, Integer bancoAval,
-            String codigoDane) {
+	private String asignarTipoOperacion(String entradaSalida, Integer codPuntoOrigen, Integer codPuntoDestino) {
 
         var tipoOperacion = "";
         
@@ -764,8 +757,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 
 	/**
 	 * Metodo encargado de guardar los valores sobrantes y faltantes en una lista
-	 * 
-	 * @param fila
+	 *
 	 * @param ajusteValor
 	 * @author cesar.castano
 	 */
@@ -874,17 +866,17 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 			for (OperacionesCertificadas operacionesCertificadas : ocertificadas) {
 				operacionesCertificadas.setValorFaltante(valor);
 				operacionesCertificadasRepository.save(operacionesCertificadas);
-				break;
 			}
 		}
 	}
 
 	/**
 	 * Metodo encargado de actualizar los valores sobrantes del registro 05
-	 * 
-	 * @param codigoServicio
+	 * @param nombrePunto
 	 * @param valor
-	 * @author cesar.castano
+	 * @param fecha
+	 * @param tdv
+	 * @param codigoBanco
 	 */
 	private void actualizarValorSobranteNoBrinks(String nombrePunto, Double valor, Date fecha, String tdv,
 			int codigoBanco) {
@@ -922,8 +914,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 
 	/**
 	 * Metodo encargado de actualizar los valores faltantes del registro 05
-	 * 
-	 * @param codigoServicio
+	 *
 	 * @param valor
 	 * @author cesar.castano
 	 */
@@ -969,7 +960,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	 * @author cesar.castano
 	 */
 	@Transactional
-	private void procesarArchivoBrinks(ArchivosCargados elemento, List<DetallesDefinicionArchivoDTO> detalleArchivo) {
+	public void procesarArchivoBrinks(ArchivosCargados elemento, List<DetallesDefinicionArchivoDTO> detalleArchivo) {
 		log.info("Archivo: {}", elemento.getNombreArchivo());
 		var registro = new RegistroTipo1ArchivosFondosDTO();
 		for (var i = 0; i < elemento.getRegistrosCargados().size(); i++) {
@@ -1002,7 +993,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 				
 				break;
 			}
-			case 2: {
+			case 2, 4, 6, 7: {
 				break;
 			}
 			case 3: {
@@ -1023,10 +1014,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 									codigoPunto + nombrePunto, tipoServicio);
 				break;
 			}
-			case 4: {
-				break;
-			}
-			case 5: {
+                case 5: {
 				String tipoNovedad = determinarCampo(fila, detalleArchivo, Integer.parseInt(tipoRegistro),
 						Constantes.CAMPO_DETALLE_ARCHIVO_TIPONOVEDAD);
 				String codigoServicio = determinarCampo(fila, detalleArchivo, Integer.parseInt(tipoRegistro),
@@ -1037,13 +1025,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 						elemento.getFechaArchivo(), registro.getBancoAval(), registro.getTdv());
 				break;
 			}
-			case 6: {
-				break;
-			}
-			case 7: {
-				break;
-			}
-			default:
+                default:
 				auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
 						this.fechaProceso, Constantes.ESTADO_PROCESO_ERROR, 
 						ApiResponseCode.ERROR_TIPO_REGISTRO_NO_VALIDO.getDescription());

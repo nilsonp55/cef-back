@@ -1,6 +1,5 @@
 package com.ath.adminefectivo.service.impl;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
