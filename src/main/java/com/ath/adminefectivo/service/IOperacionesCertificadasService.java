@@ -40,7 +40,7 @@ public interface IOperacionesCertificadasService {
 	 * @return Boolean
 	 * @author cesar.castano
 	 */
-	Boolean procesarArchivosCertificaciones(List<Long> IdsArchivosCargados);
+	Boolean procesarArchivosCertificaciones(List<Long> idsArchivosCargados);
 
 	/**
 	 * Servicio encargado de obtener los registros de OperacionesCertirficadas que
