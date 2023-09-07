@@ -49,19 +49,16 @@ import lombok.extern.log4j.Log4j2;
 public class CargueCertificacionDelegateImpl implements ICargueCertificacionDelegate {
 
 	@Autowired
-	IFilesService filesService;
-
-	@Autowired
 	IArchivosCargadosService archivosCargadosService;
 
 	@Autowired
-	IParametroService parametrosService;
+	IBitacoraAutomaticosService bitacoraAutomaicosService;
 
 	@Autowired
-	IValidacionArchivoService validacionArchivoService;
+	IFestivosNacionalesService festivosNacionalesService;
 
 	@Autowired
-	IMaestroDefinicionArchivoService maestroDefinicionArchivoService;
+	IFilesService filesService;
 
 	@Autowired
 	ILecturaArchivoService lecturaArchivoService;
@@ -70,10 +67,13 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	ILogProcesoDiarioService logProcesoDiarioService;
 
 	@Autowired
-	IBitacoraAutomaticosService bitacoraAutomaicosService;
+	IMaestroDefinicionArchivoService maestroDefinicionArchivoService;
 
 	@Autowired
-	IFestivosNacionalesService festivosNacionalesService;
+	IParametroService parametrosService;
+
+	@Autowired
+	IValidacionArchivoService validacionArchivoService;
 
 	private ValidacionArchivoDTO validacionArchivo;
 
