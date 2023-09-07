@@ -78,9 +78,8 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 	/**
 	 * Metodo encargado de realizar las validaciones correspondientes a las
 	 * validaciones de contenido
-	 * 
+	 *
 	 * @param maestroDefinicion
-	 * @param contenido
 	 * @param validacionArchivo
 	 * @return
 	 */
@@ -242,19 +241,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 				}
 				break;
 			}
-			case "BS": {
-				fecha = nombreArchivo.substring(8, 14);
-				mascaraFecha = maestroDefinicion.getMascaraArch().substring(13, 19);
-				formatoFecha = new ArrayList<>();
-				formatoFecha.add(mascaraFecha);
-				if (!UtilsString.isFecha(fecha, formatoFecha)) {
-					throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
-							ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
-							ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
-				}
-				break;
-			}
-			case "BI": {
+			case "BS", "BI": {
 				fecha = nombreArchivo.substring(8, 14);
 				mascaraFecha = maestroDefinicion.getMascaraArch().substring(13, 19);
 				formatoFecha = new ArrayList<>();
@@ -267,21 +254,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 				break;
 			}
 			case "TH": {
-				if(nombreArchivo.length() == 26) {
-					fecha = nombreArchivo.substring(14, 22);
-				}
-				else {
-					if(nombreArchivo.length() == 27) {
-						fecha = nombreArchivo.substring(15, 23);
-					}
-					else {
-						if(nombreArchivo.length() == 29) {
-							fecha = nombreArchivo.substring(17, 25);
-						} else {
-							fecha = null;
-						}
-					}
-				}
+				fecha = getString(nombreArchivo);
 				mascaraFecha = maestroDefinicion.getMascaraArch().substring(19, 27);
 				formatoFecha = new ArrayList<>();
 				formatoFecha.add(mascaraFecha);
@@ -329,6 +302,26 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 			}
 		}
 		return true;
+	}
+
+	private String getString(String nombreArchivo) {
+		String fecha;
+		if(nombreArchivo.length() == 26) {
+			fecha = nombreArchivo.substring(14, 22);
+		}
+		else {
+			if(nombreArchivo.length() == 27) {
+				fecha = nombreArchivo.substring(15, 23);
+			}
+			else {
+				if(nombreArchivo.length() == 29) {
+					fecha = nombreArchivo.substring(17, 25);
+				} else {
+					fecha = null;
+				}
+			}
+		}
+		return fecha;
 	}
 
 	/**
@@ -391,32 +384,14 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 					fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
 					break;
 				}
-				case "BS": {
+				case "BS", "BI": {
 					fecha = nombreArchivo.substring(8, 14);
 					mascaraFecha = mascaraArchivo.substring(13, 19);
 					fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
 					break;
 				}
-				case "BI": {
-					fecha = nombreArchivo.substring(8, 14);
-					mascaraFecha = mascaraArchivo.substring(13, 19);
-					fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
-					break;
-				}
-				case "TH": {
-					if (nombreArchivo.length() == 26) {
-						fecha = nombreArchivo.substring(14, 22);
-					} else {
-						if (nombreArchivo.length() == 27) {
-							fecha = nombreArchivo.substring(15, 23);
-						} else {
-							if(nombreArchivo.length() == 29) {
-								fecha = nombreArchivo.substring(17, 25);
-							} else {
-								fecha = null;
-							}							
-						}
-					}
+                case "TH": {
+					fecha = getString(nombreArchivo);
 					if(Objects.nonNull(fecha)) {
 						mascaraFecha = mascaraArchivo.substring(19, 27);
 						fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
@@ -691,7 +666,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 	 * de cada una de las lineas
 	 * 
 	 * @param maestroDefinicion
-	 * @param validardor
+	 * @param validacionLineasDTO
 	 * @return void
 	 * @author CamiloBenavides
 	 */
