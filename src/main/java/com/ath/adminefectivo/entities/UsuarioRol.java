@@ -28,16 +28,17 @@ public class UsuarioRol {
 	
 	@Column(name = "ESTADO")
 	private String estado;
-	
-	@Column(name = "FECHA_CREACION")
-	private String fechaCreacion;
-	
+
 	@Column(name = "USUARIO_CREACION")
 	private String usuarioCreacion;
-	
-	@Column(name = "FECHA_MODIFICACION")
-	private String fechaModificacion;
-	
+
 	@Column(name = "USUARIO_MODIFICACION")
 	private String usuarioModificacion;
+
+	@Column(name = "FECHA_CREACION")
+	private String fechaCreacion;
+
+	@Column(name = "FECHA_MODIFICACION")
+	private String fechaModificacion;
+
 }
