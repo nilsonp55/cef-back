@@ -123,4 +123,7 @@ public class OperacionesCertificadas {
 	
 	@Column(name = "CODIGO_PROPIO_TDV", length = 100)
 	private String codigoPropioTDV;
+	
+	@Column(name = "MONEDA", length = 3)
+	private String moneda;
 }

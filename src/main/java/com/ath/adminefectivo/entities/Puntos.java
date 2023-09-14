@@ -8,8 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -47,10 +45,6 @@ public class Puntos {
 	
 	@Column(name = "CODIGO_CIUDAD")
 	private String codigoCiudad;
-	
-//	@ManyToOne
-//	@JoinColumn(name = "CODIGO_CIUDAD", insertable = false, updatable = false)
-//	private Ciudades ciudades;
 	
 	@Column(name = "ESTADO")
 	private String estado;

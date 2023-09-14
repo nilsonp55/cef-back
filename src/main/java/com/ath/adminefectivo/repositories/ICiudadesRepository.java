@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
 import com.ath.adminefectivo.entities.Ciudades;
-import com.querydsl.core.types.Predicate;
 
 /**
  * Repository encargado de manejar la logica de la entidad Ciudades
@@ -16,14 +15,6 @@ import com.querydsl.core.types.Predicate;
 public interface ICiudadesRepository extends JpaRepository<Ciudades, String>, QuerydslPredicateExecutor<Ciudades> {
 
 	/**
-	 * Retorna el objeto Ciudades con base en el codigo DANE
-	 * @param codigoCiudad
-	 * @return Ciudades
-	 * @author cesar.castano
-	 */
-	public Ciudades findBycodigoDANE (String codigoCiudad);
-	
-	/**
 	 * Retorna el objeto Ciudades con base en el nombre
 	 * @param nombre
 	 * @return Ciudades
@@ -32,13 +23,13 @@ public interface ICiudadesRepository extends JpaRepository<Ciudades, String>, Qu
 	public Ciudades findByNombreCiudad(String nombre);
 	
 	/**
-	 * Retorna el objeto Ciudades con base en el codigo enviado
+	 * Retorna el objeto Ciudades con base en el codigo DANE
 	 * 
 	 * @param codigo
 	 * @return Ciudades
 	 * @author duvan.naranjo
 	 */
-	public Ciudades findByCodigoDANE(String codigo);
+	public Ciudades findBycodigoDANE(String codigo);
 	
 	/**
 	 * Retorna el objeto Ciudades con base en el nombre Fiserv

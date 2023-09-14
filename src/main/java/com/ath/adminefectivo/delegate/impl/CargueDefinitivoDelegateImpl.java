@@ -76,6 +76,7 @@ public class CargueDefinitivoDelegateImpl implements ICargueDefinitivoDelegate {
 	public Boolean persistirArchvoCargado(MultipartFile file) {
 		var url = filesService.persistirArchvo(file);
 		ArchivosCargadosDTO archivo = ArchivosCargadosDTO.builder().nombreArchivo(file.getOriginalFilename())
+				.nombreArchivoUpper(file.getOriginalFilename().toUpperCase())
 				.fechaInicioCargue(new Date()).estado(Constantes.REGISTRO_ACTIVO).contentType(file.getContentType())
 				.estadoCargue(Constantes.ESTADO_CARGUE_PENDIENTE).url(url).build();
 
@@ -104,11 +105,11 @@ public class CargueDefinitivoDelegateImpl implements ICargueDefinitivoDelegate {
 		validarLogProcesoDiario();
 		Date fechaProceso = parametrosService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
 		
-		auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_DEFINITIVO, 
+		auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_DEFINITIVO, 
 				fechaProceso, Constantes.ESTADO_PROCESO_PROCESO, Constantes.ESTADO_PROCESO_PROCESO);
 		
 		this.validacionesAchivoCargado(idMaestroDefinicion, nombreArchivo);
-		Long idArchivo = archivosCargadosService.persistirDetalleArchivoCargado(validacionArchivo, false);
+		Long idArchivo = archivosCargadosService.persistirDetalleArchivoCargado(validacionArchivo, false, false);
 
 		String urlDestino = (Objects.equals(this.validacionArchivo.getEstadoValidacion(),
 				Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO))
@@ -120,7 +121,7 @@ public class CargueDefinitivoDelegateImpl implements ICargueDefinitivoDelegate {
 				this.validacionArchivo.getNombreArchivo(),idArchivo.toString());
 
 		ValidacionArchivoDTO resultado = ValidacionArchivoDTO.conversionRespuesta(this.validacionArchivo);
-		auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_DEFINITIVO, 
+		auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_DEFINITIVO, 
 				fechaProceso, Constantes.ESTADO_PROCESO_PROCESO, Constantes.ESTRUCTURA_OK);
 		return resultado;
 	}
@@ -184,15 +185,10 @@ public class CargueDefinitivoDelegateImpl implements ICargueDefinitivoDelegate {
 	 */
 	private ArchivosCargadosDTO organizarDatosArchivo(String archivo, String estado,
 			String idModeloArchivo, String mascaraArchivo) {
-		ArchivosCargadosDTO archivosCargadosDTO = new ArchivosCargadosDTO();
 
 		Date fechaDatos = validacionArchivoService.obtenerFechaArchivo(archivo, mascaraArchivo);
-//        fechaDatos = festivosNacionalesService.consultarAnteriorHabil(fechaDatos);
-        archivosCargadosDTO = ArchivosCargadosDTO.builder().estadoCargue(estado).nombreArchivo(archivo)
+		return ArchivosCargadosDTO.builder().estadoCargue(estado).nombreArchivo(archivo)
                 .idModeloArchivo(idModeloArchivo).fechaArchivo(fechaDatos).build();
-
-		return archivosCargadosDTO;
-
 	}
 
 	/**

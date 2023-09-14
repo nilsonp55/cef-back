@@ -15,7 +15,7 @@ public interface IAuditoriaProcesosService {
 	 * @return AuditoriaProcesosDTO
 	 * @author duvan_naranjo
 	 */
-	AuditoriaProcesosDTO consultarAuditoriaPorProceso(String codigoProceso, Date fechaSistema);
+	AuditoriaProcesosDTO consultarAuditoriaPorProceso(String codigoProceso);
 
 	/**
 	 * 
@@ -30,7 +30,7 @@ public interface IAuditoriaProcesosService {
 	 * @param fechaSistema
 	 * @param estado
 	 */
-	void ActualizarAuditoriaProceso(String codigoProceso, Date fechaSistema, String estado, String mensaje);
+	void actualizarAuditoriaProceso(String codigoProceso, Date fechaSistema, String estado, String mensaje);
 	
 	/**
 	 * 

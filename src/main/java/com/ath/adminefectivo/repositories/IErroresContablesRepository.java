@@ -5,14 +5,10 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
 import com.ath.adminefectivo.dto.compuestos.ResultadoErroresContablesDTO;
-import com.ath.adminefectivo.entities.Dominio;
 import com.ath.adminefectivo.entities.ErroresContables;
-import com.ath.adminefectivo.entities.TransaccionesInternas;
-import com.ath.adminefectivo.entities.id.DominioPK;
 
 /**
  * Repository encargado de manejar la logica de la entidad Errores Contables
@@ -30,11 +26,11 @@ public interface IErroresContablesRepository extends JpaRepository<ErroresContab
 	 * @author duvan.naranjo
 	 */
 	@Query(value = "SELECT ec.* from errores_contables ec, "
-			+ "			transacciones_internas ti "
-			+ "	where "
-			+ "		ec.fecha  = ?1 and "
-			+ "		ec.id_transacciones_internas = ti.id_transacciones_internas and "
-			+ "		ti.tipo_proceso = ?2 ", nativeQuery = true )
+			+ " transacciones_internas ti "
+			+ "where "
+			+ "ec.fecha  = ?1 and "
+			+ "ec.id_transacciones_internas = ti.id_transacciones_internas and "
+			+ "ti.tipo_proceso = ?2 ", nativeQuery = true )
 	public List<ErroresContables> findByFechaBetweenAndTipoProceso(Date end, String tipoContabilidad);
 
 	/**
@@ -47,10 +43,9 @@ public interface IErroresContablesRepository extends JpaRepository<ErroresContab
 	@Query(nativeQuery = true)
 	public List<ResultadoErroresContablesDTO> consultarErroresContables();
 
-//	@Procedure(name = "fnc_generar_proceso_contables")
 	@Query(value ="SELECT * "
 			+ " from fnc_generar_proceso_contables()", nativeQuery = true)
-	public List<Long> fnc_generar_proceso_contables();
+	public List<Long> fncGenerarProcesoContables();
 
 	/**
 	 * Metodo encargado de consultar los errores existentes para la 
@@ -59,12 +54,11 @@ public interface IErroresContablesRepository extends JpaRepository<ErroresContab
 	 * @param transaccionesInternas
 	 * @return List<ErroresContables>
 	 */
-	@Query(value = "SELECT "
-			+ "			* "
-			+ "		FROM "
-			+ "			errores_contables ec "
-			+ "		WHERE "
-			+ "			ec.id_transacciones_internas = ?1 ", nativeQuery = true )
+	@Query(value = "SELECT * "
+			+ "FROM "
+			+ "errores_contables ec "
+			+ "WHERE "
+			+ "ec.id_transacciones_internas = ?1 ", nativeQuery = true )
 	public List<ErroresContables> findByTransaccionInterna(long idTransaccionesInternas);
 
 }

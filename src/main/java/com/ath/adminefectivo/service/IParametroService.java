@@ -3,7 +3,6 @@ package com.ath.adminefectivo.service;
 import java.util.Date;
 import java.util.List;
 
-import com.ath.adminefectivo.dto.CentroCiudadDTO;
 import com.ath.adminefectivo.dto.ParametroDTO;
 import com.querydsl.core.types.Predicate;
 

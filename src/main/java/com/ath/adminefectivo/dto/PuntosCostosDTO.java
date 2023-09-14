@@ -1,12 +1,10 @@
 package com.ath.adminefectivo.dto;
 
 
-import java.util.Date;
 import java.util.Objects;
 import java.util.function.Function;
 
 import com.ath.adminefectivo.entities.PuntosCostos;
-import com.ath.adminefectivo.entities.TarifasOperacion;
 import com.ath.adminefectivo.utils.UtilsObjects;
 
 import lombok.AllArgsConstructor;

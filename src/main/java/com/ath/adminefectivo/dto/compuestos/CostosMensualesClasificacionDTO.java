@@ -1,7 +1,6 @@
 package com.ath.adminefectivo.dto.compuestos;
 
 import java.util.Date;
-import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 

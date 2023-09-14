@@ -1,8 +1,8 @@
 package com.ath.adminefectivo.dto;
 
 import java.util.Date;
-import java.util.List;
 import java.util.function.Function;
+
 import com.ath.adminefectivo.entities.Rol;
 
 import lombok.AllArgsConstructor;
@@ -34,10 +34,7 @@ public class RolDTO {
 
 	private String usuarioModificacion;
 	
-	private Date fechaModificacion;
-	
-//	private List<MenuRolDTO> menuRol;
-	
+	private Date fechaModificacion;	
 	
 	/**
 	 * Funcion Conversor de ROL de Dto a Entity
@@ -71,10 +68,6 @@ public class RolDTO {
 		rolDto.setFechaCreacion(t.getFechaCreacion());
 		rolDto.setUsuarioModificacion(t.getUsuarioCreacion());
 		rolDto.setFechaModificacion(t.getFechaModificacion());
-		
-		//List<MenuRolDTO> menuRolDto = new ArrayList<>();
-		//t.getMenuRol().forEach(item -> menuRolDto.add(MenuRolDTO.CONVERTER_DTO.apply(item)));
-		//rolDto.setMenuRol(menuRolDto);
 
 		return rolDto;
 	};

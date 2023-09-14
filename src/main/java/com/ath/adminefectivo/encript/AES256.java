@@ -14,6 +14,7 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -31,7 +32,6 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.ath.adminefectivo.constantes.Constantes;
@@ -63,51 +63,49 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class AES256 {
 
-	@Autowired
-	IParametroService parametroService;
+	private	IParametroService parametroService;
 
 	private PrivateKey privateKey = null;
 	private PublicKey publicKey = null;
 
-	private String SECRET_KEY = "";
-	private String SALTVALUE = "";
+	private String secretKey;
+	private String saltValue;
 
-	private String instanceAlgorith = "";
+	private String instanceAlgorith = "AES/GCM/NoPadding";
+	
+	private SecureRandom random = new SecureRandom();
 
 	public AES256(IParametroService parametroService) {
 		this.parametroService = parametroService;
-		this.setKeys();
-	}
-
-	private boolean existsKeys() {
-		// TODO Auto-generated method stub
-		return false;
+		this.secretKey = parametroService.valorParametro(Parametros.VALUE_SECRET_KEY);
+		this.saltValue = parametroService.valorParametro(Parametros.SALT_VALUE);
 	}
 
 	public String encryptAES(String text) {
 		try {
 			/* Declare a byte array. */
-			byte[] iv = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+			byte[] iv = new byte[16];
+			random.nextBytes(iv);
 			IvParameterSpec ivspec = new IvParameterSpec(iv);
 
 			/* Create factory for secret keys. */
-			SecretKeyFactory factory = SecretKeyFactory.getInstance(parametroService.valorParametro(Parametros.AES256));// AES256
-																														// ALGORITMO_ENCRIPTADO
+			SecretKeyFactory factory = SecretKeyFactory.getInstance(parametroService.valorParametro(Parametros.AES256));
 
 			/* PBEKeySpec class implements KeySpec interface. */
-			KeySpec spec = new PBEKeySpec(SECRET_KEY.toCharArray(), SALTVALUE.getBytes(), 65536,
+			KeySpec spec = new PBEKeySpec(secretKey.toCharArray(), saltValue.getBytes(), 100000,
 					parametroService.valorParametroEntero(Parametros.BYTES_AES));// BYTES_AES ALGORITMO_AES
 
 			SecretKey tmp = factory.generateSecret(spec);
-			SecretKeySpec secretKey = new SecretKeySpec(tmp.getEncoded(), "AES");
+			SecretKeySpec secretKeySpec = new SecretKeySpec(tmp.getEncoded(), "AES");
 			Cipher cipher = Cipher.getInstance(parametroService.valorParametro(Parametros.INSTANCIA_AES));
-			cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivspec);
+			cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivspec);
 
 			/* Retruns encrypted value. */
 			return Base64.getEncoder().encodeToString(cipher.doFinal(text.getBytes(StandardCharsets.UTF_8)));
 		} catch (InvalidAlgorithmParameterException | InvalidKeyException | NoSuchAlgorithmException
 				| InvalidKeySpecException | BadPaddingException | IllegalBlockSizeException
 				| NoSuchPaddingException e) {
+			log.error("Falied to encrypt: {}", e);
 		}
 		return null;
 	}
@@ -115,23 +113,25 @@ public class AES256 {
 	public String decryptAES(String text) {
 		try {
 			/* Declare a byte array. */
-			byte[] iv = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+			byte[] iv = new byte[16];
+			random.nextBytes(iv);
 			IvParameterSpec ivspec = new IvParameterSpec(iv);
 			/* Create factory for secret keys. */
 			SecretKeyFactory factory = SecretKeyFactory.getInstance(parametroService.valorParametro(Parametros.AES256));
 			
 			/* PBEKeySpec class implements KeySpec interface. */
-			KeySpec spec = new PBEKeySpec(SECRET_KEY.toCharArray(), SALTVALUE.getBytes(), 65536, parametroService.valorParametroEntero(Parametros.BYTES_AES));
+			KeySpec spec = new PBEKeySpec(secretKey.toCharArray(), saltValue.getBytes(), 100000, parametroService.valorParametroEntero(Parametros.BYTES_AES));
 			SecretKey tmp = factory.generateSecret(spec);
-			SecretKeySpec secretKey = new SecretKeySpec(tmp.getEncoded(), "AES");
+			SecretKeySpec secretKeySpec = new SecretKeySpec(tmp.getEncoded(), "AES");
 			Cipher cipher = Cipher.getInstance(parametroService.valorParametro(Parametros.INSTANCIA_AES));
-			cipher.init(Cipher.DECRYPT_MODE, secretKey, ivspec);
+			cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivspec);
 			
 			/* Retruns decrypted value. */
 			return new String(cipher.doFinal(Base64.getDecoder().decode(text)));
 		} catch (InvalidAlgorithmParameterException | InvalidKeyException | NoSuchAlgorithmException
 				| InvalidKeySpecException | BadPaddingException | IllegalBlockSizeException
 				| NoSuchPaddingException e) {
+			log.error("Falied to decrypt: {}", e);
 		}
 		return null;
 	}
@@ -149,18 +149,15 @@ public class AES256 {
 			KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
 			int bytesEncript = parametroService.valorParametroEntero(Constantes.BYTES_RSA);
 			generator.initialize(bytesEncript);
-			KeyPair pair = generator.genKeyPair();// generateKeyPair();
+			KeyPair pair = generator.genKeyPair();
 
-			PrivateKey privateKey = pair.getPrivate();
-			PublicKey publicKey = pair.getPublic();
-
-			this.privateKey = privateKey;
-			this.publicKey = publicKey;
+			this.privateKey = pair.getPrivate();
+			this.publicKey = pair.getPublic();
 
 			this.saveKeys();
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("failed to createKeys: {}", e);
 		}
 
 	}
@@ -188,18 +185,11 @@ public class AES256 {
 					ApiResponseCode.ERROR_INSERTANDO_LLAVE_PUBLICA_RSA.getHttpStatus());
 		}
 		String nombreArchivoLLavePublica = parametroService.valorParametro(Constantes.NAME_PUBLIC_KEY_RSA);
-		String nombreArchivoLLavePrivada = parametroService.valorParametro(Constantes.NAME_PRIVATE_KEY_RSA);
 		try(BufferedWriter archivoPublico = new BufferedWriter(
 					new OutputStreamWriter(new FileOutputStream(nombreArchivoLLavePublica))) ) {
 			archivoPublico.write(publicKeysS);
 		} catch (IOException e) {
 			log.error("Guardando archivo publico: {}", e.getMessage());
-		}
-		try(BufferedWriter archivoPrivado = new BufferedWriter(
-					new OutputStreamWriter(new FileOutputStream(nombreArchivoLLavePrivada)))) {
-			archivoPrivado.write(privateKeyS);
-		} catch (IOException e) {
-			log.error("Guardando archivo privado: {}", e.getMessage());
 		}
 
 	}
@@ -241,17 +231,11 @@ public class AES256 {
 		Cipher cipher = Cipher.getInstance(instanceAlgorith);
 		cipher.init(Cipher.DECRYPT_MODE, this.privateKey);
 		byte[] decryptedMessage = cipher.doFinal(encryptedBytes);
-		return new String(decryptedMessage, "UTF8");
+		return new String(decryptedMessage, StandardCharsets.UTF_8);
 	}
 
 	private byte[] decode(String data) {
 		return Base64.getDecoder().decode(data);
-	}
-
-	private void getKeys() {
-		String privateKeyString = parametroService.valorParametro("privateKeyRSA");
-		String publicKeyString = parametroService.valorParametro("publicKeyRSA");
-
 	}
 
 	public String getPrivateKeyString() {
@@ -264,25 +248,19 @@ public class AES256 {
 		return bytesToString(encodedPublicKey.getEncoded());
 	}
 
-	public void setKeys() {
-		this.SECRET_KEY = parametroService.valorParametro(Parametros.SECRET_KEY);
-		this.SALTVALUE = parametroService.valorParametro(Parametros.SALT_VALUE);
-	}
-
 	public void setPrivateKeyString(String key) throws NoSuchAlgorithmException, InvalidKeySpecException {
 		byte[] encodedPrivateKey = stringToBytes(key);
 		KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 		PKCS8EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(encodedPrivateKey);
-		PrivateKey privateKey = keyFactory.generatePrivate(privateKeySpec);
-		this.privateKey = privateKey;
+		this.privateKey = keyFactory.generatePrivate(privateKeySpec);
+		
 	}
 
 	public void setPublicKeyString(String key) throws NoSuchAlgorithmException, InvalidKeySpecException {
 		byte[] encodedPublicKey = stringToBytes(key);
 		KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 		X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(encodedPublicKey);
-		PublicKey publicKey = keyFactory.generatePublic(publicKeySpec);
-		this.publicKey = publicKey;
+		this.publicKey = keyFactory.generatePublic(publicKeySpec);
 	}
 
 	public String bytesToString(byte[] b) {

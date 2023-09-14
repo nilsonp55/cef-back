@@ -4,11 +4,18 @@ import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 /**
  * Entidad encargada de manejar la logica de la tabla USUARIOROL
  * @author bayron.perez
  */
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "USUARIO_ROL")
 public class UsuarioRol {
 

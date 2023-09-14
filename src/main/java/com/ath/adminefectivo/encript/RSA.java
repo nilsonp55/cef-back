@@ -1,26 +1,8 @@
 package com.ath.adminefectivo.encript;
-import javax.crypto.Cipher;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.ath.adminefectivo.constantes.Constantes;
-import com.ath.adminefectivo.constantes.Parametros;
-import com.ath.adminefectivo.dto.response.ApiResponseCode;
-import com.ath.adminefectivo.exception.NegocioException;
-import com.ath.adminefectivo.service.IParametroService;
-import com.ath.adminefectivo.service.impl.ParametroServiceImpl;
-import com.ath.adminefectivo.utils.s3Utils;
-
-import lombok.extern.log4j.Log4j2;
-
-import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -32,6 +14,17 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Arrays;
 import java.util.Base64;
+
+import javax.crypto.Cipher;
+
+import com.ath.adminefectivo.constantes.Constantes;
+import com.ath.adminefectivo.constantes.Parametros;
+import com.ath.adminefectivo.dto.response.ApiResponseCode;
+import com.ath.adminefectivo.exception.NegocioException;
+import com.ath.adminefectivo.service.IParametroService;
+import com.ath.adminefectivo.utils.S3Utils;
+
+import lombok.extern.log4j.Log4j2;
 
 /**
  * @author Anass AIT BEN EL ARBI
@@ -50,7 +43,7 @@ import java.util.Base64;
 @Log4j2
 public class RSA {
 
-	private final s3Utils s3utils;
+	private final S3Utils s3utils;
 	
 	private final IParametroService parametroService;
 	
@@ -59,15 +52,10 @@ public class RSA {
     
     private String instanceAlgorith = "";
 
-    public RSA(IParametroService parametroService, s3Utils s3utils) {
+    public RSA(IParametroService parametroService, S3Utils s3utils) {
         this.parametroService = parametroService;
         this.s3utils = s3utils;
     }
-
-    private boolean existsKeys() {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
     /**
      * Metodo encargado de realizar la creación de las llaves 
@@ -81,22 +69,16 @@ public class RSA {
     		KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
     		int bytesEncript = parametroService.valorParametroEntero(Constantes.BYTES_RSA);
         	generator.initialize(bytesEncript);
-        	KeyPair pair = generator.genKeyPair();// generateKeyPair();
+        	KeyPair pair = generator.genKeyPair();
         	
-        	PrivateKey privateKey = pair.getPrivate();
-            PublicKey publicKey = pair.getPublic();
-            
-            this.privateKey = privateKey;
-            this.publicKey = publicKey;
-            
+        	this.privateKey = pair.getPrivate();
+        	this.publicKey = pair.getPublic();
+           
             this.saveKeys();
-            			
-            
+ 
     	}catch(Exception e){
-    		e.printStackTrace();
-    	}
-    	
-		
+    		log.error("failed to createKeys: {}", e);
+    	}		
 	}
 
 	/**
@@ -133,10 +115,6 @@ public class RSA {
 						ApiResponseCode.ERROR_INSERTANDO_LLAVE_PUBLICA_RSA.getDescription()+" Realizando la escritura de llave publica en el archivo. ",
 						ApiResponseCode.ERROR_INSERTANDO_LLAVE_PUBLICA_RSA.getHttpStatus());
 			}
-
-			
-			
-		
 	}
 
 	/**
@@ -177,16 +155,10 @@ public class RSA {
         Cipher cipher = Cipher.getInstance(instanceAlgorith);
         cipher.init(Cipher.DECRYPT_MODE,this.privateKey);
         byte[] decryptedMessage = cipher.doFinal(encryptedBytes);
-        return new String(decryptedMessage,"UTF8");
+        return new String(decryptedMessage,StandardCharsets.UTF_8);
     }
     private byte[] decode(String data){
         return Base64.getDecoder().decode(data);
-    }
-    
-    private void getKeys(){
-    	String privateKeyString = parametroService.valorParametro("privateKeyRSA");
-    	String publicKeyString = parametroService.valorParametro("publicKeyRSA");
-    	    	
     }
     
     public String getPrivateKeyString() {
@@ -207,10 +179,8 @@ public class RSA {
     	
     	try {
 			this.setPublicKeyString(publicKeyString);
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		} catch (InvalidKeySpecException e) {
-			e.printStackTrace();
+		} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+			log.error("failed to setPublicKey: {}", e);
 		}	
     }
     
@@ -221,27 +191,23 @@ public class RSA {
     	
     	try {
 			this.setPrivateKeyString(privateKeyString);
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		} catch (InvalidKeySpecException e) {
-			e.printStackTrace();
-		}	
+		} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+			log.error("failed to setPrivateKey: {}", e);
+		} 	
     }
     
     public void setPrivateKeyString(String key) throws NoSuchAlgorithmException, InvalidKeySpecException{
         byte[] encodedPrivateKey = stringToBytes(key);
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         PKCS8EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(encodedPrivateKey);
-        PrivateKey privateKey = keyFactory.generatePrivate(privateKeySpec);
-        this.privateKey = privateKey;
+        this.privateKey = keyFactory.generatePrivate(privateKeySpec);
     }
 
     public void setPublicKeyString(String key) throws NoSuchAlgorithmException, InvalidKeySpecException{
         byte[] encodedPublicKey = stringToBytes(key);
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(encodedPublicKey);
-        PublicKey publicKey = keyFactory.generatePublic(publicKeySpec);
-        this.publicKey = publicKey;
+        this.publicKey = keyFactory.generatePublic(publicKeySpec);
     }
     
     public String bytesToString(byte[] b) {
@@ -261,10 +227,7 @@ public class RSA {
 			String nombreArchivoLLavePublica = parametroService.valorParametro(Constantes.NAME_PUBLIC_KEY_RSA);
 			s3utils.guardarArchivoEnBytes(archivo, parametroService.valorParametro(Parametros.URL_FILE_PUBLIC_KEY),nombreArchivoLLavePublica);
 		} catch (Exception e) {
-			log.debug(e);
-//			throw new NegocioException(ApiResponseCode.ERROR_INSERTANDO_LLAVE_PUBLICA_RSA.getCode(),
-//					ApiResponseCode.ERROR_INSERTANDO_LLAVE_PUBLICA_RSA.getDescription()+ " en el proceso de cargue al S3",
-//					ApiResponseCode.ERROR_INSERTANDO_LLAVE_PUBLICA_RSA.getHttpStatus());
+			log.error("failed to guardaLlavePublicaS3: {}",e);
 		}
 		
 	}

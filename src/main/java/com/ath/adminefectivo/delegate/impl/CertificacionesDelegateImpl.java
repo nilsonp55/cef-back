@@ -14,9 +14,8 @@ import com.ath.adminefectivo.dto.LogProcesoDiarioDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.ArchivosCargados;
 import com.ath.adminefectivo.exception.NegocioException;
-import com.ath.adminefectivo.repositories.ArchivosCargadosRepository;
+import com.ath.adminefectivo.service.IArchivosCargadosService;
 import com.ath.adminefectivo.service.IAuditoriaProcesosService;
-import com.ath.adminefectivo.service.IConciliacionOperacionesService;
 import com.ath.adminefectivo.service.ILogProcesoDiarioService;
 import com.ath.adminefectivo.service.IOperacionesCertificadasService;
 import com.ath.adminefectivo.service.IParametroService;
@@ -25,7 +24,7 @@ import com.ath.adminefectivo.service.IParametroService;
 public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 
 	@Autowired
-	ArchivosCargadosRepository archivosCargadosRepository;
+	IArchivosCargadosService archivosCargadosService;
 
 	@Autowired
 	IOperacionesCertificadasService operacionesCertificadasService;
@@ -35,9 +34,6 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 
 	@Autowired
 	IParametroService parametroService;
-
-	@Autowired
-	IConciliacionOperacionesService conciliacionOperacionesService;
 	
 	@Autowired
 	IAuditoriaProcesosService auditoriaProcesosService;
@@ -49,13 +45,13 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 	public Boolean procesarCertificaciones(String agrupador) {
 
 		Date fechaProceso = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
-		auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION, 
+		auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION, 
 				fechaProceso, Constantes.ESTADO_PROCESO_INICIO, Constantes.ESTADO_PROCESO_INICIO);
 		
-		List<ArchivosCargados> archivosCargados = archivosCargadosRepository
-				.getRegistrosCargadosSinProcesarDeHoy(agrupador, fechaProceso, Constantes.ESTADO_CARGUE_VALIDO);
+		List<Long> archivosCargados = archivosCargadosService
+				.listadoIdArchivosCargados(agrupador, fechaProceso, Dominios.ESTADO_VALIDACION_CORRECTO);
 		if (archivosCargados.isEmpty()) {
-			auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION, 
+			auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION, 
 					fechaProceso, Constantes.ESTADO_PROCESO_ERROR, 
 					ApiResponseCode.ERROR_ARCHICOS_CARGADOS_NO_ENCONTRADO.getDescription());
 			throw new NegocioException(ApiResponseCode.ERROR_ARCHICOS_CARGADOS_NO_ENCONTRADO.getCode(),
@@ -63,17 +59,33 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 					ApiResponseCode.ERROR_ARCHICOS_CARGADOS_NO_ENCONTRADO.getHttpStatus());
 		} else {
 			validarLogProcesoDiario();
-			validarExistenciaArchivos(archivosCargados);
+			validarExistenciaArchivos(archivosCargados.size(), fechaProceso);
 			operacionesCertificadasService.procesarArchivosCertificaciones(archivosCargados);
 			
 			// siguiente l�nea, incluye conciliaci�n autom�tica (en procedimientos de BD)
 			operacionesCertificadasService.validarNoConciliables();
 			
 			cambiarEstadoLogProcesoDiario();
-			auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION, 
+			auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION, 
 					fechaProceso, Constantes.ESTADO_PROCESO_PROCESADO, 
 					Constantes.ESTRUCTURA_OK);
 			return true;
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String procesarAlcances() {
+				
+		List<ArchivosCargados> archivosCargados = archivosCargadosService.consultarArchivosPorEstadoCargue(Dominios.ESTADO_VALIDACION_REPROCESO);
+		if (archivosCargados.isEmpty()) {
+			throw new NegocioException(ApiResponseCode.ERROR_ARCHICOS_CARGADOS_NO_ENCONTRADO.getCode(),
+					ApiResponseCode.ERROR_ARCHICOS_CARGADOS_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_ARCHICOS_CARGADOS_NO_ENCONTRADO.getHttpStatus());
+		} else {
+			return operacionesCertificadasService.procesarArchivosAlcance(archivosCargados);
 		}
 	}
 
@@ -86,7 +98,7 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 		Date fechaProceso = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
 		var log = logProcesoDiarioService.obtenerEntidadLogProcesoDiario(Dominios.CODIGO_PROCESO_LOG_DEFINITIVO);
 		if (!log.getEstadoProceso().equals(Dominios.ESTADO_PROCESO_DIA_COMPLETO)) {			
-			auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+			auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
 					fechaProceso, Constantes.ESTADO_PROCESO_ERROR, 
 					ApiResponseCode.ERROR_PROCESO_SIGUE_ABIERTO.getDescription());
 			throw new NegocioException(ApiResponseCode.ERROR_PROCESO_SIGUE_ABIERTO.getCode(),
@@ -97,7 +109,7 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 		var logConciliacion = logProcesoDiarioService
 				.obtenerEntidadLogProcesoDiario(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION);
 		if (logConciliacion.getEstadoProceso().equals(Dominios.ESTADO_PROCESO_DIA_COMPLETO)) {
-			auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+			auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
 					fechaProceso, Constantes.ESTADO_PROCESO_ERROR, 
 					ApiResponseCode.ERROR_LOGPROCESODIARIO_NO_ENCONTRADO.getDescription());
 			throw new NegocioException(ApiResponseCode.ERROR_LOGPROCESODIARIO_NO_ENCONTRADO.getCode(),
@@ -112,11 +124,11 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 	 * @param archivosCargados
 	 * @author prv_ccastano
 	 */
-	private void validarExistenciaArchivos(List<ArchivosCargados> archivosCargados) {
-		Date fechaProceso = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
+	private void validarExistenciaArchivos(Integer numArchivosCargados, Date fechaProceso) {
+		
 		Integer valor = parametroService.valorParametroEntero(Constantes.NUMERO_MINIMO_ARCHIVOS_PARA_CIERRE);
-		if (archivosCargados.size() < valor) {
-			auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+		if ( numArchivosCargados < valor) {
+			auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
 					fechaProceso, Constantes.ESTADO_PROCESO_ERROR, 
 					ApiResponseCode.ERROR_NO_CUMPLE_MINIMO_ARCHIVOS_CARGADOS_CERTIFICACION.getDescription());
 			
@@ -136,7 +148,7 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 		var logProcesoDiario = logProcesoDiarioService
 				.obtenerEntidadLogProcesoDiario(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION);
 		if (Objects.isNull(logProcesoDiario)) {
-			auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+			auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
 					fechaProceso, Constantes.ESTADO_PROCESO_ERROR, 
 					ApiResponseCode.ERROR_CODIGO_PROCESO_NO_EXISTE.getDescription());
 			throw new NegocioException(ApiResponseCode.ERROR_CODIGO_PROCESO_NO_EXISTE.getCode(),

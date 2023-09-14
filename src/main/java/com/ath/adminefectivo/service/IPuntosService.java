@@ -165,8 +165,18 @@ public interface IPuntosService {
 	 * @return Puntos
 	 * @author cesar.castano
 	 */
-	Puntos getEntidadPunto(Integer codigo_banco_aval);
+	Puntos getEntidadPunto(Integer codigoBancoAval);
 	
 	Puntos crearPunto(Puntos punto);
+	
+	/**
+	 * Valida que un punto sea del tipo dado.
+	 * 
+	 * @param codigoPunto
+	 * @param tipo punto
+	 * @return Puntos
+	 * @author rafael.parra
+	 */
+	Puntos validarPuntoActualizar(Integer codigoPunto, String tipoPunto);
 	
 }

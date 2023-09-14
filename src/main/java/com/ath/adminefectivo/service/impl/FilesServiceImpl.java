@@ -24,9 +24,12 @@ import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.service.IFilesService;
 import com.ath.adminefectivo.service.IParametroService;
-import com.ath.adminefectivo.utils.s3Utils;
+import com.ath.adminefectivo.utils.S3Utils;
+
+import lombok.extern.log4j.Log4j2;
 
 @Service
+@Log4j2
 public class FilesServiceImpl implements IFilesService {
 
 	private static final String TEMPORAL_URL = "C:\\Ath\\Docs";
@@ -36,7 +39,7 @@ public class FilesServiceImpl implements IFilesService {
 	IParametroService parametroService;
 
 	@Autowired
-	private s3Utils s3Util;
+	private S3Utils s3Util;
 
 	/**
 	 * {@inheritDoc}
@@ -50,7 +53,7 @@ public class FilesServiceImpl implements IFilesService {
 			try {
 				Files.copy(file.getInputStream(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
 			} catch (IOException e) {
-				e.printStackTrace();
+				log.error("persistirArchvos: {}", e.getMessage());
 				return false;
 			}
 		}
@@ -70,7 +73,7 @@ public class FilesServiceImpl implements IFilesService {
 		try {
 			Files.copy(file.getInputStream(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error("persistirArchvo: {}", e.getMessage());
 			throw new NegocioException(ApiResponseCode.ERROR_ARCHIVOS_NO_EXISTE_BD.getCode(),
 					ApiResponseCode.ERROR_ARCHIVOS_NO_EXISTE_BD.getDescription(),
 					ApiResponseCode.ERROR_ARCHIVOS_NO_EXISTE_BD.getHttpStatus());
@@ -87,7 +90,7 @@ public class FilesServiceImpl implements IFilesService {
 	public DownloadDTO downloadFile(DownloadDTO download) {
 		String path = download.getUrl();
 		try {
-			if(s3Bucket) {
+			if(Boolean.TRUE.equals(s3Bucket)) {
 				if (s3Util.consultarArchivo(path)) {
 					final InputStream streamReader = s3Util.downloadFile(path);
 					download.setFile(streamReader);
@@ -98,7 +101,7 @@ public class FilesServiceImpl implements IFilesService {
 				download.setFile(recurso.getInputStream());
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error("downloadFile: {}", e.getMessage());
 			throw new NegocioException(ApiResponseCode.ERROR_ARCHIVOS_NO_EXISTE_BD.getCode(),
 					ApiResponseCode.ERROR_ARCHIVOS_NO_EXISTE_BD.getDescription(),
 					ApiResponseCode.ERROR_ARCHIVOS_NO_EXISTE_BD.getHttpStatus());
@@ -113,7 +116,7 @@ public class FilesServiceImpl implements IFilesService {
 	@Override
 	public Boolean eliminarArchivo(String url) {
 		try {
-			if(s3Bucket) {
+			if(Boolean.TRUE.equals(s3Bucket)) {
 				s3Util.deleteObjectBucket(url);
 			}else {
 				Files.delete(Path.of(url));
@@ -133,7 +136,7 @@ public class FilesServiceImpl implements IFilesService {
 	public List<String> obtenerContenidoCarpeta(String url) {
 
 		List<String> contenidoCarpeta;
-		if (s3Bucket) {
+		if (Boolean.TRUE.equals(s3Bucket)) {
 			contenidoCarpeta = s3Util.getObjectsFromPathS3(url);
 		} else {
 			File carpeta = new File(url);
@@ -160,7 +163,7 @@ public class FilesServiceImpl implements IFilesService {
 		nombreArchivo = arregloNombre[0].concat("-" + postfijo);
 		Path destinoPath = FileSystems.getDefault().getPath(urlDestino, nombreArchivo.concat("." + arregloNombre[1]));
 		try {
-			if(s3Bucket) {
+			if(Boolean.TRUE.equals(s3Bucket)) {
 				s3Util.moverObjeto(origenPath.toString(), destinoPath.toString());
 			}else {
 				Files.move(origenPath, destinoPath);

@@ -10,10 +10,8 @@ import org.springframework.stereotype.Service;
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.BancosDTO;
-import com.ath.adminefectivo.dto.PuntosDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.Bancos;
-import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.IBancosRepository;
 import com.ath.adminefectivo.service.IBancosService;
@@ -109,9 +107,6 @@ public class BancosServiceImpl implements IBancosService {
 		if (!Objects.isNull(bancoOpt)) {
 			return BancosDTO.CONVERTER_DTO.apply(bancoOpt);
 		} else {
-//			throw new NegocioException(ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getCode(),
-//					ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getDescription(),
-//					ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getHttpStatus());
 			return null;
 		}
 	}
@@ -149,9 +144,9 @@ public class BancosServiceImpl implements IBancosService {
 	public List<BancosDTO> getBancosPorAval(boolean esAval) {
 		List<Bancos> bancos = bancosRepository.findByEsAVAL(esAval);
 		List<BancosDTO> bancosDTO = new ArrayList<>();
-		bancos.forEach(banco ->{
-			bancosDTO.add(BancosDTO.CONVERTER_DTO.apply(banco));
-		});
+		bancos.forEach(banco ->
+			bancosDTO.add(BancosDTO.CONVERTER_DTO.apply(banco))
+		);
 		return bancosDTO;
 	}
 }

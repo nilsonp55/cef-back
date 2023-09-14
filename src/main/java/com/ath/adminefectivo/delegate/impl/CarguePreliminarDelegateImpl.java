@@ -62,6 +62,7 @@ public class CarguePreliminarDelegateImpl implements ICarguePreliminarDelegate {
 	public Boolean persistirArchvoCargado(MultipartFile file) {
 		var url = filesService.persistirArchvo(file);
 		ArchivosCargadosDTO archivo = ArchivosCargadosDTO.builder().nombreArchivo(file.getOriginalFilename())
+				.nombreArchivoUpper(file.getOriginalFilename().toUpperCase())
 				.fechaInicioCargue(new Date()).estado(Constantes.REGISTRO_ACTIVO).contentType(file.getContentType())
 				.estadoCargue(Constantes.ESTADO_CARGUE_PENDIENTE).url(url).build();
 
@@ -88,7 +89,7 @@ public class CarguePreliminarDelegateImpl implements ICarguePreliminarDelegate {
 	@Transactional
 	public ValidacionArchivoDTO procesarArchivo(String idMaestroDefinicion, String nombreArchivo) {
 		this.validacionesAchivoCargado(idMaestroDefinicion, nombreArchivo);
-		Long idArchivo = archivosCargadosService.persistirDetalleArchivoCargado(validacionArchivo, false);
+		Long idArchivo = archivosCargadosService.persistirDetalleArchivoCargado(validacionArchivo, false, false);
 
 		String urlDestino = (Objects.equals(this.validacionArchivo.getEstadoValidacion(),
 				Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO))
@@ -164,15 +165,11 @@ public class CarguePreliminarDelegateImpl implements ICarguePreliminarDelegate {
 	private ArchivosCargadosDTO organizarDatosArchivo(String archivo, String estado,
 			String idModeloArchivo, String mascaraArchivo) {
 
-		ArchivosCargadosDTO archivosCargadosDTO = new ArchivosCargadosDTO();
-		
-		archivosCargadosDTO = ArchivosCargadosDTO.builder()
+		return ArchivosCargadosDTO.builder()
 				.estadoCargue(estado)
 				.nombreArchivo(archivo)
 				.idModeloArchivo(idModeloArchivo)
 				.fechaArchivo(validacionArchivoService.obtenerFechaArchivo(archivo, mascaraArchivo)).build();
-		
-		return archivosCargadosDTO;
 	}
 	
 	/**

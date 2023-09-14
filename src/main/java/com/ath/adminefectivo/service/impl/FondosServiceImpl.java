@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import com.ath.adminefectivo.dto.FondosDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.Fondos;
-import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.IFondosRepository;
 import com.ath.adminefectivo.service.IFondosService;
@@ -46,7 +45,7 @@ public class FondosServiceImpl implements IFondosService {
 				puntosCodigoTdvService.getEntidadPuntoCodigoTDV(codigoFondo).getCodigoPunto());
 		if (Objects.isNull(fondo)) {
 			throw new NegocioException(ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getDescription() + "Codigo Fondo no encontrado = "+codigoFondo,
+					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getDescription() + codigoFondo,
 					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getHttpStatus());
 
 		}
@@ -108,7 +107,7 @@ public class FondosServiceImpl implements IFondosService {
 		var fondo = fondosRepository.findByCodigoPunto(codigoPunto);
 		if (Objects.isNull(fondo)) {
 			throw new NegocioException(ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getDescription()+ "Codigo Fondo no encontrado = "+codigoPunto,
+					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getDescription()+ codigoPunto,
 					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getHttpStatus());
 
 		}
@@ -123,7 +122,7 @@ public class FondosServiceImpl implements IFondosService {
 		var fondo = fondosRepository.findByCodigoPunto(codigoPunto);
 		if (Objects.isNull(fondo)) {
 			throw new NegocioException(ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getDescription()+ "Codigo Fondo no encontrado = "+codigoPunto,
+					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getDescription()+ codigoPunto,
 					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getHttpStatus());
 
 		}
@@ -143,9 +142,9 @@ public class FondosServiceImpl implements IFondosService {
 					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO_TDV_AVAL.getHttpStatus());
 
 		}else {
-			fondosEntity.forEach(fondo ->{
-				fondosDTO.add(FondosDTO.CONVERTER_DTO.apply(fondo));
-			});
+			fondosEntity.forEach(fondo ->
+				fondosDTO.add(FondosDTO.CONVERTER_DTO.apply(fondo))
+			);
 		}
 		return fondosDTO;
 	}

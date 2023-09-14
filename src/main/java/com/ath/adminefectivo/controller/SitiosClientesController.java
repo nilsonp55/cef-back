@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ath.adminefectivo.delegate.ISitiosClientesDelegate;
 import com.ath.adminefectivo.dto.SitiosClientesDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
 import com.ath.adminefectivo.entities.SitiosClientes;
+import com.ath.adminefectivo.service.ISitiosClientesService;
 import com.querydsl.core.types.Predicate;
 
 /**
@@ -27,7 +27,7 @@ import com.querydsl.core.types.Predicate;
 public class SitiosClientesController {
 
 	@Autowired
-	ISitiosClientesDelegate sitiosClientesDelegate;
+	ISitiosClientesService sitiosClientesService;
 	
 	/**
 	 * Servicio encargado de retornar la consulta de todos los Sitios Clientes
@@ -38,7 +38,7 @@ public class SitiosClientesController {
 	@GetMapping(value = "${endpoints.SitiosClientes.consultar}")
 	public ResponseEntity<ApiResponseADE<List<SitiosClientesDTO>>> getSitiosClientes(
 			@QuerydslPredicate(root = SitiosClientes.class) Predicate predicate) {
-		List<SitiosClientesDTO> consulta = sitiosClientesDelegate.getSitiosClientes(predicate);
+		List<SitiosClientesDTO> consulta = sitiosClientesService.getSitiosClientes(predicate);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));

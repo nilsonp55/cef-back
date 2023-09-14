@@ -18,27 +18,23 @@ import com.ath.adminefectivo.dto.RespuestaContableDTO;
 import com.ath.adminefectivo.dto.compuestos.RespuestaGenerarArchivoDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.exception.NegocioException;
-import com.ath.adminefectivo.repositories.impl.GenerarArchivoRepository;
 import com.ath.adminefectivo.service.IFestivosNacionalesService;
 import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.ITransaccionesContablesService;
 import com.ath.adminefectivo.service.IgenerarArchivoService;
-import com.ath.adminefectivo.utils.s3Utils;
+import com.ath.adminefectivo.utils.S3Utils;
 
 import lombok.extern.log4j.Log4j2;
 
 @Service
 @Log4j2
-public class generarArchivoServiceimpl implements IgenerarArchivoService {
-
-	@Autowired
-	GenerarArchivoRepository generarArchivoRepository;
+public class GenerarArchivoServiceimpl implements IgenerarArchivoService {
 
 	@Autowired
 	ITransaccionesContablesService transaccionesContablesService;
 
 	@Autowired
-	s3Utils s3utils;
+	S3Utils s3utils;
 
 	@Autowired
 	IParametroService parametrosService;
@@ -63,13 +59,11 @@ public class generarArchivoServiceimpl implements IgenerarArchivoService {
 			XSSFWorkbook workbook = new XSSFWorkbook();
 			ByteArrayOutputStream stream = new ByteArrayOutputStream();
 			Sheet sheet = (Sheet) workbook.createSheet("transaccionesContables");
-			Row row = sheet.createRow(0);
-
-			RespuestaContableDTO dtoContable = new RespuestaContableDTO();
+			
 			for (int i = 0; i < listaContable.size(); i++) {
 
-				row = sheet.createRow(i);
-				dtoContable = listaContable.get(i);
+				Row row = sheet.createRow(i);
+				RespuestaContableDTO dtoContable = listaContable.get(i);
 
 				//NUEVO  ARCHIVO
 				int naturalezaNum = 0;
@@ -247,25 +241,25 @@ public class generarArchivoServiceimpl implements IgenerarArchivoService {
 				
 				String fechaSistemaString = formato.format(festivosNacionalesService.consultarAnteriorHabil(fecha));
 				String fechaConFormato = fechaSistemaString.replace("/", "");
-				return Constantes.CTB_BBOG_Manana + fechaConFormato + Constantes.EXTENSION_ARCHIVO_TXT;
+				return Constantes.CTB_BBOG_MANANA + fechaConFormato + Constantes.EXTENSION_ARCHIVO_TXT;
 			} else if (codigoBanco == 298) {
-				return Constantes.CTB_BAVV_Manana + Constantes.EXTENSION_ARCHIVO_TXT;
+				return Constantes.CTB_BAVV_MANANA + Constantes.EXTENSION_ARCHIVO_TXT;
 			} else if (codigoBanco == 299) {
-				return Constantes.CTB_BOCC_Manana + Constantes.EXTENSION_ARCHIVO_XLSX;
+				return Constantes.CTB_BOCC_MANANA + Constantes.EXTENSION_ARCHIVO_XLSX;
 			} else if (codigoBanco == 300) {
-				return Constantes.CTB_BPOP_Manana + Constantes.EXTENSION_ARCHIVO_XLSX;
+				return Constantes.CTB_BPOP_MANANA + Constantes.EXTENSION_ARCHIVO_XLSX;
 			}
 		} else {
 			if (codigoBanco == 297) {
 				String fechaSistemaString = formato.format(parametrosService.valorParametroDate(Constantes.FECHA_DIA_PROCESO));
 				String fechaConFormato = fechaSistemaString.replace("/", "");
-				return Constantes.CTB_BBOG_Tarde + fechaConFormato + Constantes.EXTENSION_ARCHIVO_TXT;
+				return Constantes.CTB_BBOG_TARDE + fechaConFormato + Constantes.EXTENSION_ARCHIVO_TXT;
 			} else if (codigoBanco == 298) {
-				return Constantes.CTB_BAVV_Tarde + Constantes.EXTENSION_ARCHIVO_TXT;
+				return Constantes.CTB_BAVV_TARDE + Constantes.EXTENSION_ARCHIVO_TXT;
 			} else if (codigoBanco == 299) {
-				return Constantes.CTB_BOCC_Tarde + Constantes.EXTENSION_ARCHIVO_XLSX;
+				return Constantes.CTB_BOCC_TARDE + Constantes.EXTENSION_ARCHIVO_XLSX;
 			} else if (codigoBanco == 300) {
-				return Constantes.CTB_BPOP_Tarde + Constantes.EXTENSION_ARCHIVO_XLSX;
+				return Constantes.CTB_BPOP_TARDE + Constantes.EXTENSION_ARCHIVO_XLSX;
 			}
 		}
 		return null;
@@ -283,13 +277,13 @@ public class generarArchivoServiceimpl implements IgenerarArchivoService {
 				fechaSistemaString = formato.format(fecha);
 
 				fechaConFormato = fechaSistemaString.replace("/", "");
-				return Constantes.CTB_BBOG_Manana + fechaConFormato + Constantes.EXTENSION_ARCHIVO_TXT;
+				return Constantes.CTB_BBOG_MANANA + fechaConFormato + Constantes.EXTENSION_ARCHIVO_TXT;
 			} else if (codigoBanco == 298) {
-				return Constantes.CTB_BAVV_Manana + fechaConFormato + Constantes.EXTENSION_ARCHIVO_TXT;
+				return Constantes.CTB_BAVV_MANANA + fechaConFormato + Constantes.EXTENSION_ARCHIVO_TXT;
 			} else if (codigoBanco == 299) {
-				return Constantes.CTB_BOCC_Manana + fechaConFormato + Constantes.EXTENSION_ARCHIVO_XLS;
+				return Constantes.CTB_BOCC_MANANA + fechaConFormato + Constantes.EXTENSION_ARCHIVO_XLS;
 			} else if (codigoBanco == 300) {
-				return Constantes.CTB_BPOP_Manana + fechaConFormato + Constantes.EXTENSION_ARCHIVO_XLS;
+				return Constantes.CTB_BPOP_MANANA + fechaConFormato + Constantes.EXTENSION_ARCHIVO_XLS;
 			}
 		} else {
 			if (codigoBanco == 297) {
@@ -298,13 +292,13 @@ public class generarArchivoServiceimpl implements IgenerarArchivoService {
 				fechaSistemaString = formato.format(fecha);
 
 				fechaConFormato = fechaSistemaString.replace("/", "");
-				return Constantes.CTB_BBOG_Tarde + fechaConFormato + Constantes.EXTENSION_ARCHIVO_TXT;
+				return Constantes.CTB_BBOG_TARDE + fechaConFormato + Constantes.EXTENSION_ARCHIVO_TXT;
 			} else if (codigoBanco == 298) {
-				return Constantes.CTB_BAVV_Tarde + fechaConFormato + Constantes.EXTENSION_ARCHIVO_TXT;
+				return Constantes.CTB_BAVV_TARDE + fechaConFormato + Constantes.EXTENSION_ARCHIVO_TXT;
 			} else if (codigoBanco == 299) {
-				return Constantes.CTB_BOCC_Tarde + fechaConFormato + Constantes.EXTENSION_ARCHIVO_XLS;
+				return Constantes.CTB_BOCC_TARDE + fechaConFormato + Constantes.EXTENSION_ARCHIVO_XLS;
 			} else if (codigoBanco == 300) {
-				return Constantes.CTB_BPOP_Tarde + fechaConFormato + Constantes.EXTENSION_ARCHIVO_XLS;
+				return Constantes.CTB_BPOP_TARDE + fechaConFormato + Constantes.EXTENSION_ARCHIVO_XLS;
 			}
 		}
 		return null;

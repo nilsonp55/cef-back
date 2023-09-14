@@ -18,8 +18,8 @@ public interface IPuntosCodigoTdvService {
 	 * @return List<PuntosCodigoTdvDTO>
 	 * @author cesar.castano
 	 */
-	Page<PuntosCodigoTdvDTO> getPuntosCodigoTDV(Predicate predicate, Pageable page);
-
+	Page<PuntosCodigoTdvDTO> getPuntosCodigoTDV(Predicate predicate, Pageable page, String busqueda);
+	
 	/**
 	 * Servicio encargado de consultar el objeto PuntosCodigoTdv por codigo. Este
 	 * servicio lanza un error en caso de que el codigo punto no exista
@@ -36,7 +36,7 @@ public interface IPuntosCodigoTdvService {
 	 * @return Integer
 	 * @author cesar.castano
 	 */
-	Integer getCodigoPunto(String codigoPuntoTdv, String codigoTdv, Integer codigo_aval, String codigoDane);
+	Integer getCodigoPunto(String codigoPuntoTdv, String codigoTdv, Integer codigoAval, String codigoDane);
 	
 	/**
 	 * Servicio encargado de consultar la lista de todos los Puntos Codigos TDV filtrados

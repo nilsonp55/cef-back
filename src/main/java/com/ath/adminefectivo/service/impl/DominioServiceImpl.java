@@ -3,7 +3,6 @@ package com.ath.adminefectivo.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +17,10 @@ import com.ath.adminefectivo.repositories.DominioRepository;
 import com.ath.adminefectivo.service.IDominioService;
 import com.querydsl.core.types.Predicate;
 
+import lombok.EqualsAndHashCode;
+
 @Service
+@EqualsAndHashCode
 public class DominioServiceImpl implements IDominioService {
 
 	@Autowired

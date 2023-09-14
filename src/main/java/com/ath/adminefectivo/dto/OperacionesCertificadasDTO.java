@@ -3,8 +3,6 @@ package com.ath.adminefectivo.dto;
 import java.util.Date;
 import java.util.function.Function;
 
-import javax.persistence.Column;
-
 import com.ath.adminefectivo.entities.OperacionesCertificadas;
 import com.ath.adminefectivo.utils.UtilsObjects;
 
@@ -71,6 +69,8 @@ public class OperacionesCertificadasDTO {
 	private String tipoPuntoDestino;
 	
 	private String codigoPropioTDV;
+	
+	private String moneda;
 	
 	/**
 	 * Funcion que convierte el archivo DTO OperacionesCertificadasDTO a Entity OperacionesCertificadas

@@ -28,11 +28,8 @@ import com.ath.adminefectivo.entities.id.FallasRegistroPK;
 import com.ath.adminefectivo.entities.id.RegistrosCargadosPK;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.ArchivosCargadosRepository;
-import com.ath.adminefectivo.repositories.IRegistrosCargadosRepository;
 import com.ath.adminefectivo.service.IArchivosCargadosService;
-import com.ath.adminefectivo.service.IMaestroDefinicionArchivoService;
 import com.ath.adminefectivo.service.IParametroService;
-import com.ath.adminefectivo.utils.UtilsString;
 import com.querydsl.core.types.Predicate;
 
 import lombok.extern.log4j.Log4j2;
@@ -43,13 +40,7 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 
 	@Autowired
 	ArchivosCargadosRepository archivosCargadosRepository;
-	
-	@Autowired
-	IRegistrosCargadosRepository registrosCargadosRepository;
 
-	@Autowired
-	IMaestroDefinicionArchivoService maestroDefinicionArchivoService;
-	
 	@Autowired
 	IParametroService parametrosService;
 
@@ -81,7 +72,8 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 	@Override
 	public Page<ArchivosCargadosDTO> getAll(Predicate predicate, Pageable page) {
 		var archivos = archivosCargadosRepository.findAll(predicate, page);
-		return new PageImpl<>(archivos.getContent().stream().map(ArchivosCargadosDTO.CONVERTER_DTO).toList(),archivos.getPageable(), archivos.getTotalElements());
+		return new PageImpl<>(archivos.getContent().stream().map(ArchivosCargadosDTO.CONVERTER_DTO).toList(),
+				archivos.getPageable(), archivos.getTotalElements());
 	}
 
 	/**
@@ -89,10 +81,11 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 	 */
 	@Override
 	public Page<ArchivosCargadosDTO> getAllByAgrupador(String agrupador, Pageable page) {
-		
-		Page<ArchivosCargados> archivosCargados = archivosCargadosRepository.getArchivosByAgrupador(agrupador,"ACT", page);
-		return new PageImpl<>(archivosCargados.getContent().stream().map(ArchivosCargadosDTO
-		.CONVERTER_DTO).toList(), archivosCargados.getPageable(), archivosCargados.getTotalElements());
+
+		Page<ArchivosCargados> archivosCargados = archivosCargadosRepository.getArchivosByAgrupador(agrupador, "ACT",
+				page);
+		return new PageImpl<>(archivosCargados.getContent().stream().map(ArchivosCargadosDTO.CONVERTER_DTO).toList(),
+				archivosCargados.getPageable(), archivosCargados.getTotalElements());
 
 	}
 
@@ -105,6 +98,23 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 
 		if (archivo.isPresent()) {
 			return ArchivosCargadosDTO.CONVERTER_DTO.apply(archivo.get());
+		} else {
+			throw new NegocioException(ApiResponseCode.ERROR_ARCHIVOS_NO_EXISTE_BD.getCode(),
+					ApiResponseCode.ERROR_ARCHIVOS_NO_EXISTE_BD.getDescription(),
+					ApiResponseCode.ERROR_ARCHIVOS_NO_EXISTE_BD.getHttpStatus());
+		}
+
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public ArchivosCargados consultarArchivoById(Long idArchivo) {
+		var archivo = archivosCargadosRepository.findById(idArchivo);
+
+		if (archivo.isPresent()) {
+			return archivo.get();
 		} else {
 			throw new NegocioException(ApiResponseCode.ERROR_ARCHIVOS_NO_EXISTE_BD.getCode(),
 					ApiResponseCode.ERROR_ARCHIVOS_NO_EXISTE_BD.getDescription(),
@@ -171,34 +181,30 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 	 */
 	@Override
 	@Transactional
-	public Long persistirDetalleArchivoCargado(ValidacionArchivoDTO validacionArchivo, boolean soloErrores) {
+	public Long persistirDetalleArchivoCargado(ValidacionArchivoDTO validacionArchivo, boolean soloErrores,
+			boolean alcance) {
 		Date fechaGuardar;
 		fechaGuardar = parametrosService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
 
-		if (Dominios.ESTADO_VALIDACION_CORRECTO.equals(validacionArchivo.getEstadoValidacion()) ) {
+		if (Dominios.ESTADO_VALIDACION_CORRECTO.equals(validacionArchivo.getEstadoValidacion())
+				|| Dominios.ESTADO_VALIDACION_REPROCESO.equals(validacionArchivo.getEstadoValidacion())) {
 			this.cambiarEstadoArchivoOK(validacionArchivo);
 		}
-		ArchivosCargados archivosCargados = ArchivosCargados.builder()
-				.estado(Constantes.REGISTRO_ACTIVO)
+		ArchivosCargados archivosCargados = ArchivosCargados.builder().estado(Constantes.REGISTRO_ACTIVO)
 				.estadoCargue(validacionArchivo.getEstadoValidacion())
 				.idModeloArchivo(validacionArchivo.getMaestroDefinicion().getIdMaestroDefinicionArchivo())
 				.nombreArchivo(validacionArchivo.getNombreArchivo())
+				.nombreArchivoUpper(validacionArchivo.getNombreArchivo().toUpperCase())
 				.numeroErrores(validacionArchivo.getNumeroErrores())
-				.numeroRegistros(validacionArchivo.getNumeroRegistros())
-				.fechaArchivo(fechaGuardar)
-				.fechaInicioCargue(new Date())
-				.usuarioCreacion("ATH")
-				.fechaCreacion(new Date()).build();
+				.numeroRegistros(validacionArchivo.getNumeroRegistros()).fechaArchivo(fechaGuardar)
+				.fechaInicioCargue(new Date()).usuarioCreacion("ATH").fechaCreacion(new Date()).build();
 		var archivoCargadoEntity = archivosCargadosRepository.save(archivosCargados);
-		
+
 		if (Objects.nonNull(validacionArchivo.getDescripcionErrorEstructura())) {
 
-			FallasArchivo fallasArchivo = FallasArchivo.builder()
-					.idArchivo(archivoCargadoEntity.getIdArchivo())
+			FallasArchivo fallasArchivo = FallasArchivo.builder().idArchivo(archivoCargadoEntity.getIdArchivo())
 					.descripcionError(validacionArchivo.getDescripcionErrorEstructura())
-					.estado(Constantes.REGISTRO_ACTIVO)
-					.usuarioCreacion("ATH")
-					.fechaCreacion(new Date()).build();
+					.estado(Constantes.REGISTRO_ACTIVO).usuarioCreacion("ATH").fechaCreacion(new Date()).build();
 
 			archivosCargados.setFallasArchivos(fallasArchivo);
 		}
@@ -224,14 +230,12 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 				.findByEstadoCargueAndIdModeloArchivo(Dominios.ESTADO_VALIDACION_CORRECTO, idModeloArchivo);
 
 		if (!Objects.isNull(archivosCargados)) {
-			archivosCargados.forEach(arch -> {
-				resultado.add(ArchivosCargadosDTO.CONVERTER_DTO.apply(arch));
-			});
+			archivosCargados.forEach(arch -> resultado.add(ArchivosCargadosDTO.CONVERTER_DTO.apply(arch)));
 			return resultado;
 		}
-		return null;
+		return new ArrayList<>();
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -239,31 +243,50 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 	public void actualizarArchivosCargados(ArchivosCargadosDTO archivosCargadosDTO) {
 		archivosCargadosRepository.save(ArchivosCargadosDTO.CONVERTER_ENTITY.apply(archivosCargadosDTO));
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<ArchivosCargados> listadoArchivosCargadosSinProcesarDefinitiva(String agrupador, Date fecha, String estado) {
+	public List<ArchivosCargados> consultarArchivosPorEstadoCargue(String estado) {
+		return archivosCargadosRepository.findByEstadoCargue(estado);
+
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<ArchivosCargados> listadoArchivosCargadosSinProcesarDefinitiva(String agrupador, Date fecha,
+			String estado) {
 		return archivosCargadosRepository.getRegistrosCargadosSinProcesarDeHoy(agrupador, fecha, estado);
 
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<Long> listadoIdArchivosCargados(String agrupador, Date fecha, String estado) {
+		return archivosCargadosRepository.getIdArchivosCargadosPorAgrupadorFechaEstado(agrupador, fecha, estado);
+
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public void actualizarArchivosCargados(ArchivosCargados archivosCargados) {
 		archivosCargadosRepository.save(archivosCargados);
-		
+
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public List<ArchivosCargados> consultarArchivosPorFecha(Date fechaActual) {
-	
+
 		return archivosCargadosRepository.findByFechaArchivo(fechaActual);
 	}
 
@@ -287,30 +310,21 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 
 			var registrosCargadosPk = RegistrosCargadosPK.builder().consecutivoRegistro(lineas.getNumeroLinea())
 					.idArchivo(idArchivo).build();
-			var registroCargado = RegistrosCargados.builder()
-					.estado(Constantes.REGISTRO_ACTIVO)
-					.estadoRegistro(lineas.getEstado())
-					.contenido(lineas.getContenidoTxt())
-					.tipoRegistro(lineas.getTipo())
-					.usuarioCreacion("ATH")
-					.fechaCreacion(new Date())
+			var registroCargado = RegistrosCargados.builder().estado(Constantes.REGISTRO_ACTIVO)
+					.estadoRegistro(lineas.getEstado()).contenido(lineas.getContenidoTxt())
+					.tipoRegistro(lineas.getTipo()).usuarioCreacion("ATH").fechaCreacion(new Date())
 					.id(registrosCargadosPk).build();
 
 			if (Objects.nonNull(lineas.getCampos()) && !lineas.getCampos().isEmpty()) {
 				List<FallasRegistro> fallasRegistro = new ArrayList<>();
 				lineas.getCampos().forEach(camp -> {
 
-					var fallasRegistroPk = FallasRegistroPK.builder()
-							.idArchivo(idArchivo)
+					var fallasRegistroPk = FallasRegistroPK.builder().idArchivo(idArchivo)
 							.consecutivoRegistro((long) lineas.getNumeroLinea())
 							.numeroCampo((long) camp.getNumeroCampo()).build();
-					fallasRegistro.add(FallasRegistro.builder()
-							.contenido(camp.getContenido())
-							.descripcionError(camp.getMensajeErrorTxt())
-							.estado(Constantes.REGISTRO_ACTIVO)
-							.usuarioCreacion("ATH")
-							.fechaCreacion(new Date())
-							.id(fallasRegistroPk).build());
+					fallasRegistro.add(FallasRegistro.builder().contenido(camp.getContenido())
+							.descripcionError(camp.getMensajeErrorTxt()).estado(Constantes.REGISTRO_ACTIVO)
+							.usuarioCreacion("ATH").fechaCreacion(new Date()).id(fallasRegistroPk).build());
 				});
 				registroCargado.setFallasRegistro(fallasRegistro);
 			}
@@ -367,29 +381,44 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 
 		return erroresCamposDTO;
 	}
-	
+
 	/**
-	 * Revisa si ya existe un archivo en estado OK para la fecha
-	 * Si existe le cambia el estado a REEMPLAZADO
+	 * Revisa si ya existe un archivo en estado OK o REPROCESO para la fecha Si
+	 * existe le cambia el estado a REEMPLAZADO o REEMPLAZADORP
+	 * 
 	 * @param validacionArchivo
 	 * @author RParra
 	 */
-	private void cambiarEstadoArchivoOK (ValidacionArchivoDTO validacionArchivo) {
-		
-		List<ArchivosCargados> archivosCargados = archivosCargadosRepository
-				.getRegistrosCargadosPorNombreyEstado(Dominios.ESTADO_VALIDACION_CORRECTO, 
-						validacionArchivo.getNombreArchivo(),
-						validacionArchivo.getMaestroDefinicion().getIdMaestroDefinicionArchivo());
+	private void cambiarEstadoArchivoOK(ValidacionArchivoDTO validacionArchivo) {
 
-		if (!Objects.isNull(archivosCargados)) {
-			archivosCargados.forEach(arch -> {
-				var archivoEntity = arch;
-				archivoEntity.setEstadoCargue(Dominios.ESTADO_VALIDACION_REEMPLAZADO);
-				archivosCargadosRepository.save(archivoEntity);
-				
-			});	
+		if (validacionArchivo.getEstadoValidacion() == Dominios.ESTADO_VALIDACION_REPROCESO) {
+			List<ArchivosCargados> archivosCargados = archivosCargadosRepository
+					.getRegistrosCargadosPorEstadoCargueyNombreUpperyModelo(Dominios.ESTADO_VALIDACION_REPROCESO,
+							validacionArchivo.getNombreArchivo().toUpperCase(),
+							validacionArchivo.getMaestroDefinicion().getIdMaestroDefinicionArchivo());
+
+			if (!Objects.isNull(archivosCargados)) {
+				archivosCargados.forEach(arch -> {
+					var archivoEntity = arch;
+					archivoEntity.setEstadoCargue(Dominios.ESTADO_VALIDACION_REEMPLAZADORP);
+					archivosCargadosRepository.save(archivoEntity);
+
+				});
+			}
+		} else {
+			List<ArchivosCargados> archivosCargados = archivosCargadosRepository
+					.getRegistrosCargadosPorEstadoCargueyNombreUpperyModelo(Dominios.ESTADO_VALIDACION_CORRECTO,
+							validacionArchivo.getNombreArchivo().toUpperCase(),
+							validacionArchivo.getMaestroDefinicion().getIdMaestroDefinicionArchivo());
+
+			if (!Objects.isNull(archivosCargados)) {
+				archivosCargados.forEach(arch -> {
+					var archivoEntity = arch;
+					archivoEntity.setEstadoCargue(Dominios.ESTADO_VALIDACION_REEMPLAZADO);
+					archivosCargadosRepository.save(archivoEntity);
+				});
+			}
 		}
 	}
-
 
 }

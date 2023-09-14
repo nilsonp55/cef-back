@@ -46,7 +46,7 @@ public class AuditoriaProcesosController {
 
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(
-						auditoriaProcesosService.consultarAuditoriaPorProceso(codigoProceso, fechaSistema),
+						auditoriaProcesosService.consultarAuditoriaPorProceso(codigoProceso),
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 								.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}

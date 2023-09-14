@@ -4,7 +4,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -46,6 +45,9 @@ public class Bancos {
 	
 	@Column(name = "NOMBRE_BANCO")
 	private String nombreBanco;
+	
+	@Column(name = "COBRA_INTRADAY")
+	private Boolean cobraIntraday;
 	
 	@OneToOne
 	@JoinColumn(name = "COD_PUNTO")

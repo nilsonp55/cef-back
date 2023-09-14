@@ -1,23 +1,14 @@
 package com.ath.adminefectivo.dto.compuestos;
 
 import java.util.Date;
-import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 
-import com.ath.adminefectivo.dto.BancosDTO;
-import com.ath.adminefectivo.dto.CiudadesDTO;
-import com.ath.adminefectivo.dto.EscalasDTO;
 import com.ath.adminefectivo.dto.OperacionesProgramadasDTO;
-import com.ath.adminefectivo.dto.TransportadorasDTO;
-import com.ath.adminefectivo.entities.ConciliacionServicios;
 import com.ath.adminefectivo.entities.DetalleOperacionesProgramadas;
-import com.ath.adminefectivo.entities.Escalas;
 import com.ath.adminefectivo.utils.UtilsObjects;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

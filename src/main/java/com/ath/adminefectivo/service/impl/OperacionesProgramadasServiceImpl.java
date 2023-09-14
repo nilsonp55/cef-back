@@ -21,23 +21,20 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.ArchivosCargadosDTO;
-import com.ath.adminefectivo.dto.BancosDTO;
-import com.ath.adminefectivo.dto.CiudadesDTO;
 import com.ath.adminefectivo.dto.DetallesDefinicionArchivoDTO;
 import com.ath.adminefectivo.dto.FechasConciliacionDTO;
-import com.ath.adminefectivo.dto.FondosDTO;
 import com.ath.adminefectivo.dto.LogProcesoDiarioDTO;
 import com.ath.adminefectivo.dto.MaestrosDefinicionArchivoDTO;
 import com.ath.adminefectivo.dto.OperacionesProgramadasDTO;
 import com.ath.adminefectivo.dto.PuntosDTO;
 import com.ath.adminefectivo.dto.RegistrosCargadosDTO;
-import com.ath.adminefectivo.dto.TransportadorasDTO;
 import com.ath.adminefectivo.dto.compuestos.DetalleOperacionesDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionIntradiaDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionesProgramadasNombresDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.Fondos;
 import com.ath.adminefectivo.entities.OperacionesProgramadas;
+import com.ath.adminefectivo.entities.Puntos;
 import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.ICiudadesRepository;
@@ -49,7 +46,6 @@ import com.ath.adminefectivo.service.ICajerosService;
 import com.ath.adminefectivo.service.ICiudadesService;
 import com.ath.adminefectivo.service.IClientesCorporativosService;
 import com.ath.adminefectivo.service.IDetalleDefinicionArchivoService;
-import com.ath.adminefectivo.service.IDetalleOperacionesProgramadasService;
 import com.ath.adminefectivo.service.IDominioService;
 import com.ath.adminefectivo.service.IFondosService;
 import com.ath.adminefectivo.service.ILecturaArchivoService;
@@ -60,21 +56,12 @@ import com.ath.adminefectivo.service.IOperacionesProgramadasService;
 import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.IPuntosService;
 import com.ath.adminefectivo.service.IRegistrosCargadosService;
-import com.ath.adminefectivo.service.ISitiosClientesService;
 import com.ath.adminefectivo.service.ITransportadorasService;
 import com.ath.adminefectivo.utils.UtilsString;
 import com.querydsl.core.types.Predicate;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Service
 @Log4j2
 public class OperacionesProgramadasServiceImpl implements IOperacionesProgramadasService {
@@ -95,15 +82,11 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	ICiudadesService ciudadService;
 
 	@Autowired
-	IDominioService dominioService;
-
-	@Autowired
 	IOficinasService oficinaService;
 
 	@Autowired
 	IDetalleDefinicionArchivoService detalleDefinicionArchivoService;
 	
-
 	@Autowired
 	IDetalleOperacionesProgramadasRepository detalleOperacionesProgramadasRepository;
 
@@ -120,9 +103,6 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	IBancosService bancosService;
 
 	@Autowired
-	ISitiosClientesService sitiosClientesService;
-
-	@Autowired
 	ICajerosService cajerosService;
 
 	@Autowired
@@ -130,9 +110,6 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
 	@Autowired
 	IClientesCorporativosService clientesCorporativosService;
-
-	@Autowired
-	IDetalleOperacionesProgramadasService detalleOperacionesProgramadasService;
 	
 	@Autowired
 	IParametroService parametroService;
@@ -143,12 +120,15 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	@Autowired
 	ICiudadesRepository ciudadesRepository;
 
+	private IDominioService dominioService;
 	private OperacionesProgramadasDTO operaciones;
-	private List<OperacionesProgramadas> operacionesp;
-	private List<TransportadorasDTO> listaTransportadoras;
-	private List<FondosDTO> listaFondos;
-	private List<PuntosDTO> listaPuntos;
-	private List<CiudadesDTO> listaCiudades;
+	private static final String USER1 = "user1";	
+	
+	public OperacionesProgramadasServiceImpl(IDominioService dominioService) {
+		super();
+		this.dominioService = dominioService;
+		
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -173,7 +153,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		}
 		return true;
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -181,34 +161,31 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	public Page<OperacionesProgramadasNombresDTO> getNombresProgramadasConciliadas(
 			Page<OperacionesProgramadas> operacionesProgramadasList, Predicate predicate, Pageable page) {
 
-		this.getListados(predicate);
+		
 		for (OperacionesProgramadas programadas : operacionesProgramadasList) {
 			
 			try {
 				programadas.getConciliacionServicios().get(0);
+				// Obtiene nombres de transportadora y Banco dueño del fondo
+				programadas.setNombreTransportadora(programadas.getTdv());
+				programadas.setNombreBanco(programadas.getBancoAVAL());
+				// Obtiene nombres de tipo origen y nombre ciudad origen
+				Puntos punto = puntosService.getPuntoById(programadas.getCodigoPuntoOrigen());
+				programadas.setNombrePuntoOrigen(punto.getNombrePunto());
+				programadas.setNombreCiudadOrigen(ciudadService.getCiudadPorCodigoDane(punto.getCodigoCiudad()).getNombreCiudad());
+				// Obtiene nombres de tipo destino y nombre ciudad destino
+				punto = puntosService.getPuntoById(programadas.getCodigoPuntoDestino());
+				programadas.setNombrePuntoDestino(punto.getNombrePunto());
+				programadas.setNombreCiudadDestino(ciudadService.getCiudadPorCodigoDane(punto.getCodigoCiudad()).getNombreCiudad());
+				programadas.setFechaEjecucion(programadas.getFechaOrigen());
+				// Obtiene datos de la tabla de Conciliacion Servicios
+				programadas.setTipoConciliacion(programadas.getConciliacionServicios().get(0).getTipoConciliacion());
+				programadas.setIdConciliacion(programadas.getConciliacionServicios().get(0).getIdConciliacion());
+				punto = puntosService.getPuntoById(programadas.getCodigoFondoTDV());
+				programadas.setNombreFondoTDV(punto.getNombrePunto());
 			} catch (Exception e) {
-				throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_CONCILIADA_SIN_SERVICIOS.getCode(),
-						ApiResponseCode.ERROR_OPERACIONES_CONCILIADA_SIN_SERVICIOS.getDescription(),
-						ApiResponseCode.ERROR_OPERACIONES_CONCILIADA_SIN_SERVICIOS.getHttpStatus());
+				log.error("Failed getConciliacionServicios(): {} - {}", programadas.getIdOperacion(), e);
 			}
-			// Obtiene nombres de transportadora y Banco dueño del fondo
-			programadas.setNombreTransportadora(this.getNombreTransportadora(programadas.getCodigoFondoTDV()));
-			programadas.setNombreBanco(this.getNombreBanco(programadas.getCodigoFondoTDV()));
-			// Obtiene nombres de tipo origen y nombre ciudad origen
-			programadas.setNombrePuntoOrigen(this.getNombrePunto(programadas.getCodigoPuntoOrigen()));
-			programadas.setNombreCiudadOrigen(this.getNombreCiudad(programadas.getCodigoPuntoOrigen()));
-			// Obtiene nombres de tipo destino y nombre ciudad destino
-			programadas.setNombrePuntoDestino(this.getNombrePunto(programadas.getCodigoPuntoDestino()));
-			programadas.setNombreCiudadDestino(this.getNombreCiudad(programadas.getCodigoPuntoDestino()));
-			programadas.setFechaEjecucion(programadas.getFechaOrigen());
-			// Obtiene datos de la tabla de Conciliacion Servicios
-			programadas.setTipoConciliacion(programadas.getConciliacionServicios().get(0).getTipoConciliacion());
-			programadas.setIdConciliacion(programadas.getConciliacionServicios().get(0).getIdConciliacion());
-			programadas.setEntradaSalida(programadas.getEntradaSalida());
-			programadas.setNombreFondoTDV(puntosService.getNombrePunto(dominioService.valorTextoDominio(
-									Constantes.DOMINIO_TIPOS_PUNTO, 
-									Dominios.TIPOS_PUNTO_FONDO), programadas.getCodigoFondoTDV()));;
-
 		}
 		return new PageImpl<>(operacionesProgramadasList.getContent().stream()
                 .map(OperacionesProgramadasNombresDTO.CONVERTER_DTO)
@@ -258,7 +235,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	 */
 	@Override
 	public List<OperacionesProgramadas> obtenerOperacionesProgramadas() {
-		operacionesp = operacionesProgramadasRepository.conciliacionAutomatica(
+		List<OperacionesProgramadas> operacionesp = operacionesProgramadasRepository.conciliacionAutomatica(
 				dominioService.valorTextoDominio(Constantes.DOMINIO_ESTADO_CONCILIACION,
 												Dominios.ESTADO_CONCILIACION_NO_CONCILIADO));
 		if (Objects.isNull(operacionesp)) {
@@ -340,11 +317,10 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	 */
 	@Override
 	public List<OperacionIntradiaDTO> consultarOperacionesIntradia(Date fechaInicio, Date fechaFin) {
-		List<OperacionIntradiaDTO> listadoOperacionesIntradia = operacionesProgramadasRepository.consultaOperacionesIntradia_Entrada(fechaInicio, fechaFin, "ENTRADA", "VENTA");
-		listadoOperacionesIntradia.addAll(operacionesProgramadasRepository.consultaOperacionesIntradia_Salida(fechaInicio, fechaFin, "SALIDA", "VENTA"));				
-		
-		return listadoOperacionesIntradia;
-
+		List<OperacionIntradiaDTO> operacionesProgramadas = 
+					operacionesProgramadasRepository.consultaOperacionesIntradiaSalida(fechaInicio, fechaFin, "SALIDA", "VENTA");
+		operacionesProgramadas.addAll(operacionesProgramadasRepository.consultaOperacionesIntradiaEntrada(fechaInicio, fechaFin, "ENTRADA", "VENTA"));
+		return operacionesProgramadas;
 	}
 	
 	/**
@@ -355,9 +331,9 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		List<OperacionesProgramadas> listadoOperacionesProgramadas = operacionesProgramadasRepository.obtenerConErroresContables(tipoContabilidad);
 		List<OperacionesProgramadasDTO> listadoOperacionesProgramadasDTO = new ArrayList<>();
 		
-		listadoOperacionesProgramadas.forEach(operacion ->{
-			listadoOperacionesProgramadasDTO.add(OperacionesProgramadasDTO.CONVERTER_DTO.apply(operacion));
-		});;
+		listadoOperacionesProgramadas.forEach(operacion ->
+			listadoOperacionesProgramadasDTO.add(OperacionesProgramadasDTO.CONVERTER_DTO.apply(operacion))
+		);
 		return listadoOperacionesProgramadasDTO;
 	}
 	
@@ -368,13 +344,13 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	@Transactional			   
 	public String reabrirCierrePorAgrupador(String agrupador) {
 		if(agrupador.equals(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_CERTIFICACION)) {
-			return operacionesProgramadasRepository.reabrir_certificaciones();
+			return operacionesProgramadasRepository.reabrirCertificaciones();
 		}else if(agrupador.equals(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_DEFINITIVO)) {
-			return operacionesProgramadasRepository.reabrir_definitiva();
+			return operacionesProgramadasRepository.reabrirDefinitiva();
 		}else if(agrupador.equals(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_PRELIMINARES)) {
-			return operacionesProgramadasRepository.reabrir_preliminar();
+			return operacionesProgramadasRepository.reabrirPreliminar();
 		}else if(agrupador.equals(Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_CONCILIACION)) {
-			return operacionesProgramadasRepository.reabrir_conciliaciones();
+			return operacionesProgramadasRepository.reabrirConciliaciones();
 		}
 		return "Agrupador no existente. ";
 	}
@@ -589,8 +565,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
         DetallesDefinicionArchivoDTO detalle = detallesArchivo.stream()
                 .filter(deta -> deta.getNombreCampo().toUpperCase().equals(nombreCampo)).findFirst().orElse(null);
         if (!Objects.isNull(detalle)) {
-            String cobroBR = contenido[detalle.getId().getNumeroCampo() - 1].trim();
-            return cobroBR;
+            return contenido[detalle.getId().getNumeroCampo() - 1].trim();
         }
         return null;
     }
@@ -710,11 +685,13 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
 		OperacionesProgramadasDTO operacionesProgramadaConsignacion = this.generarOperacionConsignacion(contenido,
 				detallesArchivo, archivo, true);
-		var codigoPuntoDestino = this.consultarBancoPorCiudad(contenido, detallesArchivo,
+		var codigoPuntoOrigen = this.consultarBancoPorCiudad(contenido, detallesArchivo,
 				Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN);
-		operacionesProgramadaConsignacion.setCodigoPuntoDestino(codigoPuntoDestino);
+		operacionesProgramadaConsignacion.setCodigoPuntoDestino(codigoPuntoOrigen);
 		OperacionesProgramadasDTO operacionesProgramadaRetiro = this.generarOperacionRetiro(contenido, detallesArchivo,
 				archivo, true);
+		var codigoPuntoDestino = this.consultarBancoPorCiudad(contenido, detallesArchivo,
+				Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO);
 		operacionesProgramadaRetiro.setCodigoPuntoOrigen(codigoPuntoDestino);
 		operacionesProgramadaRetiro.setEsCambio(true);
 		operacionesProgramadaConsignacion.setEsCambio(true);
@@ -1083,7 +1060,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 						.equals(Constantes.CAMPO_DETALLE_ARCHIVO_TASA))
 				.findFirst().orElse(null).getId().getNumeroCampo() - 1].trim();
 
-		List<String> listaDominioFecha = new ArrayList<String>();
+		List<String> listaDominioFecha = new ArrayList<>();
 		listaDominioFecha.add("MM/dd/yyyy");
 		
 		operacionesProgramadasDTO.setFechaProgramacion(UtilsString.convertirFecha(fechaProgramacion,listaDominioFecha));
@@ -1136,26 +1113,6 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 			return dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_OPERACION, Dominios.TIPO_OPERA_INTERCAMBIO);
 		} else if (tipoOperacion.toUpperCase().trim().contains(Dominios.TIPO_OPERA_TRASLADO)) {
 			return dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_OPERACION, Dominios.TIPO_OPERA_TRASLADO);
-		}
-		return null;
-	}
-
-	/**
-	 * Metodo encargado de realizar la filtracion de un detalle por nombre campo
-	 * para obtener el banco por una abreviatura
-	 * 
-	 * @param contenido
-	 * @param detallesArchivo
-	 * @param nombreCampo
-	 * @return BancosDTO
-	 * @author duvan.naranjo
-	 */
-	private BancosDTO consultarBancoPorDetalle(String[] contenido, List<DetallesDefinicionArchivoDTO> detallesArchivo,
-			String nombreCampo) {
-		DetallesDefinicionArchivoDTO detalle = detallesArchivo.stream()
-				.filter(deta -> deta.getNombreCampo().toUpperCase().equals(nombreCampo)).findFirst().orElse(null);
-		if (!Objects.isNull(detalle)) {
-			return bancosService.findBancoByAbreviatura(contenido[detalle.getId().getNumeroCampo() - 1].trim());
 		}
 		return null;
 	}
@@ -1224,127 +1181,6 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	}
 
 	/**
-	 * Metodo que consiste en obtener los listados de transportadoras, puntos
-	 * codigo, puntos y ciudades en memoria
-	 * 
-	 * @param predicate
-	 * @author cesar.castano
-	 */
-	private void getListados(Predicate predicate) {
-
-		this.setListaTransportadoras(transportadorasService.getTransportadoras(predicate));
-		this.setListaFondos(fondosService.getFondos(predicate));
-		this.setListaPuntos(puntosService.getPuntos(predicate));
-		this.setListaCiudades(ciudadService.getCiudades(predicate));
-	}
-
-	/**
-	 * Metodo que obtiene el nombre del punto de una lista cuando el codigo punto es
-	 * un Banco
-	 * 
-	 * @param codigoFondoTDV
-	 * @return String
-	 * @author cesar.castano
-	 */
-	private String getNombreBanco(Integer codigoFondoTDV) {
-		FondosDTO fondos = listaFondos.stream().filter(fondo -> fondo.getCodigoPunto().equals(codigoFondoTDV))
-				.findFirst().orElse(null);
-		if (!Objects.isNull(fondos)) {
-			var punto = listaPuntos.stream()
-					.filter(puntoT -> puntoT.getCodigoPunto().equals(fondos.getBancoAVAL())
-							&& puntoT.getTipoPunto().equals(dominioService
-									.valorTextoDominio(Constantes.DOMINIO_TIPOS_PUNTO, Dominios.TIPOS_PUNTO_BANCO)))
-					.findFirst().orElse(null);
-			if (Objects.isNull(punto)) {
-				throw new NegocioException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
-						ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription()+ "Punto no encontrado para tipo banco, es un punto = "+ punto.getNombrePunto(),
-						ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
-			}
-			return punto.getNombrePunto();
-		} else {
-			throw new NegocioException(ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getDescription()+" Fondo no encontrado para codigo fondo = "+codigoFondoTDV,
-					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getHttpStatus());
-		}
-	}
-
-	/**
-	 * Metodo que se encarga de obtener el nombre de la transportadora de la lista
-	 * de transportadoras
-	 * 
-	 * @param codigoFondoTDV
-	 * @return String
-	 * @author cesar.castano
-	 */
-	private String getNombreTransportadora(Integer codigoFondoTDV) {
-		FondosDTO fondos = listaFondos.stream().filter(fondo -> fondo.getCodigoPunto().equals(codigoFondoTDV))
-				.findFirst().orElse(null);
-		if (!Objects.isNull(fondos)) {
-			TransportadorasDTO transportadora = listaTransportadoras.stream()
-					.filter(trans -> trans.getCodigo().equals(fondos.getTdv())).findFirst().orElse(null);
-			if (!Objects.isNull(transportadora)) {
-				return transportadora.getNombreTransportadora();
-			} else {
-				throw new NegocioException(ApiResponseCode.ERROR_TRANSPORTADORAS_NO_ENCONTRADO.getCode(),
-						ApiResponseCode.ERROR_TRANSPORTADORAS_NO_ENCONTRADO.getDescription(),
-						ApiResponseCode.ERROR_TRANSPORTADORAS_NO_ENCONTRADO.getHttpStatus());
-			}
-		} else {
-			throw new NegocioException(ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getDescription() + " fondo no encontrado para fondo = "+codigoFondoTDV,
-					ApiResponseCode.ERROR_FONDOS_NO_ENCONTRADO.getHttpStatus());
-		}
-	}
-
-	/**
-	 * Metodo que se encarga de obtener el nombre del punto de la lista de puntos
-	 * 
-	 * @param tipoPunto
-	 * @param codigoPunto
-	 * @return String
-	 * @author cesar.castano
-	 */
-	private String getNombrePunto(Integer codigoPunto) {
-		PuntosDTO puntos = listaPuntos.stream().filter(punto -> 
-			punto.getCodigoPunto().equals(codigoPunto)).findFirst().orElse(null);
-		if(!Objects.isNull(puntos)) {
-			return puntos.getNombrePunto();
-		} else {
-			throw new NegocioException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription()+ " Punto no encontrado con codigo punto = "+codigoPunto,
-					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
-		}
-	}
-
-	/**
-	 * Metodo que se encarga de obtener el nombre de la ciudad de la lista de
-	 * ciudades
-	 * 
-	 * @param codigoPunto
-	 * @return String
-	 * @author cesar.castano
-	 */
-	private String getNombreCiudad(Integer codigoPunto) {
-		PuntosDTO puntos = listaPuntos.stream().filter(punto -> punto.getCodigoPunto().equals(codigoPunto)).findFirst()
-				.orElse(null);
-		if (!Objects.isNull(puntos)) {
-			CiudadesDTO ciudad = listaCiudades.stream()
-					.filter(ciud -> ciud.getCodigoDANE().equals(puntos.getCodigoCiudad())).findFirst().orElse(null);
-			if (Objects.isNull(ciudad)) {
-				throw new NegocioException(ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getCode(),
-						ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getDescription(),
-						ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getHttpStatus());
-			} else {
-				return ciudad.getNombreCiudad();
-			}
-		} else {
-			throw new NegocioException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription() + " Punto no encontrado para codigoPunto = "+codigoPunto,
-					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
-		}
-	}
-
-	/**
 	 * Metodo encargado de persistir el archivo de cargue de Oficinas en
 	 * OperacionesProgramadas
 	 * 
@@ -1354,7 +1190,6 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	private OperacionesProgramadasDTO procesarArchivoOficinas(String[] contenido,
 			List<DetallesDefinicionArchivoDTO> detalleArchivo, ArchivosCargadosDTO archivo) {
 
-		Integer idOperacion = 0;
 		String orderId = determinarOrderId(contenido, detalleArchivo);
 		String shipIn = determinarShipIn(contenido, detalleArchivo);
 		String shipOut = determinarShipOut(contenido, detalleArchivo);
@@ -1416,32 +1251,29 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 					operaciones.setTipoServicio(determinarTipoServicio(contenido, detalleArchivo));
 				}
 				operaciones.setTipoTransporte(null);
-				operaciones.setUsuarioCreacion("User1");
-				operaciones.setUsuarioModificacion("User1");
+				operaciones.setUsuarioCreacion(USER1);
+				operaciones.setUsuarioModificacion(USER1);
 				operaciones.setValorTotal(asignarValorTotal(shipIn, shipOut));
 				operaciones.setIdServicio(orderId);
 				operaciones.setEsCambio(false);
-				operaciones = crearDetalleOperacionesProgramadas(contenido, idOperacion, detalleArchivo);
+				operaciones = crearDetalleOperacionesProgramadas(contenido, detalleArchivo);
 				OperacionesProgramadas op =  OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(operaciones);
-				
-				
+								
 				var operacionesP = operacionesProgramadasRepository.save(
 						OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(operaciones));
-				idOperacion = operacionesP.getIdOperacion();
 				op.getDetalleOperacionesProgramadas().forEach(detalle -> {
 					detalle.setOperacionesProgramadas(operacionesP);
 					detalleOperacionesProgramadasRepository.save(detalle);
 			});
-				operacionesP.getDetalleOperacionesProgramadas().forEach(operacion ->{
-					operacion.setOperacionesProgramadas(operacionesP);
-				});
+				operacionesP.getDetalleOperacionesProgramadas().forEach(operacion ->
+					operacion.setOperacionesProgramadas(operacionesP)
+				);
 			}
 		}else {
 			if (Long.parseLong(shipIn) + Long.parseLong(shipOut) != 0){
 				operaciones = OperacionesProgramadasDTO.CONVERTER_DTO.apply(operacionesProg);
 				operaciones.setValorTotal(operaciones.getValorTotal() + asignarValorTotal(shipIn, shipOut));
-                idOperacion = operacionesProg.getIdOperacion();
-				operaciones = crearDetalleOperacionesProgramadas(contenido, idOperacion, detalleArchivo);
+				operaciones = crearDetalleOperacionesProgramadas(contenido, detalleArchivo);
 				
 				OperacionesProgramadas op =  OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(operaciones);
 				
@@ -1451,9 +1283,9 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 				});
 
 				var operacionesP = operacionesProgramadasRepository.save(op);
-				operacionesP.getDetalleOperacionesProgramadas().forEach(operacion ->{
-					operacion.setOperacionesProgramadas(operacionesP);
-				});
+				operacionesP.getDetalleOperacionesProgramadas().forEach(operacion ->
+					operacion.setOperacionesProgramadas(operacionesP)
+				);
 			}
 		}
 		return operaciones;
@@ -1553,7 +1385,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		
 		String[] referenceId = determinarReferencedId(contenido, detalleArchivo);
 		Integer codigoPunto = bancosService.getCodigoPuntoBanco(Integer.parseInt(referenceId[1]));
-		Integer cliente = clientesCorporativosService.getCodigoCliente(codigoPunto, referenceId[2].trim());
+		clientesCorporativosService.getCodigoCliente(codigoPunto, referenceId[2].trim());
 		return 9999;
 	}
 
@@ -1577,13 +1409,13 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
      * @return Integer
      * @author cesar.castano
      */
-	private Double asignarValorTotal(String ShipIn, String ShipOut) {
+	private Double asignarValorTotal(String shipIn, String shipOut) {
 		Double valorTotal = 0.0;
-		if(!ShipIn.equals("0")) {
-			valorTotal = Double.parseDouble(ShipIn);
+		if(!shipIn.equals("0")) {
+			valorTotal = Double.parseDouble(shipIn);
 		}else {
-			if(!ShipOut.equals("0")) {
-				valorTotal = Double.parseDouble(ShipOut);
+			if(!shipOut.equals("0")) {
+				valorTotal = Double.parseDouble(shipOut);
 			}
 		}
 		return valorTotal;
@@ -1623,8 +1455,8 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		try {
 			DateFormat formato = new SimpleDateFormat(
 									dominioService.valorTextoDominio(
-									Constantes.DOMINIO_FORMATO_FECHA_HORA,
-									Dominios.FORMATO_FECHA_HORA_F5));
+									Constantes.DOMINIO_FORMATO_FECHA,
+									Dominios.FORMATO_FECHA_F4));
 			fecha = formato.parse(contenido);
 		} catch (ParseException e) {
 			e.getMessage();
@@ -1639,7 +1471,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
      */
 	private Date asignarFechaHora(String contenido) {
 		List<String> listadoFechas = dominioService.consultaListValoresPorDominio(Constantes.DOMINIO_FORMATO_FECHA_HORA);
-		return UtilsString.ToDateWithHours(contenido, listadoFechas);
+		return UtilsString.toDateWithHours(contenido, listadoFechas);
 		
 	}
 
@@ -1719,7 +1551,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	 * @author cesar.castano
 	 */
 	private OperacionesProgramadasDTO crearDetalleOperacionesProgramadas(String[] contenido, 
-			Integer idOperacion, List<DetallesDefinicionArchivoDTO> detalleArchivo) {
+			List<DetallesDefinicionArchivoDTO> detalleArchivo) {
 		
 		String shipIn = determinarShipIn(contenido, detalleArchivo);
 		String shipOut = determinarShipOut(contenido, detalleArchivo);
@@ -1746,9 +1578,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		}
 		
 		operaciones.getDetalleOperacionesProgramadasDTO().add(detalleOperacionesDTO);		
-		
-		
-		
+
 		return operaciones;
 	}
 
@@ -1792,29 +1622,6 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	}
 
 	/**
-	 * Metodo encargado de actualizar el valor total en OperacionesProgramadas
-	 * 
-	 * @param idArchivoCargado
-	 * @author cesar.castano
-	 */
-	private void actualizarValorTotalOficinas(Integer idArchivoCargado) {
-		List<OperacionesProgramadas> operacionesP = operacionesProgramadasRepository.
-				findByIdArchivoCargado(idArchivoCargado);
-		if(operacionesP.isEmpty()) {
-			throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getDescription(),
-					ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getHttpStatus());
-		}else {
-			for (OperacionesProgramadas operacionesProgramadas : operacionesP) {
-				Double valorDetalle = detalleOperacionesProgramadasService.obtenerValorDetalle(
-						operacionesProgramadas.getIdOperacion());
-				operacionesProgramadas.setValorTotal(valorDetalle);
-				operacionesProgramadasRepository.save(operacionesProgramadas);
-			}
-		}
-	}
-
-	/**
 	 * Metodo que se encarga de persistir en la tabla de OperacionesProgramadas, el
 	 * archivo plano de CAJEROS
 	 * 
@@ -1824,60 +1631,60 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	private OperacionesProgramadasDTO procesarArchivoCajeros(String[] contenido,
 					List<DetallesDefinicionArchivoDTO> detalleArchivo, ArchivosCargadosDTO archivo) {
 		
-		var operaciones = new OperacionesProgramadasDTO();
+		OperacionesProgramadasDTO op = new OperacionesProgramadasDTO();
 		String transportadora = determinarTransportadora(contenido, detalleArchivo, 
 								Constantes.CAMPO_DETALLE_ARCHIVO_TRANSPORTADORA);
 		String nombreBanco = determinarNombreBanco(contenido, detalleArchivo);
 		String ciudad = determinarCiudad(contenido, detalleArchivo, 
 								Constantes.CAMPO_DETALLE_ARCHIVO_CIUDAD);
 		ciudad = ciudadesRepository.findByNombreCiudadFiserv(ciudad).getNombreCiudad();
-		operaciones.setCodigoFondoTDV(fondosService.getCodigoFondo(
+		op.setCodigoFondoTDV(fondosService.getCodigoFondo(
 											transportadora, 
 											dominioService.valorTextoDominio(Constantes.DOMINIO_TIPOS_PUNTO, 
 																				Dominios.TIPOS_PUNTO_BANCO), 
 											nombreBanco, 
 											ciudad)
 											.getCodigoPunto());
-		operaciones.setEntradaSalida(Constantes.SALIDA);
-		operaciones.setCodigoPuntoOrigen(fondosService.getCodigoFondo(
+		op.setEntradaSalida(Constantes.SALIDA);
+		op.setCodigoPuntoOrigen(fondosService.getCodigoFondo(
 											transportadora, 
 											dominioService.valorTextoDominio(Constantes.DOMINIO_TIPOS_PUNTO, 
 																				Dominios.TIPOS_PUNTO_BANCO), 
 											nombreBanco, 
 											ciudad)
 											.getCodigoPunto());
-		operaciones.setCodigoPuntoDestino(cajerosService.getCodigoPunto(
+		op.setCodigoPuntoDestino(cajerosService.getCodigoPunto(
 											determinarReference(contenido, detalleArchivo)));
-		operaciones.setEstadoConciliacion(dominioService.valorTextoDominio(
+		op.setEstadoConciliacion(dominioService.valorTextoDominio(
 											Constantes.DOMINIO_ESTADO_CONCILIACION,
 											Dominios.ESTADO_CONCILIACION_NO_CONCILIADO));
-		operaciones.setEstadoOperacion(dominioService.valorTextoDominio(
+		op.setEstadoOperacion(dominioService.valorTextoDominio(
 											Constantes.DOMINIO_ESTADOS_OPERACION,
 											Dominios.ESTADOS_OPERA_EJECUTADO));
-		operaciones.setFechaCreacion(new Date());
+		op.setFechaCreacion(new Date());
 		Date fechaDestino = determinarFechaDestino(contenido, detalleArchivo, 
 											Constantes.CAMPO_DETALLE_ARCHIVO_FECHA_ENTREGA);
-		operaciones.setFechaDestino(fechaDestino);
-		operaciones.setFechaModificacion(new Date());
-		operaciones.setFechaOrigen(fechaDestino);
-		operaciones.setFechaProgramacion(fechaDestino);
-		operaciones.setIdArchivoCargado(archivo.getIdArchivo().intValue());
-		operaciones.setIdNegociacion(null);
-		operaciones.setIdOperacionRelac(null);
-		operaciones.setTasaNegociacion(null);
-		operaciones.setTipoOperacion(dominioService.valorTextoDominio(
+		op.setFechaDestino(fechaDestino);
+		op.setFechaModificacion(new Date());
+		op.setFechaOrigen(fechaDestino);
+		op.setFechaProgramacion(fechaDestino);
+		op.setIdArchivoCargado(archivo.getIdArchivo().intValue());
+		op.setIdNegociacion(null);
+		op.setIdOperacionRelac(null);
+		op.setTasaNegociacion(null);
+		op.setTipoOperacion(dominioService.valorTextoDominio(
 											Constantes.DOMINIO_TIPO_OPERACION,
 											Dominios.TIPO_OPERA_PROVISION));
-		operaciones.setTipoServicio(dominioService.valorTextoDominio(
+		op.setTipoServicio(dominioService.valorTextoDominio(
 											Constantes.DOMINIO_TIPO_SERVICIO,
 											Dominios.TIPO_SERVICIO_PROGRAMADA));
-		operaciones.setTipoTransporte(null);
-		operaciones.setUsuarioCreacion("User1");
-		operaciones.setUsuarioModificacion("User1");
-		operaciones.setValorTotal(Double.parseDouble(determinarValor(contenido, detalleArchivo)));
-		operaciones.setIdServicio(determinarNumeroOrden(contenido, detalleArchivo));
+		op.setTipoTransporte(null);
+		op.setUsuarioCreacion("User1");
+		op.setUsuarioModificacion("User1");
+		op.setValorTotal(Double.parseDouble(determinarValor(contenido, detalleArchivo)));
+		op.setIdServicio(determinarNumeroOrden(contenido, detalleArchivo));
 		operacionesProgramadasRepository.save(OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(operaciones));
-		return operaciones;
+		return op;
 	}
 	
 	
@@ -1996,10 +1803,10 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	 */
 	private Date determinarFechaDestino(String[] contenido, 
 										List<DetallesDefinicionArchivoDTO> detalleArchivo,
-										String Constante) {
+										String constante) {
 		return asignarFecha(contenido[detalleArchivo.stream()
 		    				    .filter(deta -> deta.getNombreCampo().toUpperCase().trim()
-		    				    .equals(Constante))
+		    				    .equals(constante))
 		    				    .findFirst().orElse(null).getId().getNumeroCampo() - 1].trim());
 	}
 

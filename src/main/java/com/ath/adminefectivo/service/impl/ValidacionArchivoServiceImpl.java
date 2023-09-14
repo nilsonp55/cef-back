@@ -1,6 +1,5 @@
 package com.ath.adminefectivo.service.impl;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,7 +25,6 @@ import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.service.IDetalleDefinicionArchivoService;
 import com.ath.adminefectivo.service.IDominioService;
 import com.ath.adminefectivo.service.IMotorReglasService;
-import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.IValidacionArchivoService;
 import com.ath.adminefectivo.utils.UtilsString;
 
@@ -46,9 +44,6 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 
 	@Autowired
 	IDetalleDefinicionArchivoService detalleDefinicionArchivoService;
-
-	@Autowired
-	IParametroService parametroServiceImpl;
 
 	@Autowired
 	IDominioService dominioService;
@@ -76,16 +71,15 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 		if (validacionArchivo.getEstadoValidacion().equals(Dominios.ESTADO_VALIDACION_CORRECTO)) {
 			validarContenido(maestroDefinicion, validacionArchivo);
 		}
-	
+
 		return validacionArchivo;
 	}
 
 	/**
 	 * Metodo encargado de realizar las validaciones correspondientes a las
 	 * validaciones de contenido
-	 * 
+	 *
 	 * @param maestroDefinicion
-	 * @param contenido
 	 * @param validacionArchivo
 	 * @return
 	 */
@@ -100,7 +94,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 				if (!erroresCampos.isEmpty()) {
 					lineaDTO.setCampos(erroresCampos);
 					lineaDTO.setEstado(Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO);
-					validacionArchivo.setNumeroErrores(validacionArchivo.getNumeroErrores()+(erroresCampos.size()));
+					validacionArchivo.setNumeroErrores(validacionArchivo.getNumeroErrores() + (erroresCampos.size()));
 					validacionArchivo.setEstadoValidacion(Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO);
 				} else {
 					lineaDTO.setEstado(Dominios.ESTADO_VALIDACION_CORRECTO);
@@ -188,7 +182,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 		return obtenerLineas(maestroDefinicion, contenidoValidado);
 
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -235,90 +229,68 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 			switch (inicioNombre) {
 			// fragmento que valida las archivos de certificaciones tipo atlas
 
-				case "AC": {
-					fecha = nombreArchivo.substring(5, 11);
-					mascaraFecha = maestroDefinicion.getMascaraArch().substring(8, 14);
-					formatoFecha = new ArrayList<String>();
-					formatoFecha.add(mascaraFecha);
-					if (!UtilsString.isFecha(fecha, formatoFecha)) {
-						throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
-								ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
-								ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
-					}
-					break;
-				}
-				case "BS": {
-					fecha = nombreArchivo.substring(8, 14);
-					mascaraFecha = maestroDefinicion.getMascaraArch().substring(13, 19);
-					formatoFecha = new ArrayList<String>();
-					formatoFecha.add(mascaraFecha);
-					if (!UtilsString.isFecha(fecha, formatoFecha)) {
-						throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
-								ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
-								ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
-					}
-					break;
-				}
-				case "BI": {
-					fecha = nombreArchivo.substring(8, 14);
-					mascaraFecha = maestroDefinicion.getMascaraArch().substring(13, 19);
-					formatoFecha = new ArrayList<String>();
-					formatoFecha.add(mascaraFecha);
-					if (!UtilsString.isFecha(fecha, formatoFecha)) {
-						throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
-								ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
-								ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
-					}
-					break;
-				}
-				case "TH": {
-					if(nombreArchivo.length() == 23) {
-						fecha = nombreArchivo.substring(11, 19);
-					}else {
-						if(nombreArchivo.length() == 24) {
-							fecha = nombreArchivo.substring(12, 20);
-						}
-						else {
-							fecha = nombreArchivo.substring(14, 22);
-						}
-					}
-					mascaraFecha = maestroDefinicion.getMascaraArch().substring(19, 27);
-					formatoFecha = new ArrayList<String>();
-					formatoFecha.add(mascaraFecha);
-					if (!UtilsString.isFecha(fecha, formatoFecha)) {
-						throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
-								ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
-								ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
-					}
-					break;
-				}
-				case "SC": {
-					if(nombreArchivo.contains("VILLAS")) {
-						fecha = nombreArchivo.substring(4, 14);
-						mascaraFecha = maestroDefinicion.getMascaraArch().substring(5, 13)+"yy";
-					}else {
-						fecha = nombreArchivo.substring(4, 12);
-						mascaraFecha = maestroDefinicion.getMascaraArch().substring(5, 13);
-					}
-					
-					formatoFecha = new ArrayList<String>();
-					formatoFecha.add(mascaraFecha);
-					if (!UtilsString.isFecha(fecha, formatoFecha)) {
-						throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
-								ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
-								ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
-					}
-					break;
-				}
-				default: {
+			case "AC": {
+				fecha = nombreArchivo.substring(5, 11);
+				mascaraFecha = maestroDefinicion.getMascaraArch().substring(8, 14);
+				formatoFecha = new ArrayList<>();
+				formatoFecha.add(mascaraFecha);
+				if (!UtilsString.isFecha(fecha, formatoFecha)) {
 					throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
 							ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
 							ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
 				}
+				break;
 			}
-			
-		}
-		else {
+			case "BS", "BI": {
+				fecha = nombreArchivo.substring(8, 14);
+				mascaraFecha = maestroDefinicion.getMascaraArch().substring(13, 19);
+				formatoFecha = new ArrayList<>();
+				formatoFecha.add(mascaraFecha);
+				if (!UtilsString.isFecha(fecha, formatoFecha)) {
+					throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
+							ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
+							ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
+				}
+				break;
+			}
+			case "TH": {
+				fecha = getString(nombreArchivo);
+				mascaraFecha = maestroDefinicion.getMascaraArch().substring(19, 27);
+				formatoFecha = new ArrayList<>();
+				formatoFecha.add(mascaraFecha);
+				if (!UtilsString.isFecha(fecha, formatoFecha)) {
+					throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
+							ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
+							ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
+				}
+				break;
+			}
+			case "SC": {
+				if (nombreArchivo.contains("VILLAS")) {
+					fecha = nombreArchivo.substring(4, 14);
+					mascaraFecha = maestroDefinicion.getMascaraArch().substring(5, 13) + "yy";
+				} else {
+					fecha = nombreArchivo.substring(4, 12);
+					mascaraFecha = maestroDefinicion.getMascaraArch().substring(5, 13);
+				}
+
+				formatoFecha = new ArrayList<>();
+				formatoFecha.add(mascaraFecha);
+				if (!UtilsString.isFecha(fecha, formatoFecha)) {
+					throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
+							ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
+							ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
+				}
+				break;
+			}
+			default: {
+				throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
+						ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
+						ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
+			}
+			}
+
+		} else {
 			String[] arregloNombre = nombreArchivo
 					.replace(Constantes.SEPARADOR_FECHA_ARCHIVO, Constantes.SEPARADOR_EXTENSION_ARCHIVO)
 					.split(Constantes.EXPRESION_REGULAR_PUNTO);
@@ -331,8 +303,26 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 		}
 		return true;
 	}
-		
 
+	private String getString(String nombreArchivo) {
+		String fecha;
+		if(nombreArchivo.length() == 26) {
+			fecha = nombreArchivo.substring(14, 22);
+		}
+		else {
+			if(nombreArchivo.length() == 27) {
+				fecha = nombreArchivo.substring(15, 23);
+			}
+			else {
+				if(nombreArchivo.length() == 29) {
+					fecha = nombreArchivo.substring(17, 25);
+				} else {
+					fecha = null;
+				}
+			}
+		}
+		return fecha;
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -340,19 +330,18 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 	@Override
 	public Date validarFechaArchivo(String nombreArchivo, String mascaraArchivo, Date fechaComparacion) {
 
-		Date fechaArchivo = this.obtenerFechaArchivo(nombreArchivo,mascaraArchivo);
-		
-		if (!Objects.nonNull(fechaArchivo)){
+		Date fechaArchivo = this.obtenerFechaArchivo(nombreArchivo, mascaraArchivo);
+
+		if (Objects.isNull(fechaArchivo)) {
 
 			throw new NegocioException(ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getCode(),
 					ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getDescription(),
 					ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getHttpStatus());
-		}
-		else {
+		} else {
 			if (Objects.nonNull(fechaComparacion) && !DateUtils.isSameDay(fechaComparacion, fechaArchivo)) {
 				throw new NegocioException(ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getCode(),
-					ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getDescription(),
-					ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getHttpStatus());
+						ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getDescription(),
+						ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getHttpStatus());
 			}
 		}
 		return fechaArchivo;
@@ -362,100 +351,87 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Date validarFechaArchivoBetween(String nombreArchivo, String mascaraArchivo, Date fechaComparacion, Date fechaAnteriorHabil) {
+	public Date validarFechaArchivoBetween(String nombreArchivo, String mascaraArchivo, Date fechaComparacion,
+			Date fechaAnteriorHabil) {
 
-		Date fechaArchivo = this.obtenerFechaArchivo(nombreArchivo,mascaraArchivo);
-		
-		if (!Objects.nonNull(fechaArchivo)){
+		Date fechaArchivo = this.obtenerFechaArchivo(nombreArchivo, mascaraArchivo);
+
+		if (Objects.isNull(fechaArchivo)) {
 
 			throw new NegocioException(ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getCode(),
 					ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getDescription(),
 					ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getHttpStatus());
 		}
-		else {
-			if (Objects.nonNull(fechaComparacion) && fechaArchivo.compareTo(fechaAnteriorHabil) <  0 && fechaArchivo.compareTo(fechaComparacion) >= 0) {
-				throw new NegocioException(ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getCode(),
-					ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getDescription(),
-					ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getHttpStatus());
-			}
-		}
 		return fechaArchivo;
 	}
-	
-	/**n
-	 * {@inheritDoc}
+
+	/**
+	 * n {@inheritDoc}
 	 */
 	@Override
 	public Date obtenerFechaArchivo(String nombreArchivo, String mascaraArchivo) {
 
 		Date fechaArchivo = null;
-		String inicioNombre = mascaraArchivo.substring(0, 2);
 		String fecha;
 		String mascaraFecha;
 		try {
+			String inicioNombre = mascaraArchivo.substring(0, 2);											
 			switch (inicioNombre) {
-			
+
 				case "AC": {
 					fecha = nombreArchivo.substring(5, 11);
 					mascaraFecha = mascaraArchivo.substring(8, 14);
 					fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
 					break;
 				}
-				case "BS": {
+				case "BS", "BI": {
 					fecha = nombreArchivo.substring(8, 14);
 					mascaraFecha = mascaraArchivo.substring(13, 19);
 					fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
 					break;
 				}
-				case "BI": {
-					fecha = nombreArchivo.substring(8, 14);
-					mascaraFecha = mascaraArchivo.substring(13, 19);
-					fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
-					break;
-				}
-				case "TH": {
-					if(nombreArchivo.length() == 23) {
-						fecha = nombreArchivo.substring(11, 19);
-					}else {
-						if(nombreArchivo.length() == 24) {
-							fecha = nombreArchivo.substring(12, 20);
-						}
-						else {
-							fecha = nombreArchivo.substring(14, 22);
-						}
+                case "TH": {
+					fecha = getString(nombreArchivo);
+					if(Objects.nonNull(fecha)) {
+						mascaraFecha = mascaraArchivo.substring(19, 27);
+						fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
+					} else {
+						fechaArchivo = new Date();
 					}
-					mascaraFecha = mascaraArchivo.substring(19, 27);
-					fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
-					
 					break;
 				}
 				case "SC": {
-					if(nombreArchivo.contains("VILLAS")) {
+					if (nombreArchivo.contains("VILLAS")) {
 						fecha = nombreArchivo.substring(4, 14);
-						mascaraFecha = mascaraArchivo.substring(5, 13)+"yy";
-					}else {
+					} else {
 						fecha = nombreArchivo.substring(4, 12);
-						mascaraFecha = mascaraArchivo.substring(5, 13);
 					}
 					mascaraFecha = mascaraArchivo.substring(5, 13);
 					fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
 					break;
 				}
-				default: {
+				case "PR": {
 					String[] arregloMascara = mascaraArchivo.split(Constantes.SEPARADOR_FECHA_ARCHIVO);
 					var arregloNombre = nombreArchivo
 							.replace(Constantes.SEPARADOR_FECHA_ARCHIVO, Constantes.SEPARADOR_EXTENSION_ARCHIVO)
 							.split(Constantes.REGEX_PUNTO);
-					if (arregloMascara[1].length() == arregloNombre[1].length()) {
+					if (arregloMascara[1].length() == arregloNombre[1].length()
+							|| arregloMascara[1].length() - arregloNombre[1].length() == 1) {
 						fechaArchivo = new SimpleDateFormat(arregloMascara[1]).parse(arregloNombre[1]);
 					}
+					break;
+				}
+				default: {
+					fechaArchivo = new Date();
+					
 				}
 			}
-
-		} catch (ParseException | NullPointerException | ArrayIndexOutOfBoundsException e) {
+	
+		} catch (Exception e) {
+			log.error("Exception: {}", e);
 			fechaArchivo = null;
 		}
-
+	
 		return fechaArchivo;
 	}
 
@@ -491,7 +467,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 			List<String[]> contenido) {
 		List<ValidacionLineasDTO> listadoValidacionLineasDTO = new ArrayList<>();
 		for (int i = 0; i < contenido.size(); i++) {
-			if (!Objects.isNull(contenido.get(i)) && contenido.get(i).length != 0 ) {
+			if (!Objects.isNull(contenido.get(i)) && contenido.get(i).length != 0) {
 				var validacionArchivoDTO = obtenerCampos(contenido.get(i), i);
 				this.obtenerTipoRegistro(maestroDefinicion, validacionArchivoDTO);
 				listadoValidacionLineasDTO.add(validacionArchivoDTO);
@@ -551,7 +527,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 		List<String> contenido = validacionLineasDTO.getContenido();
 		boolean errorCampo = false;
 		int minimo = 0;
-		for (int i = 0; i < contenido.size()-minimo; i++) {
+		for (int i = 0; i < contenido.size() - minimo; i++) {
 			ErroresCamposDTO validacionEstructuraCampo = validarEstructuraCampo(contenido.get(i), idMaestro, i + 1,
 					validacionLineasDTO.getTipo());
 			if (!Objects.isNull(validacionEstructuraCampo)) {
@@ -690,16 +666,15 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 	 * de cada una de las lineas
 	 * 
 	 * @param maestroDefinicion
-	 * @param validardor
+	 * @param validacionLineasDTO
 	 * @return void
 	 * @author CamiloBenavides
 	 */
 	private void obtenerTipoRegistro(MaestrosDefinicionArchivoDTO maestroDefinicion,
 			ValidacionLineasDTO validacionLineasDTO) {
-		
+		log.debug("Establecer tipo de formato por linea ");
 		if (maestroDefinicion.isMultiformato()) {
 			try {
-				log.debug("validacionLineasDTO.getContenido().get(maestroDefinicion.getCampoMultiformato()) "+validacionLineasDTO.getContenido().get(maestroDefinicion.getCampoMultiformato()));
 				Integer tipo = Integer
 						.valueOf(validacionLineasDTO.getContenido().get(maestroDefinicion.getCampoMultiformato()));
 				validacionLineasDTO.setTipo(tipo);

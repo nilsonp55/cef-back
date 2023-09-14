@@ -25,23 +25,23 @@ import lombok.extern.log4j.Log4j2;
 
 @Service
 @Log4j2
-public class CiudadServiceImpl implements ICiudadesService{
+public class CiudadServiceImpl implements ICiudadesService {
 
 	@Autowired
 	ICiudadesRepository ciudadesRepository;
-	
+
 	@Autowired
 	IAuditoriaProcesosService auditoriaProcesosService;
-	
+
 	@Autowired
 	IParametroService parametroService;
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public List<CiudadesDTO> getCiudades(Predicate predicate) {
-		var ciudades = ciudadesRepository.findAll(predicate);
+		var ciudades = ciudadesRepository.findAllByOrderByNombreCiudadAsc();
 		List<CiudadesDTO> listCiudadesDto = new ArrayList<>();
 		ciudades.forEach(entity -> listCiudadesDto.add(CiudadesDTO.CONVERTER_DTO.apply(entity)));
 		return listCiudadesDto;
@@ -77,13 +77,13 @@ public class CiudadServiceImpl implements ICiudadesService{
 			return ciudadOpt.getCodigoDANE();
 		}
 	}
-	
+
 	@Override
 	public CiudadesDTO getCiudadPorCodigoDane(String codigo) {
-		Ciudades ciudadOpt = ciudadesRepository.findByCodigoDANE(codigo);
+		Ciudades ciudadOpt = ciudadesRepository.findBycodigoDANE(codigo);
 		if (Objects.isNull(ciudadOpt)) {
 			throw new AplicationException(ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getDescription()  + "Ciudad con codigoDane = "+codigo+" No existe. ",
+					ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getDescription() + "No existe Ciudad con codigoDane = " + codigo,
 					ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getHttpStatus());
 		} else {
 			return CiudadesDTO.CONVERTER_DTO.apply(ciudadOpt);
@@ -93,36 +93,38 @@ public class CiudadServiceImpl implements ICiudadesService{
 	@Override
 	public CiudadesDTO getCiudadPorCodigoDaneOrCodigoBrinks(String codigo) {
 		Date fechaProceso = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
-		Ciudades ciudadOpt = ciudadesRepository.findByCodigoDANE(codigo);
+		Ciudades ciudadOpt = ciudadesRepository.findBycodigoDANE(codigo);
 		if (Objects.isNull(ciudadOpt)) {
 			Ciudades ciudadBrinks = ciudadesRepository.findByCodigoBrinks(Integer.parseInt(codigo));
 			if (Objects.isNull(ciudadBrinks)) {
-				auditoriaProcesosService.ActualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
-						fechaProceso, Constantes.ESTADO_PROCESO_ERROR, 
+				auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+						fechaProceso, Constantes.ESTADO_PROCESO_ERROR,
 						ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getDescription());
-				
+
 				throw new NegocioException(ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getCode(),
-						ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getDescription() + "Ciudad con codigoDane o CodigoBrinks = "+codigo+" No existe. ",
+						ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getDescription()
+								+ "No existe Ciudad con codigoDane o CodigoBrinks = " + codigo,
 						ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getHttpStatus());
-			}else {
+			} else {
 				return CiudadesDTO.CONVERTER_DTO.apply(ciudadBrinks);
 			}
 		} else {
 			return CiudadesDTO.CONVERTER_DTO.apply(ciudadOpt);
 		}
 	}
-		
-		@Override
-		public CiudadesDTO getCiudadPorNombreCiudadFiserv(String nombreCiudad) {
-			Ciudades ciudadOpt = ciudadesRepository.findByNombreCiudadFiserv(nombreCiudad);
-			
-			if (Objects.isNull(ciudadOpt)) {
-					throw new NegocioException(ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getCode(),
-							ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getDescription() + "Ciudad con nombreCiudad = "+nombreCiudad+" No existe. ",
-							ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getHttpStatus());
-				
-			} else {
-				return CiudadesDTO.CONVERTER_DTO.apply(ciudadOpt);
-			}
+
+	@Override
+	public CiudadesDTO getCiudadPorNombreCiudadFiserv(String nombreCiudad) {
+		Ciudades ciudadOpt = ciudadesRepository.findByNombreCiudadFiserv(nombreCiudad);
+
+		if (Objects.isNull(ciudadOpt)) {
+			throw new NegocioException(ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getCode(),
+					ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getDescription() + "No existe Ciudad con nombreCiudad = "
+							+ nombreCiudad,
+					ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getHttpStatus());
+
+		} else {
+			return CiudadesDTO.CONVERTER_DTO.apply(ciudadOpt);
+		}
 	}
 }

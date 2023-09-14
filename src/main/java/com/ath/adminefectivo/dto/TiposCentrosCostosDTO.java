@@ -39,9 +39,9 @@ public class TiposCentrosCostosDTO {
 	public static final Function<TiposCentrosCostosDTO, TiposCentrosCostos> CONVERTER_ENTITY = (TiposCentrosCostosDTO t) -> {
 		TiposCentrosCostos tiposCentrosCostos = new TiposCentrosCostos();
 		tiposCentrosCostos.setTipoCentro(t.getTipoCentro());
-		Bancos bancoAval = new Bancos();
-		bancoAval.setCodigoPunto(t.getBancoAval().getCodigoPunto());
-		tiposCentrosCostos.setBancoAval(bancoAval);
+		Bancos ba = new Bancos();
+		ba.setCodigoPunto(t.getBancoAval().getCodigoPunto());
+		tiposCentrosCostos.setBancoAval(ba);
 		tiposCentrosCostos.setNombreCentro(t.getNombreCentro());
 		tiposCentrosCostos.setCodigoCentro(t.getCodigoCentro());
 		tiposCentrosCostos.setTablaCentros(t.getTablaCentros());
@@ -56,10 +56,10 @@ public class TiposCentrosCostosDTO {
 	public static final Function<TiposCentrosCostos, TiposCentrosCostosDTO> CONVERTER_DTO = (TiposCentrosCostos t) -> {
 		TiposCentrosCostosDTO tiposCentrosCostos = new TiposCentrosCostosDTO();
 		tiposCentrosCostos.setTipoCentro(t.getTipoCentro());
-		BancosDTO bancoAval = new BancosDTO();
-		bancoAval.setCodigoPunto(t.getBancoAval().getCodigoPunto());
-		bancoAval.setAbreviatura(t.getBancoAval().getAbreviatura());
-		tiposCentrosCostos.setBancoAval(bancoAval);
+		BancosDTO ba = new BancosDTO();
+		ba.setCodigoPunto(t.getBancoAval().getCodigoPunto());
+		ba.setAbreviatura(t.getBancoAval().getAbreviatura());
+		tiposCentrosCostos.setBancoAval(ba);
 		tiposCentrosCostos.setNombreCentro(t.getNombreCentro());
 		tiposCentrosCostos.setCodigoCentro(t.getCodigoCentro());
 		tiposCentrosCostos.setTablaCentros(t.getTablaCentros());

@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ath.adminefectivo.delegate.ICostosFleteCharterDelegate;
 import com.ath.adminefectivo.dto.ParametrosLiquidacionCostoDTO;
-import com.ath.adminefectivo.dto.compuestos.costosCharterDTO;
+import com.ath.adminefectivo.dto.compuestos.CostosCharterDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
+import com.ath.adminefectivo.service.ICostosFleteCharterService;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -32,9 +32,9 @@ import lombok.extern.log4j.Log4j2;
 @RequestMapping("${endpoints.CostosFleteCharter}")
 @Log4j2
 public class CostosFleteCharterController {
-
+	
 	@Autowired
-	ICostosFleteCharterDelegate costosFleteCharterDelegate;
+	ICostosFleteCharterService iCostosFleteCharterService;
 	
 	/**
 	 * Consulta los Costos por Flete Charter
@@ -51,7 +51,7 @@ public class CostosFleteCharterController {
 		log.debug("fechaFinal "+fechaFinal);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<List<ParametrosLiquidacionCostoDTO>>(
-						costosFleteCharterDelegate.consultarCostosFleteCharter(fechaInicial, fechaFinal),
+						iCostosFleteCharterService.consultarCostosFleteCharter(fechaInicial, fechaFinal),
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 								.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
@@ -65,11 +65,11 @@ public class CostosFleteCharterController {
 	 */
 	@PostMapping(value = "${endpoints.CostosFleteCharter.grabar}", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<Boolean>> grabarCostosFleteCharter(
-			@RequestBody(required = true) costosCharterDTO costosCharter) {
+			@RequestBody(required = true) CostosCharterDTO costosCharter) {
 		
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<Boolean>(
-						costosFleteCharterDelegate.grabarCostosFleteCharter(costosCharter),
+						iCostosFleteCharterService.grabarCostosFleteCharter(costosCharter),
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 								.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}

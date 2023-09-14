@@ -14,7 +14,6 @@ import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.constantes.Parametros;
 import com.ath.adminefectivo.delegate.ICierreDiaDelegate;
-import com.ath.adminefectivo.dto.ArchivosCargadosDTO;
 import com.ath.adminefectivo.dto.LogProcesoDiarioDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.ArchivosCargados;
@@ -41,17 +40,16 @@ public class CierreDiaDelegateImpl implements ICierreDiaDelegate {
 
 	@Autowired
 	ILogProcesoDiarioService procesoDiarioService;
-	
+
 	@Autowired
 	LogProcesoDiarioRepository procesoDiarioRepository;
-	
+
 	@Autowired
 	IArchivosCargadosService archivosCargadosService;
-	
+
 	@Autowired
 	IAuditoriaProcesosService auditoriaProcesosService;
-	
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -65,11 +63,11 @@ public class CierreDiaDelegateImpl implements ICierreDiaDelegate {
 			DateFormat dateFormat = new SimpleDateFormat(Constantes.FECHA_PATTERN_DD_MM_YYYY_WITH_SLASH);
 			String nuevaFechaString = dateFormat.format(nuevaFecha);
 			parametroService.actualizarValorParametro(Parametros.FECHA_DIA_ACTUAL_PROCESO, nuevaFechaString);
-			
-			//Se actualizan los registros para logProcesoDiario
+
+			// Se actualizan los registros para logProcesoDiario
 			List<LogProcesoDiarioDTO> listLogProcesoDiarioDto = procesoDiarioService
 					.getLogsProcesosDiariosByFechaProceso(fechaActual);
-			
+
 			List<LogProcesoDiario> listLogProcesoDiario = new ArrayList<>();
 			listLogProcesoDiarioDto.forEach(entity -> {
 				entity.setIdLogProceso(null);
@@ -79,15 +77,23 @@ public class CierreDiaDelegateImpl implements ICierreDiaDelegate {
 				listLogProcesoDiario.add(LogProcesoDiarioDTO.CONVERTER_ENTITY.apply(entity));
 			});
 			procesoDiarioRepository.saveAll(listLogProcesoDiario);
-			
+
 			List<ArchivosCargados> archivosCargados = archivosCargadosService.consultarArchivosPorFecha(fechaActual);
 			archivosCargados.forEach(archivoCargado -> {
 				archivoCargado.setEstado(Constantes.ESTADO_ARCHIVO_HISTORICO);
 				archivosCargadosService.actualizarArchivosCargados(archivoCargado);
 			});
-			
+
+			archivosCargados = archivosCargadosService
+					.consultarArchivosPorEstadoCargue(Dominios.ESTADO_VALIDACION_FUTURO);
+			archivosCargados.forEach(archivoCargado -> {
+				archivoCargado.setEstadoCargue(Dominios.ESTADO_VALIDACION_CORRECTO);
+				archivoCargado.setFechaArchivo(nuevaFecha);
+				archivosCargadosService.actualizarArchivosCargados(archivoCargado);
+			});
+
 			auditoriaProcesosService.crearTodosAuditoriaProcesos(nuevaFecha);
-			
+
 			return nuevaFecha;
 
 		} else {

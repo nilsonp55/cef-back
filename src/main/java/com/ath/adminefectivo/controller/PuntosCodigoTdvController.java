@@ -1,6 +1,8 @@
 package com.ath.adminefectivo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,16 +15,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
-import com.ath.adminefectivo.delegate.IPuntosCodigoTdvDelegate;
 import com.ath.adminefectivo.dto.PuntosCodigoTdvDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
 import com.ath.adminefectivo.entities.PuntosCodigoTDV;
+import com.ath.adminefectivo.service.IPuntosCodigoTdvService;
 import com.querydsl.core.types.Predicate;
+
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Controlador responsable de exponer los metodos referentes a los Puntos Codigo TDV
@@ -30,10 +32,11 @@ import com.querydsl.core.types.Predicate;
  */
 @RestController
 @RequestMapping("${endpoints.PuntosCodigoTdv}")
+@Log4j2
 public class PuntosCodigoTdvController {
 
 	@Autowired
-	IPuntosCodigoTdvDelegate puntosCodigoTdvDelegate;
+	IPuntosCodigoTdvService puntosCodigoTdvService;
 	
 	/**
 	 * Servicio encargado de retornar la consulta de todos los Puntos Codigo Tdv
@@ -43,9 +46,9 @@ public class PuntosCodigoTdvController {
 	 */
 	@GetMapping(value = "${endpoints.PuntosCodigoTdv.consultar}")
 	public ResponseEntity<ApiResponseADE<Page<PuntosCodigoTdvDTO>>> getPuntosCodigoTDV(
-			@QuerydslPredicate(root = PuntosCodigoTDV.class) Predicate predicate, Pageable page) {
+			@QuerydslPredicate(root = PuntosCodigoTDV.class) Predicate predicate, Pageable page, String busqueda) {
 		
-		var consulta = puntosCodigoTdvDelegate.getPuntosCodigoTDV(predicate, page);
+		var consulta = puntosCodigoTdvService.getPuntosCodigoTDV(predicate, page, busqueda);
 		
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
@@ -61,9 +64,9 @@ public class PuntosCodigoTdvController {
 	@PostMapping(value = "${endpoints.PuntosCodigoTdv.guardar}", consumes = MediaType.APPLICATION_JSON_VALUE, 
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<PuntosCodigoTdvDTO>> guardarPuntosCodigoTdv(@RequestBody PuntosCodigoTdvDTO puntosCodigoTdvDTO) {
-
+		log.info("Crear punto TDV: {}", puntosCodigoTdvDTO.toString());
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ApiResponseADE<PuntosCodigoTdvDTO>(puntosCodigoTdvDelegate.guardarPuntosCodigoTdv(puntosCodigoTdvDTO),
+				.body(new ApiResponseADE<PuntosCodigoTdvDTO>(puntosCodigoTdvService.guardarPuntosCodigoTdv(puntosCodigoTdvDTO),
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 
@@ -77,7 +80,7 @@ public class PuntosCodigoTdvController {
 	 */
 	@GetMapping(value = "${endpoints.PuntosCodigoTdv.consultar}/{id}")
 	public ResponseEntity<ApiResponseADE<PuntosCodigoTdvDTO>> getPunto(@RequestParam("id") Integer idPuntoCodigoTdv) {
-		PuntosCodigoTdvDTO consulta = puntosCodigoTdvDelegate.getPuntosCodigoTdvById(idPuntoCodigoTdv);
+		PuntosCodigoTdvDTO consulta = puntosCodigoTdvService.getPuntosCodigoTdvById(idPuntoCodigoTdv);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
@@ -91,7 +94,7 @@ public class PuntosCodigoTdvController {
 	 */
 	@PutMapping(value = "${endpoints.PuntosCodigoTdv.actualizar}")
 	public ResponseEntity<ApiResponseADE<PuntosCodigoTdvDTO>> actualizar(@RequestBody PuntosCodigoTdvDTO puntosCodigoTdvDTO) {
-		PuntosCodigoTdvDTO consulta = puntosCodigoTdvDelegate.actualizarPuntosCodigoTdv(puntosCodigoTdvDTO);
+		PuntosCodigoTdvDTO consulta = puntosCodigoTdvService.actualizarPuntosCodigoTdv(puntosCodigoTdvDTO);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
@@ -105,7 +108,7 @@ public class PuntosCodigoTdvController {
 	 */
 	@DeleteMapping(value = "${endpoints.PuntosCodigoTdv.eliminar}/{id}")
 	public ResponseEntity<ApiResponseADE<Boolean>> eliminar(@RequestParam("id") Integer idPuntoCodigoTdv) {
-		boolean consulta = puntosCodigoTdvDelegate.eliminarPuntosCodigoTdv(idPuntoCodigoTdv);
+		boolean consulta = puntosCodigoTdvService.eliminarPuntosCodigoTdv(idPuntoCodigoTdv);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));

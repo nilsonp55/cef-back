@@ -3,11 +3,6 @@ package com.ath.adminefectivo.dto;
 import java.util.Date;
 import java.util.function.Function;
 
-import javax.persistence.Column;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
-import com.ath.adminefectivo.entities.LogProcesoDiario;
 import com.ath.adminefectivo.entities.LogProcesoMensual;
 import com.ath.adminefectivo.utils.UtilsObjects;
 

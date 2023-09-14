@@ -14,14 +14,11 @@ import com.ath.adminefectivo.delegate.IOperacionesProgramadasDelegate;
 import com.ath.adminefectivo.dto.ArchivosCargadosDTO;
 import com.ath.adminefectivo.dto.LogProcesoDiarioDTO;
 import com.ath.adminefectivo.dto.MaestrosDefinicionArchivoDTO;
-import com.ath.adminefectivo.dto.OperacionesProgramadasDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.ArchivosCargados;
 import com.ath.adminefectivo.entities.LogProcesoDiario;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.service.IArchivosCargadosService;
-import com.ath.adminefectivo.service.IDominioService;
-import com.ath.adminefectivo.service.IFestivosNacionalesService;
 import com.ath.adminefectivo.service.ILogProcesoDiarioService;
 import com.ath.adminefectivo.service.IMaestroDefinicionArchivoService;
 import com.ath.adminefectivo.service.IOperacionesProgramadasService;
@@ -40,16 +37,10 @@ public class OperacionesProgramadasDelegateImpl implements IOperacionesProgramad
 	ILogProcesoDiarioService logProcesoDiarioService;
 
 	@Autowired
-	IDominioService dominioService;
-
-	@Autowired
 	IMaestroDefinicionArchivoService maestroDefinicionArchivoService;
 	
 	@Autowired
 	IParametroService parametroService;
-
-	@Autowired
-	IFestivosNacionalesService festivosNacionalesService;
 	
 	/**
 	 * {@inheritDoc}
@@ -69,13 +60,11 @@ public class OperacionesProgramadasDelegateImpl implements IOperacionesProgramad
 					.getArchivosCargadosSinProcesar(
 					definicionArchivo.getIdMaestroDefinicionArchivo().toUpperCase().trim());
 			
-			if (!Objects.isNull(listadoArchivosCargados)) {
-				List<OperacionesProgramadasDTO> operacionesProgramadas = operacionesProgramadasService
-						.generarOperacionesProgramadas(listadoArchivosCargados);	
+			if (!listadoArchivosCargados.isEmpty()) {
+				operacionesProgramadasService.generarOperacionesProgramadas(listadoArchivosCargados);	
 			}
 		}
 		cambiarEstadoLogProcesoDiario(agrupador);
-		//return Constantes.MENSAJE_NO_SE_ENCONTRARON_ARCHIVOS_OP;
 		return Constantes.MENSAJE_GENERO_OPERACIONES_PROGRAMADAS_CORRECTO;
 	}
 	

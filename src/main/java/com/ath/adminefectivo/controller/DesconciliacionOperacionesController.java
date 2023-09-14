@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ath.adminefectivo.delegate.IDesconciliacionOperacionesDelegate;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
+import com.ath.adminefectivo.service.IDesconciliacionOperacionesService;
 
 /**
  * Controlador responsable de exponer los metodos referentes al proceso de
@@ -27,7 +27,7 @@ import com.ath.adminefectivo.dto.response.ResponseADE;
 public class DesconciliacionOperacionesController {
 
 	@Autowired
-	IDesconciliacionOperacionesDelegate desconciliacionOperacionesDelegate;
+	IDesconciliacionOperacionesService desconciliacionOperacionesService;
 	
 	/**
 	 * Controlador que permite persistir las operaciones a desconciliar
@@ -40,7 +40,7 @@ public class DesconciliacionOperacionesController {
 	public ResponseEntity<ApiResponseADE<Boolean>> procesoDesconciliacion(
 			@RequestBody(required = true) List<Integer> operacionesADesconciliar) {
 
-		Boolean respuesta = desconciliacionOperacionesDelegate.procesoDesconciliacion(operacionesADesconciliar);
+		Boolean respuesta = desconciliacionOperacionesService.procesoDesconciliacion(operacionesADesconciliar);
 
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(respuesta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())

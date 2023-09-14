@@ -24,6 +24,7 @@ public interface IOperacionesCertificadasService {
 	/**
 	 * Servicio encargado de generar el numero de operaciones certificadas no
 	 * conciliadas por rango de fechas
+	 * 
 	 * @return Integer
 	 * @author cesar.castano
 	 * @param fechaConciliacion
@@ -32,17 +33,19 @@ public interface IOperacionesCertificadasService {
 	Integer numeroOperacionesPorEstadoyFecha(FechasConciliacionDTO fechaConciliacion, String estado);
 
 	/**
-	 * Servicio encargado de procesar los archivos cargados a la entidad OperacionesCertificadas
+	 * Servicio encargado de procesar los archivos cargados a la entidad
+	 * OperacionesCertificadas
+	 * 
 	 * @param archivosCargados
 	 * @return Boolean
 	 * @author cesar.castano
 	 */
-	Boolean procesarArchivosCertificaciones(List<ArchivosCargados> archivosCargados);
-	
+	Boolean procesarArchivosCertificaciones(List<Long> idsArchivosCargados);
 
 	/**
-	 * Servicio encargado de obtener los registros de OperacionesCertirficadas 
-	 * que estan dentro de la conciliacion
+	 * Servicio encargado de obtener los registros de OperacionesCertirficadas que
+	 * estan dentro de la conciliacion
+	 * 
 	 * @return List<OperacionesCertificadas>
 	 * @author cesar.castano
 	 */
@@ -50,28 +53,41 @@ public interface IOperacionesCertificadasService {
 
 	/**
 	 * Servicio encargado de obtener la entidad de OperacionesCertirficadas por Id
+	 * 
 	 * @return OperacionesCertificadas
 	 * @author cesar.castano
 	 */
 	OperacionesCertificadas obtenerEntidadOperacionesCertificacionesporId(Integer idCertificacion);
 
 	/**
-	 * Metodo encargado de realizar la validacion de las operaciones certificadas que no pueden 
-	 * ser conciliadas
+	 * Metodo encargado de realizar la validacion de las operaciones certificadas
+	 * que no pueden ser conciliadas
 	 * 
 	 * @param archivosCargados
 	 * @author duvan.naranjo
 	 */
 	void validarNoConciliables();
 
-
 	/**
 	 * Servicio encargado de generar el numero de operaciones certificadas no
 	 * conciliadas por rango de fechas y que el campo conciliable sea SI
+	 * 
 	 * @return Integer
 	 * @author cesar.castano
 	 * @param fechaConciliacion
 	 * @param estado
 	 */
-	Integer numeroOperacionesPorEstadoFechaYConciliable(FechasConciliacionDTO fechaConciliacion, String estado, String conciliable);
+	Integer numeroOperacionesPorEstadoFechaYConciliable(FechasConciliacionDTO fechaConciliacion, String estado,
+			String conciliable);
+
+	/**
+	 * Servicio encargado de procesar los datos de los archivos de alcance a
+	 * certificaciones
+	 * 
+	 * @param archivosCargados
+	 * @return String
+	 * @author rafael.parra
+	 */
+	String procesarArchivosAlcance(List<ArchivosCargados> archivosCargados);
+
 }

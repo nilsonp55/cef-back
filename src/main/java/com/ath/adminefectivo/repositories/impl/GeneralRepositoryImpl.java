@@ -24,19 +24,13 @@ public class GeneralRepositoryImpl implements IGeneralRepository{
 	
     @Override
 	public boolean ejecutarQueryNativa(String consulta) {
-		
 		Query query =  entityManager.createNativeQuery(consulta);
-		
 		var result = query.getResultList();
-
-		
 		return !result.isEmpty();
 	}
     
-    
     @Override
 	public boolean ejecutarQueryNativa(String consulta, String parametro) {
-		
 		Query query =  entityManager.createNativeQuery(consulta);
 		log.debug("consulta "+ consulta);
 		log.debug("PARAMETRO "+ parametro);

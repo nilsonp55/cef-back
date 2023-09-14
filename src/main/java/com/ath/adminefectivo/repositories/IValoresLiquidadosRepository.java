@@ -8,11 +8,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
 
 import com.ath.adminefectivo.entities.ValoresLiquidados;
 
-@Repository
 public interface IValoresLiquidadosRepository extends JpaRepository<ValoresLiquidados, Long>, 
 QuerydslPredicateExecutor<ValoresLiquidados>{
 
@@ -30,8 +28,8 @@ QuerydslPredicateExecutor<ValoresLiquidados>{
 	 * realizar el proceso de costos de armar parametros 
 	 * @return bayron.perez
 	 */
-	@Procedure(name = "armar_parametros_liquida")
-	String armar_parametros_liquida(@Param("fecha") Date fecha);
+	@Procedure(procedureName = "armar_parametros_liquida")
+	String armarParametrosLiquida(@Param("fecha") Date fecha);
 	
 	/**
 	 * Metodo encargado de ejecutar la funcion de la base de datos para 
@@ -39,8 +37,8 @@ QuerydslPredicateExecutor<ValoresLiquidados>{
 	 * @param parametro
 	 * @return bayron.perez
 	 */
-	@Procedure(name = "liquidar_costos")
-	String liquidar_costos(@Param("parametro") Integer parametro);
+	@Procedure(procedureName = "liquidar_costos")
+	String liquidarCostos(@Param("parametro") Integer parametro);
 	
 	/**
 	 * Metodo que se encarga de obtener los valores liquidados por el procedimiento almacenado
@@ -55,6 +53,6 @@ QuerydslPredicateExecutor<ValoresLiquidados>{
 	@Query(value = "SELECT COUNT(*) FROM valores_liquidados WHERE id_seq_grupo = ?1", nativeQuery = true)
 	int consultarCantidadValoresLiquidadosByIdSeqGrupo(Integer idSeqGroup);
 	
-	@Query(value = "SELECT COUNT(*)	FROM errores_costos	WHERE ID_SEQ_GRUPO = ?1", nativeQuery = true)
+	@Query(value = "SELECT COUNT(*) FROM errores_costos WHERE ID_SEQ_GRUPO = ?1", nativeQuery = true)
 	int consultarCantidadErroresValoresLiquidadosByIdSeqGrupo(Integer idSeqGroup);
 }

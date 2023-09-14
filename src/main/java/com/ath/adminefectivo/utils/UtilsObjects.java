@@ -76,7 +76,7 @@ public class UtilsObjects {
 	
 	
 	public static void actualizarAuditoriaProceso(String codigoProceso, String mensaje) {
-		auditoriaProcesosService.ActualizarAuditoriaProceso(codigoProceso, 
+		auditoriaProcesosService.actualizarAuditoriaProceso(codigoProceso, 
 				parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO), 
 				Constantes.ESTADO_PROCESO_ERROR, mensaje);
 		

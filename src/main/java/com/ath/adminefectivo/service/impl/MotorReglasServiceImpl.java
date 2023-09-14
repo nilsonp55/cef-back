@@ -24,7 +24,10 @@ import com.ath.adminefectivo.service.IReglasDetalleArchivoService;
 import com.ath.adminefectivo.service.ITipoReglaInterface;
 import com.ath.adminefectivo.utils.UtilsString;
 
+import lombok.EqualsAndHashCode;
+
 @Service
+@EqualsAndHashCode
 public class MotorReglasServiceImpl implements IMotorReglasService {
 
 	@Autowired

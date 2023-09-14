@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ath.adminefectivo.delegate.ICiudadesDelegate;
 import com.ath.adminefectivo.dto.CiudadesDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
 import com.ath.adminefectivo.entities.Ciudades;
+import com.ath.adminefectivo.service.ICiudadesService;
 import com.querydsl.core.types.Predicate;
 
 /**
@@ -27,7 +27,7 @@ import com.querydsl.core.types.Predicate;
 public class CiudadesController {
 
 	@Autowired
-	ICiudadesDelegate ciudadesDelegate;
+	ICiudadesService ciudadesService;
 	
 	/**
 	 * Servicio encargado de retornar la consulta de todos las Ciudades
@@ -37,7 +37,7 @@ public class CiudadesController {
 	 */
 	@GetMapping(value = "${endpoints.Ciudad.consultar}")
 	public ResponseEntity<ApiResponseADE<List<CiudadesDTO>>> getCiudades(@QuerydslPredicate(root = Ciudades.class) Predicate predicate) {
-		List<CiudadesDTO> consulta = ciudadesDelegate.getCiudades(predicate);
+		List<CiudadesDTO> consulta = ciudadesService.getCiudades(predicate);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));

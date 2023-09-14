@@ -2,19 +2,23 @@ version: "3.9"
 
 services:
   db:
-    image: postgres
-    #restart: always
+    image: postgres:14.6
+    profiles: ["db", "cef"]
     environment:
       POSTGRES_USER: controlefect
       POSTGRES_PASSWORD: 123456
       POSTGRES_DB: ctrefc
+      #POSTGRES_SCHEMA: controlefect
     volumes:
       - db-data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    networks:
+      - backnet
 
   app:
-    image: 652041729658.dkr.ecr.us-east-1.amazonaws.com/awue1athcef-pt-ecr-fargate:latest
+    image: awue1athcef-pt-ecr-fargate:latest
+    profiles: ["app", "cef"]
     ports:
       - "8080:8080"
     depends_on:
@@ -23,8 +27,14 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/ctrefc
       SPRING_DATASOURCE_USERNAME: controlefect
       SPRING_DATASOURCE_PASSWORD: 123456
+      SPRING_DATASOURCE_SCHEMA: public
       bucket: awue1athcef-pt-interfaces
       region: us-east-1
+    networks:
+      - backnet
 
 volumes:
   db-data:
+
+networks:
+  backnet:

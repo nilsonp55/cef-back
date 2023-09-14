@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
-import org.springframework.data.repository.query.Param;
 
 import com.ath.adminefectivo.entities.OperacionesCertificadas;
 
@@ -36,6 +35,7 @@ public interface IOperacionesCertificadasRepository
 
 	/**
 	 * Retorna el numero de operaciones certificadas segun un estado de conciliacion
+	 * y un rango de fechas
 	 * y un rango de fechas
 	 * 
 	 * @param estadoConciliacion
@@ -105,8 +105,9 @@ public interface IOperacionesCertificadasRepository
 	 * @author cesar.castano
 	 */
 	OperacionesCertificadas 
-	findByCodigoFondoTDVAndCodigoPuntoOrigenAndCodigoPuntoDestinoAndCodigoServicioTdvAndEntradaSalidaAndFechaEjecucion(Integer codigoFondoTDV, Integer codigoPuntoOrigen,
-			Integer codigoPuntoDestino, String codigoServicio, String entradaSalida, Date fechaEjecucion);
+	findByCodigoFondoTDVAndCodigoPuntoOrigenAndCodigoPuntoDestinoAndCodigoServicioTdvAndEntradaSalidaAndFechaEjecucionAndCodigoPropioTDVAndIdArchivoCargado
+			(Integer codigoFondoTDV, Integer codigoPuntoOrigen,Integer codigoPuntoDestino, String codigoServicio, String entradaSalida, 
+					Date fechaEjecucion, String codigoPropioTDV, Long idArchivoCargado);
 	
 	
 
@@ -143,8 +144,9 @@ public interface IOperacionesCertificadasRepository
 	 */
 	List<OperacionesCertificadas> findByCodigoPuntoOrigenAndEntradaSalidaAndFechaEjecucion(Integer codigoPuntoOrigen, String entradaSalida, Date fechaEjecucion);
 
-	@Procedure(name = "validarnoconciliables")
+	@Procedure(procedureName = "validarnoconciliables")
 	public boolean validarnoconciliables();
 
-	
+	@Procedure(procedureName = "compara_archivos_alcance_certi")
+	public String procesarArchivosAlcance();													  
 }

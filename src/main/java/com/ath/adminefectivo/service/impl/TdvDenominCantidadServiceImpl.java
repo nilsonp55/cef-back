@@ -31,9 +31,9 @@ public class TdvDenominCantidadServiceImpl implements ITdvDenominCantidadService
 	public List<TdvDenominCantidadDTO> getTdvDenominCantidad(Predicate predicate) {
 		var tdvDenominCantidadEntity = tdvDenominCantidadRepository.findAll(predicate);
 		List<TdvDenominCantidadDTO> tdvDenominCantidadDTO = new ArrayList<>();
-		tdvDenominCantidadEntity.forEach(escala ->{
-			tdvDenominCantidadDTO.add(TdvDenominCantidadDTO.CONVERTER_DTO.apply(escala));
-		});
+		tdvDenominCantidadEntity.forEach(escala ->
+			tdvDenominCantidadDTO.add(TdvDenominCantidadDTO.CONVERTER_DTO.apply(escala))
+		);
 		return tdvDenominCantidadDTO;
 	}
 	
@@ -94,12 +94,7 @@ public class TdvDenominCantidadServiceImpl implements ITdvDenominCantidadService
 		TdvDenominCantidad tdvDenominCantidadActualizado = tdvDenominCantidadRepository.save(tdvDenominCantidadEntity);
 		
 		if(!Objects.isNull(tdvDenominCantidadActualizado)) {
-			if(tdvDenominCantidadActualizado.getEstado() == Dominios.ESTADO_GENERAL_ELIMINADO) {
-				return true;
-			}else {
-				return false;
-			}
-			
+			return (tdvDenominCantidadActualizado.getEstado() == Dominios.ESTADO_GENERAL_ELIMINADO);
 		}else {
 			return false;
 		}

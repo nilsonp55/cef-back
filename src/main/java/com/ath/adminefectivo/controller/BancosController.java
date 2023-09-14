@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ath.adminefectivo.delegate.IBancosDelegate;
 import com.ath.adminefectivo.dto.BancosDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
 import com.ath.adminefectivo.entities.Bancos;
+import com.ath.adminefectivo.service.IBancosService;
 import com.querydsl.core.types.Predicate;
 
 /**
@@ -25,10 +25,9 @@ import com.querydsl.core.types.Predicate;
 @RestController
 @RequestMapping("${endpoints.Bancos}")
 public class BancosController {
-
-	@Autowired
-	IBancosDelegate bancosDelegate;
 	
+	@Autowired
+	IBancosService bancosService;
 	/**
 	 * Servicio encargado de retornar la consulta de todos los Bancos
 	 * 
@@ -37,7 +36,7 @@ public class BancosController {
 	 */
 	@GetMapping(value = "${endpoints.Bancos.consultar}")
 	public ResponseEntity<ApiResponseADE<List<BancosDTO>>> getBancos(@QuerydslPredicate(root = Bancos.class) Predicate predicate) {
-		List<BancosDTO> consulta = bancosDelegate.getBancos(predicate);
+		List<BancosDTO> consulta = bancosService.getBancos(predicate);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));

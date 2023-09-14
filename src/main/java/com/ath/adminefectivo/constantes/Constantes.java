@@ -53,6 +53,7 @@ public final class Constantes {
 	public static final String NAME_PRIVATE_KEY_RSA = "NAME_PRIVATE_KEY";
 	public static final Integer ESTADO_REGISTRO_ACTIVO = 1;
 	public static final Integer ESTADO_REGISTRO_INACTIVO = 2;
+	public static final Integer TIPO_MONEDA_BRINKS = 3;
 
 
 	/**
@@ -620,14 +621,14 @@ public static final String DELETE_SEPARADORES = "";
 	/**
 	 * Nombre de archivos generados xls 
 	 */
-	public static final String CTB_BBOG_Manana = "Contabilidad_BBG_Cambios_";
-	public static final String CTB_BBOG_Tarde = "Contabilidad_BBOG_";
-	public static final String CTB_BOCC_Manana = "Contabilidad_BOCC_Manana";
-	public static final String CTB_BOCC_Tarde = "Contabilidad_BOCC_Tarde";
-	public static final String CTB_BPOP_Manana = "Contabilidad_BPOP_Manana";
-	public static final String CTB_BPOP_Tarde = "Contabilidad_BPOP_Tarde";
-	public static final String CTB_BAVV_Manana = "Contabilidad_BAVV_Manana";
-	public static final String CTB_BAVV_Tarde = "Contabilidad_BAVV_Tarde";
+	public static final String CTB_BBOG_MANANA = "Contabilidad_BBOG_Cambios_";
+	public static final String CTB_BBOG_TARDE = "Contabilidad_BBOG_";
+	public static final String CTB_BOCC_MANANA = "Contabilidad_BOCC_Manana";
+	public static final String CTB_BOCC_TARDE = "Contabilidad_BOCC_Tarde";
+	public static final String CTB_BPOP_MANANA = "Contabilidad_BPOP_Manana";
+	public static final String CTB_BPOP_TARDE = "Contabilidad_BPOP_Tarde";
+	public static final String CTB_BAVV_MANANA = "Contabilidad_BAVV_Manana";
+	public static final String CTB_BAVV_TARDE = "Contabilidad_BAVV_Tarde";
 	
 	public static final String EXTENSION_ARCHIVO_XLS = ".xls";
 	public static final String EXTENSION_ARCHIVO_XLSX = ".xlsx";
@@ -680,7 +681,7 @@ public static final String DELETE_SEPARADORES = "";
 	 * Se generaron las operaciones programadas de forma exitosa.
 	 */
 	public static final String MENSAJE_GENERO_OPERACIONES_PROGRAMADAS_CORRECTO = "Se han generado las operaciones programadas de forma correcta.";
-	
+	public static final int ID_GENERICO = 99999;
 	
 	/**
 	 * Se generaron las clasificacion de costos de forma exitosa.
@@ -692,4 +693,5 @@ public static final String DELETE_SEPARADORES = "";
 	
 	public static final String MIN_DENOM_COP = "MIN_DENOM_COP";
 	public static final Integer BANCO_BOGOTA = 297;
+	public static final String MONEDA_COP = "COP";
 }

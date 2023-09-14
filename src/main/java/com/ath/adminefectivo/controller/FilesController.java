@@ -32,7 +32,7 @@ import com.ath.adminefectivo.dto.response.ResponseADE;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.service.IMaestroDefinicionArchivoService;
 import com.ath.adminefectivo.service.IParametroService;
-import com.ath.adminefectivo.utils.s3Utils;
+import com.ath.adminefectivo.utils.S3Utils;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -141,40 +141,24 @@ public class FilesController {
 	 * @author CamiloBenavides
 	 */
 	@PostMapping(value = "/guardar")
-	public ResponseEntity<ApiResponseADE<Boolean>> persistirArchvoCargado(@RequestPart("file") MultipartFile file, @RequestPart("tipoCargue") String tipoCargue) {
-
+	public ResponseEntity<ApiResponseADE<Boolean>> persistirArchvoCargado(@RequestPart("file") MultipartFile file,
+			@RequestPart("tipoCargue") String tipoCargue) {
+		log.debug("tipocargue: {}", tipoCargue);
 		try {
-			s3Utils utils = new s3Utils();
-			if(tipoCargue.equals("IPP")) {
-				List<MaestrosDefinicionArchivoDTO> agrup = maestroDefinicionArchivoService
-						.consultarDefinicionArchivoByAgrupador(Constantes.ESTADO_MAESTRO_DEFINICION_ACTIVO, "IPP");
-				String param = parametroService.valorParametro(Parametros.RUTA_ARCHIVOS_PENDIENTES);
-				String ubicacion = agrup.get(0).getUbicacion() + param;
-				utils.convertAndSaveArchivoEnBytes(file, ubicacion, file.getOriginalFilename());
-			}
-			if(tipoCargue.equals("CERTI")) {
-				List<MaestrosDefinicionArchivoDTO> agrup = maestroDefinicionArchivoService
-						.consultarDefinicionArchivoByAgrupador(Constantes.ESTADO_MAESTRO_DEFINICION_ACTIVO, "CERTI");
-				String param = parametroService.valorParametro(Parametros.RUTA_ARCHIVOS_PENDIENTES);
-				String ubicacion = agrup.get(0).getUbicacion() + param;
-				utils.convertAndSaveArchivoEnBytes(file, ubicacion, file.getOriginalFilename());
-			}
-			if(tipoCargue.equals("DEFIN")) {
-				List<MaestrosDefinicionArchivoDTO> agrup = maestroDefinicionArchivoService
-						.consultarDefinicionArchivoByAgrupador(Constantes.ESTADO_MAESTRO_DEFINICION_ACTIVO, "DEFIN");
-				String param = parametroService.valorParametro(Parametros.RUTA_ARCHIVOS_PENDIENTES);
-				String ubicacion = agrup.get(0).getUbicacion() + param;
-				utils.convertAndSaveArchivoEnBytes(file, ubicacion, file.getOriginalFilename());
-			}
+			S3Utils utils = new S3Utils();
+			List<MaestrosDefinicionArchivoDTO> agrup = maestroDefinicionArchivoService
+					.consultarDefinicionArchivoByAgrupador(Constantes.ESTADO_MAESTRO_DEFINICION_ACTIVO, tipoCargue);
+			String param = parametroService.valorParametro(Parametros.RUTA_ARCHIVOS_PENDIENTES);
+			String ubicacion = agrup.get(0).getUbicacion() + param;
+			utils.convertAndSaveArchivoEnBytes(file, ubicacion, file.getOriginalFilename());
 		} catch (Exception e) {
+			log.error("tipoCargue: {} - Error: {}", tipoCargue, e);
 			throw new NegocioException(ApiResponseCode.GENERIC_ERROR.getCode(),
-					ApiResponseCode.GENERIC_ERROR.getDescription(),
-					ApiResponseCode.GENERIC_ERROR.getHttpStatus());		
+					ApiResponseCode.GENERIC_ERROR.getDescription(), ApiResponseCode.GENERIC_ERROR.getHttpStatus());
 		}
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ApiResponseADE<Boolean>(true,
-						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
-								.description(ApiResponseCode.SUCCESS.getDescription()).build()));
+				.body(new ApiResponseADE<Boolean>(true, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
 
 	/**

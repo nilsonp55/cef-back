@@ -10,37 +10,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ath.adminefectivo.constantes.Constantes;
-import com.ath.adminefectivo.constantes.Dominios;
-import com.ath.adminefectivo.dto.FuncionesDinamicasDTO;
-import com.ath.adminefectivo.dto.ParametrosLiquidacionCostoDTO;
 import com.ath.adminefectivo.dto.BancosDTO;
 import com.ath.adminefectivo.dto.ClasificacionCostosDTO;
-import com.ath.adminefectivo.dto.EscalasDTO;
-import com.ath.adminefectivo.dto.FondosDTO;
 import com.ath.adminefectivo.dto.TarifasOperacionDTO;
 import com.ath.adminefectivo.dto.compuestos.CostosMensualesClasificacionDTO;
 import com.ath.adminefectivo.dto.compuestos.EstimadoClasificacionCostosDTO;
-import com.ath.adminefectivo.dto.response.ApiResponseCode;
-import com.ath.adminefectivo.entities.FuncionesDinamicas;
 import com.ath.adminefectivo.entities.ClasificacionCostos;
-import com.ath.adminefectivo.entities.Escalas;
-import com.ath.adminefectivo.entities.TarifasOperacion;
-import com.ath.adminefectivo.exception.NegocioException;
-import com.ath.adminefectivo.repositories.IBancosRepository;
 import com.ath.adminefectivo.repositories.IClasificacionCostosRepository;
-import com.ath.adminefectivo.repositories.IFuncionesDinamicasRepository;
-import com.ath.adminefectivo.repositories.IParametrosLiquidacionCostosRepository;
-import com.ath.adminefectivo.repositories.IEscalasRepository;
-import com.ath.adminefectivo.repositories.ITarifasOperacionRepository;
 import com.ath.adminefectivo.service.IBancosService;
 import com.ath.adminefectivo.service.IClasificacionCostosService;
-import com.ath.adminefectivo.service.IEscalasService;
-import com.ath.adminefectivo.service.IFondosService;
-import com.ath.adminefectivo.service.IFuncionesDinamicasService;
 import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.IParametrosLiquidacionCostosService;
 import com.ath.adminefectivo.service.ITarifasOperacionService;
-import com.querydsl.core.types.Predicate;
 
 @Service
 public class ClasificacionCostosServiceImpl implements IClasificacionCostosService {
@@ -55,9 +36,6 @@ public class ClasificacionCostosServiceImpl implements IClasificacionCostosServi
 	IParametroService parametroService;
 	
 	@Autowired
-	IFondosService fondosService;
-	
-	@Autowired
 	IParametrosLiquidacionCostosService parametrosLiquidacionCostosService;
 	
 	@Autowired
@@ -69,7 +47,7 @@ public class ClasificacionCostosServiceImpl implements IClasificacionCostosServi
 	@Override
 	public List<CostosMensualesClasificacionDTO> getClasificacionMensualCostos(String transportadora) {
 		
-		List<CostosMensualesClasificacionDTO> costosMensualesClasificacion = new ArrayList();
+		List<CostosMensualesClasificacionDTO> costosMensualesClasificacion = new ArrayList<>();
 		Date fechaSistema = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
 		String fechaSistemaS = parametroService.valorParametro(Constantes.FECHA_DIA_PROCESO);
 		String[] diaMesAnio = fechaSistemaS.split("/");
@@ -104,37 +82,21 @@ public class ClasificacionCostosServiceImpl implements IClasificacionCostosServi
 						costosMensualesClasificacion.add(this.generarClasificacionMensualesDTO(clasificacionCostoDTO, fechaSistema, bancoAval.getNombreBanco(), transportadora));
 					}
 					
-				});
-			
-		}
-		
-		
+				});	
+		}	
 		return costosMensualesClasificacion;
 	}
 
-
-
-
-
-
-
 	private CostosMensualesClasificacionDTO generarClasificacionMensualesDTO(ClasificacionCostosDTO clasificacionCosto,
 			Date fechaSistema, String nombreBanco, String codigoTdv) {
-		CostosMensualesClasificacionDTO costosMensualesClasificacionDTO = CostosMensualesClasificacionDTO.builder()
+		return CostosMensualesClasificacionDTO.builder()
 				.codigoBanco(clasificacionCosto.getBancoAval())
 				.mesAnio(clasificacionCosto.getMesAnio()).cantidadEstimadaFajos(clasificacionCosto.getFajosEstimados())
 				.cantidadEstimadaBolsas(clasificacionCosto.getBolsasEstimadas()).cantidadAsignadaRem(0).cantidadAsignadaBolsas(0)
 				.cantidadAsignadaFajos(0).cantidadAsignadaRem(0).valorLiquidadoFajos(0).valorLiquidadoBolsas(0).valorLiquidadoRem(0)
 				.valorTotalLiquidacion(0).fechaSistema(fechaSistema).nombreBanco(nombreBanco).codigoTdv(codigoTdv)
 				.build();
-		return costosMensualesClasificacionDTO;
 	}
-
-
-
-
-
-
 
 	private ClasificacionCostosDTO procesarClasificacionCostosPorBanco(ClasificacionCostos clasificacionCosto,
 			String transportadora) {
@@ -154,8 +116,6 @@ public class ClasificacionCostosServiceImpl implements IClasificacionCostosServi
 				fajosEstimados = 0;
 				bolsasEstimados = 0;
 			}
-			
-
 		}
 
 		clasificacionCosto.setFajosEstimados(fajosEstimados);
@@ -170,12 +130,6 @@ public class ClasificacionCostosServiceImpl implements IClasificacionCostosServi
 		clasificacionCosto.setFechaModificacion(new Date());
 		return ClasificacionCostosDTO.CONVERTER_DTO.apply(clasificacionCostosRepository.save(clasificacionCosto));
 	}
-
-
-
-
-
-
 
 	/**
 	 * {@inheritDoc}
@@ -198,7 +152,6 @@ public class ClasificacionCostosServiceImpl implements IClasificacionCostosServi
 				costoMensual.setValorTotalLiquidacion(costoMensual.getValorLiquidadoRem() + 
 													  costoMensual.getValorLiquidadoBolsas() + 
 													  costoMensual.getValorLiquidadoFajos());
-				
 			}
 		});
 		return listadoCostosMensuales;
@@ -213,9 +166,9 @@ public class ClasificacionCostosServiceImpl implements IClasificacionCostosServi
 			this.eliminarExistentesMesAnio(listadoCostosMensuales.get(0).getMesAnio(), listadoCostosMensuales.get(0).getCodigoTdv());
 			List<ClasificacionCostosDTO> listadoClasificacionCostosDTO = new ArrayList<>();
 			
-			listadoCostosMensuales.forEach(costoMensual -> {
-				listadoClasificacionCostosDTO.add(this.generarClasificacionCosto(costoMensual));
-			});
+			listadoCostosMensuales.forEach(costoMensual -> 
+				listadoClasificacionCostosDTO.add(this.generarClasificacionCosto(costoMensual))
+			);
 			if(listadoClasificacionCostosDTO.size() > 0) {
 				return Constantes.MENSAJE_GENERO_CLASIFICACION_COSTOS_CORRECTO;
 			}
@@ -234,8 +187,6 @@ public class ClasificacionCostosServiceImpl implements IClasificacionCostosServi
 	 */
 	@Transactional
 	private ClasificacionCostosDTO generarClasificacionCosto(CostosMensualesClasificacionDTO costoMensual) {
-		
-		
 		
 		ClasificacionCostos costoClasificacion = new ClasificacionCostos();
 		costoClasificacion.setBancoAval(costoMensual.getCodigoBanco());
@@ -259,14 +210,10 @@ public class ClasificacionCostosServiceImpl implements IClasificacionCostosServi
 	private void eliminarExistentesMesAnio(String mesAnio, String transportadora) {
 		List<ClasificacionCostos> existentesClasificacionCostos = clasificacionCostosRepository.findByTransportadoraAndMesAnio(transportadora, mesAnio);
 		if(!existentesClasificacionCostos.isEmpty()) {
-			existentesClasificacionCostos.forEach(clasifCosto ->{
-				clasificacionCostosRepository.delete(clasifCosto);
-			});
-		}
-		
-		
+			existentesClasificacionCostos.forEach(clasifCosto ->
+				clasificacionCostosRepository.delete(clasifCosto)
+			);
+		}	
 	}
 
-
-	
 }

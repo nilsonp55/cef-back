@@ -33,25 +33,25 @@ import springfox.documentation.spring.web.plugins.Docket;
 public class SwaggerConfiguration {
 	
 	 public static final String TAG_1 = "tag1";
-	 
-	 	/**
-	 	 * Configuracion de la documentación swagger a nivel de aplicativo y su propietario
-	 	 * 
-	 	 * @return OpenAPI
-	 	 * @author CamiloBenavides
-	 	 */
-	    @Bean
-	    public OpenAPI customOpenAPI() {
-	        final Info info = new Info()
-	                .title(SwaggerConstants.TITLE)
-	                .description(SwaggerConstants.DESCRIPTION)
-	                .version(SwaggerConstants.CODE_VERSION)
-	                .contact(new Contact().email(SwaggerConstants.MAIL_CONTACT).name(SwaggerConstants.NAME_CONTACT));
 
-	        return new OpenAPI().components(new Components())
-	                .addTagsItem(createTag(TAG_1, "Tag principal."))
-	                .info(info);
-	    }
+    /**
+     * Configuracion de la documentación swagger a nivel de aplicativo y su propietario
+     * 
+     * @return OpenAPI
+     * @author CamiloBenavides
+     */
+    @Bean
+    OpenAPI customOpenAPI() {
+        final Info info = new Info()
+                .title(SwaggerConstants.TITLE)
+                .description(SwaggerConstants.DESCRIPTION)
+                .version(SwaggerConstants.CODE_VERSION)
+                .contact(new Contact().email(SwaggerConstants.MAIL_CONTACT).name(SwaggerConstants.NAME_CONTACT));
+
+        return new OpenAPI().components(new Components())
+                .addTagsItem(createTag(TAG_1, "Tag principal."))
+                .info(info);
+    }
 
 	    private Tag createTag(String name, String description) {
 	        final Tag tag = new Tag();
@@ -60,31 +60,31 @@ public class SwaggerConfiguration {
 	        return tag;
 	    }
 
-	
-	/**
-	 * Method used by swagger to set API's general configuration
-	 * 
-	 * @return Docket
-	 * @author cpalacios
-	 */
 
-	/**
-	 * Clase de configuracion, en donde se definen los paquetes a documetnar y las respuestas 
-	 * genéricas
-	 * 
-	 * @return Docket
-	 * @author CamiloBenavides
-	 */
-	@Bean
-	public Docket api() {
-		return new Docket(DocumentationType.SWAGGER_2)
-				.select()
-				.apis(RequestHandlerSelectors.basePackage(SwaggerConstants.PACKAGE))
-				.paths(PathSelectors.any()).build()
-				.useDefaultResponseMessages(false)
-				.globalResponses(HttpMethod.GET,  globalResponses)
-				.globalResponses(HttpMethod.POST,  globalResponses);
-	}
+    /**
+     * Method used by swagger to set API's general configuration
+     * 
+     * @return Docket
+     * @author cpalacios
+     */
+
+    /**
+     * Clase de configuracion, en donde se definen los paquetes a documetnar y las respuestas 
+     * genéricas
+     * 
+     * @return Docket
+     * @author CamiloBenavides
+     */
+    @Bean
+    Docket api() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .select()
+                .apis(RequestHandlerSelectors.basePackage(SwaggerConstants.PACKAGE))
+                .paths(PathSelectors.any()).build()
+                .useDefaultResponseMessages(false)
+                .globalResponses(HttpMethod.GET,  globalResponses)
+                .globalResponses(HttpMethod.POST,  globalResponses);
+    }
 	
 
 

@@ -3,28 +3,21 @@ package com.ath.adminefectivo.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.http.MediaType;
 
 import com.ath.adminefectivo.delegate.IClasificacionCostosDelegate;
-import com.ath.adminefectivo.delegate.IEscalasDelegate;
-import com.ath.adminefectivo.dto.EscalasDTO;
 import com.ath.adminefectivo.dto.compuestos.CostosMensualesClasificacionDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
-import com.ath.adminefectivo.entities.Escalas;
-import com.querydsl.core.types.Predicate;
 
 /**
  * Controlador responsable de exponer los metodos referentes a los puntos costos

@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.stereotype.Repository;
 
 import com.ath.adminefectivo.entities.ArchivosCargados;
 
@@ -18,46 +17,43 @@ import com.ath.adminefectivo.entities.ArchivosCargados;
  *
  * @author CamiloBenavides
  */
-@Repository
-public interface ArchivosCargadosRepository
-		extends JpaRepository<ArchivosCargados, Long>, 
-				QuerydslPredicateExecutor<ArchivosCargados>, 
-				PagingAndSortingRepository<ArchivosCargados, Long> 
-{
-	
+public interface ArchivosCargadosRepository extends JpaRepository<ArchivosCargados, Long>,
+		QuerydslPredicateExecutor<ArchivosCargados>, PagingAndSortingRepository<ArchivosCargados, Long> {
+
 	/**
-	 * Metodo encargado de realizar la consulta de los archivos cargados por modeloarchivo y 	
-	 * idArchivo
+	 * Metodo encargado de realizar la consulta de los archivos cargados por
+	 * modeloarchivo y idArchivo
+	 * 
 	 * @param idModeloArchivo
 	 * @param idArchivo
 	 * @return List<ArchivosCargados>
 	 * @author duvan.naranjo
 	 */
 	List<ArchivosCargados> findByIdModeloArchivoAndIdArchivo(String idModeloArchivo, Long idArchivo);
-	
-	/**
-	 * Metodo encargado de realizar la consulta de los archivos cargados que fueron cargados 
-	 * exitosamente y no han sido procesados
 
+	/**
+	 * Metodo encargado de realizar la consulta de los archivos cargados que fueron
+	 * cargados exitosamente y no han sido procesados
+	 * 
 	 * @return List<ArchivosCargados>
 	 * @author duvan.naranjo
 	 */
 	public List<ArchivosCargados> findByEstadoCargueAndFechaArchivoBetween(String estadoCargue, Date start, Date end);
-	
+
 	/**
-	 * Metodo encargado de realizar la consulta de los archivos cargados que fueron cargados 
-	 * exitosamente y no han sido procesados por id modelo archivo
+	 * Metodo encargado de realizar la consulta de los archivos cargados que fueron
+	 * cargados exitosamente y no han sido procesados por id modelo archivo
 	 * 
 	 * @param estadoCargue
 	 * @return List<ArchivosCargados>
 	 * @author duvan.naranjo
 	 */
 	public List<ArchivosCargados> findByEstadoCargue(String estadoCargue);
-	
+
 	/**
-	 * Metodo encargado de realizar la consulta de los archivos cargados que fueron cargados 
-	 * exitosamente y no han sido procesados por id modelo archivo, además de ser filtrado por
-	 * el tipo de archivo
+	 * Metodo encargado de realizar la consulta de los archivos cargados que fueron
+	 * cargados exitosamente y no han sido procesados por id modelo archivo, además
+	 * de ser filtrado por el tipo de archivo
 	 * 
 	 * @param estadoCargue
 	 * @param idModeloArchivo
@@ -67,46 +63,77 @@ public interface ArchivosCargadosRepository
 	public List<ArchivosCargados> findByEstadoCargueAndIdModeloArchivo(String estadoCargue, String idModeloArchivo);
 
 	/**
-	 * Metodo encargado de realizar la consulta de los registros cargados sin procesar de hoy
+	 * Metodo encargado de realizar la consulta de los registros cargados sin
+	 * procesar de hoy
+	 * 
 	 * @param agrupador
 	 * @return Page<ArchivosCargados>
 	 * @author duvan.naranjo
 	 */
-	@Query("select ac from ArchivosCargados ac "
-            + "where idModeloArchivo IN ("
-            + "select idMaestroDefinicionArchivo from MaestroDefinicionArchivo "
-            + "where agrupador = ?1) and estado = ?2 order by fechaArchivo desc, estadoCargue asc") 
-	Page<ArchivosCargados> getArchivosByAgrupador(String agrupador,String estado, Pageable page);
-	
+	@Query("select ac from ArchivosCargados ac " + "where idModeloArchivo IN ("
+			+ "select idMaestroDefinicionArchivo from MaestroDefinicionArchivo "
+			+ "where agrupador = ?1) and estado = ?2 order by fechaArchivo desc, estadoCargue asc")
+	Page<ArchivosCargados> getArchivosByAgrupador(String agrupador, String estado, Pageable page);
+
 	/**
-	 * Metodo encargado de realizar la consulta de los registros cargados sin procesar de hoy
+	 * Metodo encargado de realizar la consulta de los registros cargados sin
+	 * procesar de hoy
+	 * 
 	 * @param agrupador
 	 * @return List<ArchivosCargados>
 	 * @author duvan.naranjo
 	 */
-	@Query("select ac from ArchivosCargados ac "
-		 + "where estadoCargue = ?3 and fechaArchivo = ?2 and "
-		 + "idModeloArchivo IN (select idMaestroDefinicionArchivo from MaestroDefinicionArchivo "
-		 + "where agrupador = ?1)")
+	@Query("select ac from ArchivosCargados ac " + "where estadoCargue = ?3 and fechaArchivo = ?2 and "
+			+ "idModeloArchivo IN (select idMaestroDefinicionArchivo from MaestroDefinicionArchivo "
+			+ "where agrupador = ?1)")
 	List<ArchivosCargados> getRegistrosCargadosSinProcesarDeHoy(String agrupador, Date fecha, String estado);
 
 	/**
-	 * Consulta de un archivo cargado en un estado , con un nombre determinado 
-	 * y que pertenece a un idModelo
+	 * Metodo encargado de realizar la consulta de los ids de los archivos cargados
+	 * sin procesar de una fecha, en un estado de cargue
+	 * 
+	 * @param agrupador
+	 * @return List<Long>
+	 * @author rafael.parra
+	 */
+	@Query("select ac.idArchivo from ArchivosCargados ac where estadoCargue = ?3 and fechaArchivo = ?2 and "
+			+ "idModeloArchivo IN (select idMaestroDefinicionArchivo from MaestroDefinicionArchivo "
+			+ "where agrupador = ?1) "
+			+ "order by ac.idArchivo " )
+	List<Long> getIdArchivosCargadosPorAgrupadorFechaEstado(String agrupador, Date fecha, String estado);
+
+	/**
+	 * Consulta de un archivo cargado en un estado , con un nombre determinado y que
+	 * pertenece a un idModelo
+	 * 
 	 * @param estadoCargue
 	 * @param nombreArchivo
 	 * @param idModeloArchivo
 	 * @return List<ArchivosCargados>
 	 * @author rparra
 	 */
-	@Query("select ac from ArchivosCargados ac "
-		 + "where estadoCargue = ?1 and nombreArchivo = ?2 and "
-		 + "idModeloArchivo = ?3")
-	List<ArchivosCargados> getRegistrosCargadosPorNombreyEstado(String estadoCargue, String nombreArchivo, String idModeloArchivo);
+	@Query("select ac from ArchivosCargados ac " + "where estadoCargue = ?1 and nombreArchivo = ?2 and "
+			+ "idModeloArchivo = ?3")
+	List<ArchivosCargados> getRegistrosCargadosPorNombreyEstado(String estadoCargue, String nombreArchivo,
+			String idModeloArchivo);
 
 	/**
-	 * Consulta encargada de filtrar los archivos cargados
-	 * por una fecha de archivo
+	 * Consulta de un archivo cargado en un estado , con un nombre determinado y que
+	 * pertenece a un idModelo
+	 * 
+	 * @param estadoCargue
+	 * @param nombreArchivo
+	 * @param idModeloArchivo
+	 * @return List<ArchivosCargados>
+	 * @author rparra
+	 */
+	@Query("select ac from ArchivosCargados ac " + "where estadoCargue = ?1 and nombreArchivoUpper = ?2 and "
+			+ "idModeloArchivo = ?3")
+	List<ArchivosCargados> getRegistrosCargadosPorEstadoCargueyNombreUpperyModelo(String estadoCargue,
+			String nombreArchivo, String idModeloArchivo);
+
+	/**
+	 * Consulta encargada de filtrar los archivos cargados por una fecha de archivo
 	 * 
 	 * @param fechaArchivo
 	 * @return List<ArchivosCargados>

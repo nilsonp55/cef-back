@@ -9,14 +9,12 @@ import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.dto.RespuestaContableDTO;
 import com.ath.adminefectivo.dto.TransaccionesContablesDTO;
-import com.ath.adminefectivo.dto.TransaccionesInternasDTO;
 import com.ath.adminefectivo.dto.compuestos.ConteoContabilidadDTO;
 import com.ath.adminefectivo.entities.TransaccionesContables;
-import com.ath.adminefectivo.entities.TransaccionesInternas;
 import com.ath.adminefectivo.repositories.ITransaccionesContablesRepository;
-import com.ath.adminefectivo.repositories.ITransaccionesInternasRepository;
 import com.ath.adminefectivo.service.ITransaccionesContablesService;
-import com.ath.adminefectivo.service.ITransaccionesInternasService;
+
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Implementacion de Servicios para gestionar las transacciones contables
@@ -25,6 +23,7 @@ import com.ath.adminefectivo.service.ITransaccionesInternasService;
  */
 
 @Service
+@Log4j2
 public class TransaccionesContablesServiceImpl implements ITransaccionesContablesService {
 
 	@Autowired
@@ -35,8 +34,7 @@ public class TransaccionesContablesServiceImpl implements ITransaccionesContable
 	 */
 	@Override
 	public List<TransaccionesContables> getAllTransaccionesContables() {
-		// TODO Auto-generated method stub
-		return null;
+		return new ArrayList<>();
 	}
 
 	/**
@@ -44,8 +42,7 @@ public class TransaccionesContablesServiceImpl implements ITransaccionesContable
 	 */
 	@Override
 	public TransaccionesContables getTransaccionesContablesById(String idTransaccionesContables) {
-		// TODO Auto-generated method stub
-		return null;
+		return new TransaccionesContables();
 	}
 
 	/**
@@ -62,8 +59,7 @@ public class TransaccionesContablesServiceImpl implements ITransaccionesContable
 	 */
 	@Override
 	public void deleteTransaccionesContablesById(String idTransaccionesContables) {
-		// TODO Auto-generated method stub
-
+		log.info("Not implement deleteTransaccionesContablesById: {}", idTransaccionesContables);
 	}
 
 	/**
@@ -84,40 +80,38 @@ public class TransaccionesContablesServiceImpl implements ITransaccionesContable
 
 	@Override
 	public String findBytipoProceso(String str) {
-		String tipoProceso = transaccionesContablesRepository.findBytipoProceso(str);
-		return tipoProceso;
+		return transaccionesContablesRepository.findBytipoProceso(str);
 	}
 	
 	@Override
 	public List<RespuestaContableDTO> getCierreContable(Date fecha, String tipoContabilidad,
 			int codBanco) {
 		
-		List<TransaccionesContablesDTO> listadoTransaccionesCierreDTO = new ArrayList<>();
 		List<RespuestaContableDTO> listadoTransaccionContables = null;
 			if(codBanco == 0) {
 				listadoTransaccionContables = transaccionesContablesRepository
 						.cierreContableAllBancos(fecha,tipoContabilidad, 1);
-				listadoTransaccionContables.forEach(transaccion ->{
-					transaccion.setFechaConversion(null);
-				});
+				listadoTransaccionContables.forEach(transaccion ->
+					transaccion.setFechaConversion(null)
+				);
 			}else if(codBanco > 0)
 			{
 				listadoTransaccionContables = transaccionesContablesRepository
 						.cierreContablebyBanco(fecha,tipoContabilidad,codBanco,1 );
-				listadoTransaccionContables.forEach(transaccion ->{
-					transaccion.setFechaConversion(null);
-				});
+				listadoTransaccionContables.forEach(transaccion ->
+					transaccion.setFechaConversion(null)
+				);
 			}
 
 		return listadoTransaccionContables;
 	}
 	
 	@Override
-	public List<TransaccionesContablesDTO> getTransaccionesContablesByNaturaleza(String Naturaleza) {
+	public List<TransaccionesContablesDTO> getTransaccionesContablesByNaturaleza(String naturaleza) {
 		List<TransaccionesContablesDTO> listadoTransaccionesContablesDTO = new ArrayList<>();
 
 		List<TransaccionesContables> listadoTipoTransaccion = transaccionesContablesRepository
-				.findByNaturaleza(Naturaleza);
+				.findByNaturaleza(naturaleza);
 		listadoTipoTransaccion.forEach(transaccionContable -> listadoTransaccionesContablesDTO
 				.add(TransaccionesContablesDTO.CONVERTER_DTO.apply(transaccionContable))
 			);
@@ -142,9 +136,9 @@ public class TransaccionesContablesServiceImpl implements ITransaccionesContable
 	public void deleteTransaccionesContablesByFechasAndTipoProceso(Date fechaInicio, Date fechaFin, String tipoProceso) {
 		List<TransaccionesContables> listadoTransaccionesContables = transaccionesContablesRepository
 				.findByFechaBetweenAndTipoProceso(fechaInicio, fechaFin, tipoProceso);
-		listadoTransaccionesContables.forEach(transaccionContable ->{
-			transaccionesContablesRepository.delete(transaccionContable);
-		});		
+		listadoTransaccionesContables.forEach(transaccionContable ->
+			transaccionesContablesRepository.delete(transaccionContable)
+		);		
 	}
 
 	/**
@@ -171,6 +165,7 @@ public class TransaccionesContablesServiceImpl implements ITransaccionesContable
 	@Override
 	public List<String> cierreContablebyBancoF2String(Date fecha, String tipoContabilidad,
 			int codBanco){
+		log.debug("tipoContabilidad: {} - codBanco: {}", tipoContabilidad, codBanco);
 		return transaccionesContablesRepository.cierreContablebyBancoF2String(fecha, tipoContabilidad, codBanco, 1);
 		
 	}

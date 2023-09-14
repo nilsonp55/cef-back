@@ -44,12 +44,4 @@ public interface ICentroCiudadService {
 	 */
 	CentroCiudadDTO putCentroCiudad(CentroCiudadDTO centroCiudadDTO);
 	
-	/**
-	 * Servicio encargado de eliminar una CentroCiudad por su identificador unico
-	 * 
-	 * @return List<>
-	 * @author cesar.castano
-	 */
-	void deleteCentroCiudad(CentroCiudadDTO centroCiudadDTO);
-	
 }

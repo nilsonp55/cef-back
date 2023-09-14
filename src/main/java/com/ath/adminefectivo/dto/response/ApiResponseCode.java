@@ -166,7 +166,7 @@ public enum ApiResponseCode {
 	/**
 	 * Ocurrió un error al consultar la table de puntos
 	 */
-	ERROR_PUNTOS_NO_ENCONTRADO("E905", "Ocurrió un error al consultar la table de puntos",
+	ERROR_PUNTOS_NO_ENCONTRADO("E905", "No existe punto en tabla de puntos",
 			HttpStatus.PRECONDITION_FAILED),
 
 	/**
@@ -706,7 +706,7 @@ public enum ApiResponseCode {
 			HttpStatus.PRECONDITION_FAILED),
 	
 	/**
-	 * Ocurrió un error al consultar la table de operaciones certificadas
+	 * Ocurrió un error al consultar la table de operaciones programadas
 	 */
 	ERROR_OPERACIONES_PROGRAMADAS_UPDATE_NULL("E975", "El id Operacion es nulo. ",
 			HttpStatus.PRECONDITION_FAILED),
@@ -714,8 +714,13 @@ public enum ApiResponseCode {
 	/**
 	 * Ocurrio un error al consultar la auditor�a de un Proceso Diario
 	 */
-	ERROR_PROCESO_NO_EXISTE("E976", "Codigo Proceso no existe en auditoría de procesos", HttpStatus.PRECONDITION_FAILED);
+	ERROR_PROCESO_NO_EXISTE("E976", "Codigo Proceso no existe en auditoría de procesos", HttpStatus.PRECONDITION_FAILED),
 	
+	/**
+	 * Error al modificar tipo punto en tabla de puntos
+	 */
+	ERROR_TIPO_PUNTO_DIFERENTE("E977", "No estᡰermitido modificar el tipo punto",
+			HttpStatus.PRECONDITION_FAILED);
 	
 	/**
 	 * Código asociado a la respuesta
@@ -736,7 +741,7 @@ public enum ApiResponseCode {
 		return code;
 	}
 
-	public void setCode(String code) {
+	void setCode(String code) {
 		this.code = code;
 	}
 
@@ -744,7 +749,7 @@ public enum ApiResponseCode {
 		return description;
 	}
 
-	public void setDescription(String description) {
+	void setDescription(String description) {
 		this.description = description;
 	}
 
@@ -752,7 +757,7 @@ public enum ApiResponseCode {
 		return httpStatus;
 	}
 
-	public void setHttpStatus(HttpStatus httpStatus) {
+	void setHttpStatus(HttpStatus httpStatus) {
 		this.httpStatus = httpStatus;
 	}
 

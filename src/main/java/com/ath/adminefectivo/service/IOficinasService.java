@@ -3,7 +3,6 @@ package com.ath.adminefectivo.service;
 import java.util.List;
 
 import com.ath.adminefectivo.dto.OficinasDTO;
-import com.ath.adminefectivo.entities.Oficinas;
 import com.querydsl.core.types.Predicate;
 
 public interface IOficinasService {

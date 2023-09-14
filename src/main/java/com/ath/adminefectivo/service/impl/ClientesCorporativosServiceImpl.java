@@ -45,9 +45,6 @@ public class ClientesCorporativosServiceImpl implements IClientesCorporativosSer
 		var clientesCorporativos = clientesCorporativosRepository.findByCodigoBancoAvalAndIdentificacion(codigoBanco, nit);
 		if (Objects.isNull(clientesCorporativos)) {
 			return clientesCorporativosRepository.findByCodigoBancoAvalAndIdentificacion(codigoBanco, "9999999999").getCodigoCliente();
-//			throw new AplicationException(ApiResponseCode.ERROR_CLIENTES_CORPORATIVOS_NO_ENCONTRADO.getCode(),
-//					ApiResponseCode.ERROR_CLIENTES_CORPORATIVOS_NO_ENCONTRADO.getDescription(),
-//					ApiResponseCode.ERROR_CLIENTES_CORPORATIVOS_NO_ENCONTRADO.getHttpStatus());
 		} else {
 			return clientesCorporativos.getCodigoCliente();
 		}

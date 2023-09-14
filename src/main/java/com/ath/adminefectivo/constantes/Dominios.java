@@ -96,6 +96,7 @@ public final class Dominios {
 	public static final String FORMATO_FECHA_F1 = "F1";
 	public static final String FORMATO_FECHA_F2 = "F2";
 	public static final String FORMATO_FECHA_F3 = "F3";
+	public static final String FORMATO_FECHA_F4 = "F4";
 	
 	public static final String CARACTER_INVALIDO_TX_C1 = "C1";
 	public static final String CARACTER_INVALIDO_TX_C2 = "C2";
@@ -122,6 +123,10 @@ public final class Dominios {
 	public static final String ESTADO_VALIDACION_REGISTRO_ERRADO = "ERRADO";
 	public static final String ESTADO_VALIDACION_CORRECTO = "OK";
 	public static final String ESTADO_VALIDACION_REEMPLAZADO = "REEMPLAZADO";
+	public static final String ESTADO_VALIDACION_REPROCESO = "REPROCESO";
+	public static final String ESTADO_VALIDACION_REPROCESADO = "REPROCESADO";
+	public static final String ESTADO_VALIDACION_REEMPLAZADORP = "REEMPLAZADORP";
+	public static final String ESTADO_VALIDACION_FUTURO = "FUTURO";
 	
 	/**
 	 * Dominio de agrupamiento de los detalles de archivo

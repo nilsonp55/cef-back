@@ -2,10 +2,6 @@ package com.ath.adminefectivo.dto.compuestos;
 
 import java.io.Serializable;
 
-import com.ath.adminefectivo.dto.BancosDTO;
-import com.ath.adminefectivo.dto.OperacionesProgramadasDTO;
-import com.fasterxml.jackson.annotation.JsonInclude;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,11 +24,5 @@ public class OperacionIntradiaDTO implements Serializable {
 	private Integer codigoPunto;
 	
 	private String entradaSalida;
-	
-//	private BancosDTO banco;
-//	
-//	private OperacionesProgramadasDTO operacionProgramada;
-	
-	
 	
 }
