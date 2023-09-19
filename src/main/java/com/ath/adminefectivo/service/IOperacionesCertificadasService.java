@@ -2,6 +2,7 @@ package com.ath.adminefectivo.service;
 
 import java.util.List;
 
+import com.ath.adminefectivo.dto.DetallesDefinicionArchivoDTO;
 import com.ath.adminefectivo.dto.FechasConciliacionDTO;
 import com.ath.adminefectivo.entities.ArchivosCargados;
 import com.ath.adminefectivo.entities.OperacionesCertificadas;
@@ -32,15 +33,6 @@ public interface IOperacionesCertificadasService {
 	 */
 	Integer numeroOperacionesPorEstadoyFecha(FechasConciliacionDTO fechaConciliacion, String estado);
 
-	/**
-	 * Servicio encargado de procesar los archivos cargados a la entidad
-	 * OperacionesCertificadas
-	 * 
-	 * @param archivosCargados
-	 * @return Boolean
-	 * @author cesar.castano
-	 */
-	Boolean procesarArchivosCertificaciones(List<Long> idsArchivosCargados);
 
 	/**
 	 * Servicio encargado de obtener los registros de OperacionesCertirficadas que
@@ -83,11 +75,14 @@ public interface IOperacionesCertificadasService {
 	/**
 	 * Servicio encargado de procesar los datos de los archivos de alcance a
 	 * certificaciones
-	 * 
-	 * @param archivosCargados
+	 *
 	 * @return String
 	 * @author rafael.parra
 	 */
-	String procesarArchivosAlcance(List<ArchivosCargados> archivosCargados);
+	String procesarArchivosAlcance();
+
+	void procesarArchivoBrinks(ArchivosCargados elemento, List<DetallesDefinicionArchivoDTO> detalleArchivo);
+
+	void procesarArchivoOtrosFondos(ArchivosCargados elemento, List<DetallesDefinicionArchivoDTO> detalleArchivo);
 
 }
