@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import com.ath.adminefectivo.dto.DetallesDefinicionArchivoDTO;
+import com.ath.adminefectivo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,11 +16,6 @@ import com.ath.adminefectivo.dto.LogProcesoDiarioDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.ArchivosCargados;
 import com.ath.adminefectivo.exception.NegocioException;
-import com.ath.adminefectivo.service.IArchivosCargadosService;
-import com.ath.adminefectivo.service.IAuditoriaProcesosService;
-import com.ath.adminefectivo.service.ILogProcesoDiarioService;
-import com.ath.adminefectivo.service.IOperacionesCertificadasService;
-import com.ath.adminefectivo.service.IParametroService;
 
 @Service
 public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
@@ -37,6 +34,12 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 	
 	@Autowired
 	IAuditoriaProcesosService auditoriaProcesosService;
+
+	@Autowired
+	IDominioService dominioService;
+
+	@Autowired
+	IDetalleDefinicionArchivoService detalleDefinicionArchivoService;
 
 	/**
 	 * {@inheritDoc}
@@ -60,7 +63,7 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 		} else {
 			validarLogProcesoDiario();
 			validarExistenciaArchivos(archivosCargados.size(), fechaProceso);
-			operacionesCertificadasService.procesarArchivosCertificaciones(archivosCargados);
+			this.procesarArchivosCertificaciones(archivosCargados);
 			
 			// siguiente l�nea, incluye conciliaci�n autom�tica (en procedimientos de BD)
 			operacionesCertificadasService.validarNoConciliables();
@@ -85,7 +88,7 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 					ApiResponseCode.ERROR_ARCHICOS_CARGADOS_NO_ENCONTRADO.getDescription(),
 					ApiResponseCode.ERROR_ARCHICOS_CARGADOS_NO_ENCONTRADO.getHttpStatus());
 		} else {
-			return operacionesCertificadasService.procesarArchivosAlcance(archivosCargados);
+			return procesarArchivosAlcance(archivosCargados);
 		}
 	}
 
@@ -121,7 +124,8 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 
 	/**
 	 * 
-	 * @param archivosCargados
+	 * @param numArchivosCargados
+	 * @param fechaProceso
 	 * @author prv_ccastano
 	 */
 	private void validarExistenciaArchivos(Integer numArchivosCargados, Date fechaProceso) {
@@ -161,4 +165,61 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Boolean procesarArchivosCertificaciones(List<Long> idsArchivosCargados) {
+
+		Date fechaProceso = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
+		int cuenta = 0;
+		ArchivosCargados elemento = null;
+
+		for (Long elementoId : idsArchivosCargados) {
+			try {
+				cuenta = cuenta + 1;
+				// leer los registros de cada archivo
+				elemento = archivosCargadosService.consultarArchivoById(elementoId);
+				List<DetallesDefinicionArchivoDTO> listadoDetalleArchivo = detalleDefinicionArchivoService
+						.consultarDetalleDefinicionArchivoByIdMaestro(elemento.getIdModeloArchivo());
+				if (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IBBCS)
+						|| elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IBMCS)) {
+					operacionesCertificadasService.procesarArchivoBrinks(elemento, listadoDetalleArchivo);
+				} else {
+					operacionesCertificadasService.procesarArchivoOtrosFondos(elemento, listadoDetalleArchivo);
+				}
+
+			auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+					fechaProceso, Constantes.ESTADO_PROCESO_PROCESO, "Archivos procesados: " + cuenta);
+
+			} catch (NegocioException nExcep) {
+				auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+						fechaProceso, Constantes.ESTADO_PROCESO_ERROR, nExcep.getMessage());
+				throw nExcep;
+			} catch (Exception excep) {
+				auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
+						fechaProceso, Constantes.ESTADO_PROCESO_ERROR, "Error procesando archivo: " + cuenta);
+				throw excep;
+			}
+		}
+
+		return true;
+	}
+
+
+	@Override
+	public String  procesarArchivosAlcance(List<ArchivosCargados> archivosCargados) {
+
+		for (ArchivosCargados elemento : archivosCargados) {
+			List<DetallesDefinicionArchivoDTO> listadoDetalleArchivo = detalleDefinicionArchivoService
+					.consultarDetalleDefinicionArchivoByIdMaestro(elemento.getIdModeloArchivo());
+			if (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IBBCS)
+					|| elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IBMCS)) {
+				operacionesCertificadasService.procesarArchivoBrinks(elemento, listadoDetalleArchivo);
+			} else {
+				operacionesCertificadasService.procesarArchivoOtrosFondos(elemento, listadoDetalleArchivo);
+			}
+		}
+		return operacionesCertificadasService.procesarArchivosAlcance();
+	}
 }

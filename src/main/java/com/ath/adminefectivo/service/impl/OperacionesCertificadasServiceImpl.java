@@ -98,7 +98,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	private static final String USER1 = "user1";
 	private static final String SIN_CODIGO_SERVICIO = "SIN_CODIGO_SERVICIO";
 	private String estadoConciliacion = "";
-	private Date fechaHoy;
+	private Date fechaHoy = new Date();
 	private Date fechaProceso;
 
 
@@ -161,49 +161,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 		return cuentaCertificadas;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Boolean procesarArchivosCertificaciones(List<Long> idsArchivosCargados) {
 
-		this.fechaProceso = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
-		int cuenta = 0; 
-		ArchivosCargados elemento = null;
-		this.estadoConciliacion = dominioService.valorTextoDominio(Constantes.DOMINIO_ESTADO_CONCILIACION,
-														Dominios.ESTADO_CONCILIACION_NO_CONCILIADO);
-		this.fechaHoy = new Date();
-
-		for (Long elementoId : idsArchivosCargados) {
-			try {
-				cuenta = cuenta + 1;
-				// leer los registros de cada archivo
-				elemento = archivosCargadosService.consultarArchivoById(elementoId);
-				List<DetallesDefinicionArchivoDTO> listadoDetalleArchivo = detalleDefinicionArchivoService
-						.consultarDetalleDefinicionArchivoByIdMaestro(elemento.getIdModeloArchivo());
-				if (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IBBCS)
-						|| elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IBMCS)) {
-					procesarArchivoBrinks(elemento, listadoDetalleArchivo);
-				} else {
-					procesarArchivoOtrosFondos(elemento, listadoDetalleArchivo);
-				}			
-			
-			auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION, 
-					this.fechaProceso, Constantes.ESTADO_PROCESO_PROCESO, "Archivos procesados: " + cuenta);
-			
-			} catch (NegocioException nExcep) {
-				auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION, 
-						this.fechaProceso, Constantes.ESTADO_PROCESO_ERROR, nExcep.getMessage());
-				throw nExcep;
-			} catch (Exception excep) {
-				auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION, 
-						this.fechaProceso, Constantes.ESTADO_PROCESO_ERROR, "Error procesando archivo: " + cuenta);
-				throw excep;
-			}
-		}
-		
-		return true;
-	}
 
 	/**
 	 * {@inheritDoc}
@@ -238,27 +196,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	public void validarNoConciliables() {
 		operacionesCertificadasRepository.validarnoconciliables();
 	}
-	
-	@Override
-	public String  procesarArchivosAlcance(List<ArchivosCargados> archivosCargados) {
 
-		this.estadoConciliacion = dominioService.valorTextoDominio(Constantes.DOMINIO_ESTADO_CONCILIACION,
-				Dominios.ESTADO_CONCILIACION_NO_CONCILIADO);
-		this.fechaHoy = new Date();
-		this.fechaProceso = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
-		
-		for (ArchivosCargados elemento : archivosCargados) {
-			List<DetallesDefinicionArchivoDTO> listadoDetalleArchivo = detalleDefinicionArchivoService
-					.consultarDetalleDefinicionArchivoByIdMaestro(elemento.getIdModeloArchivo());
-			if (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IBBCS)
-					|| elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IBMCS)) {
-				procesarArchivoBrinks(elemento, listadoDetalleArchivo);
-			} else {
-				procesarArchivoOtrosFondos(elemento, listadoDetalleArchivo);
-			}			
-		}
-		return operacionesCertificadasRepository.procesarArchivosAlcance();
-	}
 
 	/**
 	 * Metodo encargado de procesar los archivos de otros fondos (no Brinks)
@@ -267,10 +205,17 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	 * @author cesar.castano
 	 */
 	@Transactional
+	@Override
 	public void procesarArchivoOtrosFondos(ArchivosCargados elemento,
 										   List<DetallesDefinicionArchivoDTO> detalleArchivo) {
 
 		var registro = new RegistroTipo1ArchivosFondosDTO();
+		listaAjustesValor = new ArrayList<>();
+		this.fechaHoy = new Date();
+		this.fechaProceso = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
+		this.estadoConciliacion = dominioService.valorTextoDominio(Constantes.DOMINIO_ESTADO_CONCILIACION,
+				Dominios.ESTADO_CONCILIACION_NO_CONCILIADO);
+
 
 		for (var i = 0; i < elemento.getRegistrosCargados().size(); i++) {
 
@@ -828,10 +773,6 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 				.findByCodigoServicioTdv(codigoServicio);
 		if (Objects.isNull(ocertificadas)) {
 			
-			auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
-					this.fechaProceso, Constantes.ESTADO_PROCESO_ERROR, 
-					ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getDescription());
-			
 			throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getDescription(),
 					ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getHttpStatus());
@@ -854,10 +795,6 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 		List<OperacionesCertificadas> ocertificadas = operacionesCertificadasRepository
 				.findByCodigoServicioTdv(codigoServicio);
 		if (Objects.isNull(ocertificadas)) {
-			
-			auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
-					this.fechaProceso, Constantes.ESTADO_PROCESO_ERROR, 
-					ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getDescription());
 			
 			throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getDescription(),
@@ -894,10 +831,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 			}
 
 			if (Objects.isNull(ocertificadas)) {
-				
-				auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
-						this.fechaProceso, Constantes.ESTADO_PROCESO_ERROR, 
-						ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getDescription());
+
 				throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getCode(),
 						ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getDescription(),
 						ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getHttpStatus());
@@ -934,11 +868,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 			}
 
 			if (Objects.isNull(ocertificadas)) {
-				
-				auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
-						this.fechaProceso, Constantes.ESTADO_PROCESO_ERROR, 
-						ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getDescription());
-				
+
 				throw new NegocioException(ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getCode(),
 						ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getDescription(),
 						ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getHttpStatus());
@@ -960,9 +890,16 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	 * @author cesar.castano
 	 */
 	@Transactional
+	@Override
 	public void procesarArchivoBrinks(ArchivosCargados elemento, List<DetallesDefinicionArchivoDTO> detalleArchivo) {
 		log.info("Archivo: {}", elemento.getNombreArchivo());
 		var registro = new RegistroTipo1ArchivosFondosDTO();
+		listaAjustesValor = new ArrayList<>();
+		this.fechaHoy = new Date();
+		this.fechaProceso = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
+		this.estadoConciliacion = dominioService.valorTextoDominio(Constantes.DOMINIO_ESTADO_CONCILIACION,
+				Dominios.ESTADO_CONCILIACION_NO_CONCILIADO);
+
 		for (var i = 0; i < elemento.getRegistrosCargados().size(); i++) {
 
 			var ajusteValor = new SobrantesFaltantesDTO();
@@ -1094,6 +1031,11 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 				.filter(detalle -> detalle.getNombreCampo().toUpperCase().trim().equals(constante)
 						&& detalle.getId().getTipoRegistro().equals(tipoRegistro))
 				.findFirst().orElse(null).getId().getNumeroCampo() - 1].trim();
+	}
+
+	@Override
+	public String procesarArchivosAlcance() {
+		return operacionesCertificadasRepository.procesarArchivosAlcance();
 	}
 
 }
