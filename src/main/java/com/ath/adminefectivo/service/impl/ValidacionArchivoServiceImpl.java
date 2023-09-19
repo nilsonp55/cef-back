@@ -415,9 +415,13 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 					var arregloNombre = nombreArchivo
 							.replace(Constantes.SEPARADOR_FECHA_ARCHIVO, Constantes.SEPARADOR_EXTENSION_ARCHIVO)
 							.split(Constantes.REGEX_PUNTO);
-					if (arregloMascara[1].length() == arregloNombre[1].length()
-							|| arregloMascara[1].length() - arregloNombre[1].length() == 1) {
+					if (arregloMascara[1].length() == arregloNombre[1].length()) {
 						fechaArchivo = new SimpleDateFormat(arregloMascara[1]).parse(arregloNombre[1]);
+					}
+					else {
+						if (arregloMascara[1].length() - arregloNombre[1].length() == 1) {
+							fechaArchivo = new SimpleDateFormat(arregloMascara[1]).parse("0".concat(arregloNombre[1]));
+						}
 					}
 					break;
 				}
