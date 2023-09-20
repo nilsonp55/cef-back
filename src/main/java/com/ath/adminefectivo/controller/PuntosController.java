@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -61,7 +60,7 @@ public class PuntosController {
 	public ResponseEntity<ApiResponseADE<PuntosDTO>> persistirPuntos(@RequestBody CreatePuntosDTO createPuntosDTO) {
 
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ApiResponseADE<PuntosDTO>(puntosDelegate.guardarPunto(createPuntosDTO),
+				.body(new ApiResponseADE<>(puntosDelegate.guardarPunto(createPuntosDTO),
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 
