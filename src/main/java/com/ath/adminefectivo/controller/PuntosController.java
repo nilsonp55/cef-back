@@ -41,7 +41,8 @@ public class PuntosController {
 	 * @author cesar.castano
 	 */
 	@GetMapping(value = "${endpoints.Puntos.consultar}")
-	public ResponseEntity<ApiResponseADE<Page<PuntosDTO>>> getPuntos(@QuerydslPredicate(root = Puntos.class) Predicate predicate, Pageable page) {
+	public ResponseEntity<ApiResponseADE<Page<PuntosDTO>>> getPuntos(
+			@QuerydslPredicate(root = Puntos.class) Predicate predicate, Pageable page) {
 		Page<PuntosDTO> consulta = puntosDelegate.getPuntos(predicate, page);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
@@ -59,7 +60,7 @@ public class PuntosController {
 	public ResponseEntity<ApiResponseADE<PuntosDTO>> persistirPuntos(@RequestBody CreatePuntosDTO createPuntosDTO) {
 
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ApiResponseADE<PuntosDTO>(puntosDelegate.guardarPunto(createPuntosDTO),
+				.body(new ApiResponseADE<>(puntosDelegate.guardarPunto(createPuntosDTO),
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 
