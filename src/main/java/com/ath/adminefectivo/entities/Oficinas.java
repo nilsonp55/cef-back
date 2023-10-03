@@ -35,7 +35,7 @@ public class Oficinas {
 	private Integer codigoOficina;
 	
 	@Column(name = "BANCO_AVAL")
-	private Integer bancoAval;
+	private Integer bancoAVAL;
 	
 	@Column(name = "FAJADO")
 	private Boolean fajado;
