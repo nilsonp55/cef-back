@@ -36,7 +36,7 @@ public class OficinasServiceImpl implements IOficinasService {
 	 */
 	@Override
 	public Integer getCodigoPunto(Integer codigoOficina, Integer codigoBancoAVAL) {
-		var oficinaOpt = oficinasRepository.findByCodigoOficinaAndBancoAval(codigoOficina, codigoBancoAVAL);
+		var oficinaOpt = oficinasRepository.findByCodigoOficinaAndBancoAVAL(codigoOficina, codigoBancoAVAL);
 		if (Objects.isNull(oficinaOpt)) {
 			throw new AplicationException(ApiResponseCode.ERROR_OFICINAS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_OFICINAS_NO_ENCONTRADO.getDescription()+ " con el codigo oficina = "+codigoBancoAVAL+" con banco Aval codigo = "+codigoBancoAVAL,

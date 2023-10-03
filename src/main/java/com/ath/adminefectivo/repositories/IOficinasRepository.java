@@ -17,7 +17,7 @@ public interface IOficinasRepository extends JpaRepository<Oficinas, Integer>, Q
 	 * @param bancoAVAL
 	 * @return Oficinas
 	 */
-	Oficinas findByCodigoOficinaAndBancoAval(Integer codigoOficina, Integer bancoAVAL);
+	Oficinas findByCodigoOficinaAndBancoAVAL(Integer codigoOficina, Integer bancoAVAL);
 
 	/**
 	 * Retorna el objeto Oficinas con base en el codigoPunto
