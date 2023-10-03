@@ -7,7 +7,9 @@ import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.dto.PuntosDTO;
@@ -60,7 +62,8 @@ public class PuntosServiceImpl implements IPuntosService {
 	@Override
 	public Page<PuntosDTO> getPuntos(Predicate predicate, Pageable page) {
 
-		Page<Puntos> puntos = puntosRepository.findAll(predicate, page);
+		Pageable paginaOrdenada = PageRequest.of(page.getPageNumber(), page.getPageSize(), Sort.by("nombrePunto"));
+		Page<Puntos> puntos = puntosRepository.findAll(predicate, paginaOrdenada);
 
 		return new PageImpl<>(puntos.getContent().stream().map(PuntosDTO.CONVERTER_DTO).toList(), puntos.getPageable(),
 				puntos.getTotalElements());
@@ -72,7 +75,7 @@ public class PuntosServiceImpl implements IPuntosService {
 	@Override
 	public List<PuntosDTO> getPuntos(Predicate predicate) {
 		log.info("predicate: {}", predicate.toString());
-		var puntos = puntosRepository.findAll(predicate);
+		var puntos = puntosRepository.findAll(predicate, Sort.by("nombrePunto"));
 		List<PuntosDTO> listPuntosDto = new ArrayList<>();
 		puntos.forEach(entity -> listPuntosDto.add(PuntosDTO.CONVERTER_DTO.apply(entity)));
 		return listPuntosDto;
@@ -293,7 +296,7 @@ public class PuntosServiceImpl implements IPuntosService {
 	public Puntos validarPuntoActualizar(Integer codigoPunto, String tipoPunto) {
 	
 		var punto = puntosRepository.getById(codigoPunto);
-		if (!Objects.isNull(punto) ) {
+		if (Objects.nonNull(punto) ) {
 			if (!punto.getTipoPunto().equals(tipoPunto)) {
 				throw new NegocioException(ApiResponseCode.ERROR_TIPO_PUNTO_DIFERENTE.getCode(),
 						ApiResponseCode.ERROR_TIPO_PUNTO_DIFERENTE.getDescription(),
