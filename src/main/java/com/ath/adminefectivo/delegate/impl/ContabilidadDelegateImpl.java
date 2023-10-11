@@ -18,6 +18,7 @@ import com.ath.adminefectivo.dto.TransaccionesInternasDTO;
 import com.ath.adminefectivo.dto.compuestos.ContabilidadDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionIntradiaDTO;
 import com.ath.adminefectivo.dto.compuestos.ProcesoErroresContablesDTO;
+import com.ath.adminefectivo.dto.compuestos.RespuestaGenerarArchivoDTO;
 import com.ath.adminefectivo.dto.compuestos.ResultadoErroresContablesDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.exception.AplicationException;
@@ -28,6 +29,7 @@ import com.ath.adminefectivo.service.IErroresContablesService;
 import com.ath.adminefectivo.service.IFestivosNacionalesService;
 import com.ath.adminefectivo.service.IOperacionesProgramadasService;
 import com.ath.adminefectivo.service.IParametroService;
+import com.ath.adminefectivo.service.impl.GenerarArchivoServiceimpl;
 import com.ath.adminefectivo.utils.UtilsString;
 
 import lombok.extern.log4j.Log4j2;
@@ -56,6 +58,9 @@ public class ContabilidadDelegateImpl implements IContabilidadDelegate {
 	
 	@Autowired
 	ICierreContabilidadService cierreContabilidadService;
+	
+	@Autowired
+	GenerarArchivoServiceimpl generarArchivoService;
 	
 	/**
 	 * {@inheritDoc}
@@ -201,7 +206,10 @@ public class ContabilidadDelegateImpl implements IContabilidadDelegate {
 		return null;
 	}
 
-
+	@Override
+	public RespuestaGenerarArchivoDTO generarArchivo(String tipoContabilidad, int codBanco) {
+		return generarArchivoService.generarArchivo(tipoContabilidad, codBanco);	
+	}
 
 
 }

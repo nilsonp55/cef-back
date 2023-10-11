@@ -41,12 +41,16 @@ public class GenerarArchivoServiceimpl implements IgenerarArchivoService {
 	
 	@Autowired
 	IFestivosNacionalesService festivosNacionalesService;
+	
+	@Autowired
+	IParametroService parametroService;
 
 	@Override
-	public RespuestaGenerarArchivoDTO generarArchivo(Date fecha, String tipoContabilidad, int codBanco) {
-
+	public RespuestaGenerarArchivoDTO generarArchivo(String tipoContabilidad, int codBanco) {
+		
+		Date fecha = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);	
 		log.info("generar archivo codBanco:{}, tipoContabilidad:{}, fecha:{}", codBanco, tipoContabilidad, fecha);
-
+				
 		if (codBanco == 297) {
 			return generarArchivoBBOG(fecha, tipoContabilidad, codBanco);
 		} else if (codBanco == 298) {
@@ -207,25 +211,25 @@ public class GenerarArchivoServiceimpl implements IgenerarArchivoService {
 	@Override
 	public void generarArchivosCierreContable(Date fecha, String tipoContabilidad) {
 
-		RespuestaGenerarArchivoDTO archivo297 = this.generarArchivo(fecha, tipoContabilidad, 297);
+		RespuestaGenerarArchivoDTO archivo297 = this.generarArchivo(tipoContabilidad, 297);
 		s3utils.guardarArchivoEnBytes(archivo297.getArchivoBytes(), Constantes.URL_ARCHIVOS_CONTABLES_S3 + "BBOG/",
 				this.obtenerNombreArchivo(fecha, 297, tipoContabilidad));
 		s3utils.guardarArchivoEnBytes(archivo297.getArchivoBytes(), Constantes.URL_ARCHIVOS_CONTABLES_S3 + "BBOG/Enviados/",
 				this.obtenerNombreArchivoConFecha(297, tipoContabilidad));
 
-		RespuestaGenerarArchivoDTO archivo298 = this.generarArchivo(fecha, tipoContabilidad, 298);
+		RespuestaGenerarArchivoDTO archivo298 = this.generarArchivo(tipoContabilidad, 298);
 		s3utils.guardarArchivoEnBytes(archivo298.getArchivoBytes(), Constantes.URL_ARCHIVOS_CONTABLES_S3 + "BAVV/",
 				this.obtenerNombreArchivo(fecha, 298, tipoContabilidad));
 		s3utils.guardarArchivoEnBytes(archivo298.getArchivoBytes(), Constantes.URL_ARCHIVOS_CONTABLES_S3 + "BAVV/Enviados/",
 				this.obtenerNombreArchivoConFecha(298, tipoContabilidad));
 
-		RespuestaGenerarArchivoDTO archivo299 = this.generarArchivo(fecha, tipoContabilidad, 299);
+		RespuestaGenerarArchivoDTO archivo299 = this.generarArchivo(tipoContabilidad, 299);
 		s3utils.guardarArchivoEnBytes(archivo299.getArchivoBytes(), Constantes.URL_ARCHIVOS_CONTABLES_S3 + "BOCC/",
 				this.obtenerNombreArchivo(fecha, 299, tipoContabilidad));
 		s3utils.guardarArchivoEnBytes(archivo299.getArchivoBytes(), Constantes.URL_ARCHIVOS_CONTABLES_S3 + "BOCC/Enviados/",
 				this.obtenerNombreArchivoConFecha(299, tipoContabilidad));
 
-		RespuestaGenerarArchivoDTO archivo300 = this.generarArchivo(fecha, tipoContabilidad, 300);
+		RespuestaGenerarArchivoDTO archivo300 = this.generarArchivo(tipoContabilidad, 300);
 		s3utils.guardarArchivoEnBytes(archivo300.getArchivoBytes(), Constantes.URL_ARCHIVOS_CONTABLES_S3 + "BPOP/",
 				this.obtenerNombreArchivo(fecha, 300, tipoContabilidad));
 		s3utils.guardarArchivoEnBytes(archivo300.getArchivoBytes(), Constantes.URL_ARCHIVOS_CONTABLES_S3 + "BPOP/Enviados/",
