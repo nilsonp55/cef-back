@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ath.adminefectivo.dto.compuestos.ContabilidadDTO;
 import com.ath.adminefectivo.dto.compuestos.ProcesoErroresContablesDTO;
+import com.ath.adminefectivo.dto.compuestos.RespuestaGenerarArchivoDTO;
 import com.ath.adminefectivo.dto.compuestos.ResultadoErroresContablesDTO;
 
 public interface IContabilidadDelegate {	
@@ -35,5 +36,14 @@ public interface IContabilidadDelegate {
 	 */
 	ProcesoErroresContablesDTO procesarErroresContables();
 	
+	/**
+	 * Generar archivo contable para el tipo de contabilidad AM o PM
+	 * 
+	 * @param tipoContabilidad literal indicando si es AM o PM
+	 * @param codBanco identificador del banco a genrar contabilidad en archivo
+	 * @return RespuestaGenerarArchivoDTO 
+	 * @author prv_nparra
+	 */
+	RespuestaGenerarArchivoDTO generarArchivo(String tipoContabilidad, int codBanco);
 		
 }
