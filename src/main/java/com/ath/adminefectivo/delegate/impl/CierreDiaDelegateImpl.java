@@ -39,10 +39,7 @@ public class CierreDiaDelegateImpl implements ICierreDiaDelegate {
 	IParametroService parametroService;
 
 	@Autowired
-	ILogProcesoDiarioService procesoDiarioService;
-
-	@Autowired
-	LogProcesoDiarioRepository procesoDiarioRepository;
+	LogProcesoDiarioRepository logProcesoDiarioRepository;
 
 	@Autowired
 	IArchivosCargadosService archivosCargadosService;
@@ -65,7 +62,7 @@ public class CierreDiaDelegateImpl implements ICierreDiaDelegate {
 			parametroService.actualizarValorParametro(Parametros.FECHA_DIA_ACTUAL_PROCESO, nuevaFechaString);
 
 			// Se actualizan los registros para logProcesoDiario
-			List<LogProcesoDiarioDTO> listLogProcesoDiarioDto = procesoDiarioService
+			List<LogProcesoDiarioDTO> listLogProcesoDiarioDto = logProcesoDiarioService
 					.getLogsProcesosDiariosByFechaProceso(fechaActual);
 
 			List<LogProcesoDiario> listLogProcesoDiario = new ArrayList<>();
@@ -76,7 +73,7 @@ public class CierreDiaDelegateImpl implements ICierreDiaDelegate {
 				entity.setEstadoProceso(Dominios.ESTADO_PROCESO_DIA_PENDIENTE);
 				listLogProcesoDiario.add(LogProcesoDiarioDTO.CONVERTER_ENTITY.apply(entity));
 			});
-			procesoDiarioRepository.saveAll(listLogProcesoDiario);
+			logProcesoDiarioRepository.saveAll(listLogProcesoDiario);
 
 			List<ArchivosCargados> archivosCargados = archivosCargadosService.consultarArchivosPorFecha(fechaActual);
 			archivosCargados.forEach(archivoCargado -> {

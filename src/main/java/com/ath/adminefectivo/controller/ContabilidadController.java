@@ -1,8 +1,14 @@
 package com.ath.adminefectivo.controller;
 
+import java.io.ByteArrayInputStream;
+import java.util.Date;
 import java.util.List;
 
+import javax.validation.constraints.Pattern;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ath.adminefectivo.delegate.IContabilidadDelegate;
 import com.ath.adminefectivo.dto.compuestos.ContabilidadDTO;
 import com.ath.adminefectivo.dto.compuestos.ProcesoErroresContablesDTO;
+import com.ath.adminefectivo.dto.compuestos.RespuestaGenerarArchivoDTO;
 import com.ath.adminefectivo.dto.compuestos.ResultadoErroresContablesDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
@@ -88,6 +95,19 @@ public class ContabilidadController {
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
+	
+	@GetMapping(value = "${endpoints.Contabilidad.archivoCierre}")
+	public ResponseEntity<InputStreamResource> generarContabilidadCierre(@RequestParam(value = "fecha") Date fecha,
+			@RequestParam(value = "tipoContabilidad") @Pattern(regexp = "^(AM|PM)$", message = "El valor del parámetro tipoContabilidad debe ser AM o PM") String tipoContabilidad,
+			@RequestParam(value = "codBanco") int codBanco) {
 
+		RespuestaGenerarArchivoDTO archivoDTO = contabilidadDelegate.generarArchivo(tipoContabilidad, codBanco);
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Access-Control-Expose-Headers", "Content-Disposition");
+		headers.add("Content-Disposition", "attachment; filename=" + archivoDTO.getNombreArchivo());
+		ByteArrayInputStream bais = new ByteArrayInputStream(archivoDTO.getArchivoBytes().toByteArray());
+		return ResponseEntity.ok().headers(headers).body(new InputStreamResource(bais));
+				
+	}
 
 }
