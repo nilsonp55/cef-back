@@ -177,7 +177,14 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Procesamiento de un archivo dentro de una transaccion
+	 * @param idMaestroDefinicion
+	 * @param nombreArchivo
+	 * @param alcance
+	 * @param fechaActual
+	 * @param fechaAnteriorHabil
+	 * @param fechaAnteriorHabil2
+	 * @return
 	 */
 	@Override
 	@Transactional
