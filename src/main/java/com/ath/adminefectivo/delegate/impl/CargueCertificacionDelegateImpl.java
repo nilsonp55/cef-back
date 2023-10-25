@@ -7,8 +7,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -29,6 +27,7 @@ import com.ath.adminefectivo.entities.MaestroDefinicionArchivo;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.service.IArchivosCargadosService;
 import com.ath.adminefectivo.service.IBitacoraAutomaticosService;
+import com.ath.adminefectivo.service.ICargueCertificacionService;
 import com.ath.adminefectivo.service.IFestivosNacionalesService;
 import com.ath.adminefectivo.service.IFilesService;
 import com.ath.adminefectivo.service.ILecturaArchivoService;
@@ -76,6 +75,9 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	IValidacionArchivoService validacionArchivoService;
 
 	private ValidacionArchivoDTO validacionArchivo;
+	
+	@Autowired
+	ICargueCertificacionService cargueCertificacionService;
 
 	/**
 	 * {@inheritDoc}
@@ -133,7 +135,7 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 														 Date fechaActual, Date fechaAnteriorHabil, Date fechaAnteriorHabil2) {
 
 		try {
-			return this.procesarArchivo2(idMaestroDefinicion, nombreArchivo, alcance, fechaActual, fechaAnteriorHabil, fechaAnteriorHabil2);
+			return cargueCertificacionService.procesarArchivo2(idMaestroDefinicion, nombreArchivo, alcance, fechaActual, fechaAnteriorHabil, fechaAnteriorHabil2);
 		} catch (NegocioException | NullPointerException e) {
 			log.error("Error validando nombre o fecha de archivo: {} -error: {}", this.validacionArchivo.getNombreArchivo(), e);
 			this.validacionArchivo.setIdArchivo((long) 0);
@@ -157,42 +159,10 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 		Date fechaAnteriorHabil = festivosNacionalesService.consultarAnteriorHabil(fechaActual);
 		Date fechaAnteriorHabil2 = festivosNacionalesService.consultarAnteriorHabil(fechaAnteriorHabil);
 		boolean alcance = esProcesoDiarioCerrado();
-		return this.procesarArchivo2(idMaestroDefinicion, nombreArchivo, alcance, fechaActual, fechaAnteriorHabil, fechaAnteriorHabil2);
+		return cargueCertificacionService.procesarArchivo2(idMaestroDefinicion, nombreArchivo, alcance, fechaActual, fechaAnteriorHabil, fechaAnteriorHabil2);
 	}
 
-	/**
-	 * Procesamiento de un archivo dentro de una transaccion
-	 * @param idMaestroDefinicion
-	 * @param nombreArchivo
-	 * @param alcance
-	 * @param fechaActual
-	 * @param fechaAnteriorHabil
-	 * @param fechaAnteriorHabil2
-	 * @return
-	 */
-	@Transactional
-	public ValidacionArchivoDTO procesarArchivo2(String idMaestroDefinicion, String nombreArchivo, boolean alcance,
-												 Date fechaActual, Date fechaAnteriorHabil, Date fechaAnteriorHabil2) {
-
-		this.validacionesAchivoCargado(idMaestroDefinicion, nombreArchivo, alcance,fechaActual,fechaAnteriorHabil,fechaAnteriorHabil2);
-		if ( !Objects.equals(this.validacionArchivo.getEstadoValidacion(), Dominios.ESTADO_VALIDACION_FUTURO )) {
-			Long idArchivo = archivosCargadosService.persistirDetalleArchivoCargado(validacionArchivo, false, alcance);
-			this.validacionArchivo.setIdArchivo(idArchivo);
-			String urlDestino = (Objects.equals(this.validacionArchivo.getEstadoValidacion(),
-					Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO))
-					? parametrosService.valorParametro(Parametros.RUTA_ARCHIVOS_ERRADOS)
-					: parametrosService.valorParametro(Parametros.RUTA_ARCHIVOS_PROCESADOS);
-
-			this.filesService.moverArchivos(this.validacionArchivo.getUrl(),
-					this.validacionArchivo.getMaestroDefinicion().getUbicacion().concat(urlDestino),
-					this.validacionArchivo.getNombreArchivo(),idArchivo.toString());
-		}
-		else {
-			this.validacionArchivo.setIdArchivo((long) 0);
-		}
-		return ValidacionArchivoDTO.conversionRespuesta(this.validacionArchivo);
-	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
