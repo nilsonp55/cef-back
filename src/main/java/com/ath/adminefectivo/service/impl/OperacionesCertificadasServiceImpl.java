@@ -317,7 +317,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 			codigoServicio = SIN_CODIGO_SERVICIO;
 		}
 		procesarOperacionTransporte(fila, registro, elemento, codigoServicio, entradaSalida, 
-										codigoPunto + nombrePunto , tipoServicio);
+										codigoPunto + nombrePunto , tipoServicio, null);
 	}
 
 	/**
@@ -357,7 +357,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 	 */
 	private void procesarOperacionTransporte(String[] fila, RegistroTipo1ArchivosFondosDTO registro,
 			ArchivosCargados elemento, String codigoServicio, String entradaSalida, String codigoPropio,
-			String tipoServicio) {
+			String tipoServicio, String codigoOperacion) {
 
 		OperacionesCertificadas certificadas;
 		CodigoPuntoOrigenDestinoDTO codigoPuntoOrigenDestino;
@@ -397,11 +397,13 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 			operaciones.setUsuarioModificacion(USER1);
 			operaciones.setValorFaltante(0.0);
 			operaciones.setValorSobrante(0.0);
+			operaciones.setCodigoOperacion(codigoOperacion);
 			if ((elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_ITVCS))
 					|| (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IATCS))
 					|| (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IPRCS))) {
 				operaciones.setValorTotal(asignarValorTotal(fila, Constantes.INICIA_DENOMINACION_OTROS_FONDOS, longitud));
 				operaciones.setMoneda(Constantes.MONEDA_COP);
+				
 			} else {
 				operaciones.setValorTotal(asignarValorTotal(fila, Constantes.INICIA_DENOMINACION_BRINKS, longitud));
 				operaciones.setMoneda(asignarMoneda(fila, Constantes.TIPO_MONEDA_BRINKS));
@@ -944,11 +946,13 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 						Constantes.CAMPO_DETALLE_ARCHIVO_NOMBREPUNTO).trim();
 				String tipoServicio = determinarCampo(fila, detalleArchivo, Integer.parseInt(tipoRegistro),
 						Constantes.CAMPO_DETALLE_ARCHIVO_TIPOSERVICIOF);
+				String codigoOperacion = determinarCampo(fila, detalleArchivo, Integer.parseInt(tipoRegistro),
+						Constantes.CAMPO_DETALLE_ARCHIVO_CODIGOOPERACION);
 				if(Objects.isNull(codigoServicio) || codigoServicio.trim().isEmpty()) {
 					codigoServicio = SIN_CODIGO_SERVICIO;
 				}
 				procesarOperacionTransporte(fila, registro, elemento, codigoServicio, entradaSalida,
-									codigoPunto + nombrePunto, tipoServicio);
+									codigoPunto + nombrePunto, tipoServicio, codigoOperacion);
 				break;
 			}
                 case 5: {
