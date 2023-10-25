@@ -550,6 +550,11 @@ public final class Constantes {
 	 * Constante para indicar el TIPOSERVICIO en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
 	 */
 	public static final String CAMPO_DETALLE_ARCHIVO_TIPOSERVICIOF = "TIPOSERVICIO";
+	
+	/**
+	 * 	
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_CODIGOOPERACION = "CODIGOOPERACION";
 
 	/**
 	 * Constante para indicar el DESCRIPCIONNOVEDAD en el archivo de FONDOS NO BRINKS (PROG. DEFINTIVA)
