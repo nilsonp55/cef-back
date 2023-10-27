@@ -70,24 +70,34 @@ public class CargueCertificacionServiceImpl implements ICargueCertificacionServi
 
 	}
 
-	private void validacionesAchivoCargado(String idMaestroDefinicion, String nombreArchivo, boolean alcance,
+	/**
+	 * Metodo encargado de realizar la validaciones de un archivo cargado
+	 *
+	 * @param idMaestroDefinicion
+	 * @param nombreArchivo
+	 * @return void
+	 * @author cesar.castano
+	 * @author prv_nparra
+	 */
+	@Override
+	public void validacionesAchivoCargado(String idMaestroDefinicion, String nombreArchivo, boolean alcance,
 			Date fechaActual, Date fechaAnteriorHabil, Date fechaAnteriorHabil2) {
 		this.validacionArchivo = new ValidacionArchivoDTO();
-// Validaciones del archivo
+		// Validaciones del archivo
 		var maestroDefinicion = maestroDefinicionArchivoService.consultarDefinicionArchivoById(idMaestroDefinicion);
 		var urlPendinetes = parametrosService.valorParametro(Parametros.RUTA_ARCHIVOS_PENDIENTES);
 		var url = maestroDefinicion.getUbicacion().concat(urlPendinetes).concat(nombreArchivo);
 		validacionArchivoService.validarNombreArchivo(maestroDefinicion, nombreArchivo);
 		var dowloadFile = filesService.downloadFile(DownloadDTO.builder().url(url).build());
 
-// Validaciones de arcihvo	
+		// Validaciones de arcihvo	
 		String delimitador = lecturaArchivoService.obtenerDelimitadorArchivo(maestroDefinicion);
 		List<String[]> contenido = lecturaArchivoService.leerArchivo(dowloadFile.getFile(), delimitador,
 				maestroDefinicion);
 
 		this.validacionArchivo = ValidacionArchivoDTO.builder().nombreArchivo(nombreArchivo)
 				.descripcion(maestroDefinicion.getDescripcionArch()).maestroDefinicion(maestroDefinicion).url(url)
-				.numeroRegistros(obtenerBumeroRegistros(maestroDefinicion, contenido.size())).build();
+				.numeroRegistros(obtenerNumeroRegistros(maestroDefinicion, contenido.size())).build();
 
 		var fechaArchivo = validacionArchivoService.validarFechaArchivoBetween(nombreArchivo,
 				maestroDefinicion.getMascaraArch(), fechaActual, fechaAnteriorHabil);
@@ -107,7 +117,17 @@ public class CargueCertificacionServiceImpl implements ICargueCertificacionServi
 		}
 	}
 
-	private int obtenerBumeroRegistros(MaestrosDefinicionArchivoDTO maestroDefinicion, int cantidad) {
+	/**
+	 * Obtiene la cantidad de registros, verificando si tiene cabecera y control
+	 * final
+	 *
+	 * @param maestroDefinicion
+	 * @param cantidad
+	 * @return
+	 * @return int
+	 * @author cesar.castano
+	 */
+	private int obtenerNumeroRegistros(MaestrosDefinicionArchivoDTO maestroDefinicion, int cantidad) {
 		if (maestroDefinicion.isCabecera())
 			cantidad--;
 		if (maestroDefinicion.isControlFinal())
@@ -116,6 +136,15 @@ public class CargueCertificacionServiceImpl implements ICargueCertificacionServi
 		return cantidad;
 	}
 
+	/**
+	 * Valida si que el valor del contenido sea mayor al minimo paramtrizado
+	 *
+	 * @param maestroDefinicion
+	 * @param contenido
+	 * @return
+	 * @return boolean
+	 * @author cesar.castano
+	 */
 	private boolean validarCantidadRegistros(MaestrosDefinicionArchivoDTO maestroDefinicion, int contenido) {
 		var validacionCantidad = !maestroDefinicion.isCantidadMinima()
 				|| contenido >= maestroDefinicion.getNumeroCantidadMinima();
