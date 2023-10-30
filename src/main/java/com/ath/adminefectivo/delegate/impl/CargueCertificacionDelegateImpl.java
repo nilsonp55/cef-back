@@ -185,9 +185,9 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 		var archivos = filesService.obtenerContenidoCarpeta(url);
 		log.info("Archivos en directorio Pendientes: url:{} - cantidad:{}",urlPendinetes, archivos.size());
 		archivos.forEach(x -> {
+			log.debug("Nombre archivo: {}", x);
 			String nombreArchivo;
 			nombreArchivo = x.split("_")[0];
-			log.info("nombreArchivo: {}", nombreArchivo);
 			String inicialMascara = nombreArchivo.substring(0, 2);
 			MaestroDefinicionArchivo maestroDefinicion = maestroDefinicionArchivoService
 					.consultarInicialMascara(inicialMascara);
