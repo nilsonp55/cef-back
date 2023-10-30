@@ -187,7 +187,6 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 		archivos.forEach(x -> {
 			String nombreArchivo;
 			nombreArchivo = x.split("_")[0];
-			log.info("nombreArchivo: {}", nombreArchivo);
 			String inicialMascara = nombreArchivo.substring(0, 2);
 			MaestroDefinicionArchivo maestroDefinicion = maestroDefinicionArchivoService
 					.consultarInicialMascara(inicialMascara);
