@@ -126,4 +126,7 @@ public class OperacionesCertificadas {
 	
 	@Column(name = "MONEDA", length = 3)
 	private String moneda;
+	
+	@Column(name = "CODIGO_OPERACION", length = 20)
+	private String codigoOperacion;
 }

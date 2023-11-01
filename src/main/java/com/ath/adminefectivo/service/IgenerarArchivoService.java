@@ -12,7 +12,7 @@ import com.ath.adminefectivo.dto.compuestos.RespuestaGenerarArchivoDTO;
  */
 public interface IgenerarArchivoService {
 
-	RespuestaGenerarArchivoDTO generarArchivo(Date fecha,String tipoContabilidad,int codBanco );
+	RespuestaGenerarArchivoDTO generarArchivo(String tipoContabilidad,int codBanco );
 	
 	/**
 	 * Metodo encargado de realizar la extraccion y formación del archivo contable para Banco de Bogota

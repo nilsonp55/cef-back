@@ -96,7 +96,7 @@ public class PuntosDelegateImpl implements IPuntosDelegate{
 			if(createPuntosDTO.getTipoPunto().equals(Constantes.PUNTO_OFICINA)) {
 				Oficinas oficina = new Oficinas();
 				oficina.setCodigoOficina(createPuntosDTO.getCodigoOficina());
-				oficina.setBancoAval(createPuntosDTO.getBancoAVAL());
+				oficina.setBancoAVAL(createPuntosDTO.getBancoAVAL());
 				oficina.setFajado(createPuntosDTO.getFajado());
 				oficina.setRefagillado(createPuntosDTO.getRefagillado());
 				oficina.setTarifaRuteo(createPuntosDTO.getTarifaRuteo());
@@ -140,7 +140,7 @@ public class PuntosDelegateImpl implements IPuntosDelegate{
 					
 			if(punto.getTipoPunto().equals(Constantes.PUNTO_OFICINA)) {
 				punto.getOficinas().setCodigoOficina(createPuntosDTO.getCodigoOficina());
-				punto.getOficinas().setBancoAval(createPuntosDTO.getBancoAVAL());
+				punto.getOficinas().setBancoAVAL(createPuntosDTO.getBancoAVAL());
 				punto.getOficinas().setFajado(createPuntosDTO.getFajado());
 				punto.getOficinas().setRefagillado(createPuntosDTO.getRefagillado());
 				punto.getOficinas().setTarifaRuteo(createPuntosDTO.getTarifaRuteo());
