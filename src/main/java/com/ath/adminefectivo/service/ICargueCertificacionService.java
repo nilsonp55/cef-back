@@ -18,7 +18,7 @@ public interface ICargueCertificacionService {
 	 * @author cesar.castano
 	 * @author prv_nparra
 	 */
-	void validacionesAchivoCargado(String idMaestroDefinicion, String nombreArchivo, boolean alcance,
+	ValidacionArchivoDTO validacionesAchivoCargado(String idMaestroDefinicion, String nombreArchivo, boolean alcance,
 			Date fechaActual, Date fechaAnteriorHabil, Date fechaAnteriorHabil2);
 
 }
