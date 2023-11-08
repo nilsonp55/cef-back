@@ -114,7 +114,7 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 		Date fechaActual = parametrosService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
 		Date fechaAnteriorHabil = festivosNacionalesService.consultarAnteriorHabil(fechaActual);
 		Date fechaAnteriorHabil2 = festivosNacionalesService.consultarAnteriorHabil(fechaAnteriorHabil);
-		cargueCertificacionService.validacionesAchivoCargado(idMaestroDefinicion, nombreArchivo, alcance,fechaActual,fechaAnteriorHabil,fechaAnteriorHabil2);
+		this.validacionArchivo = cargueCertificacionService.validacionesAchivoCargado(idMaestroDefinicion, nombreArchivo, alcance,fechaActual,fechaAnteriorHabil,fechaAnteriorHabil2);
 		return ValidacionArchivoDTO.conversionRespuesta(this.validacionArchivo);
 	}
 
