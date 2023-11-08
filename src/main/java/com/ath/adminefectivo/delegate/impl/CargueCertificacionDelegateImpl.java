@@ -109,7 +109,7 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	 */
 	@Override
 	public ValidacionArchivoDTO validarArchivo(String idMaestroDefinicion, String nombreArchivo) {
-
+		log.info("archivo: {}", nombreArchivo);
 		boolean alcance = esProcesoDiarioCerrado();
 		Date fechaActual = parametrosService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
 		Date fechaAnteriorHabil = festivosNacionalesService.consultarAnteriorHabil(fechaActual);
