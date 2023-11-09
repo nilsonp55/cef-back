@@ -80,7 +80,7 @@ public class CargueCertificacionServiceImpl implements ICargueCertificacionServi
 	 * @author prv_nparra
 	 */
 	@Override
-	public void validacionesAchivoCargado(String idMaestroDefinicion, String nombreArchivo, boolean alcance,
+	public ValidacionArchivoDTO validacionesAchivoCargado(String idMaestroDefinicion, String nombreArchivo, boolean alcance,
 			Date fechaActual, Date fechaAnteriorHabil, Date fechaAnteriorHabil2) {
 		this.validacionArchivo = new ValidacionArchivoDTO();
 		// Validaciones del archivo
@@ -115,6 +115,7 @@ public class CargueCertificacionServiceImpl implements ICargueCertificacionServi
 			this.validacionArchivo.setEstadoValidacion(Dominios.ESTADO_VALIDACION_FUTURO);
 			this.validacionArchivo.setDescripcionErrorEstructura("Archivo con fecha futura, no se procesa");
 		}
+		return this.validacionArchivo;
 	}
 
 	/**
