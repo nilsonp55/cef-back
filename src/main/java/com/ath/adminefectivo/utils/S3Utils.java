@@ -118,6 +118,7 @@ public class S3Utils {
           .map(s3Object -> list2.add(s3Object.getKey().replace(path, "")));
 
     } while (nextContinuationToken != null);
+    log.info("size list objectsFromS3: {}", list2.size());
     return list2;
   }
 
