@@ -1,6 +1,7 @@
 package com.ath.adminefectivo.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.dto.PuntosDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.Bancos;
@@ -317,6 +319,20 @@ public class PuntosServiceImpl implements IPuntosService {
           ApiResponseCode.ERROR_TIPO_PUNTO_DIFERENTE.getHttpStatus());
     }
     return punto;
+  }
+
+  @Override
+  public HashMap<Integer, String> getPuntosTipoOficina() {
+    HashMap<Integer, String> mapaPuntosTipoOficina = new HashMap<>();
+    puntosRepository.findByTipoPunto(Constantes.PUNTO_OFICINA).stream()
+        .map(punto -> mapaPuntosTipoOficina.put(punto.getCodigoPunto(), punto.getNombrePunto()));
+    return mapaPuntosTipoOficina;
+  }
+
+  public HashMap<Integer, Puntos> getAllPuntos() {
+    HashMap<Integer, Puntos> mapaPuntos = new HashMap<>();
+    puntosRepository.findAll().stream().map(p -> mapaPuntos.put(p.getCodigoPunto(), p));
+    return mapaPuntos;
   }
 
 }
