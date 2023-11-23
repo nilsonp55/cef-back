@@ -1,8 +1,10 @@
 package com.ath.adminefectivo.service.impl;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -89,6 +91,8 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
   private String estadoConciliacionFueraDeConciliacion;
   private String estadoConciliacionPospuesta;
   private String tipoConciliacionAutomatica;
+  private HashMap<Integer, String> puntosTipoOficina;
+  private HashMap<Integer, Puntos> puntosAll;
 
   public ConciliacionOperacionesServiceImpl(IDominioService dominioService) {
     super();
@@ -108,6 +112,8 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
         Constantes.DOMINIO_ESTADO_CONCILIACION, Dominios.ESTADO_CONCILIACION_POSPUESTA);
     tipoConciliacionAutomatica = dominioService.valorTextoDominio(
         Constantes.DOMINIO_TIPOS_CONCILIACION, Dominios.TIPO_CONCILIACION_AUTOMATICA);
+    this.puntosTipoOficina = new HashMap<>();
+    this.puntosAll = new HashMap<>();
   }
 
   /**
@@ -145,6 +151,9 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
           ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getHttpStatus());
     }
     log.debug("Operaciones programadas registros: {}", archivos.getSize());
+
+    this.puntosTipoOficina = puntosService.getPuntosTipoOficina();
+    this.puntosAll = puntosService.getAllPuntos();
     return consultarProgramasNoConciliadas(archivos, page);
   }
 
@@ -167,7 +176,24 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
         ciudadService.getCiudadPorCodigoDane(puntoOrigen.getCodigoCiudad()).getNombreCiudad());
     programadaNoConciliadaNombre.setNombreCiudadDestino(
         ciudadService.getCiudadPorCodigoDane(puntoDestino.getCodigoCiudad()).getNombreCiudad());
+
     programadaNoConciliadaNombre.setOficina("");
+    // TipoPuntoOrigen es OFICINA
+    if (programadaNoConciliadaNombre.getTipoPuntoOrigen().equals(Constantes.PUNTO_OFICINA)) {
+      // Es Entrada, se toma codigoPuntoOrigen
+      if (programadaNoConciliadaNombre.getEntradaSalida().equals(Constantes.VALOR_ENTRADA)) {
+        programadaNoConciliadaNombre.setOficina(Optional
+            .of(this.puntosTipoOficina.get(programadaNoConciliadaNombre.getCodigoPuntoOrigen()))
+            .orElse(""));
+      }
+      // es Salida, se toma codigoPuntoDestino
+      if (programadaNoConciliadaNombre.getEntradaSalida().equals(Constantes.VALOR_SALIDA)) {
+        programadaNoConciliadaNombre.setOficina(Optional
+            .of(this.puntosTipoOficina.get(programadaNoConciliadaNombre.getCodigoPuntoDestino()))
+            .orElse(""));
+      }
+    }
+
     return programadaNoConciliadaNombre;
   }
 
