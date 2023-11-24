@@ -90,8 +90,6 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
   private String estadoConciliacionFueraDeConciliacion;
   private String estadoConciliacionPospuesta;
   private String tipoConciliacionAutomatica;
-  // private HashMap<Integer, String> puntosTipoOficina;
-  // private HashMap<Integer, Puntos> puntosAll;
 
   public ConciliacionOperacionesServiceImpl(IDominioService dominioService) {
     super();
@@ -111,8 +109,6 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
         Constantes.DOMINIO_ESTADO_CONCILIACION, Dominios.ESTADO_CONCILIACION_POSPUESTA);
     tipoConciliacionAutomatica = dominioService.valorTextoDominio(
         Constantes.DOMINIO_TIPOS_CONCILIACION, Dominios.TIPO_CONCILIACION_AUTOMATICA);
-    // this.puntosTipoOficina = new HashMap<>();
-    // this.puntosAll = new HashMap<>();
   }
 
   /**
@@ -151,8 +147,6 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
     }
     log.debug("Operaciones programadas registros: {}", archivos.getSize());
 
-    // this.puntosTipoOficina = puntosService.getPuntosTipoOficina();
-    // this.puntosAll = puntosService.getAllPuntos();
     return consultarProgramasNoConciliadas(archivos, page);
   }
 
@@ -221,15 +215,24 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
         .getPuntoById(certificadasNoConciliadaNombre.getCodigoFondoTDV()).getNombrePunto();
     certificadasNoConciliadaNombre.setNombreFondoTDV(nombreFondoTdv);
 
+    Puntos puntoOrigen =
+        puntosService.getPuntoById(certificadasNoConciliadaNombre.getCodigoPuntoOrigen());
+    certificadasNoConciliadaNombre.setNombrePuntoOrigen(puntoOrigen.getNombrePunto());
 
-    String nombrePuntoOrigen = puntosService
-        .getPuntoById(certificadasNoConciliadaNombre.getCodigoPuntoOrigen()).getNombrePunto();
-    certificadasNoConciliadaNombre.setNombrePuntoOrigen(nombrePuntoOrigen);
+    Puntos puntoDestino =
+        puntosService.getPuntoById(certificadasNoConciliadaNombre.getCodigoPuntoDestino());
+    certificadasNoConciliadaNombre.setNombrePuntoDestino(puntoDestino.getNombrePunto());
 
-    String nombrePuntoDestino = puntosService
-        .getPuntoById(certificadasNoConciliadaNombre.getCodigoPuntoDestino()).getNombrePunto();
-    certificadasNoConciliadaNombre.setNombrePuntoDestino(nombrePuntoDestino);
-
+    if (certificadasNoConciliadaNombre.getTipoPuntoOrigen().equals(Constantes.PUNTO_OFICINA)) {
+      if (certificadasNoConciliadaNombre.getEntradaSalida().equals(Constantes.VALOR_ENTRADA)) {
+        certificadasNoConciliadaNombre
+            .setOficina(puntoOrigen.getOficinas().getCodigoOficina().toString());
+      }
+      if (certificadasNoConciliadaNombre.getEntradaSalida().equals(Constantes.VALOR_SALIDA)) {
+        certificadasNoConciliadaNombre
+            .setOficina(puntoDestino.getOficinas().getCodigoOficina().toString());
+      }
+    }
     return certificadasNoConciliadaNombre;
   }
 
@@ -431,16 +434,11 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
   private Page<CertificadasNoConciliadasDTO> consultarCertificadasNoConciliadas(
       Page<OperacionesCertificadas> operacionesCertificadas, Pageable page) {
 
-    operacionesCertificadas.forEach(entity -> {
-      var certificadasNoConciliadas = CertificadasNoConciliadasDTO.CONVERTER_DTO.apply(entity);
-      entity.setEntradaSalida(certificadasNoConciliadas.getEntradaSalida());
-      this.obtenerNombresCertificadasNoConciliadas(entity);
-    });
-    return new PageImpl<>(
-        operacionesCertificadas.getContent().stream()
-            .map(CertificadasNoConciliadasDTO.CONVERTER_DTO)
-            .collect(Collectors.<CertificadasNoConciliadasDTO>toList()),
-        page, operacionesCertificadas.getTotalElements());
+    return new PageImpl<>(operacionesCertificadas.getContent().stream().map(entity -> {
+      return CertificadasNoConciliadasDTO.CONVERTER_DTO
+          .apply(this.obtenerNombresCertificadasNoConciliadas(entity));
+    }).collect(Collectors.<CertificadasNoConciliadasDTO>toList()), page,
+        operacionesCertificadas.getTotalElements());
   }
 
   /**
