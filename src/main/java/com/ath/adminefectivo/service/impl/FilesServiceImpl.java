@@ -134,7 +134,7 @@ public class FilesServiceImpl implements IFilesService {
 
     List<String> contenidoCarpeta;
     if (Boolean.TRUE.equals(s3Bucket)) {
-      contenidoCarpeta = s3Util.getObjectsFromPathS3V2(url);
+      contenidoCarpeta = s3Util.getObjectsFromPathS3(url);
     } else {
       File carpeta = new File(url);
       contenidoCarpeta = Arrays.asList(carpeta.list());
