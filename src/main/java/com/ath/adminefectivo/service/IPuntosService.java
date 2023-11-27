@@ -1,5 +1,6 @@
 package com.ath.adminefectivo.service;
 
+import java.util.HashMap;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -174,5 +175,21 @@ public interface IPuntosService {
    * @author rafael.parra
    */
   Puntos validarPuntoActualizar(Integer codigoPunto, String tipoPunto);
+
+  /*
+   * Generar un estructura de mapa con los regitros de la tabla punto, de puntos tipo oficina.
+   * 
+   * @return Retorna un map <IdPunto, NombrePunto> de puntos
+   * 
+   * @author prv_nparra
+   */
+  HashMap<Integer, String> getPuntosTipoOficina();
+
+  /**
+   * 
+   * @return
+   * @author prv_nparra
+   */
+  HashMap<Integer, Puntos> getAllPuntos();
 
 }
