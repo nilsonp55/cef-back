@@ -130,6 +130,9 @@ public class OperacionesCertificadas {
   @Column(name = "CODIGO_OPERACION", length = 20)
   private String codigoOperacion;
 
+  @Column(name = "CONSECUTIVO_REGISTRO")
+  private Long consecutivoRegistro;
+  
   @Transient
   private String oficina;
 }
