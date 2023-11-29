@@ -83,19 +83,25 @@ public class ParametrosLiquidacionCostoDTO {
 	
 	private String nombreTdv;
 	
-	private String nombrePuntoOrigen;
+	private String nombreFondo;
 	
-	private String nombrePuntoDestino;
+	private String nombrePunto;
 	
-	private String nombreCiudadPuntoOrigen;
+	private String nombreCiudadPunto;
 	
-	private String nombreCiudadPuntoDestino;
+	private Integer codigoOficina;
 	
 	private Date fechaConcilia;
 	
 	private String codigoPropioTdv;
 	
 	private String nombreCliente;
+	
+	private Double totalLiquidado;
+	
+	private String moneda;
+	
+	private Double valorMoneda; 
 	
 	/**
 	 * Funcion que convierte el archivo ParametrosLiquidacionCostoDTO a Entity ParametrosLiquidacionCosto
