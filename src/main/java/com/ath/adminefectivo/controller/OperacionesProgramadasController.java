@@ -35,7 +35,7 @@ public class OperacionesProgramadasController {
 	 */
 	@GetMapping(value = "${endpoints.OperacionesProgramadas.procesar}")
 	public ResponseEntity<ApiResponseADE<String>> generarOperacionesProgramadas(
-									@RequestParam("agrupador") String agrupador) {
+									@RequestParam String agrupador) {
 		var resultadoOperacionProgramadas = operacionesProgramadasDelegate.generarOperacionesProgramadas(agrupador);
 		
 		return ResponseEntity.status(HttpStatus.OK)
@@ -53,7 +53,7 @@ public class OperacionesProgramadasController {
 	 */
 	@GetMapping(value = "${endpoints.OperacionesProgramadas.reabrir}")
 	public ResponseEntity<ApiResponseADE<String>> reabrirCierrePorAgrupador(
-									@RequestParam("agrupador") String agrupador) {
+									@RequestParam String agrupador) {
 		var resultadoProcedimientoReabrir = operacionesProgramadasDelegate.reabrirCierrePorAgrupador(agrupador);
 		
 		return ResponseEntity.status(HttpStatus.OK)

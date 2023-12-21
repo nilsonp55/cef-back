@@ -45,7 +45,7 @@ public class DominioFuncionalController {
 	 */
 	@GetMapping(value = "${endpoints.DominioFuncional.consultar}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<List<String>>> obtenerDominioMaestroById(
-			@RequestParam("dominio") String dominio) {
+			@RequestParam String dominio) {
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<List<String>>(dominioService.consultaListValoresPorDominio(dominio),
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
@@ -108,7 +108,7 @@ public class DominioFuncionalController {
 	 * @author Bayron Andres Perez Muñoz
 	 */
 	@DeleteMapping(value = "${endpoints.DominioFuncional.eliminar}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponseADE<Boolean>> eliminarDominioIdentificador(@RequestParam("dominio") String dominio, @RequestParam("codigo") String codigo) {
+	public ResponseEntity<ApiResponseADE<Boolean>> eliminarDominioIdentificador(@RequestParam String dominio, @RequestParam String codigo) {
 
 		var dominioEliminado = dominioService.eliminarDominio(new DominioPK(dominio, codigo));
 		return ResponseEntity.status(HttpStatus.OK).body(

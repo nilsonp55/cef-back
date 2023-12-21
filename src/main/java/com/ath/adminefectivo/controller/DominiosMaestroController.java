@@ -45,7 +45,7 @@ public class DominiosMaestroController {
 	 */
 	@GetMapping(value = "${endpoints.DominiosMaestro.obtener-todos}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<List<DominioMaestroDto>>> obtenerDominiosMaestro(
-			@RequestParam("estado") String estado) {
+			@RequestParam String estado) {
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<List<DominioMaestroDto>>(dominioMaestroService.obtenerDominiosMaestro(estado),
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
@@ -69,7 +69,7 @@ public class DominiosMaestroController {
 	 */
 	@GetMapping(value = "${endpoints.DominiosMaestro.obtener-unico}/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<DominioMaestroDto>> obtenerDominioMaestroById(
-			@PathVariable("id") String id) {
+			@PathVariable String id) {
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<DominioMaestroDto>(dominioMaestroService.obtenerDominioMaestroById(id),
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
@@ -117,7 +117,7 @@ public class DominiosMaestroController {
 	 * @author Bayron Andres Perez Muñoz
 	 */
 	@DeleteMapping(value = "${endpoints.DominiosMaestro.eliminar}/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponseADE<Boolean>> eliminarDominioMaestro(@PathVariable("id") String id) {
+	public ResponseEntity<ApiResponseADE<Boolean>> eliminarDominioMaestro(@PathVariable String id) {
 
 		var dominioEliminado = dominioMaestroService.eliminarDominioMaestro(id);
 		return ResponseEntity.status(HttpStatus.OK).body(

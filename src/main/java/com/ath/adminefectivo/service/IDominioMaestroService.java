@@ -22,7 +22,7 @@ public interface IDominioMaestroService {
 	 * @return DominioDTO
 	 * @author Bayron Andres Perez Muñoz
 	 */
-	List<DominioMaestroDto> obtenerDominiosMaestro(@RequestParam("estado") String estado);
+	List<DominioMaestroDto> obtenerDominiosMaestro(@RequestParam String estado);
 
 	List<DominioMaestroDto> obtenerTodosDominiosMaestro();
 	
@@ -33,7 +33,7 @@ public interface IDominioMaestroService {
 	 * @return DominioDTO
 	 * @author Bayron Andres Perez Muñoz
 	 */
-	DominioMaestroDto obtenerDominioMaestroById(@PathVariable("id") String id);
+	DominioMaestroDto obtenerDominioMaestroById(@PathVariable String id);
 	
 	/**
 	 * Persiste un dominio en la base de datos
@@ -60,6 +60,6 @@ public interface IDominioMaestroService {
 	 * @return DominioDTO
 	 * @author Bayron Andres Perez Muñoz
 	 */
-	Boolean eliminarDominioMaestro(@RequestParam("id") String id);
+	Boolean eliminarDominioMaestro(@RequestParam String id);
 	
 }

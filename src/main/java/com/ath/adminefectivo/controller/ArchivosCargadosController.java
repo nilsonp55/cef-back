@@ -102,9 +102,9 @@ public class ArchivosCargadosController {
 	 */
 	@GetMapping(value = "${endpoints.ArchivosCargados.consultarPorAgrupador}")
 	public ResponseEntity<ApiResponseADE<Page<ArchivosCargadosDTO>>> getAllbyAgrupador(
-			@RequestParam("agrupador") String agrupador,
-			@RequestParam("page") int page,
-			@RequestParam("size") int size) {
+			@RequestParam String agrupador,
+			@RequestParam int page,
+			@RequestParam int size) {
 
 		Pageable pr = PageRequest.of(page, size);
 		Page<ArchivosCargadosDTO> consulta = archivosCargadosDelegate.getAllByAgrupador(agrupador, pr);
