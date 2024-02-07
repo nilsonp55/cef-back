@@ -166,6 +166,7 @@ public class PuntosServiceImpl implements IPuntosService {
     }
 
     banco.setCodigoPunto(punto.getCodigoPunto());
+    banco.setPuntos(punto);
     bancosRepository.save(banco);
 
     return punto;
@@ -329,6 +330,7 @@ public class PuntosServiceImpl implements IPuntosService {
     return mapaPuntosTipoOficina;
   }
 
+  @Override
   public HashMap<Integer, Puntos> getAllPuntos() {
     HashMap<Integer, Puntos> mapaPuntos = new HashMap<>();
     puntosRepository.findAll().stream().map(p -> mapaPuntos.put(p.getCodigoPunto(), p));
