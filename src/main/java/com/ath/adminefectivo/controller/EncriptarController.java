@@ -36,7 +36,7 @@ public class EncriptarController {
 	 * @author duvan.naranjo
 	 */
 	@PostMapping(value = "${endpoints.Encriptar.encriptar}")
-	public ResponseEntity<ApiResponseADE<String>> encriptarArchivo(@RequestParam(name = "path") String path, @RequestParam(name = "nombreArchivo") String nombreArchivo) {
+	public ResponseEntity<ApiResponseADE<String>> encriptarArchivo(@RequestParam String path, @RequestParam String nombreArchivo) {
 		String consulta = encriptarService.encriptarArchivo(path, nombreArchivo);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
@@ -44,7 +44,7 @@ public class EncriptarController {
 	}
 	
 	@PostMapping(value = "${endpoints.Encriptar.desencriptar}")
-	public ResponseEntity<ApiResponseADE<String>> desencriptarArchivo(@RequestParam(name = "path") String path, @RequestParam(name = "nombreArchivo") String nombreArchivo) {
+	public ResponseEntity<ApiResponseADE<String>> desencriptarArchivo(@RequestParam String path, @RequestParam String nombreArchivo) {
 		String consulta = encriptarService.desencriptarArchivo(path, nombreArchivo);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())

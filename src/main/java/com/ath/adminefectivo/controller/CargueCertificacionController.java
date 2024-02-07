@@ -63,7 +63,7 @@ public class CargueCertificacionController {
 	 * @author cesar.castano
 	 */
 	@DeleteMapping(value = "${endpoints.CargueCertificacion.eliminar}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponseADE<Boolean>> eliminarArchivo(@RequestParam("nombreArchivo") String nombreArchivo, @RequestParam("idModeloArchivo") String idMaestroArchivo) {
+	public ResponseEntity<ApiResponseADE<Boolean>> eliminarArchivo(@RequestParam String nombreArchivo, @RequestParam("idModeloArchivo") String idMaestroArchivo) {
 
 		var archivoPersistido = cargueCertificacionDelegate.eliminarArchivo(nombreArchivo, idMaestroArchivo);
 		return ResponseEntity.status(HttpStatus.OK).body(
@@ -81,8 +81,8 @@ public class CargueCertificacionController {
 	 */
 	@GetMapping(value = "${endpoints.CargueCertificacion.validar}")
 	public ResponseEntity<ApiResponseADE<ValidacionArchivoDTO>> validarArchivo(
-			@RequestParam("idMaestroDefinicion") String idMaestroDefinicion,
-			@RequestParam("nombreArchivo") String nombreArchivo) {
+			@RequestParam String idMaestroDefinicion,
+			@RequestParam String nombreArchivo) {
 
 		var respuesta = cargueCertificacionDelegate.validarArchivo(idMaestroDefinicion, nombreArchivo);
 
@@ -101,8 +101,8 @@ public class CargueCertificacionController {
 	 */
 	@GetMapping(value = "${endpoints.CargueCertificacion.procesar}")
 	public ResponseEntity<ApiResponseADE<ValidacionArchivoDTO>> procesarArchivo(
-			@RequestParam("idMaestroDefinicion") String idMaestroDefinicion,
-			@RequestParam("nombreArchivo") String nombreArchivo) {
+			@RequestParam String idMaestroDefinicion,
+			@RequestParam String nombreArchivo) {
 
 		var respuesta = cargueCertificacionDelegate.procesarArchivo(idMaestroDefinicion, nombreArchivo);
 
@@ -119,7 +119,7 @@ public class CargueCertificacionController {
 	 */
 	@GetMapping(value = "${endpoints.CargueCertificacion.detalle}")
 	public ResponseEntity<ApiResponseADE<ValidacionArchivoDTO>> consultarDetalleArchivo(
-			@RequestParam("idArchivoCargado") Long idArchivoCargado) {
+			@RequestParam Long idArchivoCargado) {
 		
 		var respuesta = cargueCertificacionDelegate.consultarDetalleArchivo(idArchivoCargado);
 
@@ -137,7 +137,7 @@ public class CargueCertificacionController {
 	 */
 	@GetMapping(value = "${endpoints.Archivos.consultar}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<List<ArchivosCargadosDTO>>> consultarArchivosCargaCertificacion(
-					@RequestParam("estado") String estado, 
+					@RequestParam String estado, 
 					@RequestParam("idMaestroDefinicion") String agrupador) {
 		log.info("Estado: {}, MaestroDefinicion: {}", estado, agrupador);
 		return ResponseEntity.status(HttpStatus.OK)
