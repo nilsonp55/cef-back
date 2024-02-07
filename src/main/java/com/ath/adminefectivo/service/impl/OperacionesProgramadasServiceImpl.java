@@ -508,8 +508,8 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
     OperacionesProgramadasDTO operacionesProgramadasDTO = null;
     PuntosDTO puntoFondoOrigen = this.consultarPuntoPorDetalle(contenido, detalleArchivo,
         Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN);
-    PuntosDTO puntoBancoDestino = this.consultarPuntoBanRepPorDetalle(contenido, detalleArchivo,
-        Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO);
+    PuntosDTO puntoBancoDestino = Optional.of(this.consultarPuntoBanRepPorDetalle(contenido,
+        detalleArchivo, Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO)).orElse(new PuntosDTO());
 
     if (!puntoFondoOrigen.getTipoPunto().toUpperCase().trim().equals(Constantes.PUNTO_FONDO)) {
       throw new NegocioException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
@@ -1178,7 +1178,8 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
     if (tipoOperacion.toUpperCase().trim().contains(Dominios.TIPO_OPERA_INTERCAMBIO)) {
       return dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_OPERACION,
           Dominios.TIPO_OPERA_INTERCAMBIO);
-    } else if (tipoOperacion.toUpperCase().trim().contains(Dominios.TIPO_OPERA_TRASLADO)) {
+    }
+    if (tipoOperacion.toUpperCase().trim().contains(Dominios.TIPO_OPERA_TRASLADO)) {
       return dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_OPERACION,
           Dominios.TIPO_OPERA_TRASLADO);
     }
