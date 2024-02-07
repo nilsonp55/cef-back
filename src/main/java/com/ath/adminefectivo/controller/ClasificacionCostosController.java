@@ -37,7 +37,7 @@ public class ClasificacionCostosController {
 	 * @author duvan.naranjo
 	 */
 	@GetMapping(value = "${endpoints.ClasificacionMensual.consultar}")
-	public ResponseEntity<ApiResponseADE<List<CostosMensualesClasificacionDTO>>> getClasificacionMensualPorBanco(@RequestParam("transportadora") String transportadora) {
+	public ResponseEntity<ApiResponseADE<List<CostosMensualesClasificacionDTO>>> getClasificacionMensualPorBanco(@RequestParam String transportadora) {
 		List<CostosMensualesClasificacionDTO> consulta = clasificacionCostosDelegate.getClasificacionMensualCostos(transportadora);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())

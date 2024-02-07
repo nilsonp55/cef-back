@@ -62,7 +62,7 @@ public class CargueDefinitivoController {
 	 * @author CamiloBenavides
 	 */
 	@DeleteMapping(value = "${endpoints.CargueDefinitivo.eliminar}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponseADE<Boolean>> eliminarArchivo(@RequestParam("nombreArchivo") String nombreArchivo, @RequestParam("idModeloArchivo") String idMaestroArchivo) {
+	public ResponseEntity<ApiResponseADE<Boolean>> eliminarArchivo(@RequestParam String nombreArchivo, @RequestParam("idModeloArchivo") String idMaestroArchivo) {
 
 		var archivoPersistido = cargueDefinitivoDelegate.eliminarArchivo(nombreArchivo, idMaestroArchivo);
 		return ResponseEntity.status(HttpStatus.OK).body(
@@ -81,8 +81,8 @@ public class CargueDefinitivoController {
 	 */
 	@GetMapping(value = "${endpoints.CargueDefinitivo.validar}")
 	public ResponseEntity<ApiResponseADE<ValidacionArchivoDTO>> validarArchivo(
-			@RequestParam("idMaestroDefinicion") String idMaestroDefinicion,
-			@RequestParam("nombreArchivo") String nombreArchivo) {
+			@RequestParam String idMaestroDefinicion,
+			@RequestParam String nombreArchivo) {
 
 		var respuesta = cargueDefinitivoDelegate.validarArchivo(idMaestroDefinicion, nombreArchivo);
 
@@ -102,8 +102,8 @@ public class CargueDefinitivoController {
 	 */
 	@GetMapping(value = "${endpoints.CargueDefinitivo.procesar}")
 	public ResponseEntity<ApiResponseADE<ValidacionArchivoDTO>> procesarArchivo(
-			@RequestParam("idMaestroDefinicion") String idMaestroDefinicion,
-			@RequestParam("nombreArchivo") String nombreArchivo) {
+			@RequestParam String idMaestroDefinicion,
+			@RequestParam String nombreArchivo) {
 
 		var respuesta = cargueDefinitivoDelegate.procesarArchivo(idMaestroDefinicion, nombreArchivo);
 
@@ -121,7 +121,7 @@ public class CargueDefinitivoController {
 	 */
 	@GetMapping(value = "${endpoints.CarguePreliminar.detalle}")
 	public ResponseEntity<ApiResponseADE<ValidacionArchivoDTO>> consultarDetalleArchivo(
-			@RequestParam("idArchivoCargado") Long idArchivoCargado) {
+			@RequestParam Long idArchivoCargado) {
 		var respuesta = cargueDefinitivoDelegate.consultarDetalleArchivo(idArchivoCargado);
 
 		return ResponseEntity.status(HttpStatus.OK)
@@ -139,7 +139,7 @@ public class CargueDefinitivoController {
 	 */
 	@GetMapping(value = "${endpoints.Archivos.consultar}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<List<ArchivosCargadosDTO>>> consultarArchivosCargaDefinitiva(
-			@RequestParam("estado") String estado, @RequestParam("idModeloArchivo") String agrupador) {
+			@RequestParam String estado, @RequestParam("idModeloArchivo") String agrupador) {
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<List<ArchivosCargadosDTO>>(cargueDefinitivoDelegate.consultarArchivos(estado, agrupador),
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())

@@ -45,8 +45,8 @@ public class CostosFleteCharterController {
 	 */
 	@GetMapping(value = "${endpoints.CostosFleteCharter.consultar}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<List<ParametrosLiquidacionCostoDTO>>> consultarCostosFleteCharter(
-					@RequestParam("fechaInicial") Date fechaInicial, 
-					@RequestParam("fechaFinal") Date fechaFinal) {
+					@RequestParam Date fechaInicial, 
+					@RequestParam Date fechaFinal) {
 		log.debug("fechaInicial "+fechaInicial);
 		log.debug("fechaFinal "+fechaFinal);
 		return ResponseEntity.status(HttpStatus.OK)
