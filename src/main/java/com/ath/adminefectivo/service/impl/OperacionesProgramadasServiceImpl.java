@@ -1264,7 +1264,6 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
     String shipIn = determinarShipIn(contenido, detalleArchivo);
     String shipOut = determinarShipOut(contenido, detalleArchivo);
     operaciones = new OperacionesProgramadasDTO();
-    String entraSale = S_SALIDA;
 
     if (Objects.isNull(shipIn) || shipIn.trim().equals("")) {
       shipIn = "0";
@@ -1276,15 +1275,12 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
     Long valorSale = Long.parseLong(shipOut);
 
     if (valorEntra > 0) {
-      entraSale = S_ENTRADA;
-
-      crearSumarRegistroOficina(orderId, archivo.getIdArchivo().intValue(), entraSale, valorEntra,
+      crearSumarRegistroOficina(orderId, archivo.getIdArchivo().intValue(), S_ENTRADA, valorEntra,
           contenido, detalleArchivo);
     }
 
     if (valorSale > 0) {
-      entraSale = S_SALIDA;
-      crearSumarRegistroOficina(orderId, archivo.getIdArchivo().intValue(), entraSale, valorSale,
+      crearSumarRegistroOficina(orderId, archivo.getIdArchivo().intValue(), S_SALIDA, valorSale,
           contenido, detalleArchivo);
     }
     return operaciones;
