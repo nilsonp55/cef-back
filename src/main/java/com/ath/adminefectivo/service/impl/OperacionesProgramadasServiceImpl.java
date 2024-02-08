@@ -638,8 +638,6 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
   private OperacionesProgramadasDTO generarOperacionVenta(String[] contenido,
       List<DetallesDefinicionArchivoDTO> detalleArchivo, ArchivosCargadosDTO archivo) {
 
-    boolean esEntrada = false;
-
     OperacionesProgramadasDTO operacionesProgramadasDTO = null;
 
     PuntosDTO puntoFondoOrigen = Optional.of(this.consultarPuntoPorDetalle(contenido,
@@ -647,8 +645,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
     PuntosDTO bancoOrigen = new PuntosDTO();
     PuntosDTO bancoDestino = null;
     var operacionProgramadaEnt = new OperacionesProgramadas();
-    if (Objects.isNull(puntoFondoOrigen)) {
-      esEntrada = true;
+    if (ObjectUtils.isEmpty(puntoFondoOrigen.getCodigoPunto())) {
       bancoOrigen = Optional.of(this.consultarPuntoPorDetalle(contenido, detalleArchivo,
           Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_ORIGEN)).orElse(new PuntosDTO());
     }
@@ -670,7 +667,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
           ApiResponseCode.ERROR_NO_ES_FONDO.getHttpStatus());
     }
 
-    if (esEntrada) {
+    if (ObjectUtils.isEmpty(puntoFondoOrigen.getCodigoPunto())) {
       if (!Objects.isNull(puntoFondoDestino)) {
         operacionesProgramadasDTO = OperacionesProgramadasDTO.builder()
             .codigoFondoTDV(puntoFondoDestino.getCodigoPunto())
