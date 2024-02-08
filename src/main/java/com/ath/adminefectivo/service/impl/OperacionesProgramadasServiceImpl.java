@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -120,6 +121,9 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
   private IDominioService dominioService;
   private OperacionesProgramadasDTO operaciones;
   private static final String USER1 = "user1";
+  private static final String S_SALIDA = "SALIDA";
+  private static final String S_ENTRADA = "ENTRADA";
+  private static final String S_VENTA = "VENTA";
 
   public OperacionesProgramadasServiceImpl(IDominioService dominioService) {
     super();
@@ -349,9 +353,9 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
   @Override
   public List<OperacionIntradiaDTO> consultarOperacionesIntradia(Date fechaInicio, Date fechaFin) {
     List<OperacionIntradiaDTO> operacionesProgramadas = operacionesProgramadasRepository
-        .consultaOperacionesIntradiaSalida(fechaInicio, fechaFin, "SALIDA", "VENTA");
+        .consultaOperacionesIntradiaSalida(fechaInicio, fechaFin, S_SALIDA, S_VENTA);
     operacionesProgramadas.addAll(operacionesProgramadasRepository
-        .consultaOperacionesIntradiaEntrada(fechaInicio, fechaFin, "ENTRADA", "VENTA"));
+        .consultaOperacionesIntradiaEntrada(fechaInicio, fechaFin, S_ENTRADA, S_VENTA));
     return operacionesProgramadas;
   }
 
@@ -559,10 +563,10 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
     log.info("operacion retiro archivo: {}, esCambio: {}", archivo.getNombreArchivo(), esCambio);
     OperacionesProgramadasDTO operacionesProgramadasDTO = null;
 
-    PuntosDTO puntoFondoDestino = this.consultarPuntoPorDetalle(contenido, detalleArchivo,
-        Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO);
-    PuntosDTO puntoBancoOrigen = this.consultarPuntoBanRepPorDetalle(contenido, detalleArchivo,
-        Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN);
+    PuntosDTO puntoFondoDestino = Optional.of(this.consultarPuntoPorDetalle(contenido,
+        detalleArchivo, Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO)).orElse(new PuntosDTO());
+    PuntosDTO puntoBancoOrigen = Optional.of(this.consultarPuntoBanRepPorDetalle(contenido,
+        detalleArchivo, Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN)).orElse(new PuntosDTO());
 
     if (!esCambio && !puntoBancoOrigen.getTipoPunto().toUpperCase().trim()
         .equals(Constantes.PUNTO_BANC_REP)) {
@@ -576,7 +580,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
           ApiResponseCode.ERROR_NO_ES_FONDO.getHttpStatus());
     }
 
-    if (Objects.isNull(puntoBancoOrigen) && esCambio) {
+    if (ObjectUtils.isEmpty(puntoBancoOrigen.getCodigoPunto()) && esCambio) {
       puntoBancoOrigen = puntoFondoDestino;
     }
 
@@ -638,15 +642,15 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
     OperacionesProgramadasDTO operacionesProgramadasDTO = null;
 
-    PuntosDTO puntoFondoOrigen = this.consultarPuntoPorDetalle(contenido, detalleArchivo,
-        Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN);
-    PuntosDTO bancoOrigen = null;
+    PuntosDTO puntoFondoOrigen = Optional.of(this.consultarPuntoPorDetalle(contenido,
+        detalleArchivo, Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN)).orElse(new PuntosDTO());
+    PuntosDTO bancoOrigen = new PuntosDTO();
     PuntosDTO bancoDestino = null;
     var operacionProgramadaEnt = new OperacionesProgramadas();
     if (Objects.isNull(puntoFondoOrigen)) {
       esEntrada = true;
-      bancoOrigen = this.consultarPuntoPorDetalle(contenido, detalleArchivo,
-          Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_ORIGEN);
+      bancoOrigen = Optional.of(this.consultarPuntoPorDetalle(contenido, detalleArchivo,
+          Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_ORIGEN)).orElse(new PuntosDTO());
     }
 
 
@@ -659,7 +663,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
     }
 
 
-    if (!Objects.isNull(puntoFondoOrigen)
+    if (!ObjectUtils.isNotEmpty(puntoFondoOrigen.getCodigoPunto())
         && !puntoFondoOrigen.getTipoPunto().toUpperCase().trim().equals(Constantes.PUNTO_FONDO)) {
       throw new NegocioException(ApiResponseCode.ERROR_NO_ES_FONDO.getCode(),
           ApiResponseCode.ERROR_NO_ES_FONDO.getDescription(),
@@ -679,7 +683,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
       }
     } else if (!Objects.isNull(bancoDestino)) {
-      if (Objects.isNull(puntoFondoOrigen)) {
+      if (ObjectUtils.isEmpty(puntoFondoOrigen.getCodigoPunto())) {
         throw new NegocioException(ApiResponseCode.ERROR_NO_ES_FONDO.getCode(),
             ApiResponseCode.ERROR_NO_ES_FONDO.getDescription(),
             ApiResponseCode.ERROR_NO_ES_FONDO.getHttpStatus());
@@ -1263,7 +1267,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
     String shipIn = determinarShipIn(contenido, detalleArchivo);
     String shipOut = determinarShipOut(contenido, detalleArchivo);
     operaciones = new OperacionesProgramadasDTO();
-    String entraSale = "SALIDA";
+    String entraSale = S_SALIDA;
 
     if (Objects.isNull(shipIn) || shipIn.trim().equals("")) {
       shipIn = "0";
@@ -1275,14 +1279,14 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
     Long valorSale = Long.parseLong(shipOut);
 
     if (valorEntra > 0) {
-      entraSale = "ENTRADA";
+      entraSale = S_ENTRADA;
 
       crearSumarRegistroOficina(orderId, archivo.getIdArchivo().intValue(), entraSale, valorEntra,
           contenido, detalleArchivo);
     }
 
     if (valorSale > 0) {
-      entraSale = "SALIDA";
+      entraSale = S_SALIDA;
       crearSumarRegistroOficina(orderId, archivo.getIdArchivo().intValue(), entraSale, valorSale,
           contenido, detalleArchivo);
     }
