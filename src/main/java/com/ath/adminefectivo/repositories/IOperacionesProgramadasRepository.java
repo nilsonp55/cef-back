@@ -11,6 +11,7 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
 import com.ath.adminefectivo.dto.compuestos.OperacionIntradiaDTO;
 import com.ath.adminefectivo.entities.OperacionesProgramadas;
+import com.querydsl.core.types.Predicate;
 
 /**
  * Repository encargado de manejar la logica de la entidad OperacionesProgramadas
@@ -29,6 +30,7 @@ public interface IOperacionesProgramadasRepository
    * @return Page<OperacionesProgramadas>
    * @author cesar.castano
    */
+  @Override
   public Page<OperacionesProgramadas> findAll(Predicate predicate, Pageable page);
 
   /**
