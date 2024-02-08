@@ -67,8 +67,8 @@ public class CarguePreliminarController {
 	 */
 	@DeleteMapping(value = "${endpoints.CarguePreliminar.eliminar}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<Boolean>> eliminarArchivo(
-			@RequestParam("nombreArchivo") String nombreArchivo, 
-			@RequestParam("idMaestroArchivo") String idMaestroArchivo) {
+			@RequestParam String nombreArchivo, 
+			@RequestParam String idMaestroArchivo) {
 
 		var archivoPersistido = carguePreliminarDelegate.eliminarArchivo(nombreArchivo, idMaestroArchivo);
 		return ResponseEntity.status(HttpStatus.OK).body(
@@ -86,8 +86,8 @@ public class CarguePreliminarController {
 	 */
 	@GetMapping(value = "${endpoints.CarguePreliminar.validar}")
 	public ResponseEntity<ApiResponseADE<ValidacionArchivoDTO>> validarArchivo(
-			@RequestParam("idMaestroDefinicion") String idMaestroDefinicion,
-			@RequestParam("nombreArchivo") String nombreArchivo) {
+			@RequestParam String idMaestroDefinicion,
+			@RequestParam String nombreArchivo) {
 			
 		var respuesta = carguePreliminarDelegate.validarArchivo(idMaestroDefinicion, nombreArchivo);
 
@@ -107,8 +107,8 @@ public class CarguePreliminarController {
 	 */
 	@GetMapping(value = "${endpoints.CarguePreliminar.procesar}")
 	public ResponseEntity<ApiResponseADE<ValidacionArchivoDTO>> procesarArchivo(
-			@RequestParam("idMaestroDefinicion") String idMaestroDefinicion,
-			@RequestParam("nombreArchivo") String nombreArchivo) {
+			@RequestParam String idMaestroDefinicion,
+			@RequestParam String nombreArchivo) {
 
 		var respuesta = carguePreliminarDelegate.procesarArchivo(idMaestroDefinicion, nombreArchivo);
 
@@ -126,7 +126,7 @@ public class CarguePreliminarController {
 	 */
 	@GetMapping(value = "${endpoints.CarguePreliminar.detalle}")
 	public ResponseEntity<ApiResponseADE<ValidacionArchivoDTO>> consultarDetalleArchivo(
-			@RequestParam("idArchivoCargado") Long idArchivoCargado) {
+			@RequestParam Long idArchivoCargado) {
 		log.debug("Entro al controlador de Cargue prelinminar");
 		var respuesta = carguePreliminarDelegate.consultarDetalleArchivo(idArchivoCargado);
 
@@ -146,7 +146,7 @@ public class CarguePreliminarController {
 	 */
 	@GetMapping(value = "${endpoints.Archivos.consultar}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<List<ArchivosCargadosDTO>>> consultarArchivosCargaPreliminar(
-			@RequestParam("estado") String estado, 
+			@RequestParam String estado, 
 			@RequestParam("idModeloArchivo") String agrupador) {
 		
 		return ResponseEntity.status(HttpStatus.OK)
