@@ -736,7 +736,9 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
   private OperacionesProgramadasDTO generarOperacionCambio(String[] contenido,
       List<DetallesDefinicionArchivoDTO> detallesArchivo, ArchivosCargadosDTO archivo) {
 
-    OperacionesProgramadasDTO operacionesProgramadaConsignacion =
+	  OperacionesProgramadasDTO operacionesProgramadaConsignacion = new OperacionesProgramadasDTO();
+	  try {
+    operacionesProgramadaConsignacion =
         this.generarOperacionConsignacion(contenido, detallesArchivo, archivo, true);
     var codigoPuntoOrigen = this.consultarBancoPorCiudad(contenido, detallesArchivo,
         Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN);
@@ -757,7 +759,13 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
         .save(OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(operacionesProgramadaRetiro));
     operacionesProgramadasRepository
         .save(OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(operacionesProgramadaConsignacion));
-    return operacionesProgramadaConsignacion;
+    
+	  } catch (Exception e) {
+		  e.printStackTrace();
+		  throw e;
+	  }
+	  
+	  return operacionesProgramadaConsignacion;
   }
 
   /**
