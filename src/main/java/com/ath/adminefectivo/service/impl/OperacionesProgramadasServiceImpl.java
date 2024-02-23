@@ -740,13 +740,18 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	  try {
     operacionesProgramadaConsignacion =
         this.generarOperacionConsignacion(contenido, detallesArchivo, archivo, true);
+    log.info("paso 1");
     var codigoPuntoOrigen = this.consultarBancoPorCiudad(contenido, detallesArchivo,
         Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN);
+    log.info("paso 2");
     operacionesProgramadaConsignacion.setCodigoPuntoDestino(codigoPuntoOrigen);
+    log.info("paso 3");
     OperacionesProgramadasDTO operacionesProgramadaRetiro =
         this.generarOperacionRetiro(contenido, detallesArchivo, archivo, true);
+    log.info("paso 4");
     var codigoPuntoDestino = this.consultarBancoPorCiudad(contenido, detallesArchivo,
         Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO);
+    log.info("paso 5");
     operacionesProgramadaRetiro.setCodigoPuntoOrigen(codigoPuntoDestino);
     operacionesProgramadaRetiro.setEsCambio(true);
     operacionesProgramadaConsignacion.setEsCambio(true);
@@ -754,11 +759,14 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
     operacionesProgramadaConsignacion.setTipoOperacion(Dominios.TIPO_OPERA_CONSIGNACION);
     operacionesProgramadaConsignacion
         .setIdOperacionRelac(operacionesProgramadaRetiro.getIdOperacion());
+    log.info("paso 6");
 
     operacionesProgramadasRepository
         .save(OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(operacionesProgramadaRetiro));
+    log.info("paso operacionesProgramadaRetiro: {}", operacionesProgramadaRetiro.toString());
     operacionesProgramadasRepository
         .save(OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(operacionesProgramadaConsignacion));
+    log.info("paso operacionesProgramadaConsignacion: {}", operacionesProgramadaConsignacion);
     
 	  } catch (Exception e) {
 		  log.info("generarOperacionCambio: {}", e.getMessage());
