@@ -761,7 +761,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
         .save(OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(operacionesProgramadaConsignacion));
     
 	  } catch (Exception e) {
-		  e.printStackTrace();
+		  log.info("generarOperacionCambio: {}", e.getMessage());
 		  throw e;
 	  }
 	  
