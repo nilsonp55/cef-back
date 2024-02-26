@@ -573,20 +573,20 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
     PuntosDTO puntoBancoOrigen = this.consultarPuntoBanRepPorDetalle(contenido,
         detalleArchivo, Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN);
 
-	if (!esCambio && ObjectUtils.isNotEmpty(puntoBancoOrigen)
+	if (!esCambio && !Objects.isNull(puntoBancoOrigen)
 			&& !puntoBancoOrigen.getTipoPunto().toUpperCase().trim().equals(Constantes.PUNTO_BANC_REP)) {
 		throw new NegocioException(ApiResponseCode.ERROR_NO_ES_BANREP.getCode(),
 				ApiResponseCode.ERROR_NO_ES_BANREP.getDescription(),
 				ApiResponseCode.ERROR_NO_ES_BANREP.getHttpStatus());
 	}
     
-	if (ObjectUtils.isNotEmpty(puntoFondoDestino)
+	if (!Objects.isNull(puntoFondoDestino)
 			&& !puntoFondoDestino.getTipoPunto().toUpperCase().trim().equals(Constantes.PUNTO_FONDO)) {
 		throw new NegocioException(ApiResponseCode.ERROR_NO_ES_FONDO.getCode(),
 				ApiResponseCode.ERROR_NO_ES_FONDO.getDescription(), ApiResponseCode.ERROR_NO_ES_FONDO.getHttpStatus());
 	}
 
-    if (ObjectUtils.isEmpty(puntoBancoOrigen) && esCambio) {
+    if (Objects.isNull(puntoBancoOrigen) && esCambio) {
       puntoBancoOrigen = puntoFondoDestino;
     }
 
@@ -599,7 +599,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
           .valorNumericoDominio(Constantes.DOMINIO_COMISIONES, Dominios.COMISION_1).intValue();
     }
 
-	if (ObjectUtils.isNotEmpty(puntoBancoOrigen) && ObjectUtils.isNotEmpty(puntoFondoDestino)) {
+	if (!Objects.isNull(puntoBancoOrigen) && !Objects.isNull(puntoFondoDestino)) {
 		operacionesProgramadasDTO = OperacionesProgramadasDTO.builder()
 				.codigoFondoTDV(puntoFondoDestino.getCodigoPunto()).entradaSalida(Constantes.VALOR_ENTRADA)
 				.codigoPuntoOrigen(puntoBancoOrigen.getCodigoPunto())
