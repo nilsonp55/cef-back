@@ -512,8 +512,8 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
     OperacionesProgramadasDTO operacionesProgramadasDTO = null;
     PuntosDTO puntoFondoOrigen = this.consultarPuntoPorDetalle(contenido, detalleArchivo,
         Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN);
-    PuntosDTO puntoBancoDestino = Optional.of(this.consultarPuntoBanRepPorDetalle(contenido,
-        detalleArchivo, Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO)).orElse(new PuntosDTO());
+    PuntosDTO puntoBancoDestino = this.consultarPuntoBanRepPorDetalle(contenido,
+        detalleArchivo, Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO);
 
     if (!puntoFondoOrigen.getTipoPunto().toUpperCase().trim().equals(Constantes.PUNTO_FONDO)) {
       throw new NegocioException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
@@ -563,10 +563,10 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
     log.info("operacion retiro archivo: {}, esCambio: {}", archivo.getNombreArchivo(), esCambio);
     OperacionesProgramadasDTO operacionesProgramadasDTO = null;
 
-    PuntosDTO puntoFondoDestino = Optional.of(this.consultarPuntoPorDetalle(contenido,
-        detalleArchivo, Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO)).orElse(new PuntosDTO());
-    PuntosDTO puntoBancoOrigen = Optional.of(this.consultarPuntoBanRepPorDetalle(contenido,
-        detalleArchivo, Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN)).orElse(new PuntosDTO());
+    PuntosDTO puntoFondoDestino = this.consultarPuntoPorDetalle(contenido,
+        detalleArchivo, Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO);
+    PuntosDTO puntoBancoOrigen = this.consultarPuntoBanRepPorDetalle(contenido,
+        detalleArchivo, Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN);
 
     if (!esCambio && !puntoBancoOrigen.getTipoPunto().toUpperCase().trim()
         .equals(Constantes.PUNTO_BANC_REP)) {
@@ -580,7 +580,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
           ApiResponseCode.ERROR_NO_ES_FONDO.getHttpStatus());
     }
 
-    if (ObjectUtils.isEmpty(puntoBancoOrigen.getCodigoPunto()) && esCambio) {
+    if (ObjectUtils.isEmpty(puntoBancoOrigen) && esCambio) {
       puntoBancoOrigen = puntoFondoDestino;
     }
 
@@ -736,44 +736,38 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
   private OperacionesProgramadasDTO generarOperacionCambio(String[] contenido,
       List<DetallesDefinicionArchivoDTO> detallesArchivo, ArchivosCargadosDTO archivo) {
 
-	  OperacionesProgramadasDTO operacionesProgramadaConsignacion = new OperacionesProgramadasDTO();
-	  try {
-    operacionesProgramadaConsignacion =
-        this.generarOperacionConsignacion(contenido, detallesArchivo, archivo, true);
-    log.info("paso 1");
-    var codigoPuntoOrigen = this.consultarBancoPorCiudad(contenido, detallesArchivo,
-        Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN);
-    log.info("paso 2");
-    operacionesProgramadaConsignacion.setCodigoPuntoDestino(codigoPuntoOrigen);
-    log.info("paso 3");
-    OperacionesProgramadasDTO operacionesProgramadaRetiro =
-        this.generarOperacionRetiro(contenido, detallesArchivo, archivo, true);
-    log.info("paso 4");
-    var codigoPuntoDestino = this.consultarBancoPorCiudad(contenido, detallesArchivo,
-        Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO);
-    log.info("paso 5");
-    operacionesProgramadaRetiro.setCodigoPuntoOrigen(codigoPuntoDestino);
-    operacionesProgramadaRetiro.setEsCambio(true);
-    operacionesProgramadaConsignacion.setEsCambio(true);
-    operacionesProgramadaRetiro.setTipoOperacion(Dominios.TIPO_OPERA_RETIRO);
-    operacionesProgramadaConsignacion.setTipoOperacion(Dominios.TIPO_OPERA_CONSIGNACION);
-    operacionesProgramadaConsignacion
-        .setIdOperacionRelac(operacionesProgramadaRetiro.getIdOperacion());
-    log.info("paso 6");
+    OperacionesProgramadasDTO operacionesProgramadaConsignacion = new OperacionesProgramadasDTO();
+    try {
+      operacionesProgramadaConsignacion =
+          this.generarOperacionConsignacion(contenido, detallesArchivo, archivo, true);
+      var codigoPuntoOrigen = this.consultarBancoPorCiudad(contenido, detallesArchivo,
+          Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN);
+      operacionesProgramadaConsignacion.setCodigoPuntoDestino(codigoPuntoOrigen);
+      OperacionesProgramadasDTO operacionesProgramadaRetiro =
+          this.generarOperacionRetiro(contenido, detallesArchivo, archivo, true);
+      var codigoPuntoDestino = this.consultarBancoPorCiudad(contenido, detallesArchivo,
+          Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO);
+      operacionesProgramadaRetiro.setCodigoPuntoOrigen(codigoPuntoDestino);
+      operacionesProgramadaRetiro.setEsCambio(true);
+      operacionesProgramadaConsignacion.setEsCambio(true);
+      operacionesProgramadaRetiro.setTipoOperacion(Dominios.TIPO_OPERA_RETIRO);
+      operacionesProgramadaConsignacion.setTipoOperacion(Dominios.TIPO_OPERA_CONSIGNACION);
+      operacionesProgramadaConsignacion
+          .setIdOperacionRelac(operacionesProgramadaRetiro.getIdOperacion());
 
-    operacionesProgramadasRepository
-        .save(OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(operacionesProgramadaRetiro));
-    log.info("paso operacionesProgramadaRetiro: {}", operacionesProgramadaRetiro.toString());
-    operacionesProgramadasRepository
-        .save(OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(operacionesProgramadaConsignacion));
-    log.info("paso operacionesProgramadaConsignacion: {}", operacionesProgramadaConsignacion);
-    
-	  } catch (Exception e) {
-		  log.info("generarOperacionCambio: {}", e.getMessage());
-		  throw e;
-	  }
-	  
-	  return operacionesProgramadaConsignacion;
+      operacionesProgramadasRepository
+          .save(OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(operacionesProgramadaRetiro));
+      log.info("paso operacionesProgramadaRetiro: {}", operacionesProgramadaRetiro.toString());
+      operacionesProgramadasRepository.save(
+          OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(operacionesProgramadaConsignacion));
+      log.info("paso operacionesProgramadaConsignacion: {}", operacionesProgramadaConsignacion);
+
+    } catch (Exception e) {
+      log.info("generarOperacionCambio: {}", e.getMessage());
+      throw e;
+    }
+
+    return operacionesProgramadaConsignacion;
   }
 
   /**
