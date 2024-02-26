@@ -509,7 +509,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
       List<DetallesDefinicionArchivoDTO> detalleArchivo, ArchivosCargadosDTO archivo,
       boolean esCambio) {
 
-    OperacionesProgramadasDTO operacionesProgramadasDTO = null;
+    OperacionesProgramadasDTO operacionesProgramadasDTO = new OperacionesProgramadasDTO();
     PuntosDTO puntoFondoOrigen = this.consultarPuntoPorDetalle(contenido, detalleArchivo,
         Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN);
     PuntosDTO puntoBancoDestino = this.consultarPuntoBanRepPorDetalle(contenido,
@@ -535,13 +535,16 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
       puntoBancoDestino = puntoFondoOrigen;
     }
 
-    operacionesProgramadasDTO = OperacionesProgramadasDTO.builder()
-        .codigoFondoTDV(puntoFondoOrigen.getCodigoPunto()).entradaSalida(Constantes.VALOR_SALIDA)
-        .codigoPuntoOrigen(puntoFondoOrigen.getCodigoPunto())
-        .codigoPuntoDestino(puntoBancoDestino.getCodigoPunto())
-        .idArchivoCargado(Math.toIntExact(archivo.getIdArchivo())).build();
+	if (!Objects.isNull(puntoFondoOrigen) && !Objects.isNull(puntoBancoDestino)) {
+		operacionesProgramadasDTO = OperacionesProgramadasDTO.builder()
+				.codigoFondoTDV(puntoFondoOrigen.getCodigoPunto()).entradaSalida(Constantes.VALOR_SALIDA)
+				.codigoPuntoOrigen(puntoFondoOrigen.getCodigoPunto())
+				.codigoPuntoDestino(puntoBancoDestino.getCodigoPunto())
+				.idArchivoCargado(Math.toIntExact(archivo.getIdArchivo())).build();
 
-    operacionesProgramadasDTO.setTipoOperacion(Dominios.TIPO_OPERA_CONSIGNACION);
+		operacionesProgramadasDTO.setTipoOperacion(Dominios.TIPO_OPERA_CONSIGNACION);
+	}
+    
     var operacionProgramadaEnt = operacionesProgramadasRepository
         .save(OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(this.completarOperacionesProgramadas(
             operacionesProgramadasDTO, contenido, detalleArchivo)));
@@ -563,7 +566,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
       List<DetallesDefinicionArchivoDTO> detalleArchivo, ArchivosCargadosDTO archivo,
       boolean esCambio) {
     log.info("operacion retiro archivo: {}, esCambio: {}", archivo.getNombreArchivo(), esCambio);
-    OperacionesProgramadasDTO operacionesProgramadasDTO = null;
+    OperacionesProgramadasDTO operacionesProgramadasDTO = new OperacionesProgramadasDTO();
 
     PuntosDTO puntoFondoDestino = this.consultarPuntoPorDetalle(contenido,
         detalleArchivo, Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO);
@@ -577,7 +580,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 				ApiResponseCode.ERROR_NO_ES_BANREP.getHttpStatus());
 	}
     
-	if (ObjectUtils.isEmpty(puntoBancoOrigen)
+	if (ObjectUtils.isNotEmpty(puntoFondoDestino)
 			&& !puntoFondoDestino.getTipoPunto().toUpperCase().trim().equals(Constantes.PUNTO_FONDO)) {
 		throw new NegocioException(ApiResponseCode.ERROR_NO_ES_FONDO.getCode(),
 				ApiResponseCode.ERROR_NO_ES_FONDO.getDescription(), ApiResponseCode.ERROR_NO_ES_FONDO.getHttpStatus());
@@ -596,14 +599,16 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
           .valorNumericoDominio(Constantes.DOMINIO_COMISIONES, Dominios.COMISION_1).intValue();
     }
 
-    operacionesProgramadasDTO = OperacionesProgramadasDTO.builder()
-        .codigoFondoTDV(puntoFondoDestino.getCodigoPunto()).entradaSalida(Constantes.VALOR_ENTRADA)
-        .codigoPuntoOrigen(puntoBancoOrigen.getCodigoPunto())
-        .codigoPuntoDestino(puntoFondoDestino.getCodigoPunto())
-        .idArchivoCargado(Math.toIntExact(archivo.getIdArchivo())).comisionBR(valorComisionBR)
-        .build();
+	if (ObjectUtils.isNotEmpty(puntoBancoOrigen) && ObjectUtils.isNotEmpty(puntoFondoDestino)) {
+		operacionesProgramadasDTO = OperacionesProgramadasDTO.builder()
+				.codigoFondoTDV(puntoFondoDestino.getCodigoPunto()).entradaSalida(Constantes.VALOR_ENTRADA)
+				.codigoPuntoOrigen(puntoBancoOrigen.getCodigoPunto())
+				.codigoPuntoDestino(puntoFondoDestino.getCodigoPunto())
+				.idArchivoCargado(Math.toIntExact(archivo.getIdArchivo())).comisionBR(valorComisionBR).build();
 
-    operacionesProgramadasDTO.setTipoOperacion(Dominios.TIPO_OPERA_RETIRO);
+		operacionesProgramadasDTO.setTipoOperacion(Dominios.TIPO_OPERA_RETIRO);
+	}
+    
     var operacionProgramadaEnt = operacionesProgramadasRepository
         .save(OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(this.completarOperacionesProgramadas(
             operacionesProgramadasDTO, contenido, detalleArchivo)));
@@ -643,16 +648,15 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
     OperacionesProgramadasDTO operacionesProgramadasDTO = null;
 
-    PuntosDTO puntoFondoOrigen = Optional.of(this.consultarPuntoPorDetalle(contenido,
-        detalleArchivo, Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN)).orElse(new PuntosDTO());
+    PuntosDTO puntoFondoOrigen = this.consultarPuntoPorDetalle(contenido,
+        detalleArchivo, Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN);
     PuntosDTO bancoOrigen = new PuntosDTO();
     PuntosDTO bancoDestino = null;
     var operacionProgramadaEnt = new OperacionesProgramadas();
-    if (ObjectUtils.isEmpty(puntoFondoOrigen.getCodigoPunto())) {
-      bancoOrigen = Optional.of(this.consultarPuntoPorDetalle(contenido, detalleArchivo,
-          Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_ORIGEN)).orElse(new PuntosDTO());
-    }
-
+	if (Objects.isNull(puntoFondoOrigen)) {
+		bancoOrigen = this.consultarPuntoPorDetalle(contenido, detalleArchivo,
+				Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_ORIGEN);
+	}
 
     PuntosDTO puntoFondoDestino = this.consultarPuntoPorDetalle(contenido, detalleArchivo,
         Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO);
@@ -663,15 +667,14 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
     }
 
 
-    if (!ObjectUtils.isNotEmpty(puntoFondoOrigen.getCodigoPunto())
+    if (!Objects.isNull(puntoFondoOrigen)
         && !puntoFondoOrigen.getTipoPunto().toUpperCase().trim().equals(Constantes.PUNTO_FONDO)) {
       throw new NegocioException(ApiResponseCode.ERROR_NO_ES_FONDO.getCode(),
           ApiResponseCode.ERROR_NO_ES_FONDO.getDescription(),
           ApiResponseCode.ERROR_NO_ES_FONDO.getHttpStatus());
     }
 
-    if (ObjectUtils.isEmpty(puntoFondoOrigen.getCodigoPunto())) {
-      if (!Objects.isNull(puntoFondoDestino)) {
+    if (Objects.isNull(puntoFondoOrigen) && !Objects.isNull(puntoFondoDestino) && !Objects.isNull(bancoOrigen)) {
         operacionesProgramadasDTO = OperacionesProgramadasDTO.builder()
             .codigoFondoTDV(puntoFondoDestino.getCodigoPunto())
             .entradaSalida(Constantes.VALOR_ENTRADA).codigoPuntoOrigen(bancoOrigen.getCodigoPunto())
@@ -681,8 +684,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
             OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(this.completarOperacionesProgramadas(
                 operacionesProgramadasDTO, contenido, detalleArchivo)));
 
-      }
-    } else if (!Objects.isNull(bancoDestino)) {
+    } else if (!Objects.isNull(puntoFondoOrigen) && !Objects.isNull(bancoDestino)) {
       if (ObjectUtils.isEmpty(puntoFondoOrigen.getCodigoPunto())) {
         throw new NegocioException(ApiResponseCode.ERROR_NO_ES_FONDO.getCode(),
             ApiResponseCode.ERROR_NO_ES_FONDO.getDescription(),
@@ -696,7 +698,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
       operacionProgramadaEnt = operacionesProgramadasRepository.save(
           OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(this.completarOperacionesProgramadas(
               operacionesProgramadasDTO, contenido, detalleArchivo)));
-    } else {
+    } else if(!Objects.isNull(puntoFondoOrigen) && !Objects.isNull(puntoFondoDestino)) {
       // EN CASO DE QUE LOS DOS PUNTOS FONDOS NO SEAN NULL ES PORQUE AMBOS SON AVAL
       operacionesProgramadasDTO = OperacionesProgramadasDTO.builder()
           .codigoFondoTDV(puntoFondoOrigen.getCodigoPunto()).entradaSalida(Constantes.VALOR_SALIDA)
