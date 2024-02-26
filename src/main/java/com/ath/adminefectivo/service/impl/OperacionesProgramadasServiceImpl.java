@@ -515,19 +515,21 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
     PuntosDTO puntoBancoDestino = this.consultarPuntoBanRepPorDetalle(contenido,
         detalleArchivo, Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO);
 
-    if (!puntoFondoOrigen.getTipoPunto().toUpperCase().trim().equals(Constantes.PUNTO_FONDO)) {
-      throw new NegocioException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
-          ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription()
-              + " no encontrado para fondo origen = " + contenido,
-          ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
-    }
-    if (!esCambio && !puntoBancoDestino.getTipoPunto().toUpperCase().trim()
-        .equals(Constantes.PUNTO_BANC_REP)) {
-      throw new NegocioException(ApiResponseCode.ERROR_NO_ES_BANREP.getCode(),
-          ApiResponseCode.ERROR_NO_ES_BANREP.getDescription()
-              + " no encontrado para fondo destino = " + contenido,
-          ApiResponseCode.ERROR_NO_ES_BANREP.getHttpStatus());
-    }
+	if (!Objects.isNull(puntoFondoOrigen)
+			&& !puntoFondoOrigen.getTipoPunto().toUpperCase().trim().equals(Constantes.PUNTO_FONDO)) {
+		throw new NegocioException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
+				ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription() + " no encontrado para fondo origen = "
+						+ contenido,
+				ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
+	}
+	
+	if (!esCambio && !Objects.isNull(puntoBancoDestino)
+			&& puntoBancoDestino.getTipoPunto().toUpperCase().trim().equals(Constantes.PUNTO_BANC_REP)) {
+		throw new NegocioException(
+				ApiResponseCode.ERROR_NO_ES_BANREP.getCode(), ApiResponseCode.ERROR_NO_ES_BANREP.getDescription()
+						+ " no encontrado para fondo destino = " + contenido,
+				ApiResponseCode.ERROR_NO_ES_BANREP.getHttpStatus());
+	}
 
     if (Objects.isNull(puntoBancoDestino) && esCambio) {
       puntoBancoDestino = puntoFondoOrigen;
@@ -568,17 +570,18 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
     PuntosDTO puntoBancoOrigen = this.consultarPuntoBanRepPorDetalle(contenido,
         detalleArchivo, Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN);
 
-    if (!esCambio && !puntoBancoOrigen.getTipoPunto().toUpperCase().trim()
-        .equals(Constantes.PUNTO_BANC_REP)) {
-      throw new NegocioException(ApiResponseCode.ERROR_NO_ES_BANREP.getCode(),
-          ApiResponseCode.ERROR_NO_ES_BANREP.getDescription(),
-          ApiResponseCode.ERROR_NO_ES_BANREP.getHttpStatus());
-    }
-    if (!puntoFondoDestino.getTipoPunto().toUpperCase().trim().equals(Constantes.PUNTO_FONDO)) {
-      throw new NegocioException(ApiResponseCode.ERROR_NO_ES_FONDO.getCode(),
-          ApiResponseCode.ERROR_NO_ES_FONDO.getDescription(),
-          ApiResponseCode.ERROR_NO_ES_FONDO.getHttpStatus());
-    }
+	if (!esCambio && ObjectUtils.isNotEmpty(puntoBancoOrigen)
+			&& !puntoBancoOrigen.getTipoPunto().toUpperCase().trim().equals(Constantes.PUNTO_BANC_REP)) {
+		throw new NegocioException(ApiResponseCode.ERROR_NO_ES_BANREP.getCode(),
+				ApiResponseCode.ERROR_NO_ES_BANREP.getDescription(),
+				ApiResponseCode.ERROR_NO_ES_BANREP.getHttpStatus());
+	}
+    
+	if (ObjectUtils.isEmpty(puntoBancoOrigen)
+			&& !puntoFondoDestino.getTipoPunto().toUpperCase().trim().equals(Constantes.PUNTO_FONDO)) {
+		throw new NegocioException(ApiResponseCode.ERROR_NO_ES_FONDO.getCode(),
+				ApiResponseCode.ERROR_NO_ES_FONDO.getDescription(), ApiResponseCode.ERROR_NO_ES_FONDO.getHttpStatus());
+	}
 
     if (ObjectUtils.isEmpty(puntoBancoOrigen) && esCambio) {
       puntoBancoOrigen = puntoFondoDestino;
