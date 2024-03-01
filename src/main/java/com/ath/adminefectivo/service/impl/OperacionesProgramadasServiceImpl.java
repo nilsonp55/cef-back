@@ -1290,12 +1290,12 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
     Long valorSale = Long.parseLong(shipOut);
 
     if (valorEntra > 0) {
-      crearSumarRegistroOficina(orderId, archivo.getIdArchivo().intValue(), S_ENTRADA, valorEntra,
+      crearSumarRegistroOficina(orderId, archivo.getIdArchivo().intValue(), S_SALIDA, valorEntra,
           contenido, detalleArchivo);
     }
 
     if (valorSale > 0) {
-      crearSumarRegistroOficina(orderId, archivo.getIdArchivo().intValue(), S_SALIDA, valorSale,
+      crearSumarRegistroOficina(orderId, archivo.getIdArchivo().intValue(), S_ENTRADA, valorSale,
           contenido, detalleArchivo);
     }
     return operaciones;
