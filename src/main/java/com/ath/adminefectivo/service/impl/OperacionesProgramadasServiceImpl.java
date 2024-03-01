@@ -524,7 +524,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 	}
 	
 	if (!esCambio && !Objects.isNull(puntoBancoDestino)
-			&& puntoBancoDestino.getTipoPunto().toUpperCase().trim().equals(Constantes.PUNTO_BANC_REP)) {
+			&& !puntoBancoDestino.getTipoPunto().toUpperCase().trim().equals(Constantes.PUNTO_BANC_REP)) {
 		throw new NegocioException(
 				ApiResponseCode.ERROR_NO_ES_BANREP.getCode(), ApiResponseCode.ERROR_NO_ES_BANREP.getDescription()
 						+ " no encontrado para fondo destino = " + contenido,
@@ -1290,12 +1290,12 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
     Long valorSale = Long.parseLong(shipOut);
 
     if (valorEntra > 0) {
-      crearSumarRegistroOficina(orderId, archivo.getIdArchivo().intValue(), S_ENTRADA, valorEntra,
+      crearSumarRegistroOficina(orderId, archivo.getIdArchivo().intValue(), S_SALIDA, valorEntra,
           contenido, detalleArchivo);
     }
 
     if (valorSale > 0) {
-      crearSumarRegistroOficina(orderId, archivo.getIdArchivo().intValue(), S_SALIDA, valorSale,
+      crearSumarRegistroOficina(orderId, archivo.getIdArchivo().intValue(), S_ENTRADA, valorSale,
           contenido, detalleArchivo);
     }
     return operaciones;
