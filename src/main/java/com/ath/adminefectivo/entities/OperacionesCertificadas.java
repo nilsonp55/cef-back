@@ -135,4 +135,10 @@ public class OperacionesCertificadas {
   
   @Transient
   private String oficina;
+  
+  @Column(name = "CODIGOPUNTO_CODIGOTDV", length = 30)
+  private String codigoPuntoCodigotdv;
+  
+  @Column(name = "DESCRIPCIONPUNTO_CODIGOTDV", length = 100)
+  private String descripcionPuntoCodigotdv;
 }
