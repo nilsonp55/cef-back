@@ -71,6 +71,9 @@ public class ValoresLiquidados {
 	@Column(name = "ID_SEQ_GRUPO")
 	private Integer idSeqGrupo;
 	
+	@Column(name = "CLASIFICACION_MONEDA")
+	private Double clasificacionMoneda;
+	
 	@OneToOne(mappedBy = "valoresLiquidados", cascade = CascadeType.PERSIST)
 	private ParametrosLiquidacionCosto parametrosLiquidacionCosto;
 	
