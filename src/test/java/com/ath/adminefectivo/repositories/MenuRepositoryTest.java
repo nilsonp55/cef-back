@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import com.ath.adminefectivo.entities.Menu;
-import com.ath.adminefectivo.entities.Rol;
 
 @DataJpaTest
 class MenuRepositoryTest {
@@ -42,7 +41,6 @@ class MenuRepositoryTest {
 			.usuarioModificacion("user1")
 			.build();
 		
-		menuRepository.save(menu);
 	}
 	
 	@DisplayName("Crear menu nuevo devolver menu creado")
@@ -63,6 +61,7 @@ class MenuRepositoryTest {
 	@Test
 	void givenMenuList_whenFindAll_thenMenuList(){
 		// given - precondition or setup
+		menuRepository.save(menu);
 		
 		// when -  action or the behaviour that we are going test
 		List<Menu> menuList = menuRepository.findAll();
@@ -74,7 +73,8 @@ class MenuRepositoryTest {
 	@DisplayName("Buscar por IdMenu y retornar objeto Menu")
 	@Test
 	void givenMenuObject_whenFindById_thenReturnMenuObject() {
-		//given - precondition or setup		
+		//given - precondition or setup
+		menuRepository.save(menu);
 		
 		// when -  action or the behaviour that we are going test
 		Optional<Menu> menuFind = menuRepository.findById(menu.getIdMenu());
@@ -91,6 +91,7 @@ class MenuRepositoryTest {
 		//given - precondition or setup
 		Date fechaCreacion = Date.from(Instant.now());
 		Date fechaModificacion = Date.from(Instant.now());
+		menuRepository.save(menu);
 		Menu menuFind = menuRepository.findById(menu.getIdMenu()).get();
 		
 		// when -  action or the behaviour that we are going test
@@ -124,6 +125,7 @@ class MenuRepositoryTest {
 	@Test
     void givenMenuObject_whenDelete_thenRemoveMenu(){
 		//given - precondition or setup
+		menuRepository.save(menu);
 		
 		// when -  action or the behaviour that we are going test
 		menuRepository.delete(menu);
