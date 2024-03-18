@@ -21,7 +21,7 @@ import com.ath.adminefectivo.entities.Rol;
  */
 
 @DataJpaTest
-class RolTest {
+class RolRepositoryTest {
 	
 	@Autowired
 	private RolRepository rolRepository;
@@ -41,12 +41,12 @@ class RolTest {
 				.usuarioCreacion("user1")
 				.usuarioModificacion("user1")
 				.build();
+		rolRepository.save(rol);
 	}
 	
 	@DisplayName("Crear objeto Rol devolver rol creado")
 	@Test
-	void givenRolObject_whenSave_thenReturnRolSaved() {
-		
+	void givenRolObject_whenSave_thenReturnRolSaved() {		
 		// given - precondition or setup
 		// Objeto this.rol 
 		
@@ -60,10 +60,8 @@ class RolTest {
 	
 	@DisplayName("Obtener todos los objetos Rol de FindAll()")
 	@Test
-	void givenEmployeesList_whenFindAll_thenEmployeesList(){
-		
+	void givenRolList_whenFindAll_thenRolList(){		
 		// given - precondition or setup
-		rolRepository.save(rol);
 		
 		// when -  action or the behaviour that we are going test
 		List<Rol> listOfRolesFindAll = rolRepository.findAll();
@@ -76,7 +74,6 @@ class RolTest {
 	@Test
 	void givenRolObject_whenFindById_thenReturnRolObject() {
 		// given - precondition or setup
-		rolRepository.save(rol);
 		
 		// when -  action or the behaviour that we are going test
 		Rol rolFindById = rolRepository.findById(rol.getIdRol()).get();
@@ -88,18 +85,16 @@ class RolTest {
 	
 	@DisplayName("Actualizar objeto rol y retornar rol actualizado")
 	@Test
-    void givenRolObject_whenUpdateRol_thenReturnUpdatedRol(){
-		
+    void givenRolObject_whenUpdateRol_thenReturnUpdatedRol(){		
 		// given - precondition or setup
-		Date fecahCreacion = Date.from(Instant.now());
+		Date fechaCreacion = Date.from(Instant.now());
 		Date fechaModificacion = Date.from(Instant.now());
-		rolRepository.save(rol);
 		
 		// when -  action or the behaviour that we are going test
 		Rol rolFind = rolRepository.findById(rol.getIdRol()).get();
 		rolFind.setDescripcion("Nueva descripcion");
 		rolFind.setEstado("I");
-		rolFind.setFechaCreacion(fecahCreacion);
+		rolFind.setFechaCreacion(fechaCreacion);
 		rolFind.setFechaModificacion(fechaModificacion);
 		rolFind.setNombre("Nuevo Nombre");
 		rolFind.setUsuarioCreacion("usuario creacion");
@@ -121,10 +116,8 @@ class RolTest {
 	@DisplayName("Eliminar objeto rol y validar que no existe")
 	@Test
     void givenRolObject_whenDelete_thenRemoveRol(){
-		
 		// given - precondition or setup
-		rolRepository.save(rol);
-		
+				
 		// when -  action or the behaviour that we are going test
 		rolRepository.delete(rol);
 		Optional<Rol> rolFind = rolRepository.findById(rol.getIdRol());
