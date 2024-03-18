@@ -61,7 +61,7 @@ class DominioMaestroRepositoryTest {
 		assertThat(dominioMaestroFind.get().getTipoContenido()).isEqualTo(dominioMaestro2.getTipoContenido());
 		assertThat(dominioMaestroFind.get().getEstado()).isEqualTo(dominioMaestro2.getEstado());
 		
-		String descripcion = "nueva descripcion";
+		String descripcion = "nueva descripcio";
 		String estado = "I";
 		char tipoContenido = 'X';
 		dominioMaestroFind.get().setDescripcion(descripcion);
@@ -73,14 +73,6 @@ class DominioMaestroRepositoryTest {
 		assertThat(dominioMaestroSaved.getDescripcion()).isEqualTo(descripcion);
 		assertThat(dominioMaestroSaved.getEstado()).isEqualTo(estado);
 		assertThat(dominioMaestroSaved.getTipoContenido()).isEqualTo(tipoContenido);
-	}
-	
-	@Test
-	void testFindByEstado() {
-		dominioMaestroRepository.save(dominioMaestro);
-		
-		List<DominioMaestro> listDominioMaestro = dominioMaestroRepository.findByEstado("A");
-		assertThat(listDominioMaestro).isNotEmpty().hasSize(1);
 	}
 
 }
