@@ -14,6 +14,7 @@ public final class Constantes {
 	public static final String ZONE_ID = "America/Bogota";
 	public static final String TIMEZONE = "EST";
 	public static final String FECHA_PATTERN = "dd-MM-yyyy";
+	public static final String FECHA_PATTERN_NO_GUION = "ddMMyyyy";
 	public static final String FECHA_HORA_PATTERN = "dd-MM-yyyy hh:mm:ss a";
 	public static final String FORMATO_FECHA_ARCHIVOS = "ddMMyyyyhhmmss";
 	public static final String ESTADO_MAESTRO_DEFINICION_ACTIVO = "ACTIVO";
@@ -287,6 +288,11 @@ public final class Constantes {
 	public static final String EXPRESION_REGULAR_PUNTO = "\\.";
 
 	public static final String REGEX_PUNTO = "\\.";
+
+	/**
+	 * Expresión regular formato para extraer información de la mascara
+	 */
+	public static final String REGEX_EXTRAER_MASCARA = "\\[(.*?)\\]";
 	
 	/**
 	 * Expresión regular formato valido de horas en formato am/pm 
@@ -699,4 +705,15 @@ public static final String DELETE_SEPARADORES = "";
 	public static final String MIN_DENOM_COP = "MIN_DENOM_COP";
 	public static final Integer BANCO_BOGOTA = 297;
 	public static final String MONEDA_COP = "COP";
+	
+	
+	/**
+	 * Constantes de ArchivosLiquidacion.
+	 */
+	public static final String LIQUIDACION_INDICATIVO = "LIQ_";
+	public static final String LIQUIDACION_AGRUPADOR = "LIQCO";
+	public static final String MAESTRO_ARCHIVO_TRANSPORTE = "LIQTP";
+	public static final String MAESTRO_ARCHIVO_PROCESAMIENTO = "LIQPR";
+	public static final Integer NUMERO_MAXIMO_ITEMS_S3 = 100;
+
 }

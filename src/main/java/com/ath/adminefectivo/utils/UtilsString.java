@@ -212,6 +212,30 @@ public class UtilsString {
 		}
 		return null;
 	}
+	
+	/**
+	 * recibe un string y lo convierte en tipo date segun los dominios existentes
+	 * 
+	 * @param fecha
+	 * @param listaDominioFecha
+	 * @return Date
+	 * @author hector.mercado
+	 */
+	public static Date toDate(String fecha, List<String> listaDominioFecha) {
+		String[] strArray = new String[listaDominioFecha.size()];
+		strArray = listaDominioFecha.toArray(strArray);
+		if (isFecha(fecha, listaDominioFecha)) {
+			try {
+				return DateUtils.parseDateStrictly(fecha, strArray);
+			} catch (ParseException e) {
+				return null;
+			}
+		}
+		return null;
+	}
+
+	
+	
 
 	/**
 	 * recibe una fecha, le resta un dia y devuelve nueva fecha

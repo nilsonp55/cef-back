@@ -2,9 +2,11 @@ package com.ath.adminefectivo.service;
 
 import java.util.List;
 
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ath.adminefectivo.dto.DownloadDTO;
+import com.ath.adminefectivo.dto.compuestos.SummaryArchivoLiquidacionDTO;
 
 /**
  * Interfaz de los servicios referentes a lo carga y persistencia de archivos
@@ -60,6 +62,16 @@ public interface IFilesService {
 	 * @author CamiloBenavides
 	 */
 	List<String> obtenerContenidoCarpeta(String url);
+
+
+	/**
+	 * Consulta la ruta url y retorna el contenido de los archivos contenidos en el directorio
+	 *
+	 * @param url
+	 * @return List<String>
+	 * @author CamiloBenavides
+	 */
+	public List<SummaryArchivoLiquidacionDTO> obtenerContenidoCarpetaSummaryS3Object(String url, int start, int end, boolean content, String fileName);
 
 	/**
 	 * Copia un archivo de una carpeta de origen a una carpeta final

@@ -7,9 +7,12 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -18,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Parametros;
 import com.ath.adminefectivo.dto.DownloadDTO;
+import com.ath.adminefectivo.dto.compuestos.SummaryArchivoLiquidacionDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.service.IFilesService;
@@ -148,6 +152,55 @@ public class FilesServiceImpl implements IFilesService {
 
     return contenidoCarpeta;
   }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List<SummaryArchivoLiquidacionDTO> obtenerContenidoCarpetaSummaryS3Object(String url, int start, int end, boolean content, String fileName) {
+	  
+	  List<String> contenidoArchivo = null;
+	  List<S3ObjectSummary> s3ObjectSummaries = new ArrayList<>();
+	  List<SummaryArchivoLiquidacionDTO> archivosDTOList = new ArrayList<>();
+	    
+	    if (Boolean.TRUE.equals(s3Bucket)) {
+	    	if (!fileName.isBlank()) {
+	    		s3ObjectSummaries = s3Util.getObjectsSummaryFromPathS3(url + fileName);
+	    	}else {
+	    		s3ObjectSummaries = s3Util.getObjectsBySegments(url,start,end);
+	    	}
+	    	
+	    } else {
+	    	//TODO añadir estándar contenido Carpeta
+	    }
+	    if (Objects.isNull(s3ObjectSummaries)) {
+	      throw new NegocioException(ApiResponseCode.ERROR_CARPETA_NO_ENCONTRADA.getCode(),
+	              ApiResponseCode.ERROR_CARPETA_NO_ENCONTRADA.getDescription(),
+	              ApiResponseCode.ERROR_CARPETA_NO_ENCONTRADA.getHttpStatus());
+	    } else {    	    
+	    	
+	    	for (S3ObjectSummary s3ObjectSummary : s3ObjectSummaries) {
+	    		
+	    		// Verifica si el tamaño del archivo es mayor que cero antes de procesarlo
+	    		if (s3ObjectSummary.getSize() > 0) {
+		    		SummaryArchivoLiquidacionDTO archivoDTO = new SummaryArchivoLiquidacionDTO();
+		            archivoDTO.setS3ObjectSummary(s3ObjectSummary);
+		            
+		            // Verifica si la peticion solicta que los archivos tengan contenido
+		            if(content) {
+		            // Obtiene el contenido del archivo
+		            contenidoArchivo = s3Util.getFileContent(s3ObjectSummary.getKey());		            				            		            
+		            }
+		            
+		            archivoDTO.setContenidoArchivo(contenidoArchivo);		            
+		            archivosDTOList.add(archivoDTO);
+		            
+	    		}
+	        }
+	    }
+
+	    return archivosDTOList;
+	  }
 
   /**
    * {@inheritDoc}

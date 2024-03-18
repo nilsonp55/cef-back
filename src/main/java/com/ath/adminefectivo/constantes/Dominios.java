@@ -42,6 +42,7 @@ public final class Dominios {
 	public static final String VIGENCIA_REEMPLAZO = "R";
 	public static final String VIGENCIA_PROCESADO = "P";
 	public static final String VIGENCIA_LEIDO = "L";
+
 	
 	public static final String ESTADO_CONCILIACION_CONCILIADO = "CONCILIADA";
 	public static final String ESTADO_CONCILIACION_NO_CONCILIADO = "NO_CONCILIADA";
@@ -127,6 +128,10 @@ public final class Dominios {
 	public static final String ESTADO_VALIDACION_REPROCESADO = "REPROCESADO";
 	public static final String ESTADO_VALIDACION_REEMPLAZADORP = "REEMPLAZADORP";
 	public static final String ESTADO_VALIDACION_FUTURO = "FUTURO";
+
+	public static final String LIQUIDACION_TRANSPORTE = "LIQTP";
+
+	public static final String LIQUIDACION_PROCESAMIENTO = "LIQPR";
 	
 	/**
 	 * Dominio de agrupamiento de los detalles de archivo
@@ -155,6 +160,7 @@ public final class Dominios {
 	public static final String TIPO_REGLA_INCLUIDOS = "INC";
 	public static final String TIPO_REGLA_EXCLUIDOS = "EXC";
 	public static final String TIPO_REGLA_CONSULTA_SQL = "SQL";
+	public static final String TIPO_REGLA_FORMATO_FECHA = "FEC";
 	
 	/**
 	 * Tipos de archivo 

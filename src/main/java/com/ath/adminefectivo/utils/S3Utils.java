@@ -1,15 +1,18 @@
 package com.ath.adminefectivo.utils;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,10 +21,12 @@ import org.springframework.web.multipart.MultipartFile;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ListObjectsV2Request;
 import com.amazonaws.services.s3.model.ListObjectsV2Result;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
+import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.exception.NegocioException;
 import lombok.extern.log4j.Log4j2;
@@ -90,16 +95,32 @@ public class S3Utils {
         new ListObjectsV2Request().withBucketName(bucketName).withPrefix(path).withDelimiter("/");
     ListObjectsV2Result listing = s3.listObjectsV2(req);
     List<S3ObjectSummary> objects = listing.getObjectSummaries();
-    List<String> list = objects.stream().map(item -> item.getKey()).collect(Collectors.toList());
+    List<String> list = objects.stream().map(S3ObjectSummary::getKey).toList();
     List<String> list2 = new ArrayList<>();
     String name;
     for (int i = 0; i < list.size(); i++) {
+
       if (!list.get(i).equals(path.substring(0, path.length()))) {
         name = list.get(i).replace(path, "");
         list2.add(name);
       }
     }
     return list2;
+  }
+
+  /**
+   * Trae una lista los archivos de una carpeta en especifico Recibe una ruta donde se encuentra el
+   * archivo Nota: el metodo de conexionS3(bucketName) solo se debe de llamar cuando son pruebas
+   * locales, para despliegues en el Fargate toca comentarla
+   *
+   * @param path
+   * @return
+   */
+  public List<S3ObjectSummary> getObjectsSummaryFromPathS3(String path) {
+    ListObjectsV2Request req =
+            new ListObjectsV2Request().withBucketName(bucketName).withPrefix(path).withDelimiter("/");
+    ListObjectsV2Result listing = s3.listObjectsV2(req);
+      return listing.getObjectSummaries();
   }
 
   public List<String> getObjectsFromPathS3V2(String path) {
@@ -266,5 +287,57 @@ public class S3Utils {
         }
       }
     }
+  }
+  
+  /**
+   * Metodo que lee el contenido de un archivo linea por linea
+   * 
+   * @param key
+   */
+  public List<String> getFileContent(String key) {
+
+	  List<String> contentList = new ArrayList<>();
+
+      AmazonS3 s3Client = AmazonS3Client.builder().withRegion(awsRegion).build();
+
+      try (com.amazonaws.services.s3.model.S3Object s3Object = s3Client.getObject(bucketName, key);
+           BufferedReader reader = new BufferedReader(new InputStreamReader(s3Object.getObjectContent()))) {
+
+          // Lee el contenido del archivo línea por línea
+          String line;
+          while ((line = reader.readLine()) != null) {
+              contentList.add(line);
+          }
+      } catch (IOException e) {
+          log.error("Error al obtener el contenido del archivo desde S3.", e);
+          // Maneja el error según tus necesidades
+      }
+
+      return contentList;
+  }
+  
+  public List<S3ObjectSummary> getObjectsBySegments(String path, int start, int end) {
+	  
+	  int maxNum = Constantes.NUMERO_MAXIMO_ITEMS_S3;
+	  int maxKeys = (end > 0) ? end + 1 : maxNum;
+	  int minKeys = (start == 1) ? start : start + 1;
+	  List<S3ObjectSummary> s3ObjectSummaries = null;
+
+	  try {
+	      ListObjectsV2Request listObjectsRequest = new ListObjectsV2Request()
+	              .withBucketName(bucketName)
+	              .withPrefix(path)
+	              .withMaxKeys(maxKeys); // Establece el número máximo de objetos a recuperar
+
+	      ListObjectsV2Result listObjectsResponse = s3.listObjectsV2(listObjectsRequest);
+	      s3ObjectSummaries = listObjectsResponse.getObjectSummaries();
+	      // Filtra los objetos según los límites especificados
+	      s3ObjectSummaries = s3ObjectSummaries.subList(minKeys - 1, Math.min(maxKeys, s3ObjectSummaries.size()));
+	      
+	  } catch (SdkClientException e) {	    
+		  log.error("Error al obtener el contenido del archivo desde S3.", e);
+	  }
+	  
+	  return s3ObjectSummaries;
   }
 }

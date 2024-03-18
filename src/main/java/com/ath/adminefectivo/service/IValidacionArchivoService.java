@@ -29,7 +29,7 @@ public interface IValidacionArchivoService {
 
 	/**
 	 * Metodo encargado de realizar el recorrido del listado de registros y realiza
-	 * la validación de cada registro
+	 * la validación de cada registro 
 	 * 
 	 * @param maestroDefinicion
 	 * @param contenido
