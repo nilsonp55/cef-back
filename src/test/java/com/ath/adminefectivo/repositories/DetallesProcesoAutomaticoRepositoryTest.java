@@ -82,8 +82,7 @@ class DetallesProcesoAutomaticoRepositoryTest {
 		long idDetalleProcesoAutomaticoFind = detallesProcesoAutomatico2.getIdDetalleProceso();
 		Optional<DetallesProcesoAutomatico> detalleProcesoAutomaticoFind = detallesProcesoAutomaticoRepository.findById(idDetalleProcesoAutomaticoFind);
 		assertThat(detalleProcesoAutomaticoFind).isNotEmpty();
-		assertThat(detalleProcesoAutomaticoFind.get()).isInstanceOf(DetallesProcesoAutomatico.class);
-		
+		assertThat(detalleProcesoAutomaticoFind.get()).isInstanceOf(DetallesProcesoAutomatico.class);		
 	}
 
 }
