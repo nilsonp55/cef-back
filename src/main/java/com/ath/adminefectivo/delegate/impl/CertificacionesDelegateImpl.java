@@ -3,20 +3,26 @@ package com.ath.adminefectivo.delegate.impl;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-
-import com.ath.adminefectivo.dto.DetallesDefinicionArchivoDTO;
-import com.ath.adminefectivo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.delegate.ICertificacionesDelegate;
+import com.ath.adminefectivo.dto.DetallesDefinicionArchivoDTO;
 import com.ath.adminefectivo.dto.LogProcesoDiarioDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.ArchivosCargados;
 import com.ath.adminefectivo.exception.NegocioException;
+import com.ath.adminefectivo.service.IArchivosCargadosService;
+import com.ath.adminefectivo.service.IAuditoriaProcesosService;
+import com.ath.adminefectivo.service.IDetalleDefinicionArchivoService;
+import com.ath.adminefectivo.service.IDominioService;
+import com.ath.adminefectivo.service.ILogProcesoDiarioService;
+import com.ath.adminefectivo.service.IOperacionesCertificadasService;
+import com.ath.adminefectivo.service.IParametroService;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 @Service
 public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 
@@ -176,6 +182,7 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 		ArchivosCargados elemento = null;
 
 		for (Long elementoId : idsArchivosCargados) {
+		  log.debug("idArchivo: {}", elementoId);
 			try {
 				cuenta = cuenta + 1;
 				// leer los registros de cada archivo
@@ -185,13 +192,15 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 				if (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IBBCS)
 						|| elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IBMCS)) {
 					operacionesCertificadasService.procesarArchivoBrinks(elemento, listadoDetalleArchivo);
+					log.debug("idArchivo: {} - procesarArchivoBrinks", elementoId);
 				} else {
 					operacionesCertificadasService.procesarArchivoOtrosFondos(elemento, listadoDetalleArchivo);
+					log.debug("idArchivo: {} - procesarArchivoOtrosFondos", elementoId);
 				}
 
 			auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
 					fechaProceso, Constantes.ESTADO_PROCESO_PROCESO, "Archivos procesados: " + cuenta);
-
+			log.debug("idArchivo: {}", elementoId);
 			} catch (NegocioException nExcep) {
 				auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
 						fechaProceso, Constantes.ESTADO_PROCESO_ERROR, nExcep.getMessage());
