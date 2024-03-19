@@ -78,7 +78,8 @@ public class PuntosCodigoTDVServiceImpl implements IPuntosCodigoTdvService {
 	 */
     @Override
 	public Integer getCodigoPunto(String codigoPuntoTdv, String codigoTdv, Integer bancoAval, String codigoDane) {
-        BancosDTO bancoAvalDTO = bancoService.findBancoByCodigoPunto(bancoAval);
+      log.debug("getCodigoPunto - codigoPuntoTdv: {} - codigoTdv: {} - bancoAval: {} - codigoDane: {}", codigoPuntoTdv, codigoTdv, bancoAval, codigoDane);  
+      BancosDTO bancoAvalDTO = bancoService.findBancoByCodigoPunto(bancoAval);
         var puntosCodigoTDV = puntosCodigoTDVRepository.findByCodigoPropioTDVAndCodigoTDVAndBancosAndCiudadCodigo(
                 codigoPuntoTdv.trim(), codigoTdv, BancosDTO.CONVERTER_ENTITY.apply(bancoAvalDTO), codigoDane);
         if (Objects.isNull(puntosCodigoTDV)) {
