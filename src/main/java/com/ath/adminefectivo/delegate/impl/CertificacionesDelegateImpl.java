@@ -191,11 +191,11 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 						.consultarDetalleDefinicionArchivoByIdMaestro(elemento.getIdModeloArchivo());
 				if (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IBBCS)
 						|| elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IBMCS)) {
-					operacionesCertificadasService.procesarArchivoBrinks(elemento, listadoDetalleArchivo);
-					log.debug("idArchivo: {} - procesarArchivoBrinks", elementoId);
+				  log.debug("idArchivo: {} - procesarArchivoBrinks", elementoId);
+				  operacionesCertificadasService.procesarArchivoBrinks(elemento, listadoDetalleArchivo);
 				} else {
-					operacionesCertificadasService.procesarArchivoOtrosFondos(elemento, listadoDetalleArchivo);
-					log.debug("idArchivo: {} - procesarArchivoOtrosFondos", elementoId);
+				  log.debug("idArchivo: {} - procesarArchivoOtrosFondos", elementoId);
+				  operacionesCertificadasService.procesarArchivoOtrosFondos(elemento, listadoDetalleArchivo);
 				}
 
 			auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
