@@ -46,7 +46,7 @@ class RolRepositoryTest {
 	
 	@DisplayName("Crear objeto Rol devolver rol creado")
 	@Test
-	void givenRolObject_whenSave_thenReturnRolSaved() {		
+	void givenRolObjectWhenSaveThenReturnRolSaved() {		
 		// given - precondition or setup
 		// Objeto this.rol 
 		
@@ -60,7 +60,7 @@ class RolRepositoryTest {
 	
 	@DisplayName("Obtener todos los objetos Rol de FindAll()")
 	@Test
-	void givenRolList_whenFindAll_thenRolList(){		
+	void givenRolListWhenFindAllThenRolList(){		
 		// given - precondition or setup
 		
 		// when -  action or the behaviour that we are going test
@@ -72,7 +72,7 @@ class RolRepositoryTest {
 	
 	@DisplayName("Buscar por IdRol y retornar objeto Rol")
 	@Test
-	void givenRolObject_whenFindById_thenReturnRolObject() {
+	void givenRolObjectWhenFindByIdThenReturnRolObject() {
 		// given - precondition or setup
 		
 		// when -  action or the behaviour that we are going test
@@ -85,7 +85,7 @@ class RolRepositoryTest {
 	
 	@DisplayName("Actualizar objeto rol y retornar rol actualizado")
 	@Test
-    void givenRolObject_whenUpdateRol_thenReturnUpdatedRol(){		
+    void givenRolObjectWhenUpdateRolThenReturnUpdatedRol(){		
 		// given - precondition or setup
 		Date fechaCreacion = Date.from(Instant.now());
 		Date fechaModificacion = Date.from(Instant.now());
@@ -115,7 +115,7 @@ class RolRepositoryTest {
 	
 	@DisplayName("Eliminar objeto rol y validar que no existe")
 	@Test
-    void givenRolObject_whenDelete_thenRemoveRol(){
+    void givenRolObjectWhenDeleteThenRemoveRol(){
 		// given - precondition or setup
 				
 		// when -  action or the behaviour that we are going test

@@ -66,7 +66,7 @@ class UsuarioRepositoryTest {
 	
 	@DisplayName("Crear usuario nuevo devolver usuario creado")
 	@Test
-	void givenUsuarioObject_whenSave_thenReturnUsuarioSaved() {		
+	void givenUsuarioObjectWhenSaveThenReturnUsuarioSaved() {		
 		// given - precondition or setup				
 		
 		// when -  action or the behaviour that we are going test
@@ -80,7 +80,7 @@ class UsuarioRepositoryTest {
 	
 	@DisplayName("Obtener todos los objetos Usuario de FindAll()")
 	@Test
-	void givenUsuarioList_whenFindAll_thenUsuarioList(){
+	void givenUsuarioListWhenFindAllThenUsuarioList(){
 		// given - precondition or setup
 		
 		// when -  action or the behaviour that we are going test
@@ -92,7 +92,7 @@ class UsuarioRepositoryTest {
 	
 	@DisplayName("Buscar por IdUsuario y retornar objeto Usuario")
 	@Test
-	void givenUsuarioObject_whenFindById_thenReturnUsuarioObject() {
+	void givenUsuarioObjectWhenFindByIdThenReturnUsuarioObject() {
 		//given - precondition or setup		
 		
 		// when -  action or the behaviour that we are going test
@@ -106,7 +106,7 @@ class UsuarioRepositoryTest {
 	
 	@DisplayName("Actualizar objeto Usuario y retornar usuario actualizado")
 	@Test
-    void givenUsuarioObject_whenUpdateUsuario_thenReturnUpdatedUsuario(){
+    void givenUsuarioObjectWhenUpdateUsuarioThenReturnUpdatedUsuario(){
 		//given - precondition or setup
 		Date fechaCreacion = Date.from(Instant.now());
 		Date fechaModificacion = Date.from(Instant.now());
@@ -137,7 +137,7 @@ class UsuarioRepositoryTest {
 	
 	@DisplayName("Eliminar objeto usuario y validar que no existe")
 	@Test
-    void givenUsuarioObject_whenDelete_thenRemoveUsuario(){
+    void givenUsuarioObjectWhenDeleteThenRemoveUsuario(){
 		//given - precondition or setup
 		
 		// when -  action or the behaviour that we are going test
