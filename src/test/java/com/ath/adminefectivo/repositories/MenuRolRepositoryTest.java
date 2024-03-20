@@ -46,7 +46,7 @@ class MenuRolRepositoryTest {
 				.fechaModificacion(Date.from(Instant.now()))
 				.nombre("ROL1")
 				.usuarioCreacion("user1")
-				.usuarioModificacion("user1")
+				.usuarioModificacion("user11")
 				.build();
 		rolRepository.save(rol);
 		
@@ -60,7 +60,7 @@ class MenuRolRepositoryTest {
 				.fechaModificacion(Date.from(Instant.now()))
 				.icono("meu-item.icon")
 				.usuarioCreacion("user2")
-				.usuarioModificacion("user2")
+				.usuarioModificacion("user21")
 				.build();
 		menuRepository.save(menu);
 		
@@ -71,8 +71,8 @@ class MenuRolRepositoryTest {
 			.fechaModificacion("")
 			.menu(menu)
 			.rol(rol)
-			.usuarioCreacion("user1")
-			.usuarioModificacion("user1")
+			.usuarioCreacion("user12")
+			.usuarioModificacion("user13")
 			.build();
 		
 		menuRolRepository.save(menuRol);
@@ -130,7 +130,7 @@ class MenuRolRepositoryTest {
 		menuRolFind.setEstado("A");
 		menuRolFind.setFechaCreacion("");
 		menuRolFind.setFechaModificacion("");
-		menuRolFind.setUsuarioCreacion("user2");
+		menuRolFind.setUsuarioCreacion("user22");
 		menuRolFind.setUsuarioModificacion("user3");
 		MenuRol menuRolSaved = menuRolRepository.save(menuRolFind);
 		
