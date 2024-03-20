@@ -44,7 +44,7 @@ class UsuarioRepositoryTest {
 				.fechaModificacion(Date.from(Instant.now()))
 				.nombre("ROL1")
 				.usuarioCreacion("user1")
-				.usuarioModificacion("user1")
+				.usuarioModificacion("user11")
 				.build();
 		rolRepository.save(rol);
 		
@@ -56,8 +56,8 @@ class UsuarioRepositoryTest {
 			.estado("1")
 			.fechaCreacion( Date.from(Instant.now()) )
 			.fechaModificacion( Date.from(Instant.now()) )
-			.usuarioCreacion("user1")
-			.usuarioModificacion("user1")
+			.usuarioCreacion("user12")
+			.usuarioModificacion("user13")
 			.rol(rol)
 			.build();
 		
