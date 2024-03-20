@@ -80,7 +80,7 @@ class MenuRolRepositoryTest {
 	
 	@DisplayName("Crear menuRol nuevo devolver menuRol creado")
 	@Test
-	void givenMenuRolObject_whenSave_thenReturnMenuRolSaved() {		
+	void givenMenuRolObjectWhenSaveThenReturnMenuRolSaved() {		
 		// given - precondition or setup				
 		
 		// when -  action or the behaviour that we are going test
@@ -94,7 +94,7 @@ class MenuRolRepositoryTest {
 	
 	@DisplayName("Obtener todos los objetos MenuRol de FindAll()")
 	@Test
-	void givenMenuRolList_whenFindAll_thenMenuRolList(){
+	void givenMenuRolListWhenFindAllThenMenuRolList(){
 		// given - precondition or setup
 		
 		// when -  action or the behaviour that we are going test
@@ -106,7 +106,7 @@ class MenuRolRepositoryTest {
 	
 	@DisplayName("Buscar por IdMenuRol y retornar objeto MenuRol")
 	@Test
-	void givenMenuRolObject_whenFindById_thenReturnMenuRolObject() {
+	void givenMenuRolObjectWhenFindByIdThenReturnMenuRolObject() {
 		//given - precondition or setup		
 		
 		// when -  action or the behaviour that we are going test
@@ -120,7 +120,7 @@ class MenuRolRepositoryTest {
 	
 	@DisplayName("Actualizar objeto MenuRol y retornar menuRol actualizado")
 	@Test
-    void givenMenuRolObject_whenUpdateMenuRol_thenReturnUpdatedMenuRol(){
+    void givenMenuRolObjectWhenUpdateMenuRolThenReturnUpdatedMenuRol(){
 		//given - precondition or setup
 		MenuRol menuRolFind = menuRolRepository.findById(menuRol.getCodigo()).get();
 		
@@ -147,7 +147,7 @@ class MenuRolRepositoryTest {
 	
 	@DisplayName("Eliminar objeto menuRol y validar que no existe")
 	@Test
-    void givenMenuRolObject_whenDelete_thenRemoveMenuRol(){
+    void givenMenuRolObjectWhenDeleteThenRemoveMenuRol(){
 		//given - precondition or setup
 		
 		// when -  action or the behaviour that we are going test

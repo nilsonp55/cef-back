@@ -47,7 +47,7 @@ class MenuRepositoryTest {
 	
 	@DisplayName("Crear menu nuevo devolver menu creado")
 	@Test
-	void givenMenuObject_whenSave_thenReturnMenuSaved() {		
+	void givenMenuObjectWhenSaveThenReturnMenuSaved() {		
 		// given - precondition or setup				
 		
 		// when -  action or the behaviour that we are going test
@@ -61,7 +61,7 @@ class MenuRepositoryTest {
 	
 	@DisplayName("Obtener todos los objetos Menu de FindAll()")
 	@Test
-	void givenMenuList_whenFindAll_thenMenuList(){
+	void givenMenuListWhenFindAllThenMenuList(){
 		// given - precondition or setup
 		
 		// when -  action or the behaviour that we are going test
@@ -73,7 +73,7 @@ class MenuRepositoryTest {
 	
 	@DisplayName("Buscar por IdMenu y retornar objeto Menu")
 	@Test
-	void givenMenuObject_whenFindById_thenReturnMenuObject() {
+	void givenMenuObjectWhenFindByIdThenReturnMenuObject() {
 		//given - precondition or setup		
 		
 		// when -  action or the behaviour that we are going test
@@ -87,7 +87,7 @@ class MenuRepositoryTest {
 	
 	@DisplayName("Actualizar objeto Menu y retornar menu actualizado")
 	@Test
-    void givenMenuObject_whenUpdateMenu_thenReturnUpdatedMenu(){
+    void givenMenuObjectWhenUpdateMenuThenReturnUpdatedMenu(){
 		//given - precondition or setup
 		Date fechaCreacion = Date.from(Instant.now());
 		Date fechaModificacion = Date.from(Instant.now());
@@ -122,7 +122,7 @@ class MenuRepositoryTest {
 	
 	@DisplayName("Eliminar objeto menu y validar que no existe")
 	@Test
-    void givenMenuObject_whenDelete_thenRemoveMenu(){
+    void givenMenuObjectWhenDeleteThenRemoveMenu(){
 		//given - precondition or setup
 		
 		// when -  action or the behaviour that we are going test
