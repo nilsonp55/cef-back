@@ -3,14 +3,12 @@ package com.ath.adminefectivo.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.BancosDTO;
 import com.ath.adminefectivo.dto.PuntosCodigoTdvDTO;
@@ -25,7 +23,6 @@ import com.ath.adminefectivo.service.IPuntosCodigoTdvService;
 import com.ath.adminefectivo.service.IPuntosService;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
-
 import lombok.extern.log4j.Log4j2;
 
 @Service

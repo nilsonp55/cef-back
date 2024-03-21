@@ -74,7 +74,7 @@ public interface IPuntosRepository
       + "inner join ClientesCorporativos c on c.codigoCliente = s.codigoCliente and "
       + "c.identificacion = '9999999999' "
       + "where p.tipoPunto ='CLIENTE' and c.codigoBancoAval = ?1")
-  public Puntos obtenerCodigoPunto(Integer codigoAval);
+  public List<Puntos> obtenerCodigoPunto(Integer codigoAval);
 
   /**
    * Consulta la tabla puntos por tipo de punto
