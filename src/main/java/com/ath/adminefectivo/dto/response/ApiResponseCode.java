@@ -720,7 +720,13 @@ public enum ApiResponseCode {
 	 * Error al modificar tipo punto en tabla de puntos
 	 */
 	ERROR_TIPO_PUNTO_DIFERENTE("E977", "No estᡰermitido modificar el tipo punto",
-			HttpStatus.PRECONDITION_FAILED);
+			HttpStatus.PRECONDITION_FAILED),
+  
+    /**
+     * Ocurrió un error al consultar la tabla de puntos, retorna mas de un registro
+     */
+    ERROR_PUNTOS_ENCONTRADOS_REPETIDOS("E978", "Al consultar puntos, retorna mas de un registro",
+          HttpStatus.PRECONDITION_FAILED);
 	
 	/**
 	 * Código asociado a la respuesta
