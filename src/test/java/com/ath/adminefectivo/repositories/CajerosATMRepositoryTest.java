@@ -12,26 +12,26 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 class CajerosATMRepositoryTest {
 
 	@BeforeEach
-	void setUp() throws Exception {
+	void setUpCajerosATMRepository() throws Exception {
 	}
 
 	@Test
-	void testSave() {
+	void testSaveCajerosATMRepository() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testFindByIdCajerosATMRepository() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testFindAllCajerosATMRepository() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void testDeleteCajerosATMRepository() {
 		fail("Not yet implemented");
 	}
 
