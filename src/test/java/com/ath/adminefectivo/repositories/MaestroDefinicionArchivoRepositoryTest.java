@@ -77,8 +77,8 @@ class MaestroDefinicionArchivoRepositoryTest {
 				.findById(maestroDefinicionArchivoSearch.getIdMaestroDefinicionArchivo());
 
 		assertThat(maestroDefinicionArchivoFind).isNotEmpty();
-		assertThat(maestroDefinicionArchivoFind.get().getIdMaestroDefinicionArchivo())
-				.isEqualTo(maestroDefinicionArchivoSearch.getIdMaestroDefinicionArchivo());
+		maestroDefinicionArchivoFind.ifPresent(m -> assertThat(m.getIdMaestroDefinicionArchivo())
+				.isEqualTo(maestroDefinicionArchivoSearch.getIdMaestroDefinicionArchivo()));
 		log.info("maestroDefinicionArchivo.id: {}", maestroDefinicionArchivoSearch.getIdMaestroDefinicionArchivo());
 	}
 

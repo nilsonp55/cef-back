@@ -57,9 +57,12 @@ class DominioMaestroRepositoryTest {
 		
 		Optional<DominioMaestro> dominioMaestroFind = dominioMaestroRepository.findById("DominioDos");
 		assertThat(dominioMaestroFind).isNotEmpty();
-		assertThat(dominioMaestroFind.get().getDescripcion()).isEqualTo(dominioMaestro2.getDescripcion());
-		assertThat(dominioMaestroFind.get().getTipoContenido()).isEqualTo(dominioMaestro2.getTipoContenido());
-		assertThat(dominioMaestroFind.get().getEstado()).isEqualTo(dominioMaestro2.getEstado());
+		dominioMaestroFind.ifPresent(dm -> {
+			assertThat(dm.getDescripcion()).isEqualTo(dominioMaestro2.getDescripcion());
+			assertThat(dm.getTipoContenido()).isEqualTo(dominioMaestro2.getTipoContenido());
+			assertThat(dm.getEstado()).isEqualTo(dominioMaestro2.getEstado());
+		});
+		
 		
 		String descripcion = "nueva descripcion";
 		String estado = "I";

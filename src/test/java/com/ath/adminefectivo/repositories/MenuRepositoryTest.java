@@ -70,16 +70,16 @@ class MenuRepositoryTest {
 	@DisplayName("Buscar por IdMenu y retornar objeto Menu")
 	@Test
 	void givenMenuObjectWhenFindByIdThenReturnMenuObject() {
-		//given - precondition or setup
+		// given - precondition or setup
 		menuRepository.save(menu);
-		
-		// when -  action or the behaviour that we are going test
+
+		// when - action or the behaviour that we are going test
 		Optional<Menu> menuFind = menuRepository.findById(menu.getIdMenu());
-		
+
 		// then - verify the output
 		assertThat(menuFind).isNotEmpty();
-		assertThat(menuFind.get().getIdMenu()).isEqualTo(menu.getIdMenu());
-		
+		menuFind.ifPresent(m -> assertThat(m.getIdMenu()).isEqualTo(menu.getIdMenu()));
+
 	}
 	
 	@DisplayName("Actualizar objeto Menu y retornar menu actualizado")

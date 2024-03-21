@@ -101,15 +101,16 @@ class ErroresCostoRepositoryTest {
 	
 	@Test
 	void testErroresCostosFindById() {
-		
+
 		ErroresCostos erroresCostosSaved = erroresCostosRepository.save(erroresCostos);
 		log.info("testErroresCostosFindById - Id saved: {}", erroresCostosSaved.getIdErroresCostos());
-		
-		Optional<ErroresCostos> erroresCostosFind = erroresCostosRepository.findById(erroresCostosSaved.getIdErroresCostos());
-		
+
+		Optional<ErroresCostos> erroresCostosFind = erroresCostosRepository
+				.findById(erroresCostosSaved.getIdErroresCostos());
+
 		assertThat(erroresCostosFind).isNotEmpty();
-		assertThat(erroresCostosFind.get()).isInstanceOf(ErroresCostos.class);
-		
+		erroresCostosFind.ifPresent(errores -> assertThat(errores.getClass()).isInstanceOf(ErroresCostos.class));
+
 	}
 	
 	@Test
