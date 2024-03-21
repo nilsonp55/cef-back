@@ -16,32 +16,32 @@ class DetallesDefinicionArchivoRepositoryTest {
 	}
 
 	@Test
-	void testFindByIdIdArchivo() {
+	void testDetallesDefinicionArchivoFindByIdIdArchivo() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindByIdIdArchivoAndIdNumeroCampo() {
+	void testDetallesDefinicionArchivoFindByIdIdArchivoAndIdNumeroCampo() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testSave() {
+	void testDetallesDefinicionArchivoSave() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testDetallesDefinicionArchivoFindById() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testDetallesDefinicionArchivoFindAll() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void testDetallesDefinicionArchivoDelete() {
 		fail("Not yet implemented");
 	}
 
