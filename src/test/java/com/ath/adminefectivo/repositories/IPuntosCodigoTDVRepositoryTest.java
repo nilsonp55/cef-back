@@ -36,22 +36,22 @@ class IPuntosCodigoTDVRepositoryTest {
 	}
 
 	@Test
-	void testSave() {
+	void testIPuntosCodigoTDVSave() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testIPuntosCodigoTDVFindById() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testIPuntosCodigoTDVFindAll() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void testIPuntosCodigoTDVDelete() {
 		fail("Not yet implemented");
 	}
 

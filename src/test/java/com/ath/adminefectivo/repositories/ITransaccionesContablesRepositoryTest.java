@@ -76,22 +76,22 @@ class ITransaccionesContablesRepositoryTest {
 	}
 
 	@Test
-	void testSave() {
+	void testITransaccionesContablesSave() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testITransaccionesContablesFindById() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testITransaccionesContablesFindAll() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void testITransaccionesContablesDelete() {
 		fail("Not yet implemented");
 	}
 

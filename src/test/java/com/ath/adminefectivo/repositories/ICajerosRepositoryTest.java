@@ -26,22 +26,22 @@ class ICajerosRepositoryTest {
 	}
 
 	@Test
-	void testSave() {
+	void testICajerosSave() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testICajerosFindById() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testICajerosFindAll() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void testICajerosDelete() {
 		fail("Not yet implemented");
 	}
 

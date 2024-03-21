@@ -51,22 +51,22 @@ class IPuntosRepositoryTest {
 	}
 
 	@Test
-	void testSave() {
+	void testIPuntosSave() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testIPuntosFindById() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testIPuntosFindAll() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void testIPuntosDelete() {
 		fail("Not yet implemented");
 	}
 

@@ -41,22 +41,22 @@ class ICiudadesRepositoryTest {
 	}
 
 	@Test
-	void testSave() {
+	void testICiudadesSave() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testICiudadesFindById() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testICiudadesFindAll() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void testICiudadesDelete() {
 		fail("Not yet implemented");
 	}
 

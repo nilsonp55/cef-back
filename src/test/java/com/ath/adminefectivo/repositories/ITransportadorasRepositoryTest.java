@@ -26,22 +26,22 @@ class ITransportadorasRepositoryTest {
 	}
 
 	@Test
-	void testSave() {
+	void testITransportadorasSave() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testITransportadorasFindById() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testITransportadorasFindAll() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void testITransportadorasDelete() {
 		fail("Not yet implemented");
 	}
 

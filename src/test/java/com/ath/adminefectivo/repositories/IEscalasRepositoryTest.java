@@ -16,22 +16,22 @@ class IEscalasRepositoryTest {
 	}
 
 	@Test
-	void testSave() {
+	void testIEscalasSave() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testIEscalasFindById() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testIEscalasFindAll() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void testIEscalasDelete() {
 		fail("Not yet implemented");
 	}
 

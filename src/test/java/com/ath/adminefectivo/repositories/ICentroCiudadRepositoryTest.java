@@ -16,22 +16,22 @@ class ICentroCiudadRepositoryTest {
 	}
 
 	@Test
-	void testSave() {
+	void testICentroCiudadSave() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testICentroCiudadFindById() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testICentroCiudadFindAll() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void testICentroCiudadDelete() {
 		fail("Not yet implemented");
 	}
 

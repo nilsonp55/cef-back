@@ -46,22 +46,22 @@ class LogProcesoMensualRepositoryTest {
 	}
 
 	@Test
-	void testSave() {
+	void testLogProcesoMensualSave() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testLogProcesoMensualFindById() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testLogProcesoMensualFindAll() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void testLogProcesoMensualDelete() {
 		fail("Not yet implemented");
 	}
 

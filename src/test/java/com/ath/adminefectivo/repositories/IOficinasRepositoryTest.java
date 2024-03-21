@@ -26,22 +26,22 @@ class IOficinasRepositoryTest {
 	}
 
 	@Test
-	void testSave() {
+	void testIOficinasSave() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testIOficinasFindById() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testIOficinasFindAll() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void testIOficinasDelete() {
 		fail("Not yet implemented");
 	}
 

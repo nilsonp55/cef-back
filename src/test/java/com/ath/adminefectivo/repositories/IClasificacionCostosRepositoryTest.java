@@ -21,22 +21,22 @@ class IClasificacionCostosRepositoryTest {
 	}
 
 	@Test
-	void testSave() {
+	void testIClasificacionCostosSave() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testIClasificacionCostosFindById() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testIClasificacionCostosFindAll() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void testIClasificacionCostosDelete() {
 		fail("Not yet implemented");
 	}
 

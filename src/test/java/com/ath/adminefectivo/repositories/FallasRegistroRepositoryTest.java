@@ -16,22 +16,22 @@ class FallasRegistroRepositoryTest {
 	}
 
 	@Test
-	void testSave() {
+	void testFallasRegistroSave() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testFallasRegistroFindById() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testFallasRegistroFindAll() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void testFallasRegistroDelete() {
 		fail("Not yet implemented");
 	}
 

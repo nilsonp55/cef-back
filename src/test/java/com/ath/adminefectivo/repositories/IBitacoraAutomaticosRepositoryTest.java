@@ -16,22 +16,22 @@ class IBitacoraAutomaticosRepositoryTest {
 	}
 
 	@Test
-	void testSave() {
+	void testIBitacoraAutomaticosSave() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testIBitacoraAutomaticosFindById() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testIBitacoraAutomaticosFindAll() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void testIBitacoraAutomaticosDelete() {
 		fail("Not yet implemented");
 	}
 

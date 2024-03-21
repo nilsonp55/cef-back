@@ -16,22 +16,22 @@ class IPuntosCostosRepositoryTest {
 	}
 
 	@Test
-	void testSave() {
+	void testIPuntosCostosSave() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testIPuntosCostosFindById() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testIPuntosCostosFindAll() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void testIPuntosCostosDelete() {
 		fail("Not yet implemented");
 	}
 

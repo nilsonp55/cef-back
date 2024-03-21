@@ -16,22 +16,22 @@ class TasasCambioRepositoryTest {
 	}
 
 	@Test
-	void testSave() {
+	void testTasasCambioSave() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testTasasCambioFindById() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testTasasCambioFindAll() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void testTasasCambioDelete() {
 		fail("Not yet implemented");
 	}
 

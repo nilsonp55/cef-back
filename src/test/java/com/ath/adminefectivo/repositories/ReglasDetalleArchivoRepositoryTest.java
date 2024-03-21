@@ -16,22 +16,22 @@ class ReglasDetalleArchivoRepositoryTest {
 	}
 
 	@Test
-	void testSave() {
+	void testReglasDetalleArchivoSave() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testReglasDetalleArchivoFindById() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testReglasDetalleArchivoFindAll() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void tesReglasDetalleArchivotDelete() {
 		fail("Not yet implemented");
 	}
 

@@ -21,22 +21,22 @@ class ICostosFletesCharterRepositoryTest {
 	}
 
 	@Test
-	void testSave() {
+	void testICostosFletesCharterSave() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testICostosFletesCharterFindById() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testICostosFletesCharterFindAll() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void testICostosFletesCharterDelete() {
 		fail("Not yet implemented");
 	}
 

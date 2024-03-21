@@ -26,22 +26,22 @@ class IParametrosLiquidacionCostosRepositoryTest {
 	}
 
 	@Test
-	void testSave() {
+	void testIParametrosLiquidacionCostosSave() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testIParametrosLiquidacionCostosFindById() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testIParametrosLiquidacionCostosFindAll() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void testIParametrosLiquidacionCostosDelete() {
 		fail("Not yet implemented");
 	}
 

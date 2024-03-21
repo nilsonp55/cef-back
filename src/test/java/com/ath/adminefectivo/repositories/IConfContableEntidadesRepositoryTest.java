@@ -16,22 +16,22 @@ class IConfContableEntidadesRepositoryTest {
 	}
 
 	@Test
-	void testSave() {
+	void testIConfContableEntidadesSave() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testIConfContableEntidadesFindById() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testIConfContableEntidadesFindAll() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void testIConfContableEntidadesDelete() {
 		fail("Not yet implemented");
 	}
 

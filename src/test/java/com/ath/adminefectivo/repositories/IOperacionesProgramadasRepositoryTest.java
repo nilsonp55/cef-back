@@ -121,22 +121,22 @@ class IOperacionesProgramadasRepositoryTest {
 	}
 
 	@Test
-	void testSave() {
+	void testIOperacionesProgramadasSave() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testIOperacionesProgramadasFindById() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testIOperacionesProgramadasFindAll() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void testIOperacionesProgramadasDelete() {
 		fail("Not yet implemented");
 	}
 

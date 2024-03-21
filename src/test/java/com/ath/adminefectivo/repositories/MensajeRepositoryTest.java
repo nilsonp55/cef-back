@@ -16,22 +16,22 @@ class MensajeRepositoryTest {
 	}
 
 	@Test
-	void testSave() {
+	void testMensajeSave() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testMensajeFindById() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testMensajeFindAll() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void testMensajeDelete() {
 		fail("Not yet implemented");
 	}
 

@@ -41,22 +41,22 @@ class IBancosRepositoryTest {
 	}
 
 	@Test
-	void testSave() {
+	void testIBancosSave() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testIBancosFindById() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testIBancosFindAll() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void testIBancosDelete() {
 		fail("Not yet implemented");
 	}
 

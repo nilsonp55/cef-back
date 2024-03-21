@@ -51,22 +51,22 @@ class IValoresLiquidadosRepositoryTest {
 	}
 
 	@Test
-	void testSave() {
+	void testIValoresLiquidadosSave() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testIValoresLiquidadosFindById() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testIValoresLiquidadosFindAll() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void testIValoresLiquidadosDelete() {
 		fail("Not yet implemented");
 	}
 

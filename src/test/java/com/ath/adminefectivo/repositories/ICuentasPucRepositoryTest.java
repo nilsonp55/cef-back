@@ -16,22 +16,22 @@ class ICuentasPucRepositoryTest {
 	}
 
 	@Test
-	void testSave() {
+	void testICuentasPucSave() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testICuentasPucFindById() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testICuentasPucFindAll() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void testICuentasPucDelete() {
 		fail("Not yet implemented");
 	}
 

@@ -16,22 +16,22 @@ class FallasArchivoRepositoryTest {
 	}
 
 	@Test
-	void testSave() {
+	void testFallasArchivoSave() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testFallasArchivoFindById() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testFallasArchivoFindAll() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void tesFallasArchivoDelete() {
 		fail("Not yet implemented");
 	}
 

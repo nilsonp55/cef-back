@@ -125,22 +125,22 @@ class IOperacionesCertificadasRepositoryTest {
 	}
 
 	@Test
-	void testSave() {
+	void testIOperacionesCertificadasSave() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testIOperacionesCertificadasFindById() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testIOperacionesCertificadasFindAll() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void testIOperacionesCertificadasDelete() {
 		fail("Not yet implemented");
 	}
 

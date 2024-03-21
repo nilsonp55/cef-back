@@ -36,22 +36,22 @@ class IErroresContablesRepositoryTest {
 	}
 
 	@Test
-	void testSave() {
+	void testIErroresContablesSave() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testIErroresContablesFindById() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testIErroresContablesFindAll() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void testIErroresContablesDelete() {
 		fail("Not yet implemented");
 	}
 

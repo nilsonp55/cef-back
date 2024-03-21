@@ -21,22 +21,22 @@ class FestivosNacionalesRepositoryTest {
 	}
 
 	@Test
-	void testSave() {
+	void testFestivosNacionalesSave() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testFestivosNacionalesFindById() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testFestivosNacionalesFindAll() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void testFestivosNacionalesDelete() {
 		fail("Not yet implemented");
 	}
 

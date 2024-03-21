@@ -41,22 +41,22 @@ class IFondosRepositoryTest {
 	}
 
 	@Test
-	void testSave() {
+	void testIFondosSave() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testIFondosFindById() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testIFondosFindAll() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void testIFondosDelete() {
 		fail("Not yet implemented");
 	}
 

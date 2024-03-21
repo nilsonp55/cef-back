@@ -16,22 +16,22 @@ class IConciliacionServiciosHistoricoRepositoryTest {
 	}
 
 	@Test
-	void testSave() {
+	void testIConciliacionServiciosHistoricoSave() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testIConciliacionServiciosHistoricoFindById() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testIConciliacionServiciosHistoricoFindAll() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void testIConciliacionServiciosHistoricoDelete() {
 		fail("Not yet implemented");
 	}
 

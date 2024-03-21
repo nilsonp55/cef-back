@@ -21,22 +21,22 @@ class IDetalleOperacionesProgramadasRepositoryTest {
 	}
 
 	@Test
-	void testSave() {
+	void testIDetalleOperacionesProgramadasSave() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testIDetalleOperacionesProgramadasFindById() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testIDetalleOperacionesProgramadasFindAll() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void tesIDetalleOperacionesProgramadastDelete() {
 		fail("Not yet implemented");
 	}
 

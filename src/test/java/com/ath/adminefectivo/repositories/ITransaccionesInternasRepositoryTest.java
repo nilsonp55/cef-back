@@ -41,22 +41,22 @@ class ITransaccionesInternasRepositoryTest {
 	}
 
 	@Test
-	void testSave() {
+	void testITransaccionesInternasSave() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testITransaccionesInternasFindById() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testITransaccionesInternasFindAll() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void testITransaccionesInternasDelete() {
 		fail("Not yet implemented");
 	}
 

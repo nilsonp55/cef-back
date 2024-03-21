@@ -26,22 +26,22 @@ class IConciliacionOperacionesRepositoryTest {
 	}
 
 	@Test
-	void testSave() {
+	void testIConciliacionOperacionesSave() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testIConciliacionOperacionesFindById() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testIConciliacionOperacionesFindAll() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void testIConciliacionOperacionesDelete() {
 		fail("Not yet implemented");
 	}
 

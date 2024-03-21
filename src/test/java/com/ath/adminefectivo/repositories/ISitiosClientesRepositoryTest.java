@@ -21,22 +21,22 @@ class ISitiosClientesRepositoryTest {
 	}
 
 	@Test
-	void testSave() {
+	void testISitiosClientesSave() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testISitiosClientesFindById() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testISitiosClientesFindAll() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void testISitiosClientesDelete() {
 		fail("Not yet implemented");
 	}
 

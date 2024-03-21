@@ -26,22 +26,22 @@ class IFuncionesDinamicasRepositoryTest {
 	}
 
 	@Test
-	void testSave() {
+	void testIFuncionesDinamicasSave() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testIFuncionesDinamicasFindById() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testIFuncionesDinamicasFindAll() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void testIFuncionesDinamicasDelete() {
 		fail("Not yet implemented");
 	}
 

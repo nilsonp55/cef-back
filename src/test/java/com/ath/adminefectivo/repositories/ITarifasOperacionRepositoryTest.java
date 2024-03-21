@@ -21,22 +21,22 @@ class ITarifasOperacionRepositoryTest {
 	}
 
 	@Test
-	void testSave() {
+	void testITarifasOperacionSave() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testITarifasOperacionFindById() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testITarifasOperacionFindAll() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void testITarifasOperacionDelete() {
 		fail("Not yet implemented");
 	}
 

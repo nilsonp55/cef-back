@@ -16,22 +16,22 @@ class IAuditoriaProcesosRepositoryTest {
 	}
 
 	@Test
-	void testSave() {
+	void testIAuditoriaProcesosSave() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testIAuditoriaProcesosFindById() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testIAuditoriaProcesosFindAll() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void testIAuditoriaProcesosDelete() {
 		fail("Not yet implemented");
 	}
 

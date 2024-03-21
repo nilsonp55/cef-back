@@ -16,22 +16,22 @@ class ITdvDenominCantidadRepositoryTest {
 	}
 
 	@Test
-	void testSave() {
+	void testITdvDenominCantidadSave() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testITdvDenominCantidadFindById() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testITdvDenominCantidadFindAll() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void testITdvDenominCantidadDelete() {
 		fail("Not yet implemented");
 	}
 

@@ -21,22 +21,22 @@ class IRegistrosCargadosRepositoryTest {
 	}
 
 	@Test
-	void testSave() {
+	void testIRegistrosCargadosSave() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testIRegistrosCargadosFindById() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testIRegistrosCargadosFindAll() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void testIRegistrosCargadosDelete() {
 		fail("Not yet implemented");
 	}
 

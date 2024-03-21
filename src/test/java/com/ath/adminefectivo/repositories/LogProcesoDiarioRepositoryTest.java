@@ -36,22 +36,22 @@ class LogProcesoDiarioRepositoryTest {
 	}
 
 	@Test
-	void testSave() {
+	void testLogProcesoDiarioSave() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testLogProcesoDiarioFindById() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testLogProcesoDiarioFindAll() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void testLogProcesoDiarioDelete() {
 		fail("Not yet implemented");
 	}
 

@@ -26,22 +26,22 @@ class IClientesCorporativosRepositoryTest {
 	}
 
 	@Test
-	void testSave() {
+	void testIClientesCorporativosSave() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindById() {
+	void testIClientesCorporativosFindById() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testFindAll() {
+	void testIClientesCorporativosFindAll() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testDelete() {
+	void testIClientesCorporativosDelete() {
 		fail("Not yet implemented");
 	}
 
