@@ -109,7 +109,7 @@ class ErroresCostoRepositoryTest {
 				.findById(erroresCostosSaved.getIdErroresCostos());
 
 		assertThat(erroresCostosFind).isNotEmpty();
-		erroresCostosFind.ifPresent(errores -> assertThat(errores.getClass()).isInstanceOf(ErroresCostos.class));
+		erroresCostosFind.ifPresent(errores -> assertThat(errores).isInstanceOf(ErroresCostos.class));
 
 	}
 	
