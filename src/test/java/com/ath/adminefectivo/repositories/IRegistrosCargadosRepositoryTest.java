@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 @DataJpaTest
-@Disabled
+@Disabled("Integrar con tests de ArchivosCargados")
 class IRegistrosCargadosRepositoryTest {
 
 	@BeforeEach

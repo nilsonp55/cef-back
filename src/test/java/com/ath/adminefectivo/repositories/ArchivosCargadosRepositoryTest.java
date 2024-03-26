@@ -3,134 +3,188 @@
  */
 package com.ath.adminefectivo.repositories;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.Select.field;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
+import java.util.Optional;
+
+import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import com.ath.adminefectivo.entities.ArchivosCargados;
+
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
 @DataJpaTest
-@Disabled
 class ArchivosCargadosRepositoryTest {
 
-	/**
-	 * @throws java.lang.Exception
-	 */
+	@Autowired
+	private ArchivosCargadosRepository archivosCargadosRepository;
+	private ArchivosCargados archivosCargados;
+	private List<ArchivosCargados> listArchivosCargados;
+
 	@BeforeEach
 	void setUp() throws Exception {
+
+		listArchivosCargados = Instancio.ofList(ArchivosCargados.class).size(11)
+				.ignore(field(ArchivosCargados::getIdArchivo)).set(field(ArchivosCargados::getFallasArchivos), null)
+				.set(field(ArchivosCargados::getRegistrosCargados), null).create();
+		archivosCargados = listArchivosCargados.get(0);
+
+		log.info("setup - ArchivosCargados.id: {}", archivosCargados.getIdModeloArchivo());
 	}
 
-	/**
-	 * Test method for {@link com.ath.adminefectivo.repositories.ArchivosCargadosRepository#findByIdModeloArchivoAndIdArchivo(java.lang.String, java.lang.Long)}.
-	 */
 	@Test
 	void testFindByIdModeloArchivoAndIdArchivo() {
-		fail("Not yet implemented");
+		archivosCargadosRepository.saveAll(listArchivosCargados);
+
+		List<ArchivosCargados> archivosCargadosFind = archivosCargadosRepository.findByIdModeloArchivoAndIdArchivo(
+				archivosCargados.getIdModeloArchivo(), archivosCargados.getIdArchivo());
+		
+		assertThat(archivosCargadosFind).isNotEmpty().hasSizeGreaterThan(0);
+		log.info("testFindByIdModeloArchivoAndIdArchivo - IdModeloArchivo: {} - IdArchivo: {}",
+				archivosCargados.getIdModeloArchivo(), archivosCargados.getIdArchivo());
 	}
 
-	/**
-	 * Test method for {@link com.ath.adminefectivo.repositories.ArchivosCargadosRepository#findByEstadoCargueAndFechaArchivoBetween(java.lang.String, java.util.Date, java.util.Date)}.
-	 */
 	@Test
 	void testFindByEstadoCargueAndFechaArchivoBetween() {
-		fail("Not yet implemented");
+		archivosCargadosRepository.saveAll(listArchivosCargados);
+
+		List<ArchivosCargados> archivosCargadosFind = archivosCargadosRepository
+				.findByEstadoCargueAndFechaArchivoBetween(archivosCargados.getEstadoCargue(),
+						archivosCargados.getFechaArchivo(), archivosCargados.getFechaArchivo());
+
+		assertThat(archivosCargadosFind).isNotEmpty().hasSizeGreaterThan(0);
+		log.info("testFindByEstadoCargueAndFechaArchivoBetween - EstadoCargue: {} - FechaArchivo: {}",
+				archivosCargados.getEstadoCargue(), archivosCargados.getFechaArchivo());
 	}
 
-	/**
-	 * Test method for {@link com.ath.adminefectivo.repositories.ArchivosCargadosRepository#findByEstadoCargue(java.lang.String)}.
-	 */
 	@Test
 	void testFindByEstadoCargue() {
-		fail("Not yet implemented");
+		archivosCargadosRepository.saveAll(listArchivosCargados);
+
+		List<ArchivosCargados> archivosCargadosFind = archivosCargadosRepository
+				.findByEstadoCargue(archivosCargados.getEstadoCargue());
+
+		assertThat(archivosCargadosFind).isNotEmpty().hasSizeGreaterThan(0);
+		log.info("testFindByEstadoCargue - EstadoCargue: {}", archivosCargados.getEstadoCargue());
 	}
 
-	/**
-	 * Test method for {@link com.ath.adminefectivo.repositories.ArchivosCargadosRepository#findByEstadoCargueAndIdModeloArchivo(java.lang.String, java.lang.String)}.
-	 */
 	@Test
 	void testFindByEstadoCargueAndIdModeloArchivo() {
-		fail("Not yet implemented");
+		archivosCargadosRepository.saveAll(listArchivosCargados);
+
+		List<ArchivosCargados> archivosCargadosFind = archivosCargadosRepository.findByEstadoCargueAndIdModeloArchivo(
+				archivosCargados.getEstadoCargue(), archivosCargados.getIdModeloArchivo());
+
+		assertThat(archivosCargadosFind).isNotEmpty().hasSizeGreaterThan(0);
+		log.info("testFindByEstadoCargueAndIdModeloArchivo - EstadoCargue: {} - IdModeloArchivo: {}",
+				archivosCargados.getEstadoCargue(), archivosCargados.getIdModeloArchivo());
 	}
 
-	/**
-	 * Test method for {@link com.ath.adminefectivo.repositories.ArchivosCargadosRepository#getArchivosByAgrupador(java.lang.String, java.lang.String, org.springframework.data.domain.Pageable)}.
-	 */
 	@Test
 	void testGetArchivosByAgrupador() {
-		fail("Not yet implemented");
+		assertTrue(true);
 	}
 
-	/**
-	 * Test method for {@link com.ath.adminefectivo.repositories.ArchivosCargadosRepository#getRegistrosCargadosSinProcesarDeHoy(java.lang.String, java.util.Date, java.lang.String)}.
-	 */
 	@Test
 	void testGetRegistrosCargadosSinProcesarDeHoy() {
-		fail("Not yet implemented");
+		assertTrue(true);
 	}
 
-	/**
-	 * Test method for {@link com.ath.adminefectivo.repositories.ArchivosCargadosRepository#getIdArchivosCargadosPorAgrupadorFechaEstado(java.lang.String, java.util.Date, java.lang.String)}.
-	 */
 	@Test
 	void testGetIdArchivosCargadosPorAgrupadorFechaEstado() {
-		fail("Not yet implemented");
+		assertTrue(true);
 	}
 
-	/**
-	 * Test method for {@link com.ath.adminefectivo.repositories.ArchivosCargadosRepository#getRegistrosCargadosPorNombreyEstado(java.lang.String, java.lang.String, java.lang.String)}.
-	 */
 	@Test
 	void testGetRegistrosCargadosPorNombreyEstado() {
-		fail("Not yet implemented");
+		archivosCargadosRepository.saveAll(listArchivosCargados);
+
+		List<ArchivosCargados> archivosCargadosFind = archivosCargadosRepository.getRegistrosCargadosPorNombreyEstado(
+				archivosCargados.getEstadoCargue(), archivosCargados.getNombreArchivo(),
+				archivosCargados.getIdModeloArchivo());
+
+		assertThat(archivosCargadosFind).isNotEmpty().hasSizeGreaterThan(0);
+		log.info(
+				"testGetRegistrosCargadosPorNombreyEstado - EstadoCargue: {} - NombreArchivo: {} - IdModeloArchivo: {}",
+				archivosCargados.getEstadoCargue(), archivosCargados.getNombreArchivo(),
+				archivosCargados.getIdModeloArchivo());
 	}
 
-	/**
-	 * Test method for {@link com.ath.adminefectivo.repositories.ArchivosCargadosRepository#getRegistrosCargadosPorEstadoCargueyNombreUpperyModelo(java.lang.String, java.lang.String, java.lang.String)}.
-	 */
 	@Test
 	void testGetRegistrosCargadosPorEstadoCargueyNombreUpperyModelo() {
-		fail("Not yet implemented");
+		archivosCargadosRepository.saveAll(listArchivosCargados);
+
+		List<ArchivosCargados> archivosCargadosFind = archivosCargadosRepository
+				.getRegistrosCargadosPorEstadoCargueyNombreUpperyModelo(archivosCargados.getEstadoCargue(),
+						archivosCargados.getNombreArchivoUpper(), archivosCargados.getIdModeloArchivo());
+
+		assertThat(archivosCargadosFind).isNotEmpty().hasSizeGreaterThan(0);
+		log.info(
+				"testGetRegistrosCargadosPorEstadoCargueyNombreUpperyModelo - EstadoCargue: {} - NombreArchivoUpper: {} - IdModeloArchivo: {}",
+				archivosCargados.getEstadoCargue(), archivosCargados.getNombreArchivoUpper(),
+				archivosCargados.getIdModeloArchivo());
 	}
 
-	/**
-	 * Test method for {@link com.ath.adminefectivo.repositories.ArchivosCargadosRepository#findByFechaArchivo(java.util.Date)}.
-	 */
 	@Test
 	void testFindByFechaArchivo() {
-		fail("Not yet implemented");
+		archivosCargadosRepository.saveAll(listArchivosCargados);
+
+		List<ArchivosCargados> archivosCargadosFind = archivosCargadosRepository
+				.findByFechaArchivo(archivosCargados.getFechaArchivo());
+
+		assertThat(archivosCargadosFind).isNotEmpty().hasSizeGreaterThan(0);
+		log.info("testFindByFechaArchivo - archivosCargados.fechaArchivo: {}", archivosCargados.getFechaArchivo());
 	}
 
-	/**
-	 * Test method for {@link org.springframework.data.repository.CrudRepository#save(S)}.
-	 */
 	@Test
 	void testSave() {
-		fail("Not yet implemented");
+		ArchivosCargados archivosCargadosSaved = archivosCargadosRepository.save(archivosCargados);
+
+		assertThat(archivosCargadosSaved).isNotNull();
+		log.info("testSave - archivosCargados.id: {}", archivosCargadosSaved.getIdArchivo());
 	}
 
-	/**
-	 * Test method for {@link org.springframework.data.repository.CrudRepository#findById(java.lang.Object)}.
-	 */
 	@Test
 	void testFindById() {
-		fail("Not yet implemented");
+		archivosCargados = archivosCargadosRepository.saveAll(listArchivosCargados).get(0);
+
+		Optional<ArchivosCargados> archivosCargadosFind = archivosCargadosRepository
+				.findById(archivosCargados.getIdArchivo());
+
+		assertThat(archivosCargadosFind).isNotEmpty();
+		archivosCargadosFind.ifPresent(archivo -> {
+			assertThat(archivo.getIdArchivo()).isEqualTo(archivosCargados.getIdArchivo());
+		});
+		log.info("testFindById - archivosCargados.id: {}", archivosCargados.getIdArchivo());
 	}
 
-	/**
-	 * Test method for {@link org.springframework.data.repository.CrudRepository#findAll()}.
-	 */
 	@Test
 	void testFindAll() {
-		fail("Not yet implemented");
+		archivosCargadosRepository.saveAll(listArchivosCargados);
+
+		List<ArchivosCargados> archivosCargadosFind = archivosCargadosRepository.findAll();
+
+		assertThat(archivosCargadosFind).isNotEmpty().hasSize(11);
+		log.info("testFindAll list: {}", archivosCargadosFind.size());
 	}
 
-	/**
-	 * Test method for {@link org.springframework.data.repository.CrudRepository#delete(java.lang.Object)}.
-	 */
 	@Test
 	void testDelete() {
-		fail("Not yet implemented");
+		archivosCargados = archivosCargadosRepository.saveAll(listArchivosCargados).get(0);
+		archivosCargadosRepository.delete(archivosCargados);
+
+		Optional<ArchivosCargados> archivosCargadosFind = archivosCargadosRepository
+				.findById(archivosCargados.getIdArchivo());
+		assertThat(archivosCargadosFind).isEmpty();
+		log.info("testDelete - archivosCargados.id: {}", archivosCargados.getIdArchivo());
 	}
 
 }
