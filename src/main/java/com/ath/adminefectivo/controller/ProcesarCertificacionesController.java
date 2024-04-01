@@ -34,7 +34,7 @@ public class ProcesarCertificacionesController {
 	 */
 	@GetMapping(value = "${endpoints.Certificaciones.procesar}")
 	public ResponseEntity<ApiResponseADE<Boolean>> procesarCertificaciones(
-			@RequestParam("agrupador") String agrupador) {
+			@RequestParam String agrupador) {
 
 		Boolean respuesta = certificacionesDelegate.procesarCertificaciones(agrupador);
 		

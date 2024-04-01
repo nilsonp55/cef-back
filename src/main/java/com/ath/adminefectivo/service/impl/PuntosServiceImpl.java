@@ -166,6 +166,7 @@ public class PuntosServiceImpl implements IPuntosService {
     }
 
     banco.setCodigoPunto(punto.getCodigoPunto());
+    banco.setPuntos(punto);
     bancosRepository.save(banco);
 
     return punto;
@@ -291,14 +292,20 @@ public class PuntosServiceImpl implements IPuntosService {
    */
   @Override
   public Puntos getEntidadPunto(Integer codigoBancoAval) {
-    Puntos puntos = puntosRepository.obtenerCodigoPunto(codigoBancoAval);
-    if (Objects.isNull(puntos)) {
+    List<Puntos> puntos = puntosRepository.obtenerCodigoPunto(codigoBancoAval);
+    if (Objects.isNull(puntos) || puntos.size() == 0) {
       throw new NegocioException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
           ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription()
               + " no encontrado para codigoBancoAval = " + codigoBancoAval,
           ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
     }
-    return puntos;
+    if( puntos.size() > 1) {
+      throw new NegocioException(ApiResponseCode.ERROR_PUNTOS_ENCONTRADOS_REPETIDOS.getCode(),
+          ApiResponseCode.ERROR_PUNTOS_ENCONTRADOS_REPETIDOS.getDescription()
+              + " varios registros para codigoBancoAval = " + codigoBancoAval,
+          ApiResponseCode.ERROR_PUNTOS_ENCONTRADOS_REPETIDOS.getHttpStatus());
+    }
+    return puntos.get(0);
   }
 
   /**
@@ -329,6 +336,7 @@ public class PuntosServiceImpl implements IPuntosService {
     return mapaPuntosTipoOficina;
   }
 
+  @Override
   public HashMap<Integer, Puntos> getAllPuntos() {
     HashMap<Integer, Puntos> mapaPuntos = new HashMap<>();
     puntosRepository.findAll().stream().map(p -> mapaPuntos.put(p.getCodigoPunto(), p));

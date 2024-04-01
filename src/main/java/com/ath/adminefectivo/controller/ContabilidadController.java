@@ -97,9 +97,9 @@ public class ContabilidadController {
 	}
 	
 	@GetMapping(value = "${endpoints.Contabilidad.archivoCierre}")
-	public ResponseEntity<InputStreamResource> generarContabilidadCierre(@RequestParam(value = "fecha") Date fecha,
-			@RequestParam(value = "tipoContabilidad") @Pattern(regexp = "^(AM|PM)$", message = "El valor del parámetro tipoContabilidad debe ser AM o PM") String tipoContabilidad,
-			@RequestParam(value = "codBanco") int codBanco) {
+	public ResponseEntity<InputStreamResource> generarContabilidadCierre(@RequestParam Date fecha,
+			@RequestParam @Pattern(regexp = "^(AM|PM)$", message = "El valor del parámetro tipoContabilidad debe ser AM o PM") String tipoContabilidad,
+			@RequestParam int codBanco) {
 
 		RespuestaGenerarArchivoDTO archivoDTO = contabilidadDelegate.generarArchivo(tipoContabilidad, codBanco);
 		HttpHeaders headers = new HttpHeaders();

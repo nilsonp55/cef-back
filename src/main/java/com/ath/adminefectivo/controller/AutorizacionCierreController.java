@@ -26,9 +26,9 @@ public class AutorizacionCierreController {
 	
 	@GetMapping(value = "${endpoints.AutorizacionCierre.autorizacion}")
 	public ResponseEntity<ApiResponseADE<String>> getGenerarContabilidad(
-			@RequestParam(value = "fecha") Date fecha,
-			@RequestParam(value = "tipoContabilidad") String tipoContabilidad,
-			@RequestParam(value = "estado") String estado
+			@RequestParam Date fecha,
+			@RequestParam String tipoContabilidad,
+			@RequestParam String estado
 			) {
 
 		String consulta = autorizacionContableDelegate.autorizacionContable(tipoContabilidad,estado);

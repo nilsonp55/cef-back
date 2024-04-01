@@ -41,10 +41,10 @@ public class CierreContabilidadController {
 	 */	
 	@GetMapping(value = "${endpoints.CierreContabilidad.cerrar}")
 	public ResponseEntity<ApiResponseADE<List<RespuestaContableDTO>>> generarContabilidadCierre(
-			@RequestParam(value = "fechaSistema") Date fechaSistema,
-			@RequestParam(value = "tipoContabilidad") String tipoContabilidad,
-			@RequestParam(value = "codBanco") int codBanco,
-			@RequestParam(value = "fase") String fase		
+			@RequestParam Date fechaSistema,
+			@RequestParam String tipoContabilidad,
+			@RequestParam int codBanco,
+			@RequestParam String fase		
 			) 
 	
 	{
