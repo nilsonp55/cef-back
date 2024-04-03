@@ -19,12 +19,15 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class ClientesCorporativosServiceImpl implements IClientesCorporativosService {
 
-	@Autowired
-	IClientesCorporativosRepository clientesCorporativosRepository;
+	private final IClientesCorporativosRepository clientesCorporativosRepository;	
+	private final ISitiosClientesService sitiosClientesService;
 	
-	@Autowired
-	ISitiosClientesService sitiosClientesService;
-	
+	public ClientesCorporativosServiceImpl(@Autowired IClientesCorporativosRepository clientesCorporativosRepository,
+			@Autowired ISitiosClientesService sitiosClientesService) {
+		this.clientesCorporativosRepository = clientesCorporativosRepository;
+		this.sitiosClientesService = sitiosClientesService;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */

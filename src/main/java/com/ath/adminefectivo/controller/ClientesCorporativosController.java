@@ -26,8 +26,11 @@ import com.querydsl.core.types.Predicate;
 @RequestMapping("${endpoints.ClientesCorporativos}")
 public class ClientesCorporativosController {
 
-	@Autowired
-	IClientesCorporativosService clientesCorporativosService;
+	private final IClientesCorporativosService clientesCorporativosService;
+	
+	public ClientesCorporativosController(@Autowired IClientesCorporativosService clientesCorporativosService) {
+		this.clientesCorporativosService = clientesCorporativosService;
+	}
 	
 	/**
 	 * Servicio encargado de retornar la consulta de todos los Clientes Corporativos
