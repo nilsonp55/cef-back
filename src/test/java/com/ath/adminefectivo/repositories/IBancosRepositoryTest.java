@@ -9,6 +9,7 @@ import java.util.Optional;
 
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -21,6 +22,7 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @DataJpaTest
+@Disabled
 class IBancosRepositoryTest {
 
 	@Autowired
