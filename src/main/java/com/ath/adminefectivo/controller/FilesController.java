@@ -179,5 +179,23 @@ public class FilesController {
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 								.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
+	
+	/**
+	 * Servicio para la descarga de los archivos de liquidacion posterior al procesamiento 
+	 * @param idArchivo
+	 * @return ResponseEntity<InputStreamResource>
+	 * @author johan.chaparro
+	 */
+	@GetMapping("/descargar-idArchivo-liquidacion")
+	@ApiOperation(value = "Download files settlement", notes = "")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = SwaggerConstants.RESPONSE_MESSAGE_200) })
+	public ResponseEntity<InputStreamResource> downloadLiqFileId(
+			@RequestParam Long idArchivo)  {
+
+		DownloadDTO file = filesDelegate.descargarArchivoLiqProcesado(idArchivo);
+
+		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, Constantes.PARAMETER_HEADER + file.getName())
+				.body(new InputStreamResource(file.getFile()));
+	}
 
 }

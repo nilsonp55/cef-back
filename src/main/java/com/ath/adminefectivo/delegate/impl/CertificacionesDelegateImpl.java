@@ -4,18 +4,24 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import com.ath.adminefectivo.dto.DetallesDefinicionArchivoDTO;
-import com.ath.adminefectivo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.delegate.ICertificacionesDelegate;
+import com.ath.adminefectivo.dto.DetallesDefinicionArchivoDTO;
 import com.ath.adminefectivo.dto.LogProcesoDiarioDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.ArchivosCargados;
 import com.ath.adminefectivo.exception.NegocioException;
+import com.ath.adminefectivo.service.IArchivosCargadosService;
+import com.ath.adminefectivo.service.IAuditoriaProcesosService;
+import com.ath.adminefectivo.service.IDetalleDefinicionArchivoService;
+import com.ath.adminefectivo.service.IDominioService;
+import com.ath.adminefectivo.service.ILogProcesoDiarioService;
+import com.ath.adminefectivo.service.IOperacionesCertificadasService;
+import com.ath.adminefectivo.service.IParametroService;
 
 @Service
 public class CertificacionesDelegateImpl implements ICertificacionesDelegate {

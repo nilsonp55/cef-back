@@ -3,6 +3,7 @@ package com.ath.adminefectivo.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,7 +11,10 @@ import org.springframework.stereotype.Service;
 import com.ath.adminefectivo.dto.ParametrosLiquidacionCostoDTO;
 import com.ath.adminefectivo.dto.compuestos.EstimadoClasificacionCostosDTO;
 import com.ath.adminefectivo.entities.ParametrosLiquidacionCosto;
+import com.ath.adminefectivo.entities.ValoresLiquidados;
 import com.ath.adminefectivo.repositories.IParametrosLiquidacionCostosRepository;
+import com.ath.adminefectivo.repositories.IValoresLiquidadosFlatRepository;
+import com.ath.adminefectivo.repositories.IValoresLiquidadosRepository;
 import com.ath.adminefectivo.service.IParametrosLiquidacionCostosService;
 import com.ath.adminefectivo.service.IValoresLiquidadosService;
 
@@ -18,10 +22,14 @@ import com.ath.adminefectivo.service.IValoresLiquidadosService;
 public class ParametrosLiquidacionCostosServiceImpl implements IParametrosLiquidacionCostosService {
 
 	@Autowired
+	IValoresLiquidadosService valoresLiquidadosService;
+
+	@Autowired
 	IParametrosLiquidacionCostosRepository parametrosLiquidacionCostosRepository;
 	
 	@Autowired
-	IValoresLiquidadosService valoresLiquidadosService;
+	IValoresLiquidadosFlatRepository valoresLiquidadosFlatRepository;
+	
 	
 
 	/**
@@ -57,7 +65,28 @@ public class ParametrosLiquidacionCostosServiceImpl implements IParametrosLiquid
 		return parametrosLiquidacionCostosRepository.findById(idLiquidacion).orElse(null); 
 	}
 
-	
-	
+	@Override
+	public ParametrosLiquidacionCosto f2eliminarParametrosLiquidacionCostos(ParametrosLiquidacionCosto eliminar) {
+		
+		var valorLiq =  valoresLiquidadosFlatRepository.consultarPorIdLiquidacion(eliminar.getIdLiquidacion());
+		
+		if (Objects.nonNull(valorLiq))
+		{
+			valoresLiquidadosFlatRepository.delete(valorLiq);
+		}
+		
+		parametrosLiquidacionCostosRepository.delete(eliminar);
+		
+		return eliminar;
+		
+	}
+
+	@Override
+	public ParametrosLiquidacionCosto f2actualizarParametrosLiquidacionCostos(ParametrosLiquidacionCosto actualizar) {
+		
+		return parametrosLiquidacionCostosRepository.save(actualizar);
+		
+	}
+
 	
 }

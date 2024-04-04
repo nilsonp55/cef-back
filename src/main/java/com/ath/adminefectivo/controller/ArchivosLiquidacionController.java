@@ -1,18 +1,49 @@
 package com.ath.adminefectivo.controller;
 
 import com.ath.adminefectivo.dto.ArchivosLiquidacionDTO;
+import com.ath.adminefectivo.dto.DownloadDTO;
 import com.ath.adminefectivo.dto.compuestos.ArchivosLiquidacionListDTO;
+import com.ath.adminefectivo.dto.ArchivosCargadosDTO;
+import com.ath.adminefectivo.dto.ArchivosLiquidacionDTO;
+import com.ath.adminefectivo.dto.RegistrosCargadosDTO;
+import com.ath.adminefectivo.dto.compuestos.ArchivosLiquidacionListDTO;
+import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoDTO;
+import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoListDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
+import com.ath.adminefectivo.entities.ArchivosCargados;
+
+import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
+import com.ath.adminefectivo.constantes.Constantes;
+import com.ath.adminefectivo.constantes.SwaggerConstants;
+import com.ath.adminefectivo.controller.endpoints.FilesEndpoint;
 import com.ath.adminefectivo.delegate.IArchivosLiquidacionDelegate;
+import com.ath.adminefectivo.dto.ArchivosLiquidacionDTO;
+import com.ath.adminefectivo.dto.RegistrosCargadosDTO;
+import com.ath.adminefectivo.dto.compuestos.ArchivosLiquidacionListDTO;
+import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoDTO;
+import com.ath.adminefectivo.dto.response.ApiResponseADE;
+import com.ath.adminefectivo.dto.response.ApiResponseCode;
+import com.ath.adminefectivo.dto.response.ResponseADE;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -59,13 +90,14 @@ public class ArchivosLiquidacionController {
      * Controlador que elimina un archivo por id
      *
      * @param idArchivo
-     * @return ResponseEntity<ApiResponseADE<Boolean>>
-     * @author juan.ortizt
+     * @return ResponseEntity<ApiResponseADE<ArchivosLiquidacionListDTO>>
+     * @author johan.chaparro
      */
-    @DeleteMapping(value = "${endpoints.ArchivosLiquidacion.eliminar}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApiResponseADE<Boolean>> eliminarArchivo(@RequestParam("id") Long idArchivo) {
+    @PostMapping(value = "${endpoints.ArchivosLiquidacion.eliminar}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ApiResponseADE<ArchivosLiquidacionListDTO>> eliminarArchivo(
+    		@RequestBody(required = true) ArchivosLiquidacionListDTO archivosLiquidacion) {
 
-        var archivoPersistido = archivosLiquidacionDelegate.eliminarArchivo(idArchivo);
+        var archivoPersistido = archivosLiquidacionDelegate.eliminarArchivo(archivosLiquidacion);
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ApiResponseADE<>(archivoPersistido, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
                         .description(ApiResponseCode.SUCCESS.getDescription()).build()));
@@ -88,5 +120,40 @@ public class ArchivosLiquidacionController {
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(respuesta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
-	}	
+	}
+	
+	/**
+	 * Método encargado de retornar el detalles de los errores ocurridos durante la carga de un archivo
+	 * @param idArchivoCargado
+	 * @return ResponseEntity<ApiResponseADE<ValidacionArchivoDTO>>
+	 * @author johan.chaparro
+	 */
+	@GetMapping(value = "${endpoints.ArchivosLiquidacion.detalle-error}")
+	public ResponseEntity<ApiResponseADE<ValidacionArchivoDTO>> consultarDetalleErrorArchivo(
+			@RequestParam("idArchivoCargado") Long idArchivoCargado) {
+		
+		var respuesta = archivosLiquidacionDelegate.consultarDetalleError(idArchivoCargado);
+
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ApiResponseADE<>(respuesta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
+	}
+	
+	/**
+	 * Método encargado de retornar el detalles de los registros de un archivo
+	 * @param idArchivoCargado
+	 * @return ResponseEntity<ApiResponseADE<List<RegistrosCargadosDTO>>>
+	 * @author johan.chaparro
+	 */
+	@GetMapping(value = "${endpoints.ArchivosLiquidacion.detalle}")
+	public ResponseEntity<ApiResponseADE<List<RegistrosCargadosDTO>>> consultarDetalleArchivo(
+			@RequestParam("idArchivoCargado") Long idArchivoCargado) {
+		
+		var respuesta = archivosLiquidacionDelegate.consultarDetalleArchivo(idArchivoCargado);
+
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ApiResponseADE<>(respuesta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
+	}
+		
 }

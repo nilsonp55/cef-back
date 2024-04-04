@@ -128,6 +128,10 @@ public final class Dominios {
 	public static final String ESTADO_VALIDACION_REPROCESADO = "REPROCESADO";
 	public static final String ESTADO_VALIDACION_REEMPLAZADORP = "REEMPLAZADORP";
 	public static final String ESTADO_VALIDACION_FUTURO = "FUTURO";
+	/***/
+	public static final String ESTADO_VALIDACION_EN_CONCILIACION = "EN_CONCILIACION";
+	public static final String ESTADO_VALIDACION_CONCILIACION_AUTOMATICO = "AUTOMATICO";
+	public static final String ESTADO_VALIDACION_CONCILIACION_MANUAL = "MANUAL";
 
 	public static final String LIQUIDACION_TRANSPORTE = "LIQTP";
 

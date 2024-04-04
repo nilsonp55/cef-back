@@ -40,8 +40,23 @@ public interface IParametrosLiquidacionCostosService {
 	 */
 	ParametrosLiquidacionCosto getParametrosLiquidacionCostosById(Long idLiquidacion);
 
+	/**
+	 * Metodo encargado de eliminar los registros de ParametrosLiquidacionCostos
+	 * 
+	 * @param ParametrosLiquidacionCosto
+	 * @return ParametrosLiquidacionCosto
+	 * @author duvan.naranjo
+	 */
+	ParametrosLiquidacionCosto f2eliminarParametrosLiquidacionCostos(ParametrosLiquidacionCosto eliminar);
 	
-
+	/**
+	 * Metodo encargado de actualizar los registros de ParametrosLiquidacionCostos
+	 * 
+	 * @param ParametrosLiquidacionCosto
+	 * @return ParametrosLiquidacionCosto
+	 * @author duvan.naranjo
+	 */
+	ParametrosLiquidacionCosto f2actualizarParametrosLiquidacionCostos(ParametrosLiquidacionCosto actualizar);
 	
 
 }

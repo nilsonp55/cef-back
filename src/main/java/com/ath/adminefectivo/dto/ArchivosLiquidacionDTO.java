@@ -1,12 +1,14 @@
 package com.ath.adminefectivo.dto;
 
+import java.util.Date;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Clase que contiene la estructura de los archivos Liquidación
@@ -43,6 +45,8 @@ public class ArchivosLiquidacionDTO {
 	    private String nombreArchivoCompleto;
 	    
 	    private Long idArchivodb;
+	    
+	    private String observacion;
 	        
 	    private List<String> contenidoArchivo;      
 

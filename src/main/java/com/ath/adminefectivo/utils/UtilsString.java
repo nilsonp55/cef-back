@@ -1,10 +1,19 @@
 package com.ath.adminefectivo.utils;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -189,6 +198,78 @@ public class UtilsString {
 		}
 
 	}
+	
+	/**
+	 * Convierte una cadena de numero entero a entero
+	 * 
+	 * @param numero
+	 * @return Integer
+	 * @author hector.mercado
+	 */
+	public static Integer toInteger(String numero) {
+
+		Integer num = 0;
+		
+		try {
+			num = Integer.parseInt(numero);
+		} catch (NumberFormatException e) {
+			num = 0;
+		}
+
+		return num;
+		
+	}
+	
+	/**
+	 * Convierte una cadena de numero Long a Long
+	 * 
+	 * @param numero
+	 * @return Integer
+	 * @author hector.mercado
+	 */
+	public static Long toLong(String numero) {
+
+		Long num = 0l;
+		
+		try {
+			num = Long.parseLong(numero);
+		} catch (NumberFormatException e) {
+			num = 0l;
+		}
+
+		return num;
+		
+	}
+	
+	/**
+	 * convierte una cadena de numero decimal a decimal 
+	 * 
+	 * @param str
+	 * @return BigDecimal
+	 * @author CamiloBenavides
+	 */
+	public static BigDecimal toDecimal(String str, char separador) {
+	
+		var symbols = new DecimalFormatSymbols();
+		symbols.setDecimalSeparator(separador);
+		
+		var decimalFormat = new DecimalFormat();
+		decimalFormat.setDecimalFormatSymbols(symbols);
+		decimalFormat.setParseBigDecimal(true);
+		
+		var bDecimal = new BigDecimal(0);
+		try {
+			bDecimal = (BigDecimal) decimalFormat.parse(str);
+		} catch (ParseException e) {
+			bDecimal = new BigDecimal(0);
+		}
+		
+		return bDecimal;
+		
+	}
+
+	
+	
 
 	/**
 	 * recibe un string y lo convierte en tipo date segun los dominios existentes
@@ -222,6 +303,7 @@ public class UtilsString {
 	 * @author hector.mercado
 	 */
 	public static Date toDate(String fecha, List<String> listaDominioFecha) {
+	
 		String[] strArray = new String[listaDominioFecha.size()];
 		strArray = listaDominioFecha.toArray(strArray);
 		if (isFecha(fecha, listaDominioFecha)) {
@@ -235,8 +317,6 @@ public class UtilsString {
 	}
 
 	
-	
-
 	/**
 	 * recibe una fecha, le resta un dia y devuelve nueva fecha
 	 * 

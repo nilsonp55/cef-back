@@ -85,5 +85,5 @@ public interface IValidacionArchivoService {
 	 * @author CamiloBenavides
 	 */
 	Date obtenerFechaArchivo(String nombreArchivo, String mascaraArchivo);
-
+	
 }

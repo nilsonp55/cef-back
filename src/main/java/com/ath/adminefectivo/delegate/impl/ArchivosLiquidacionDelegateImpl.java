@@ -1,46 +1,56 @@
 package com.ath.adminefectivo.delegate.impl;
 
 
-import com.ath.adminefectivo.constantes.Constantes;
-import com.ath.adminefectivo.constantes.Dominios;
-import com.ath.adminefectivo.constantes.Parametros;
-import com.ath.adminefectivo.delegate.IArchivosLiquidacionDelegate;
-import com.ath.adminefectivo.dto.ArchivosLiquidacionDTO;
-import com.ath.adminefectivo.dto.DownloadDTO;
-import com.ath.adminefectivo.dto.MaestrosDefinicionArchivoDTO;
-import com.ath.adminefectivo.dto.compuestos.ArchivosLiquidacionListDTO;
-import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoDTO;
-import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoListDTO;
-import com.ath.adminefectivo.dto.response.ApiResponseCode;
-import com.ath.adminefectivo.entities.BancoSimpleInfoEntity;
-import com.ath.adminefectivo.entities.Transportadoras;
-import com.ath.adminefectivo.exception.NegocioException;
-import com.ath.adminefectivo.repositories.IBancoSimpleInfoRepository;
-import com.ath.adminefectivo.repositories.ITransportadorasRepository;
-import com.ath.adminefectivo.service.IArchivosCargadosService;
-import com.ath.adminefectivo.service.IFilesService;
-import com.ath.adminefectivo.service.ILecturaArchivoService;
-import com.ath.adminefectivo.service.IMaestroDefinicionArchivoService;
-import com.ath.adminefectivo.service.IParametroService;
-import com.ath.adminefectivo.service.IValidacionArchivoService;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
-import com.ath.adminefectivo.dto.compuestos.SummaryArchivoLiquidacionDTO;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.ath.adminefectivo.constantes.Constantes;
+import com.ath.adminefectivo.constantes.Dominios;
+import com.ath.adminefectivo.constantes.Parametros;
+import com.ath.adminefectivo.delegate.IArchivosLiquidacionDelegate;
+import com.ath.adminefectivo.dto.ArchivosLiquidacionDTO;
+import com.ath.adminefectivo.dto.DetallesDefinicionArchivoDTO;
+import com.ath.adminefectivo.dto.DownloadDTO;
+import com.ath.adminefectivo.dto.MaestrosDefinicionArchivoDTO;
+import com.ath.adminefectivo.dto.RegistrosCargadosDTO;
+import com.ath.adminefectivo.dto.compuestos.ArchivosLiquidacionListDTO;
+import com.ath.adminefectivo.dto.compuestos.ErroresCamposDTO;
+import com.ath.adminefectivo.dto.compuestos.SummaryArchivoLiquidacionDTO;
+import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoDTO;
+import com.ath.adminefectivo.dto.compuestos.ValidacionLineasDTO;
+import com.ath.adminefectivo.dto.response.ApiResponseCode;
+import com.ath.adminefectivo.entities.ArchivosCargados;
+import com.ath.adminefectivo.entities.BancoSimpleInfoEntity;
+import com.ath.adminefectivo.entities.Transportadoras;
+import com.ath.adminefectivo.entities.id.RegistrosCargadosPK;
+import com.ath.adminefectivo.exception.NegocioException;
+import com.ath.adminefectivo.repositories.IBancoSimpleInfoRepository;
+import com.ath.adminefectivo.repositories.ITransportadorasRepository;
+import com.ath.adminefectivo.service.IArchivosCargadosService;
+import com.ath.adminefectivo.service.IArchivosLiquidacionService;
+import com.ath.adminefectivo.service.IDetalleDefinicionArchivoService;
+import com.ath.adminefectivo.service.IFilesService;
+import com.ath.adminefectivo.service.ILecturaArchivoService;
+import com.ath.adminefectivo.service.IMaestroDefinicionArchivoService;
+import com.ath.adminefectivo.service.IParametroService;
+import com.ath.adminefectivo.service.IRegistrosCargadosService;
+import com.ath.adminefectivo.service.IValidacionArchivoService;
+
+import lombok.extern.log4j.Log4j2;
 
 @Service
 @Log4j2
@@ -64,176 +74,178 @@ public class ArchivosLiquidacionDelegateImpl implements IArchivosLiquidacionDele
 	@Autowired
 	IArchivosCargadosService archivosCargadosService;
 	
+	@Autowired
+	IArchivosLiquidacionService archivosLiquidacionService;
+	
     @Autowired
     IBancoSimpleInfoRepository bancosRepository;
 
     @Autowired
     ITransportadorasRepository transportadorasRepository;
     
+    @Autowired
+	IRegistrosCargadosService registrosCargadosService;
+    
+    @Autowired
+	IDetalleDefinicionArchivoService detalleDefinicionArchivoService;
+       
     private ValidacionArchivoDTO validacionArchivo;
-    private ValidacionArchivoListDTO validacionArchivoList;
-	
+   	
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+	@Override	
 	public Page<ArchivosLiquidacionDTO> getAll(int start, int end, boolean content, String fileName) {
-
-		// Se obtienen los Objetos necesarios que se utilizarán para la verificación de los campos extraídos del nombre del archivo
+		
 		List<BancoSimpleInfoEntity> bancos;
-		List<Transportadoras> transportadoras;
-		try{
-			bancos = bancosRepository.findByEsAvalEqualsOne();
-			transportadoras = transportadorasRepository.findAll();
-		}
-		catch (Exception e){
-			throw new NegocioException(ApiResponseCode.ERROR_LECTURA_DOCUMENTO.getCode(),
-					ApiResponseCode.ERROR_LECTURA_DOCUMENTO.getDescription(),
-					ApiResponseCode.ERROR_LECTURA_DOCUMENTO.getHttpStatus());
-		}
+	    List<Transportadoras> transportadoras;
+	    try {
+	        bancos = bancosRepository.findByEsAvalEqualsOne();
+	        transportadoras = transportadorasRepository.findAll();
+	    } catch (Exception e) {
+	        throw new NegocioException(ApiResponseCode.ERROR_LECTURA_DOCUMENTO.getCode(),
+	                ApiResponseCode.ERROR_LECTURA_DOCUMENTO.getDescription(),
+	                ApiResponseCode.ERROR_LECTURA_DOCUMENTO.getHttpStatus());
+	    }
 
+	    List<String> cadenaTrasportadoras = obtenerCadenaTransportadoras(transportadoras);
+	    List<String> cadenaEntidades = obtenerCadenaEntidades(bancos);
+	    List<MaestrosDefinicionArchivoDTO> maestrosDefinicion = consultarMaestrosDefinicion();
+	    String urlPendientes = filesService.consultarPathArchivos(Constantes.ESTADO_CARGUE_PENDIENTE);
+	    String url = maestrosDefinicion.get(0).getUbicacion().concat(urlPendientes);
+	    String requiredFileExtension = maestrosDefinicion.get(0).getExtension();
+	    List<ArchivosLiquidacionDTO> dtoResponseList = obtenerDtoResponseList(start, end, content, fileName, url);
+	    if (dtoResponseList.isEmpty()) {
+	        return new PageImpl<>(dtoResponseList);
+	    }
 
-		List<String> cadenaTrasportadoras = transportadoras.stream()
-				.map(Transportadoras::getNombreTransportadora)
-				.toList();
-		List<String> cadenaEntidades = bancos.stream()
-				.map(BancoSimpleInfoEntity::getAbreviatura)
-				.toList();
-		List<String> cadenaTipos = new ArrayList<>();
+	    List<String> cadenaMascara = obtenerCadenaMascara(maestrosDefinicion);
+	    String[][] estructuraMascara = procesarMascaras(cadenaMascara);
+	    List<String> cadenaTipos = getSegmentosCadena(cadenaMascara);
 
-		// se buscan las deficiones en la bd y se extraen los datos, como extensión, agrupador, url
-		List<MaestrosDefinicionArchivoDTO> maestrosDefinicion =
-				maestroDefinicionArchivoService.consultarDefinicionArchivoByAgrupador(null, Constantes.LIQUIDACION_AGRUPADOR);
+	    log.info("Archivos en directorio Pendientes: url:{} - cantidad:{}", url, dtoResponseList.size());
 
-		String urlPendientes = filesService.consultarPathArchivos(Constantes.ESTADO_CARGUE_PENDIENTE);
-		var url = maestrosDefinicion.get(0).getUbicacion().concat(urlPendientes);
-		String requiredFileExtension = maestrosDefinicion.get(0).getExtension();
+	    List<ArchivosLiquidacionDTO> responseList = procesarNombreArchivos(dtoResponseList, estructuraMascara, cadenaTrasportadoras, cadenaEntidades, requiredFileExtension, cadenaTipos, bancos);
+	    ordenarYAsignarIds(responseList);
 
-		// se hace el llamado a s3 para obtener un summary de los archivos del directorio
-		List<ArchivosLiquidacionDTO> dtoResponseList =
-				this.InicializarDtoList(filesService.obtenerContenidoCarpetaSummaryS3Object(url, start, end, content, fileName), url);
-
-		if (dtoResponseList.isEmpty()) {
-			return new PageImpl<>(dtoResponseList);
-		}
-
-		// Se obtienen todas las máscaras por maestro deficinion
-		List<String> cadenaMascara = maestrosDefinicion.stream()
-				.map(MaestrosDefinicionArchivoDTO::getMascaraArch)
-				.toList();
-		log.info("Archivos en directorio Pendientes: url:{} - cantidad:{}", url, dtoResponseList.size());
-
-		//empiea lógica
-		for (String mascara : cadenaMascara) {
-
-			// Defino el patrón para encontrar el primer segmento entre corchetes
-			Pattern pattern = Pattern.compile(Constantes.REGEX_EXTRAER_MASCARA);
-			Matcher matcher = pattern.matcher(mascara);
-
-			// Encunetro el primer segmento entre corchetes
-			if (matcher.find()) {
-				String primerSegmento = matcher.group(1);
-				cadenaTipos.add(primerSegmento);
-			}
-		}
-
-		String[][] estructuraMascara = segmentaCadena(cadenaMascara.get(0));
-
-		List<ArchivosLiquidacionDTO> responseList = new ArrayList<>();
-
-		for (ArchivosLiquidacionDTO dto : dtoResponseList) {
-
-			String cadena = dto.getNombreArchivo();
-			dto.setNombreArchivo(cadena.substring(0, cadena.lastIndexOf('.')));
-
-			for (String[] keyValue : estructuraMascara) {
-
-				String nombreCampo = keyValue[0];
-				String valorCampo = keyValue[1];
-				switch (nombreCampo) {
-				case "TIPO":
-					//validar si extensión es la misma que la que aparece en base de datos (txt)
-					String[] nameAndExtension = getNameAndExtension(cadena, requiredFileExtension);
-					//remover extensión de cadena
-					cadena = nameAndExtension[0];
-					try {
-						// Validacion para el campo tipo
-						String existeTipo = validaCadena(cadenaTipos, cadena);
-						String idMaestroArchivo = (existeTipo.equals("LIQ_TRANSPORTE")) ? Constantes.MAESTRO_ARCHIVO_TRANSPORTE : Constantes.MAESTRO_ARCHIVO_PROCESAMIENTO;
-						int indiceCaracter = existeTipo.indexOf('_');
-						if (indiceCaracter != -1) {
-							dto.setTipoArchivo(existeTipo.substring(indiceCaracter + 1));
-							dto.setIdMaestroArchivo(idMaestroArchivo);                                
-							cadena = cadena.replace(existeTipo, "");
-						}
-					} catch (Exception e) {
-						throw new NegocioException(ApiResponseCode.ERROR_LECTURA_DOCUMENTO.getCode(),
-								ApiResponseCode.ERROR_LECTURA_DOCUMENTO.getDescription(),
-								ApiResponseCode.ERROR_LECTURA_DOCUMENTO.getHttpStatus());
-					}
-					break;
-
-				case "TRANSPORTADORA":
-					// Validación para el campo TRANSPORTADORA
-					String existeTransportadora = validaCadena(cadenaTrasportadoras, cadena);
-					if (existeTransportadora != null) {
-						dto.setTdv(existeTransportadora);
-						cadena = cadena.replace(existeTransportadora, "");
-					} else {
-						throw new NegocioException(ApiResponseCode.ERROR_LECTURA_DOCUMENTO.getCode(),
-								ApiResponseCode.ERROR_LECTURA_DOCUMENTO.getDescription(),
-								ApiResponseCode.ERROR_LECTURA_DOCUMENTO.getHttpStatus());
-					}
-					break;
-				case "BANCO":
-					// Validación para el campo BANCO
-					String existeEntidad = validaCadena(cadenaEntidades, cadena);
-					if (existeEntidad != null) {
-						Optional<BancoSimpleInfoEntity> result = bancos.stream()
-								.filter(banco -> existeEntidad.equals(banco.getAbreviatura()))
-								.findFirst();
-						dto.setBanco(result.get().getNombreBanco());
-						cadena = cadena.replace(existeEntidad, "");
-					} else {
-						throw new NegocioException(ApiResponseCode.ERROR_LECTURA_DOCUMENTO.getCode(),
-								ApiResponseCode.ERROR_LECTURA_DOCUMENTO.getDescription(),
-								ApiResponseCode.ERROR_LECTURA_DOCUMENTO.getHttpStatus());
-
-					}
-					break;
-
-				case "FECHA":
-					// Validación para el campo FECHA
-					dto.setFechaArchivo(validaFecha(valorCampo, cadena));
-					break;
-				default:
-					break;
-				}
-
-			}
-			dto.setEstado(Constantes.ESTADO_PROCESO_PENDIENTE);
-			responseList.add(dto);
-		}
-
-		responseList.sort(Comparator.comparing(ArchivosLiquidacionDTO::getFechaArchivo)
-				.thenComparing(ArchivosLiquidacionDTO::getNombreArchivo));
-
-		// Crea un contador
-		AtomicLong counter = new AtomicLong(1);
-
-		// Asigna el valor del contador a idArchivo para cada objeto en la lista
-		responseList.forEach(dto -> dto.setIdArchivo(counter.getAndIncrement()));
-
-		return new PageImpl<>(responseList);
+	    return new PageImpl<>(responseList);
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Este método se encarga de eliminar los registros que el usuario 
+	 * ha seleccionado en la pantalla de "Archivos Pendientes de Carga"
+	 * 
+	 * @param archivosLiquidacion
+	 * @return ArchivosLiquidacionListDTO
+	 * @author johan.chaparro
 	 */
-	
 	@Override
-	public boolean eliminarArchivo(Long idArchivo) {
-		return false;
+	public ArchivosLiquidacionListDTO eliminarArchivo(ArchivosLiquidacionListDTO archivosLiquidacion) {		
+		
+		List<ArchivosLiquidacionDTO> archivosCargados = archivosCargadosService
+	            .guardarArchivosLiquidacion(archivosLiquidacion);
+
+	    ArchivosLiquidacionListDTO archivos = ArchivosLiquidacionListDTO.builder()
+	            .validacionArchivo(archivosCargados)
+	            .build();
+
+	    return archivos;	
+	}
+	
+	/**
+	 * Metodo encargado de consultar el detalle de los errores por archivo
+	 * 
+	 * @param idArchivoCargado
+	 * @return ValidacionArchivoDTO
+	 * @author johan.chaparro
+	 */
+	@Override
+	public ValidacionArchivoDTO consultarDetalleError(Long idArchivoCargado) {
+
+		 ValidacionArchivoDTO validacionArchivoDTO = archivosCargadosService.consultarDetalleArchivo(idArchivoCargado);
+
+		    if (validacionArchivoDTO != null && validacionArchivoDTO.getValidacionLineas() != null) {
+		        for (ValidacionLineasDTO validacionLinea : validacionArchivoDTO.getValidacionLineas()) {
+		            if (validacionLinea.getCampos() != null) {
+		                for (ErroresCamposDTO campo : validacionLinea.getCampos()) {
+		                    campo.setNumeroLinea(validacionLinea.getNumeroLinea());
+		                }
+		            }
+		        }
+		    }
+
+		    return validacionArchivoDTO;
+
+	}
+	
+	/**
+	 * Metodo encargado de consultar el detalle de los registros por archivo
+	 * 
+	 * @param idArchivoCargado
+	 * @return RegistrosCargadosDTO
+	 * @author johan.chaparro
+	 */
+	@Override
+	public List<RegistrosCargadosDTO> consultarDetalleArchivo(Long idArchivoCargado) {
+				
+		RegistrosCargadosDTO registrosCargados = new RegistrosCargadosDTO();
+		RegistrosCargadosPK primaryKey = new RegistrosCargadosPK();		
+		registrosCargados.setContenido(getCabecera(idArchivoCargado));
+
+		List<RegistrosCargadosDTO> listaRegistros = registrosCargadosService
+				.consultarRegistrosCargadosPorIdArchivo(idArchivoCargado);
+
+		if (listaRegistros != null && !listaRegistros.isEmpty()) {
+			
+			primaryKey.setConsecutivoRegistro(0);
+			
+			listaRegistros.stream().findFirst() // Busca el primer elemento en la lista, si existe
+					.ifPresent(siguienteRegistro -> {
+						registrosCargados.setEstadoRegistro(siguienteRegistro.getEstadoRegistro());
+						registrosCargados.setTipo(siguienteRegistro.getTipo());
+						registrosCargados.setEstado(siguienteRegistro.getEstado());
+						registrosCargados.setId(primaryKey);
+					});
+
+			// Agrega el nuevo registro al principio de la lista
+			listaRegistros.add(0, registrosCargados);
+			
+			// Itera sobre la lista de registros
+		    for (RegistrosCargadosDTO registro : listaRegistros) {
+		        // Agrega un salto de línea al contenido
+		        String contenido = registro.getContenido();
+		        if (contenido != null) {
+		            registro.setContenido(contenido + "\n");
+		        }
+		    }
+		}
+		
+		return listaRegistros;
+	}
+	
+	private String getCabecera(long idArchivoCargado) {
+		
+		StringBuilder cabecera = new StringBuilder();
+		ArchivosCargados archivosCargados = archivosCargadosService.consultarArchivoById(idArchivoCargado);
+
+		var maestroDefinicion = maestroDefinicionArchivoService
+				.consultarDefinicionArchivoById(archivosCargados.getIdModeloArchivo());
+
+		if (maestroDefinicion.isCabecera()) {
+			List<DetallesDefinicionArchivoDTO> listadoDetalleArchivo = detalleDefinicionArchivoService
+					.consultarDetalleDefinicionArchivoByIdMaestro(archivosCargados.getIdModeloArchivo());
+
+			for (int i = 0; i < listadoDetalleArchivo.size(); i++) {
+				DetallesDefinicionArchivoDTO detalle = listadoDetalleArchivo.get(i);
+				cabecera.append(detalle.getNombreCampo().toUpperCase());
+
+				if (i < listadoDetalleArchivo.size() - 1) {
+					cabecera.append(",");
+				}
+			}
+		}
+
+		return cabecera.toString();
 	}
 
 	private String[] getNameAndExtension(String cadena, String requiredFileExtension) {
@@ -263,9 +275,11 @@ public class ArchivosLiquidacionDelegateImpl implements IArchivosLiquidacionDele
 		Matcher matcher = patron.matcher(archivo);
 		String entidadEncontrada = "";
 		// Verificar si la cadena de la lista existe
-		while (matcher.find()) {
+		while (matcher.find()) {		
 			entidadEncontrada = matcher.group();
-			break;
+			if (entidadEncontrada != null) {
+	            break;
+	        }
 		}
 
 		if (!matcher.hitEnd()) {
@@ -293,7 +307,7 @@ public class ArchivosLiquidacionDelegateImpl implements IArchivosLiquidacionDele
 		return resultado;
 	}
 	
-	private List<ArchivosLiquidacionDTO> InicializarDtoList (List<SummaryArchivoLiquidacionDTO> objetos, String url){
+	private List<ArchivosLiquidacionDTO> inicializarDtoList (List<SummaryArchivoLiquidacionDTO> objetos, String url){
 
 		List<ArchivosLiquidacionDTO> dtoResponseList = new ArrayList<>();
 
@@ -324,20 +338,17 @@ public class ArchivosLiquidacionDelegateImpl implements IArchivosLiquidacionDele
 	}
 
 	private Date validaFecha(String formatoFecha, String cadenaFecha) {
+		
 		String dateFormat = formatoFecha.replace("AAAA", "yyyy").replace("DD", "dd");
 		if (dateFormat.length() != cadenaFecha.length()) {
-			throw new NegocioException(ApiResponseCode.ERROR_FECHA_NO_VALIDA.getCode(),
-					ApiResponseCode.ERROR_FECHA_NO_VALIDA.getDescription(),
-					ApiResponseCode.ERROR_FECHA_NO_VALIDA.getHttpStatus());
+			return null;
 		} else {
 			SimpleDateFormat formato = new SimpleDateFormat(dateFormat);
 			formato.setLenient(false);
 			try {
 				return formato.parse(cadenaFecha);
 			} catch (ParseException e) {
-				throw new NegocioException(ApiResponseCode.ERROR_FECHA_NO_VALIDA.getCode(),
-						ApiResponseCode.ERROR_FECHA_NO_VALIDA.getDescription(),
-						ApiResponseCode.ERROR_FECHA_NO_VALIDA.getHttpStatus());
+				return null;
 			}
 		}
 
@@ -358,12 +369,12 @@ public class ArchivosLiquidacionDelegateImpl implements IArchivosLiquidacionDele
 		 
 		 archivosProcesar.getValidacionArchivo().forEach(f->{
 			
-		 this.ProcesarAchivoCargado(f);
-		 
-		 f.setEstado(this.validacionArchivo.getEstadoValidacion());
-		 f.setIdArchivodb(this.validacionArchivo.getIdArchivo());
+			 this.procesarAchivoCargado(f);
+		
+			 f.setEstado(this.validacionArchivo.getEstadoValidacion());
+			 f.setIdArchivodb(this.validacionArchivo.getIdArchivo());
 			
-			responseList.add(f);
+			 responseList.add(f);
 			
 		 });
 		
@@ -380,11 +391,13 @@ public class ArchivosLiquidacionDelegateImpl implements IArchivosLiquidacionDele
 	 * @author hector.mercado
 	 */
 	@Override
-	public void ProcesarAchivoCargado(ArchivosLiquidacionDTO archivoProcesar) {
+	public void procesarAchivoCargado(ArchivosLiquidacionDTO archivoProcesar) {
 		this.validacionArchivo = new ValidacionArchivoDTO();
 		
 		String idMaestroDefinicion = archivoProcesar.getIdMaestroArchivo();
 		String nombreArchivo       = archivoProcesar.getNombreArchivoCompleto();
+		Date fechaArchivo =  archivoProcesar.getFechaArchivo();
+		
 
 		//1. Obtener el tipo de archivo
 		var maestroDefinicion = maestroDefinicionArchivoService.consultarDefinicionArchivoById(idMaestroDefinicion);
@@ -393,43 +406,55 @@ public class ArchivosLiquidacionDelegateImpl implements IArchivosLiquidacionDele
 		
 		//2. validar el nombre
 		validacionArchivoService.validarNombreArchivo(maestroDefinicion, nombreArchivo);
+		
+		
 		//3. descargar temporal
 		var dowloadFile = filesService.downloadFile(DownloadDTO.builder().url(url).build());
 
 		//4. obtener el contenido
 		String delimitador = lecturaArchivoService.obtenerDelimitadorArchivo(maestroDefinicion);
 		List<String[]> contenido = lecturaArchivoService.leerArchivo(dowloadFile.getFile(), delimitador, maestroDefinicion);
-		Date fechaActual = parametrosService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
-		Date fechaArchivo = validacionArchivoService.obtenerFechaArchivo(nombreArchivo, maestroDefinicion.getMascaraArch());
-
+	
+	
 		this.validacionArchivo = ValidacionArchivoDTO.builder().nombreArchivo(nombreArchivo)
 				.descripcion(maestroDefinicion.getDescripcionArch())
 				.fechaArchivo(fechaArchivo)
 				.maestroDefinicion(maestroDefinicion)
 				.url(url)
 				.numeroRegistros(obtenerNumeroRegistros(maestroDefinicion, contenido.size())).build();
-
-		//5. Validar Contenido
+		
+		//5. Validar Contenido,  validar que archivo no se encuentra aceptado
 		if (this.validarCantidadRegistros(maestroDefinicion, this.validacionArchivo.getNumeroRegistros())) {
-			this.validacionArchivo = validacionArchivoService.validar(maestroDefinicion, contenido, this.validacionArchivo);
 			
-			//Si estado de validacion es OK persistir la informacion
-			//if (Objects.equals(this.validacionArchivo.getEstadoValidacion(), Dominios.ESTADO_VALIDACION_CORRECTO)) {
-				boolean alcance = false;
-				Long idArchivo = archivosCargadosService.persistirDetalleArchivoCargado(validacionArchivo, false, alcance);
-				this.validacionArchivo.setIdArchivo(idArchivo);
+			//si validacion de archivo es true = (no ha sido aceptado)
+			if (this.validarArchivoAceptado(nombreArchivo,idMaestroDefinicion)) {
+				this.validacionArchivo = validacionArchivoService.validar(maestroDefinicion, contenido, this.validacionArchivo);
+			}
+			
+			//Si validacion de estructura y contenido fue exitosa, validar registros aceptados ya conciliados
+			if (Objects.equals(this.validacionArchivo.getEstadoValidacion(), Dominios.ESTADO_VALIDACION_CORRECTO)) {
+				this.validacionArchivo = archivosLiquidacionService.validarCostoConciliado(maestroDefinicion, this.validacionArchivo);
+			}
+			
+			/*Persistir el estado de cargue del archivo validado*/
+			var alcance = false;
+			Long idArchivo = archivosCargadosService.persistirDetalleArchivoCargado(validacionArchivo, false, alcance);
+			this.validacionArchivo.setIdArchivo(idArchivo);
+			
+			//Si estado de validacion es OK persistir la informacion a tablas de proceso
+			if (Objects.equals(this.validacionArchivo.getEstadoValidacion(), Dominios.ESTADO_VALIDACION_CORRECTO)) {
 				
-				/*
-				String urlDestino = (Objects.equals(this.validacionArchivo.getEstadoValidacion(),
-						Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO))
-								? parametrosService.valorParametro(Parametros.RUTA_ARCHIVOS_ERRADOS)
-								: parametrosService.valorParametro(Parametros.RUTA_ARCHIVOS_PROCESADOS);
-
-				this.filesService.moverArchivos(this.validacionArchivo.getUrl(),
-						this.validacionArchivo.getMaestroDefinicion().getUbicacion().concat(urlDestino),
-						this.validacionArchivo.getNombreArchivo(), idArchivo.toString());
-				*/
-			//}
+				//Persistir datos correctos en costos procesamiento y costos transporte
+				archivosLiquidacionService.persistirCostos(this.validacionArchivo);
+				
+				/*Mover archivo a carpeta de procesados*/
+				String urlDestino = parametrosService.valorParametro(Parametros.RUTA_ARCHIVOS_PROCESADOS);
+				
+				this.filesService.moverArchivosS3(this.validacionArchivo.getUrl(),
+												this.validacionArchivo.getMaestroDefinicion().getUbicacion().concat(urlDestino),
+												this.validacionArchivo.getNombreArchivo(), 
+												idArchivo.toString());
+			}
 			
 		}
 		
@@ -441,7 +466,7 @@ public class ArchivosLiquidacionDelegateImpl implements IArchivosLiquidacionDele
 	 * 
 	 * @param maestroDefinicion
 	 * @param contenido
-	 * @return
+	 * @return<
 	 * @return int
 	 * @author hector.mercado
 	 */
@@ -474,7 +499,201 @@ public class ArchivosLiquidacionDelegateImpl implements IArchivosLiquidacionDele
 		}
 		return validacionCantidad;
 	}
+	
+	/**
+	 * Valida si el archivo ya existe en estado aceptado // No se puede procesar
+	 * 
+	 * @param nombreArchivo
+	 * @param idModeloArchivo
+	 * @return
+	 * @return boolean
+	 * @author hector.mercado
+	 */
+	private boolean validarArchivoAceptado(String nombreArchivo, String idModeloArchivo ) {
+		
+		List<ArchivosCargados> listaAC =  archivosCargadosService
+				.getRegistrosCargadosPorEstadoCargueyNombreUpperyModelo(Dominios.ESTADO_VALIDACION_ACEPTADO,
+				nombreArchivo.toUpperCase(), 
+				idModeloArchivo);
+		
+		//true no encontro archivos con mismo nombre en estado aceptado
+		boolean validacionAceptado = (Objects.isNull(listaAC) || listaAC.isEmpty());
+		
+			if (!validacionAceptado)
+			{
+				this.validacionArchivo.setEstadoValidacion(Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO);
+				this.validacionArchivo.setDescripcionErrorEstructura("Archivo ya se encuentra conciliado");
+				this.validacionArchivo.setNumeroErrores(1);
+			}
 
+		return validacionAceptado;
+	}
+	
+	//--------------------------------------------------------------------------------------
+	
+	private String[][] procesarMascaras(List<String> cadenaMascara) {		
+	    String[][] estructuraMascara = segmentaCadena(cadenaMascara.get(0));
+	    return estructuraMascara;
+	}
+
+	private List<String> obtenerCadenaTransportadoras(List<Transportadoras> transportadoras) {
+	    return transportadoras.stream()
+	            .map(Transportadoras::getNombreTransportadora)
+	            .toList();
+	}
+
+	private List<String> obtenerCadenaEntidades(List<BancoSimpleInfoEntity> bancos) {
+	    return bancos.stream()
+	            .map(BancoSimpleInfoEntity::getAbreviatura)
+	            .toList();
+	}
+
+	private List<MaestrosDefinicionArchivoDTO> consultarMaestrosDefinicion() {
+	    return maestroDefinicionArchivoService.consultarDefinicionArchivoByAgrupador(null, Constantes.LIQUIDACION_AGRUPADOR);
+	}
+
+	private List<ArchivosLiquidacionDTO> obtenerDtoResponseList(int start, int end, boolean content, String fileName, String url) {
+	    return inicializarDtoList(filesService.obtenerContenidoCarpetaSummaryS3Object(url, start, end, content, fileName), url);
+	}
+
+	private List<String> obtenerCadenaMascara(List<MaestrosDefinicionArchivoDTO> maestrosDefinicion) {
+	    return maestrosDefinicion.stream()
+	            .map(MaestrosDefinicionArchivoDTO::getMascaraArch)
+	            .toList();
+	}
+
+	private List<String> getSegmentosCadena(List<String> cadenaMascara) {
+	    List<String> cadenaTipos = new ArrayList<>();
+	    for (String mascara : cadenaMascara) {
+	        // Defino el patrón para encontrar el primer segmento entre corchetes
+	        Pattern pattern = Pattern.compile(Constantes.REGEX_EXTRAER_MASCARA);
+	        Matcher matcher = pattern.matcher(mascara);
+
+	        // Encuentro el primer segmento entre corchetes
+	        if (matcher.find()) {
+	            String primerSegmento = matcher.group(1);
+	            cadenaTipos.add(primerSegmento);
+	        }
+	    }
+	    return cadenaTipos;
+	}
+
+	private List<ArchivosLiquidacionDTO> procesarNombreArchivos(List<ArchivosLiquidacionDTO> dtoResponseList, String[][] estructuraMascara, List<String> cadenaTrasportadoras, List<String> cadenaEntidades, String requiredFileExtension, List<String> cadenaTipos, List<BancoSimpleInfoEntity> bancos) {
+	    List<ArchivosLiquidacionDTO> responseList = new ArrayList<>();
+	   
+	    for (ArchivosLiquidacionDTO dto : dtoResponseList) {
+	        if (procesarNombreArchivo(dto, cadenaTrasportadoras, cadenaEntidades, requiredFileExtension, estructuraMascara, cadenaTipos, bancos)) {
+	        	dto.setEstado(Constantes.ESTADO_PROCESO_PENDIENTE);
+	        	responseList.add(dto);
+	        }
+	    }
+	    return responseList;
+	}
+
+	private boolean procesarNombreArchivo(ArchivosLiquidacionDTO dto, List<String> cadenaTrasportadoras, List<String> cadenaEntidades, String requiredFileExtension, String[][] estructuraMascara, List<String> cadenaTipos, List<BancoSimpleInfoEntity> bancos) {
+		boolean validation = true;
+	    String cadena = dto.getNombreArchivo();
+	    try {
+	        dto.setNombreArchivo(cadena.substring(0, cadena.lastIndexOf('.')));
+	    } catch (Exception e) {
+	        return false;
+	    }
+
+	    for (String[] keyValue : estructuraMascara) {
+	        String nombreCampo = keyValue[0];
+	        String valorCampo = keyValue[1];
+	        switch (nombreCampo) {
+	            case "TIPO":
+	                cadena = procesarTipo(dto, cadenaTrasportadoras, cadenaEntidades, cadena, requiredFileExtension, cadenaTipos);
+	                if (cadena == null || cadena.isEmpty()) {
+	                    return false;
+	                }
+	                break;
+	            case "TRANSPORTADORA":
+	                cadena = procesarTransportadora(dto, cadenaTrasportadoras, cadena);
+	                if (cadena == null || cadena.isEmpty()) {
+	                    return false;
+	                }
+	                break;
+	            case "BANCO":
+	                cadena = procesarBanco(dto, cadenaEntidades, cadena, bancos);
+	                if (cadena == null || cadena.isEmpty()) {
+	                    return false;
+	                }
+	                break;
+	            case "FECHA":
+	                if (!procesarFecha(dto, valorCampo, cadena)) {
+	                    return false;
+	                }
+	                break;
+	            default:
+	                break;
+	        }
+	    }
+
+	    return validation;
+	}
+
+	private String procesarTipo(ArchivosLiquidacionDTO dto, List<String> cadenaTrasportadoras, List<String> cadenaEntidades, String cadena, String requiredFileExtension, List<String> cadenaTipos) {
+	    String[] nameAndExtension = getNameAndExtension(cadena, requiredFileExtension);
+	    cadena = nameAndExtension[0];
+	    try {
+	        String existeTipo = validaCadena(cadenaTipos, cadena);
+	        String idMaestroArchivo = (existeTipo.equals("LIQ_TRANSPORTE")) ? Constantes.MAESTRO_ARCHIVO_TRANSPORTE : Constantes.MAESTRO_ARCHIVO_PROCESAMIENTO;
+	        int indiceCaracter = existeTipo.indexOf('_');
+	        if (indiceCaracter != -1) {
+	            dto.setTipoArchivo(existeTipo.substring(indiceCaracter + 1));
+	            dto.setIdMaestroArchivo(idMaestroArchivo);
+	            cadena = cadena.replace(existeTipo, "");
+	        }
+	    } catch (Exception e) {
+	        return null;
+	    }
+	    return cadena;
+	}
+
+	private String procesarTransportadora(ArchivosLiquidacionDTO dto, List<String> cadenaTrasportadoras, String cadena) {
+	    String existeTransportadora = validaCadena(cadenaTrasportadoras, cadena);
+	    if (existeTransportadora != null) {
+	        dto.setTdv(existeTransportadora);
+	        cadena = cadena.replace(existeTransportadora, "");
+	    } else {
+	        return null;
+	    }
+	    return cadena;
+	}
+
+	private String procesarBanco(ArchivosLiquidacionDTO dto, List<String> cadenaEntidades, String cadena, List<BancoSimpleInfoEntity> bancos) {
+		String existeEntidad = validaCadena(cadenaEntidades, cadena);
+		if (existeEntidad != null) {
+			Optional<BancoSimpleInfoEntity> result = bancos.stream()
+					.filter(banco -> existeEntidad.equals(banco.getAbreviatura()))
+					.findFirst();
+			dto.setBanco(result.get().getNombreBanco());
+			cadena = cadena.replace(existeEntidad, "");
+		} else {
+			return null;
+		}
+		return cadena;
+	}
+
+	private boolean procesarFecha(ArchivosLiquidacionDTO dto, String valorCampo, String cadena) {
+	    Date fecha = validaFecha(valorCampo, cadena);
+	    if (fecha == null) {
+	        return false;
+	    } else {
+	        dto.setFechaArchivo(fecha);
+	        return true;
+	    }
+	}
+
+	private void ordenarYAsignarIds(List<ArchivosLiquidacionDTO> responseList) {
+	    responseList.sort(Comparator.comparing(ArchivosLiquidacionDTO::getFechaArchivo)
+	            .thenComparing(ArchivosLiquidacionDTO::getNombreArchivo));
+
+	    AtomicLong counter = new AtomicLong(1);
+	    responseList.forEach(dto -> dto.setIdArchivo(counter.getAndIncrement()));
+	}
 
 }
 
