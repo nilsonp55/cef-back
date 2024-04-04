@@ -46,20 +46,20 @@ public class ConciliacionCostosProcesamientoController {
 	@GetMapping(value = "${endpoints.conciliacion.procesadas-conciliadas}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<Page<OperacionesLiquidacionProcesamientoDTO>>> getliquidacionConciliadaProcesamiento(
 			@RequestParam(required = false) String entidad,
-			@RequestParam(required = true) Date fecha_servicio_transporte,
-			@RequestParam(required = true) Date fecha_servicio_transporte_final,
-			@RequestParam(required = false) String identificacion_cliente,
-			@RequestParam(required = false) String razon_social,
-			@RequestParam(required = false) Integer codigo_punto_cargo,
-			@RequestParam(required = false) String nombre_punto_cargo,
-			@RequestParam(required = false) String ciudad_fondo,
-			@RequestParam(required = false) String nombre_tipo_servicio,
-			@RequestParam(required = false) String moneda_divisa, @RequestParam(required = false) String estado,
+			@RequestParam(required = true) Date fechaServicioTransporte,
+			@RequestParam(required = true) Date fechaServicioTransporteFinal,
+			@RequestParam(required = false) String identificacionCliente,
+			@RequestParam(required = false) String razonSocial,
+			@RequestParam(required = false) Integer codigoPuntoCargo,
+			@RequestParam(required = false) String nombrePuntoCargo,
+			@RequestParam(required = false) String ciudadFondo,
+			@RequestParam(required = false) String nombreTipoServicio,
+			@RequestParam(required = false) String monedaDivisa, @RequestParam(required = false) String estado,
 			Pageable page) {
 
 		var consulta = operacionesLiquidacionDelegate.getLiquidacionConciliadaProcesamiento(entidad,
-				fecha_servicio_transporte, fecha_servicio_transporte_final, identificacion_cliente, razon_social,
-				codigo_punto_cargo, nombre_punto_cargo, ciudad_fondo, nombre_tipo_servicio, moneda_divisa, estado,
+				fechaServicioTransporte, fechaServicioTransporteFinal, identificacionCliente, razonSocial,
+				codigoPuntoCargo, nombrePuntoCargo, ciudadFondo, nombreTipoServicio, monedaDivisa, estado,
 				page);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
@@ -70,20 +70,20 @@ public class ConciliacionCostosProcesamientoController {
 	@GetMapping(value = "${endpoints.conciliacion.procesadas-remitidasNoIdentifacadas}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<Page<OperacionesLiquidacionProcesamientoDTO>>> getRemitidasNoIdentifacadas(
 			@RequestParam(required = false) String entidad,
-			@RequestParam(required = true) Date fecha_servicio_transporte,
-			@RequestParam(required = true) Date fecha_servicio_transporte_final,
-			@RequestParam(required = false) String identificacion_cliente,
-			@RequestParam(required = false) String razon_social,
-			@RequestParam(required = false) Integer codigo_punto_cargo,
-			@RequestParam(required = false) String nombre_punto_cargo,
-			@RequestParam(required = false) String ciudad_fondo,
-			@RequestParam(required = false) String nombre_tipo_servicio,
-			@RequestParam(required = false) String moneda_divisa, @RequestParam(required = false) String estado,
+			@RequestParam(required = true) Date fechaServicioTransporte,
+			@RequestParam(required = true) Date fechaServicioTransporteFinal,
+			@RequestParam(required = false) String identificacionCliente,
+			@RequestParam(required = false) String razonSocial,
+			@RequestParam(required = false) Integer codigoPuntoCargo,
+			@RequestParam(required = false) String nombrePuntoCargo,
+			@RequestParam(required = false) String ciudadFondo,
+			@RequestParam(required = false) String nombreTipoServicio,
+			@RequestParam(required = false) String monedaDivisa, @RequestParam(required = false) String estado,
 			Pageable page) {
 
 		var consulta = operacionesLiquidacionDelegate.getLiquidacionRemitidasNoIdentificadasProcesamiento(entidad,
-				fecha_servicio_transporte, fecha_servicio_transporte_final, identificacion_cliente, razon_social,
-				codigo_punto_cargo, nombre_punto_cargo, ciudad_fondo, nombre_tipo_servicio, moneda_divisa, estado,
+				fechaServicioTransporte, fechaServicioTransporteFinal, identificacionCliente, razonSocial,
+				codigoPuntoCargo, nombrePuntoCargo, ciudadFondo, nombreTipoServicio, monedaDivisa, estado,
 				page);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
@@ -93,20 +93,20 @@ public class ConciliacionCostosProcesamientoController {
 	@GetMapping(value = "${endpoints.conciliacion.procesadas-liquidadasNoCobradas}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<Page<OperacionesLiquidacionProcesamientoDTO>>> getLiquidadasNoCobradas(
 			@RequestParam(required = false) String entidad,
-			@RequestParam(required = true) Date fecha_servicio_transporte,
-			@RequestParam(required = true) Date fecha_servicio_transporte_final,
-			@RequestParam(required = false) String identificacion_cliente,
-			@RequestParam(required = false) String razon_social,
-			@RequestParam(required = false) Integer codigo_punto_cargo,
-			@RequestParam(required = false) String nombre_punto_cargo,
-			@RequestParam(required = false) String ciudad_fondo,
-			@RequestParam(required = false) String nombre_tipo_servicio,
-			@RequestParam(required = false) String moneda_divisa, @RequestParam(required = false) String estado,
+			@RequestParam(required = true) Date fechaServicioTransporte,
+			@RequestParam(required = true) Date fechaServicioTransporteFinal,
+			@RequestParam(required = false) String identificacionCliente,
+			@RequestParam(required = false) String razonSocial,
+			@RequestParam(required = false) Integer codigoPuntoCargo,
+			@RequestParam(required = false) String nombrePuntoCargo,
+			@RequestParam(required = false) String ciudadFondo,
+			@RequestParam(required = false) String nombreTipoServicio,
+			@RequestParam(required = false) String monedaDivisa, @RequestParam(required = false) String estado,
 			Pageable page) {
 
 		var consulta = operacionesLiquidacionDelegate.getLiquidadasNoCobradasProcesamiento(entidad,
-				fecha_servicio_transporte, fecha_servicio_transporte_final, identificacion_cliente, razon_social,
-				codigo_punto_cargo, nombre_punto_cargo, ciudad_fondo, nombre_tipo_servicio, moneda_divisa, estado,
+				fechaServicioTransporte, fechaServicioTransporteFinal, identificacionCliente, razonSocial,
+				codigoPuntoCargo, nombrePuntoCargo, ciudadFondo, nombreTipoServicio, monedaDivisa, estado,
 				page);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
@@ -116,20 +116,20 @@ public class ConciliacionCostosProcesamientoController {
 	@GetMapping(value = "${endpoints.conciliacion.procesadas-identificadasConDiferencias}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<Page<OperacionesLiquidacionProcesamientoDTO>>> getIdentificadasConDiferencias(
 			@RequestParam(required = false) String entidad,
-			@RequestParam(required = true) Date fecha_servicio_transporte,
-			@RequestParam(required = true) Date fecha_servicio_transporte_final,
-			@RequestParam(required = false) String identificacion_cliente,
-			@RequestParam(required = false) String razon_social,
-			@RequestParam(required = false) Integer codigo_punto_cargo,
-			@RequestParam(required = false) String nombre_punto_cargo,
-			@RequestParam(required = false) String ciudad_fondo,
-			@RequestParam(required = false) String nombre_tipo_servicio,
-			@RequestParam(required = false) String moneda_divisa, @RequestParam(required = false) String estado,
+			@RequestParam(required = true) Date fechaServicioTransporte,
+			@RequestParam(required = true) Date fechaServicioTransporteFinal,
+			@RequestParam(required = false) String identificacionCliente,
+			@RequestParam(required = false) String razonSocial,
+			@RequestParam(required = false) Integer codigoPuntoCargo,
+			@RequestParam(required = false) String nombrePuntoCargo,
+			@RequestParam(required = false) String ciudadFondo,
+			@RequestParam(required = false) String nombreTipoServicio,
+			@RequestParam(required = false) String monedaDivisa, @RequestParam(required = false) String estado,
 			Pageable page) {
 
 		var consulta = operacionesLiquidacionDelegate.getIdentificadasConDiferenciasProcesamiento(entidad,
-				fecha_servicio_transporte, fecha_servicio_transporte_final, identificacion_cliente, razon_social,
-				codigo_punto_cargo, nombre_punto_cargo, ciudad_fondo, nombre_tipo_servicio, moneda_divisa, estado,
+				fechaServicioTransporte, fechaServicioTransporteFinal, identificacionCliente, razonSocial,
+				codigoPuntoCargo, nombrePuntoCargo, ciudadFondo, nombreTipoServicio, monedaDivisa, estado,
 				page);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
