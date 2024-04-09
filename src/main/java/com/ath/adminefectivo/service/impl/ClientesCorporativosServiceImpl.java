@@ -5,9 +5,13 @@ import java.util.List;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.dto.ClientesCorporativosDTO;
+import com.ath.adminefectivo.entities.ClientesCorporativos;
 import com.ath.adminefectivo.repositories.IClientesCorporativosRepository;
 import com.ath.adminefectivo.service.IClientesCorporativosService;
 import com.ath.adminefectivo.service.ISitiosClientesService;
@@ -69,5 +73,26 @@ public class ClientesCorporativosServiceImpl implements IClientesCorporativosSer
 			estado = false;
 		}
 		return estado;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Page<ClientesCorporativosDTO> listarClientesCorporativos(Predicate predicate, Pageable page) {
+		Page<ClientesCorporativos> clientes = clientesCorporativosRepository.findAll(predicate, page);
+		return new PageImpl<>(clientes.stream().map(ClientesCorporativosDTO.CONVERTER_DTO).toList(),
+				clientes.getPageable(), clientes.getTotalElements());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public ClientesCorporativosDTO guardarClientesCorporativos(ClientesCorporativosDTO clientesCorporativos) {
+		ClientesCorporativos clienteCorporativoEntity = ClientesCorporativosDTO.CONVERTER_ENTITY
+				.apply(clientesCorporativos);
+		clienteCorporativoEntity = clientesCorporativosRepository.save(clienteCorporativoEntity);
+		return ClientesCorporativosDTO.CONVERTER_DTO.apply(clienteCorporativoEntity);
 	}
 }

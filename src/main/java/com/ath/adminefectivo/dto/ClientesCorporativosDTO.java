@@ -2,6 +2,8 @@ package com.ath.adminefectivo.dto;
 
 import java.util.function.Function;
 
+import javax.validation.constraints.NotNull;
+
 import com.ath.adminefectivo.entities.ClientesCorporativos;
 import com.ath.adminefectivo.utils.UtilsObjects;
 
@@ -23,8 +25,10 @@ public class ClientesCorporativosDTO {
 
 	private Integer codigoCliente;
 	
+	@NotNull
 	private Integer codigoBancoAval;
 	
+	@NotNull
 	private String nombreCliente;
 	
 	private String tipoId;
@@ -42,5 +46,15 @@ public class ClientesCorporativosDTO {
 		var clientesCorporativosDTO = new ClientesCorporativosDTO();
 		UtilsObjects.copiarPropiedades(t, clientesCorporativosDTO);
 		return clientesCorporativosDTO;
+	};
+	
+	/**
+	 * Convierte una instancia DTO en una isntancia Entity para ClientesCorporativos
+	 * @author prv_nparra
+	 */
+	public static final Function<ClientesCorporativosDTO, ClientesCorporativos> CONVERTER_ENTITY = (ClientesCorporativosDTO t) -> {
+		var clienteCorporativo = new ClientesCorporativos();
+		UtilsObjects.copiarPropiedades(t, clienteCorporativo);
+		return clienteCorporativo;
 	};
 }
