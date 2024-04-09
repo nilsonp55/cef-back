@@ -27,10 +27,8 @@ public class EstadoConciliacionParametrosLiquidacionServiceImpl
 	 */
 	public List<EstadoConciliacionParametrosLiquidacion> buscarLiquidacion(Long idLiquidacion, Integer estado) {
 		
-		List<EstadoConciliacionParametrosLiquidacion> liq = estadoConciliacionParametrosLiquidacionRepository.findByIdLiquidacionAndEstado(idLiquidacion, estado);
-		
-	    return liq;
-		
+		return estadoConciliacionParametrosLiquidacionRepository.findByIdLiquidacionAndEstado(idLiquidacion, estado);
+	  
 	}
 
 

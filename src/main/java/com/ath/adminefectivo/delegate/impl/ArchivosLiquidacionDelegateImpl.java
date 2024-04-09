@@ -26,6 +26,7 @@ import com.ath.adminefectivo.dto.ArchivosLiquidacionDTO;
 import com.ath.adminefectivo.dto.DetallesDefinicionArchivoDTO;
 import com.ath.adminefectivo.dto.DownloadDTO;
 import com.ath.adminefectivo.dto.MaestrosDefinicionArchivoDTO;
+import com.ath.adminefectivo.dto.ProcesarCampoDTO;
 import com.ath.adminefectivo.dto.RegistrosCargadosDTO;
 import com.ath.adminefectivo.dto.compuestos.ArchivosLiquidacionListDTO;
 import com.ath.adminefectivo.dto.compuestos.ErroresCamposDTO;
@@ -145,11 +146,9 @@ public class ArchivosLiquidacionDelegateImpl implements IArchivosLiquidacionDele
 		List<ArchivosLiquidacionDTO> archivosCargados = archivosCargadosService
 	            .guardarArchivosLiquidacion(archivosLiquidacion);
 
-	    ArchivosLiquidacionListDTO archivos = ArchivosLiquidacionListDTO.builder()
+		return ArchivosLiquidacionListDTO.builder()
 	            .validacionArchivo(archivosCargados)
-	            .build();
-
-	    return archivos;	
+	            .build();	
 	}
 	
 	/**
@@ -532,8 +531,7 @@ public class ArchivosLiquidacionDelegateImpl implements IArchivosLiquidacionDele
 	//--------------------------------------------------------------------------------------
 	
 	private String[][] procesarMascaras(List<String> cadenaMascara) {		
-	    String[][] estructuraMascara = segmentaCadena(cadenaMascara.get(0));
-	    return estructuraMascara;
+		return segmentaCadena(cadenaMascara.get(0));
 	}
 
 	private List<String> obtenerCadenaTransportadoras(List<Transportadoras> transportadoras) {
@@ -591,7 +589,6 @@ public class ArchivosLiquidacionDelegateImpl implements IArchivosLiquidacionDele
 	}
 
 	private boolean procesarNombreArchivo(ArchivosLiquidacionDTO dto, List<String> cadenaTrasportadoras, List<String> cadenaEntidades, String requiredFileExtension, String[][] estructuraMascara, List<String> cadenaTipos, List<BancoSimpleInfoEntity> bancos) {
-		boolean validation = true;
 	    String cadena = dto.getNombreArchivo();
 	    try {
 	        dto.setNombreArchivo(cadena.substring(0, cadena.lastIndexOf('.')));
@@ -600,41 +597,56 @@ public class ArchivosLiquidacionDelegateImpl implements IArchivosLiquidacionDele
 	    }
 
 	    for (String[] keyValue : estructuraMascara) {
-	        String nombreCampo = keyValue[0];
-	        String valorCampo = keyValue[1];
-	        switch (nombreCampo) {
-	            case "TIPO":
-	                cadena = procesarTipo(dto, cadenaTrasportadoras, cadenaEntidades, cadena, requiredFileExtension, cadenaTipos);
-	                if (cadena == null || cadena.isEmpty()) {
-	                    return false;
-	                }
-	                break;
-	            case "TRANSPORTADORA":
-	                cadena = procesarTransportadora(dto, cadenaTrasportadoras, cadena);
-	                if (cadena == null || cadena.isEmpty()) {
-	                    return false;
-	                }
-	                break;
-	            case "BANCO":
-	                cadena = procesarBanco(dto, cadenaEntidades, cadena, bancos);
-	                if (cadena == null || cadena.isEmpty()) {
-	                    return false;
-	                }
-	                break;
-	            case "FECHA":
-	                if (!procesarFecha(dto, valorCampo, cadena)) {
-	                    return false;
-	                }
-	                break;
-	            default:
-	                break;
+	    	
+	    	ProcesarCampoDTO procesar = ProcesarCampoDTO.builder()
+	    		    .archivosLiquidacionDTO(dto)
+	    		    .cadenaTrasportadoras(cadenaTrasportadoras)
+	    		    .cadenaEntidades(cadenaEntidades)
+	    		    .cadena(cadena)
+	    		    .requiredFileExtension(requiredFileExtension)
+	    		    .cadenaTipos(cadenaTipos)
+	    		    .bancos(bancos)
+	    		    .keyValue(keyValue)
+	    		    .build();
+	    	
+	    	cadena = procesarCampo(procesar);
+	    	
+	        if (cadena == null || cadena.isEmpty()) {
+	            return false;
 	        }
 	    }
 
-	    return validation;
+	    return true;
 	}
 
-	private String procesarTipo(ArchivosLiquidacionDTO dto, List<String> cadenaTrasportadoras, List<String> cadenaEntidades, String cadena, String requiredFileExtension, List<String> cadenaTipos) {
+	private String procesarCampo(ProcesarCampoDTO dto) {
+		
+		ArchivosLiquidacionDTO archivosLiquidacionDTO = dto.getArchivosLiquidacionDTO();
+	    List<String> cadenaTrasportadoras = dto.getCadenaTrasportadoras();
+	    List<String> cadenaEntidades = dto.getCadenaEntidades();
+	    String cadena = dto.getCadena();
+	    String requiredFileExtension = dto.getRequiredFileExtension();
+	    List<String> cadenaTipos = dto.getCadenaTipos();
+	    List<BancoSimpleInfoEntity> bancos = dto.getBancos();
+	    String[] keyValue = dto.getKeyValue();
+		
+	    String nombreCampo = keyValue[0];
+	    String valorCampo = keyValue[1];
+	    switch (nombreCampo) {
+	        case "TIPO":
+	            return procesarTipo(archivosLiquidacionDTO, cadena, requiredFileExtension, cadenaTipos);
+	        case "TRANSPORTADORA":
+	            return procesarTransportadora(archivosLiquidacionDTO, cadenaTrasportadoras, cadena);
+	        case "BANCO":
+	            return procesarBanco(archivosLiquidacionDTO, cadenaEntidades, cadena, bancos);
+	        case "FECHA":
+	            return procesarFecha(archivosLiquidacionDTO, valorCampo, cadena) ? cadena : null;
+	        default:
+	            return cadena;
+	    }
+	}
+
+	private String procesarTipo(ArchivosLiquidacionDTO dto, String cadena, String requiredFileExtension, List<String> cadenaTipos) {
 	    String[] nameAndExtension = getNameAndExtension(cadena, requiredFileExtension);
 	    cadena = nameAndExtension[0];
 	    try {
@@ -664,17 +676,21 @@ public class ArchivosLiquidacionDelegateImpl implements IArchivosLiquidacionDele
 	}
 
 	private String procesarBanco(ArchivosLiquidacionDTO dto, List<String> cadenaEntidades, String cadena, List<BancoSimpleInfoEntity> bancos) {
-		String existeEntidad = validaCadena(cadenaEntidades, cadena);
-		if (existeEntidad != null) {
-			Optional<BancoSimpleInfoEntity> result = bancos.stream()
-					.filter(banco -> existeEntidad.equals(banco.getAbreviatura()))
-					.findFirst();
-			dto.setBanco(result.get().getNombreBanco());
-			cadena = cadena.replace(existeEntidad, "");
-		} else {
-			return null;
-		}
-		return cadena;
+	    String existeEntidad = validaCadena(cadenaEntidades, cadena);
+	    if (existeEntidad != null) {
+	        Optional<BancoSimpleInfoEntity> result = bancos.stream()
+	                .filter(banco -> existeEntidad.equals(banco.getAbreviatura()))
+	                .findFirst();
+	        if (result.isPresent()) {
+	            dto.setBanco(result.get().getNombreBanco());
+	            cadena = cadena.replace(existeEntidad, "");
+	        } else {
+	        	return null;
+	        }
+	    } else {
+	        return null;
+	    }
+	    return cadena;
 	}
 
 	private boolean procesarFecha(ArchivosLiquidacionDTO dto, String valorCampo, String cadena) {

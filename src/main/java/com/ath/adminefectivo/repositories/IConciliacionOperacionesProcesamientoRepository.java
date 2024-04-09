@@ -17,8 +17,8 @@ import com.ath.adminefectivo.entities.OperacionesLiquidacionTransporteEntity;
 public interface IConciliacionOperacionesProcesamientoRepository extends CrudRepository<OperacionesLiquidacionProcesamientoEntity, Integer> {
 
 	@Transactional(readOnly = true)
-	@Query(value = " SELECT " + "* FROM " + "v_detalle_liquidacion_procesamiento  v"
-			+ "	WHERE (:entidad is null or v.entidad = cast(:entidad AS text))  "
+	@Query(value = " SELECT " + "* FROM " + "v_detalle_liquidacion_procesamiento v "
+	        + " WHERE (:entidad is null or v.entidad = cast(:entidad AS text)) "
 			+ " AND  (:identificacionCliente is null or v.identificacion_cliente = cast(:identificacionCliente AS text))"
 			+ " AND  (:razonSocial is null or v.razon_social = cast(:razonSocial AS text))  "
 			+ " AND  (:codigoPuntoCargo is null or v.codigo_punto_cargo = cast(:codigoPuntoCargo AS text)) "
@@ -34,15 +34,15 @@ public interface IConciliacionOperacionesProcesamientoRepository extends CrudRep
 				
 	Page<OperacionesLiquidacionProcesamientoEntity> conciliadasLiquidadasProcesamiento(
 			@Param("entidad") String entidad,				
-			@Param("fechaServicioTransporte") LocalDateTime fecha_servicio_transporte,	
-			@Param("fechaServicioTransporteFinal") LocalDateTime fecha_servicio_transporte_final,	
-			@Param("identificacionCliente") String identificacion_cliente,	
-			@Param("razonSocial") String razon_social,	
-			@Param("codigoPuntoCargo") Integer codigo_punto_cargo,
-			@Param("nombrePuntoCargo") String nombre_punto_cargo,
-			@Param("ciudadFondo") String ciudad_fondo,	
-			@Param("nombreTipoServicio") String nombre_tipo_servicio,	
-			@Param("monedaDivisa") String moneda_divisa,	
+			@Param("fechaServicioTransporte") LocalDateTime fechaServicioTransporte,	
+			@Param("fechaServicioTransporteFinal") LocalDateTime fechaServicioTransporteFinal,	
+			@Param("identificacionCliente") String identificacionCliente,	
+			@Param("razonSocial") String razonSocial,	
+			@Param("codigoPuntoCargo") Integer codigoPuntoCargo,
+			@Param("nombrePuntoCargo") String nombrePuntoCargo,
+			@Param("ciudadFondo") String ciudadFondo,	
+			@Param("nombreTipoServicio") String nombreTipoServicio,	
+			@Param("monedaDivisa") String monedaDivisa,	
 			@Param("estado") String estado,
 			@Param("modulo") String modulo,
 						Pageable pageable);

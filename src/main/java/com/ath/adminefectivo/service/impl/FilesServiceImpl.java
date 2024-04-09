@@ -110,18 +110,11 @@ public class FilesServiceImpl implements IFilesService {
 				// Tomar el último segmento como el nombre del archivo
 				String nombreArchivo = segmentos[segmentos.length - 1];
 
-				File initialFile = new File(TEMPORAL_URL + "\\" + nombreArchivo);
+				File initialFile = new File(TEMPORAL_URL + File.separator + nombreArchivo);
 				Resource recurso = new UrlResource(initialFile.toURI());
 				InputStream inputStream = recurso.getInputStream();
-				try {
-					// Realiza operaciones de lectura del archivo usando inputStream
-					download.setFile(inputStream);
-				} finally {
-					// Cierre seguro del inputStream
-					if (inputStream != null) {
-						// inputStream.close();
-					}
-				}
+				// Realiza operaciones de lectura del archivo usando inputStream
+				download.setFile(inputStream);
 			}
 			
 		} catch (IOException e) {
@@ -186,91 +179,96 @@ public class FilesServiceImpl implements IFilesService {
   /**
    * {@inheritDoc}
    */
+   
   @Override
   public List<SummaryArchivoLiquidacionDTO> obtenerContenidoCarpetaSummaryS3Object(String url, int start, int end, boolean content, String fileName) {
-	  
-	  List<String> contenidoArchivo = null;
-	  List<S3ObjectSummary> s3ObjectSummaries = new ArrayList<>();
-	  List<SummaryArchivoLiquidacionDTO> archivosDTOList = new ArrayList<>();
-	    
-	  // Procesa la informacion desde un bucke S3 si el parametro es true
-	    if (Boolean.TRUE.equals(s3Bucket)) {
-	    	if (!fileName.isBlank()) {
-	    		s3ObjectSummaries = s3Util.getObjectsSummaryFromPathS3(url + fileName);
-	    	}else {
-	    		s3ObjectSummaries = s3Util.getObjectsBySegments(url,start,end);
-	    	}
-	    	
-	    } else {
-	    	
-	    	if (!fileName.isEmpty() && !fileName.isBlank()) {
-	    		
-	    		if (!fileName.endsWith(".txt")) {
-	    		    fileName = fileName + ".txt";
-	    		}
-	    	}
-	    	// Procesa la informacion desde un directorio local si el parametro es false	    	
-	    	File fileOrDirectory = new File(TEMPORAL_URL, fileName);
-	    	
-	    	if (fileOrDirectory.isDirectory()) {
-	    	    // Si es un directorio, lista todos los archivos
-	    	    File[] archivos = fileOrDirectory.listFiles();
-	    	    if (archivos != null) {
-	    	        for (File archivo : archivos) {
-	    	            S3ObjectSummary objetoS3 = new S3ObjectSummary();
-	    	            objetoS3.setKey(archivo.getName());
-	    	            objetoS3.setLastModified(new Date(archivo.lastModified()));
-	    	            objetoS3.setSize(archivo.length()); 
-	    	            s3ObjectSummaries.add(objetoS3);
-	    	        }
-	    	    }
-	    	} else if (fileOrDirectory.isFile()) {
-	    	    // Es un archivo, lista solo el archivo
-	    	    S3ObjectSummary objetoS3 = new S3ObjectSummary();
-	    	    objetoS3.setKey(fileOrDirectory.getName());
-	    	    objetoS3.setLastModified(new Date(fileOrDirectory.lastModified()));
-	    	    objetoS3.setSize(fileOrDirectory.length()); 
-	    	    s3ObjectSummaries.add(objetoS3);
-	    	}
-	    	
-	    }
-	    
+	    List<S3ObjectSummary> s3ObjectSummaries = getResumenObjetosS3(url, start, end, fileName);
 	    if (Objects.isNull(s3ObjectSummaries)) {
-	      throw new NegocioException(ApiResponseCode.ERROR_CARPETA_NO_ENCONTRADA.getCode(),
-	              ApiResponseCode.ERROR_CARPETA_NO_ENCONTRADA.getDescription(),
-	              ApiResponseCode.ERROR_CARPETA_NO_ENCONTRADA.getHttpStatus());
-	    } else {    	    
-	    	
-	    	for (S3ObjectSummary s3ObjectSummary : s3ObjectSummaries) {
-	    		
-	    		// Verifica si el tamaño del archivo es mayor que cero antes de procesarlo
-	    		if (s3ObjectSummary.getSize() > 0) {
-		    		SummaryArchivoLiquidacionDTO archivoDTO = new SummaryArchivoLiquidacionDTO();
-		            archivoDTO.setS3ObjectSummary(s3ObjectSummary);
-		            
-		            // Verifica si la peticion solicta que los archivos tengan contenido
-		            if(content) {
+	        throw new NegocioException(ApiResponseCode.ERROR_CARPETA_NO_ENCONTRADA.getCode(),
+	                ApiResponseCode.ERROR_CARPETA_NO_ENCONTRADA.getDescription(),
+	                ApiResponseCode.ERROR_CARPETA_NO_ENCONTRADA.getHttpStatus());
+	    }
+	    return obtenerArchivosDTOList(s3ObjectSummaries, content);
+	}
 
-		            	 if (Boolean.TRUE.equals(s3Bucket)) {
-		            		 // Obtiene el contenido del archivo en el bucket S3
-		            		 contenidoArchivo = s3Util.getFileContent(s3ObjectSummary.getKey());	
-		            	 } else {
-		            		 // Obtiene el contenido del archivo en el directorio local
-		            		 contenidoArchivo = leerContenidoArchivo(new File(TEMPORAL_URL + "\\" + s3ObjectSummary.getKey()));
-		            	 }
-		            	            				            		            
-		            }
-		            
-		            archivoDTO.setContenidoArchivo(contenidoArchivo);		            
-		            archivosDTOList.add(archivoDTO);
-		            
-	    		}
+	private List<S3ObjectSummary> getResumenObjetosS3(String url, int start, int end, String fileName) {
+	    if (Boolean.TRUE.equals(s3Bucket)) {
+	        return getResumenObjetosS3Bucket(url, start, end, fileName);
+	    } else {
+	        return getResumenDirectorioLocal(fileName);
+	    }
+	}
+
+	private List<S3ObjectSummary> getResumenObjetosS3Bucket(String url, int start, int end, String fileName) {
+	    if (!fileName.isBlank()) {
+	        return s3Util.getObjectsSummaryFromPathS3(url + fileName);
+	    } else {
+	        return s3Util.getObjectsBySegments(url, start, end);
+	    }
+	}
+
+	private List<S3ObjectSummary> getResumenDirectorioLocal(String fileName) {
+	    if (!fileName.isEmpty() && !fileName.isBlank() && !fileName.endsWith(".txt")) {
+	        fileName = fileName + ".txt";
+	    }
+	    File fileOrDirectory = new File(TEMPORAL_URL, fileName);
+	    if (fileOrDirectory.isDirectory()) {
+	        return getResumenObjetosDirectorio(fileOrDirectory);
+	    } else if (fileOrDirectory.isFile()) {
+	        return getResumenObjetoArchivo(fileOrDirectory);
+	    }
+	    return null;
+	}
+
+	private List<S3ObjectSummary> getResumenObjetosDirectorio(File directorio) {
+	    List<S3ObjectSummary> s3ObjectSummaries = new ArrayList<>();
+	    File[] archivos = directorio.listFiles();
+	    if (archivos != null) {
+	        for (File archivo : archivos) {
+	            s3ObjectSummaries.add(crearResumenObjetoS3(archivo));
 	        }
 	    }
+	    return s3ObjectSummaries;
+	}
 
+	private List<S3ObjectSummary> getResumenObjetoArchivo(File archivo) {
+	    List<S3ObjectSummary> s3ObjectSummaries = new ArrayList<>();
+	    s3ObjectSummaries.add(crearResumenObjetoS3(archivo));
+	    return s3ObjectSummaries;
+	}
+
+	private S3ObjectSummary crearResumenObjetoS3(File archivo) {
+	    S3ObjectSummary objetoS3 = new S3ObjectSummary();
+	    objetoS3.setKey(archivo.getName());
+	    objetoS3.setLastModified(new Date(archivo.lastModified()));
+	    objetoS3.setSize(archivo.length());
+	    return objetoS3;
+	}
+
+	private List<SummaryArchivoLiquidacionDTO> obtenerArchivosDTOList(List<S3ObjectSummary> s3ObjectSummaries, boolean content) {
+	    List<SummaryArchivoLiquidacionDTO> archivosDTOList = new ArrayList<>();
+	    for (S3ObjectSummary s3ObjectSummary : s3ObjectSummaries) {
+	        if (s3ObjectSummary.getSize() > 0) {
+	            SummaryArchivoLiquidacionDTO archivoDTO = new SummaryArchivoLiquidacionDTO();
+	            archivoDTO.setS3ObjectSummary(s3ObjectSummary);
+	            if (content) {
+	                List<String> contenidoArchivo = obtenerContenidoArchivo(s3ObjectSummary);
+	                archivoDTO.setContenidoArchivo(contenidoArchivo);
+	            }
+	            archivosDTOList.add(archivoDTO);
+	        }
+	    }
 	    return archivosDTOList;
-	  }
-  
+	}
+
+	private List<String> obtenerContenidoArchivo(S3ObjectSummary s3ObjectSummary) {
+	    if (Boolean.TRUE.equals(s3Bucket)) {
+	        return s3Util.getFileContent(s3ObjectSummary.getKey());
+	    } else {
+	        return leerContenidoArchivo(new File(TEMPORAL_URL + File.separator + s3ObjectSummary.getKey()));
+	    }
+	}
+
   /**
    * Metodo encargado de obtener el contenido de los archivos en un directorio local
    * 
@@ -342,12 +340,11 @@ public class FilesServiceImpl implements IFilesService {
 						
 	    	String[] segmentos = urlDestino.split("/");
 	    	String destFolder = segmentos[segmentos.length - 1];
-	    	//moverArchivos(TEMPORAL_URL, TEMPORAL_URL + "\\" + destFolder, nombreArchivo,"");
 	    	
-			this.validarPath(TEMPORAL_URL + "\\" + destFolder);
+			this.validarPath(TEMPORAL_URL + File.separator + destFolder);
 			
-			File fileOrigen = new File(TEMPORAL_URL + "\\" + nombreArchivo);
-            File fileDestino = new File(TEMPORAL_URL + "\\" + destFolder);
+			File fileOrigen = new File(TEMPORAL_URL + File.separator + nombreArchivo);
+            File fileDestino = new File(TEMPORAL_URL + File.separator + destFolder);
             
             if (!fileOrigen.exists()) {
             	throw new NegocioException(ApiResponseCode.ERROR_MOVER_ARCHIVOS.getCode(),

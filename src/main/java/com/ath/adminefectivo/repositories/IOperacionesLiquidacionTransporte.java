@@ -1,8 +1,6 @@
 package com.ath.adminefectivo.repositories;
 
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,8 +14,8 @@ import com.ath.adminefectivo.entities.OperacionesLiquidacionTransporteEntity;
 public interface IOperacionesLiquidacionTransporte
 		extends CrudRepository<OperacionesLiquidacionTransporteEntity, Integer> {
 	@Transactional(readOnly = true)
-	@Query(value = " SELECT " + "* FROM " + "v_detalle_liquidacion_transporte  v"
-			+ "	WHERE (:entidad is null or v.entidad = cast(:entidad AS text))  "
+	@Query(value = " SELECT " + "* FROM " + "v_detalle_liquidacion_transporte  v "
+			+ " WHERE (:entidad is null or v.entidad = cast(:entidad AS text)) "
 			+ " AND  (:identificacionCliente is null or v.identificacion_cliente = cast(:identificacionCliente AS text))"
 			+ " AND  (:razonSocial is null or v.razon_social = cast(:razonSocial AS text))  "
 			+ " AND  (:codigoPuntoCargo is null or v.codigo_punto_cargo = cast(:codigoPuntoCargo AS text)) "
@@ -27,9 +25,8 @@ public interface IOperacionesLiquidacionTransporte
 			+ " AND  (:monedaDivisa is null or v.moneda_divisa = cast(:monedaDivisa AS text))  "
 			+ " AND  (:estado is null or v.estado = cast(:estado AS text)) " + " AND  (v.modulo =:modulo)  "
 			+ " AND  (  v.fecha_servicio_transporte BETWEEN :fechaServicioTransporte AND :fechaServicioTransporteFinal ) ",
-
 			nativeQuery = true)
-
+	
 	Page<OperacionesLiquidacionTransporteEntity> conciliadasLiquidadasTransporte(
 			@Param("entidad") String entidad,
 			@Param("fechaServicioTransporte") LocalDateTime  fechaServicioTransporte,

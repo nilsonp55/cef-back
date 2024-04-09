@@ -3,7 +3,6 @@ package com.ath.adminefectivo.service;
 import java.util.List;
 
 import com.ath.adminefectivo.entities.EstadoConciliacionParametrosLiquidacion;
-import com.ath.adminefectivo.repositories.IEstadoConciliacionParametrosLiquidacionRepository;
 
 public interface IEstadoConciliacionParametrosLiquidacionService  {
 	

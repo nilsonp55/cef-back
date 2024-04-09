@@ -545,7 +545,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 		boolean errorCampo = false;
 		int minimo = 0;
 		
-		ErroresCamposDTO validacionEstructuraCampo = validarEstructuraLinea(contenido, idMaestro);
+		ErroresCamposDTO validacionEstructuraCampo = validarEstructuraLinea(contenido);
 		
 		if (!Objects.isNull(validacionEstructuraCampo)) {
 			erroresCampos.add(validacionEstructuraCampo);
@@ -610,12 +610,10 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 	 * @return ErroresCamposDTO
 	 * @author johan.chaparro
 	 */
-	private ErroresCamposDTO validarEstructuraLinea(List<String> contenido, String idMaestro) {
+	private ErroresCamposDTO validarEstructuraLinea(List<String> contenido) {
 
 		List<String> mensajesErrores = new ArrayList<>();
-		List<DetallesDefinicionArchivoDTO> detalle = new ArrayList<>();
-		detalle = this.getListaDetalleDefinicion();
-
+		List<DetallesDefinicionArchivoDTO> detalle = this.getListaDetalleDefinicion();
 		boolean coinciden = detalle.size() == contenido.size();
 
 		if (!coinciden) {

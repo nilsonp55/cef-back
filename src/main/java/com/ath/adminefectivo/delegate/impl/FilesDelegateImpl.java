@@ -269,84 +269,74 @@ public class FilesDelegateImpl implements IFilesDelegate {
 		return downloadDTO;
 	}
 
-	private List<RegistrosCargadosDTO> obtenerErrores(List<RegistrosCargadosDTO> listaRegistros,
-			Long idArchivoCargado) {
-		
-		try {
+	private List<RegistrosCargadosDTO> obtenerErrores(List<RegistrosCargadosDTO> listaRegistros, Long idArchivoCargado) {
+	    try {
+	        actualizaPrimerRegistro(listaRegistros);
+	        Map<Integer, List<String>> lineasAgrupadas = agruparLineasPorNumero(idArchivoCargado);
+	        actualizaEstructurasAgrupadas(listaRegistros, lineasAgrupadas);
+	    } catch (Exception e) {
+	        throw new NegocioException(ApiResponseCode.ERROR_CONTENIDO_ARCHIVO_PROCESADO.getCode(),
+	                ApiResponseCode.ERROR_CONTENIDO_ARCHIVO_PROCESADO.getDescription(),
+	                ApiResponseCode.ERROR_CONTENIDO_ARCHIVO_PROCESADO.getHttpStatus());
+	    }
+	    return listaRegistros;
+	}
 
-			RegistrosCargadosDTO firstRecord = listaRegistros.get(0);
+	private void actualizaPrimerRegistro(List<RegistrosCargadosDTO> listaRegistros) {
+	    RegistrosCargadosDTO firstRecord = listaRegistros.get(0);
+	    if (firstRecord.getId().getConsecutivoRegistro() == 0) {
+	        String contenido = removerSaltoDeLineaSiExiste(firstRecord.getContenido());
+	        contenido += "," + Constantes.CAMPO_OBSERVACION_ERRORES;
+	        firstRecord.setContenido(contenido);
+	        listaRegistros.set(0, firstRecord);
+	    }
+	}
 
-			if (firstRecord.getId().getConsecutivoRegistro() == 0) {
+	private String removerSaltoDeLineaSiExiste(String contenido) {
+	    if (contenido.endsWith("\n")) {
+	        contenido = contenido.substring(0, contenido.length() - 1);
+	    }
+	    return contenido;
+	}
 
-//				firstRecord.setContenido(firstRecord.getContenido() + "," + Constantes.CAMPO_OBSERVACION_ERRORES);
-//				String contenido = null;
-				String contenido = firstRecord.getContenido();
-				if (contenido.endsWith("\n")) {
-				    contenido = contenido.substring(0, contenido.length() - 1);
-				}
-				contenido += "," + Constantes.CAMPO_OBSERVACION_ERRORES;// + "\n";
-				firstRecord.setContenido(contenido);
-				listaRegistros.set(0, firstRecord);
+	private Map<Integer, List<String>> agruparLineasPorNumero(Long idArchivoCargado) {
+	    ValidacionArchivoDTO validacionArchivoDTO = archivosLiquidacion.consultarDetalleError(idArchivoCargado);
+	    Map<Integer, List<String>> lineasAgrupadas = new HashMap<>();
+	    for (ValidacionLineasDTO linea : validacionArchivoDTO.getValidacionLineas()) {
+	        int numeroLinea = linea.getNumeroLinea();
+	        String estructura = getGrupoRegistrosError(linea);
+	        lineasAgrupadas.computeIfAbsent(numeroLinea, k -> new ArrayList<>()).add(estructura);
+	    }
+	    return lineasAgrupadas;
+	}
 
-				ValidacionArchivoDTO validacionArchivoDTO = archivosLiquidacion.consultarDetalleError(idArchivoCargado);
+	private String getGrupoRegistrosError(ValidacionLineasDTO linea) {
+	    StringBuilder estructura = new StringBuilder();
+	    for (ErroresCamposDTO campo : linea.getCampos()) {
+	        estructura.append("{");
+	        estructura.append("CAMPO=").append(campo.getNumeroCampo()).append(",");
+	        estructura.append("DESCRIPCION_ERROR=").append(campo.getMensajeErrorTxt()).append(",");
+	        estructura.append("CONTENIDO_ERROR=").append(campo.getContenido());
+	        estructura.append("},");
+	    }
+	    if (estructura.length() > 0)
+	        estructura.setLength(estructura.length() - 1);
+	    return estructura.toString();
+	}
 
-				// Crea un mapa para agrupar los registros por número de línea
-				Map<Integer, List<String>> lineasAgrupadas = new HashMap<>();
-
-				for (ValidacionLineasDTO linea : validacionArchivoDTO.getValidacionLineas()) {
-					// Obtiene el número de línea
-					int numeroLinea = linea.getNumeroLinea();
-
-					// Construye la estructura por grupo de registros de error
-					StringBuilder estructura = new StringBuilder();
-					for (ErroresCamposDTO campo : linea.getCampos()) {
-						estructura.append("{");
-						estructura.append("CAMPO=").append(campo.getNumeroCampo()).append(",");
-						estructura.append("DESCRIPCION_ERROR=").append(campo.getMensajeErrorTxt()).append(",");
-						estructura.append("CONTENIDO_ERROR=").append(campo.getContenido());
-						estructura.append("},");
-					}
-
-					if (estructura.length() > 0)
-						estructura.setLength(estructura.length() - 1);
-					// Agrega la estructura al grupo correspondiente en el mapa
-					lineasAgrupadas.computeIfAbsent(numeroLinea, k -> new ArrayList<>()).add(estructura.toString());
-				}
-
-				for (RegistrosCargadosDTO registro : listaRegistros) {
-					// Obtiene el numero consecutivo de línea correspondiente al registro
-					int numeroLinea = registro.getId().getConsecutivoRegistro();
-
-					// Verificar si hay una estructura agrupada que coincide al numero de
-					// consecutivo
-					List<String> estructurasAgrupadas = lineasAgrupadas.get(numeroLinea);
-
-					// Si se encuentra una estructura agrupada para este número de línea
-					if (estructurasAgrupadas != null) {
-						// Concatena la estructura agrupada al la propiedad contenido del registro
-						contenido = registro.getContenido();
-						if (contenido.endsWith("\n")) {
-							contenido = contenido.substring(0, contenido.length() - 1);
-						}
-
-						StringBuilder contenidoActualizado = new StringBuilder(contenido);
-						for (String estructura : estructurasAgrupadas) {
-						    contenidoActualizado.append(",[").append(estructura).append("]\n");
-						}
-						// Actualiza el contenido del registro
-						registro.setContenido(contenidoActualizado.toString());
-					}
-				}
-			}
-			return listaRegistros;
-
-		} catch (Exception e) {
-
-			throw new NegocioException(ApiResponseCode.ERROR_CONTENIDO_ARCHIVO_PROCESADO.getCode(),
-					ApiResponseCode.ERROR_CONTENIDO_ARCHIVO_PROCESADO.getDescription(),
-					ApiResponseCode.ERROR_CONTENIDO_ARCHIVO_PROCESADO.getHttpStatus());
-		}
-		
+	private void actualizaEstructurasAgrupadas(List<RegistrosCargadosDTO> listaRegistros, Map<Integer, List<String>> lineasAgrupadas) {
+	    for (RegistrosCargadosDTO registro : listaRegistros) {
+	        int numeroLinea = registro.getId().getConsecutivoRegistro();
+	        List<String> estructurasAgrupadas = lineasAgrupadas.get(numeroLinea);
+	        if (estructurasAgrupadas != null) {
+	            String contenido = removerSaltoDeLineaSiExiste(registro.getContenido());
+	            StringBuilder contenidoActualizado = new StringBuilder(contenido);
+	            for (String estructura : estructurasAgrupadas) {
+	                contenidoActualizado.append(",[").append(estructura).append("]\n");
+	            }
+	            registro.setContenido(contenidoActualizado.toString());
+	        }
+	    }
 	}
 
 	private InputStream obtenerContenidos(List<RegistrosCargadosDTO> listaRegistros) {
