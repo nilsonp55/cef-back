@@ -33,6 +33,8 @@ public class ClientesCorporativosDTO {
 	
 	private Double tarifaSeparacion;
 	
+	private Boolean amparado;
+	
 	/**
 	 * Función encargada de recibir un DTO y retornar un objeto con los mismos datos
 	 */

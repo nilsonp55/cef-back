@@ -44,4 +44,7 @@ public class ClientesCorporativos {
 	@Column(name = "TARIFA_SEPARACION")
 	private Double tarifaSeparacion;
 	
+	@Column(name = "AMPARADO")
+	private Boolean amparado;
+	
 }
