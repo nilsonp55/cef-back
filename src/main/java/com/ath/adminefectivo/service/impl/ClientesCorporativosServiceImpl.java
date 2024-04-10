@@ -125,9 +125,7 @@ public class ClientesCorporativosServiceImpl implements IClientesCorporativosSer
     public void eliminarClientesCorporativos(Integer codigoCliente) throws NotFoundException {
       Optional<ClientesCorporativos> clienteFind =
           clientesCorporativosRepository.findById(codigoCliente);
-      clienteFind.ifPresentOrElse(t -> {
-        clientesCorporativosRepository.delete(t);
-      }, () -> {
+      clienteFind.ifPresentOrElse(t -> clientesCorporativosRepository.delete(t), () -> {
         throw new NotFoundException("ClientesCorporativos", codigoCliente.toString());
       });
     }
