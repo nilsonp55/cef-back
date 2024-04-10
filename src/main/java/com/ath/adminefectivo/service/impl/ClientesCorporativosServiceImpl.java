@@ -77,40 +77,58 @@ public class ClientesCorporativosServiceImpl implements IClientesCorporativosSer
 		return estado;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Page<ClientesCorporativosDTO> listarClientesCorporativos(Predicate predicate, Pageable page) {
-		Page<ClientesCorporativos> clientes = clientesCorporativosRepository.findAll(predicate, page);
-		return new PageImpl<>(clientes.stream().map(ClientesCorporativosDTO.CONVERTER_DTO).toList(),
-				clientes.getPageable(), clientes.getTotalElements());
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Page<ClientesCorporativosDTO> listarClientesCorporativos(Predicate predicate,
+        Pageable page) {
+      Page<ClientesCorporativos> clientes = clientesCorporativosRepository.findAll(predicate, page);
+      return new PageImpl<>(clientes.stream().map(ClientesCorporativosDTO.CONVERTER_DTO).toList(),
+          clientes.getPageable(), clientes.getTotalElements());
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public ClientesCorporativosDTO guardarClientesCorporativos(ClientesCorporativosDTO clientesCorporativos) {
-		ClientesCorporativos clienteCorporativoEntity = ClientesCorporativosDTO.CONVERTER_ENTITY
-				.apply(clientesCorporativos);
-		clienteCorporativoEntity = clientesCorporativosRepository.save(clienteCorporativoEntity);
-		return ClientesCorporativosDTO.CONVERTER_DTO.apply(clienteCorporativoEntity);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ClientesCorporativosDTO guardarClientesCorporativos (
+        ClientesCorporativosDTO clientesCorporativos) throws NotFoundException {
+      ClientesCorporativos clienteCorporativoEntity =
+          ClientesCorporativosDTO.CONVERTER_ENTITY.apply(clientesCorporativos);
+      clienteCorporativoEntity = clientesCorporativosRepository.save(clienteCorporativoEntity);
+      return ClientesCorporativosDTO.CONVERTER_DTO.apply(clienteCorporativoEntity);
+    }
 	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public ClientesCorporativosDTO actualizarClientesCorporativos(ClientesCorporativosDTO clientesCorporativos) {
-		Optional<ClientesCorporativos> clienteFind = clientesCorporativosRepository
-				.findById(clientesCorporativos.getCodigoCliente());
-		clienteFind.ifPresentOrElse(t -> {
-			t = ClientesCorporativosDTO.CONVERTER_ENTITY.apply(clientesCorporativos);
-			t = clientesCorporativosRepository.save(t);
-		}, () -> {
-			throw new NotFoundException("ClientesCorporativos", clientesCorporativos.getCodigoCliente().toString());
-		});
-		return clientesCorporativos;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ClientesCorporativosDTO actualizarClientesCorporativos(
+        ClientesCorporativosDTO clientesCorporativos) throws NotFoundException {
+      Optional<ClientesCorporativos> clienteFind =
+          clientesCorporativosRepository.findById(clientesCorporativos.getCodigoCliente());
+      clienteFind.ifPresentOrElse(t -> {
+        t = ClientesCorporativosDTO.CONVERTER_ENTITY.apply(clientesCorporativos);
+        t = clientesCorporativosRepository.save(t);
+      }, () -> {
+        throw new NotFoundException("ClientesCorporativos",
+            clientesCorporativos.getCodigoCliente().toString());
+      });
+      return clientesCorporativos;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void eliminarClientesCorporativos(Integer codigoCliente) throws NotFoundException {
+      Optional<ClientesCorporativos> clienteFind =
+          clientesCorporativosRepository.findById(codigoCliente);
+      clienteFind.ifPresentOrElse(t -> {
+        clientesCorporativosRepository.delete(t);
+      }, () -> {
+        throw new NotFoundException("ClientesCorporativos", codigoCliente.toString());
+      });
+    }
 }

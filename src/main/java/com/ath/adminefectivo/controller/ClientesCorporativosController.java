@@ -3,7 +3,7 @@ package com.ath.adminefectivo.controller;
 import java.util.List;
 
 import javax.validation.Valid;
-
+import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -145,11 +145,13 @@ public class ClientesCorporativosController {
 	/**
 	 * Servicio crud eliminar Clientes Corporativos
 	 * 
-	 * @return HttpStatus 200 - ResponseEntity<ApiResponseADE<ClientesCorporativosDTO>>
+	 * @return HttpStatus 200 - ResponseEntity<ApiResposeADE<ClientesCorporativosDTO>>
 	 * @author prv_nparra
 	 */
-	@DeleteMapping(value = "${endpoints.ClientesCorporativos.crud}")
-	public ResponseEntity<ApiResponseADE<ClientesCorporativosDTO>> eliminarClientesCorporativos() {
-		return ResponseEntity.status(HttpStatus.OK).body(null);
-	}
+    @DeleteMapping(value = "${endpoints.ClientesCorporativos.crud}")
+    public ResponseEntity<ApiResponseADE<ClientesCorporativosDTO>> eliminarClientesCorporativos(
+        @NotNull @Valid Integer codigoCliente) {
+      clientesCorporativosService.eliminarClientesCorporativos(codigoCliente);
+      return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+    }
 }
