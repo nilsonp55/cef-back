@@ -2,6 +2,7 @@ package com.ath.adminefectivo.dto;
 
 import java.util.function.Function;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import com.ath.adminefectivo.entities.ClientesCorporativos;
@@ -28,15 +29,19 @@ public class ClientesCorporativosDTO {
 	@NotNull
 	private Integer codigoBancoAval;
 	
-	@NotNull
+	@NotEmpty
 	private String nombreCliente;
 	
+	@NotEmpty
 	private String tipoId;
 	
+	@NotEmpty
 	private String identificacion;
 	
+	@NotNull
 	private Double tarifaSeparacion;
 	
+	@NotNull
 	private Boolean amparado;
 	
 	/**

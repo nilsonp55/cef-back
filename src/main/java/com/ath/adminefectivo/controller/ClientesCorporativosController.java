@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.dto.ClientesCorporativosDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
@@ -81,7 +83,7 @@ public class ClientesCorporativosController {
 	}
 	
 	/**
-	 * Servicio crud guardar Clientes Corporativos
+	 * Servicio crud guardar nuevo Clientes Corporativos
 	 * 
 	 * @return HttpStatus 200 -
 	 *         ResponseEntity<ApiResponseADE<ClientesCorporativosDTO>>
@@ -93,8 +95,7 @@ public class ClientesCorporativosController {
 
 		if (bindingResult.hasFieldErrors()) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseADE<>(null, ResponseADE.builder()
-					.code(ApiResponseCode.ERROR_PARAMETRO_NOT_FOUND.getCode())
-					.description(ApiResponseCode.ERROR_PARAMETRO_NOT_FOUND.getDescription())
+					.code(Constantes.CAMPO_REQUERIDO).description(Constantes.CAMPO_REQUERIDO)
 					.errors(bindingResult.getFieldErrors().stream()
 							.map(error -> error.getField().concat(": ").concat(error.getDefaultMessage())).toList())
 					.build()));
@@ -110,14 +111,35 @@ public class ClientesCorporativosController {
 	}
 	
 	/**
-	 * Servicio crud actualizar Clientes Corporativos
+	 * Servicio crud actualizar Clientes Corporativos existente
 	 * 
 	 * @return HttpStatus 200 - ResponseEntity<ApiResponseADE<ClientesCorporativosDTO>>
 	 * @author prv_nparra
 	 */
 	@PutMapping(value = "${endpoints.ClientesCorporativos.crud}")
-	public ResponseEntity<ApiResponseADE<ClientesCorporativosDTO>> actualizarClientesCorporativos() {
-		return ResponseEntity.status(HttpStatus.OK).body(null);
+	public ResponseEntity<ApiResponseADE<ClientesCorporativosDTO>> actualizarClientesCorporativos(
+			@RequestBody @Valid ClientesCorporativosDTO clientesCorporativosDTO, BindingResult bindingResult) {
+		// Validacion campos obligatorios del DTO
+		if (bindingResult.hasFieldErrors()) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseADE<>(null, ResponseADE.builder()
+					.code(Constantes.CAMPO_REQUERIDO).description(Constantes.CAMPO_REQUERIDO)
+					.errors(bindingResult.getFieldErrors().stream()
+							.map(error -> error.getField().concat(": ").concat(error.getDefaultMessage())).toList())
+					.build()));
+
+		}
+		// Codigo cliente obligatorio
+		if (ObjectUtils.isEmpty(clientesCorporativosDTO.getCodigoCliente())) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body(new ApiResponseADE<>(null, ResponseADE.builder().code(Constantes.CAMPO_REQUERIDO)
+							.description(Constantes.CAMPO_REQUERIDO.concat(": CodigoCliente")).build()));
+		}
+		ClientesCorporativosDTO clienteUpdated = clientesCorporativosService
+				.actualizarClientesCorporativos(clientesCorporativosDTO);
+		log.debug("actualizarClientesCorporativos - dto: {}", clientesCorporativosDTO.toString());
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ApiResponseADE<>(clienteUpdated, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
 	
 	/**

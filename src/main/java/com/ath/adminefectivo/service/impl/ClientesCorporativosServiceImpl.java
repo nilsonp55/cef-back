@@ -3,6 +3,7 @@ package com.ath.adminefectivo.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.dto.ClientesCorporativosDTO;
 import com.ath.adminefectivo.entities.ClientesCorporativos;
+import com.ath.adminefectivo.exception.NotFoundException;
 import com.ath.adminefectivo.repositories.IClientesCorporativosRepository;
 import com.ath.adminefectivo.service.IClientesCorporativosService;
 import com.ath.adminefectivo.service.ISitiosClientesService;
@@ -94,5 +96,21 @@ public class ClientesCorporativosServiceImpl implements IClientesCorporativosSer
 				.apply(clientesCorporativos);
 		clienteCorporativoEntity = clientesCorporativosRepository.save(clienteCorporativoEntity);
 		return ClientesCorporativosDTO.CONVERTER_DTO.apply(clienteCorporativoEntity);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public ClientesCorporativosDTO actualizarClientesCorporativos(ClientesCorporativosDTO clientesCorporativos) {
+		Optional<ClientesCorporativos> clienteFind = clientesCorporativosRepository
+				.findById(clientesCorporativos.getCodigoCliente());
+		clienteFind.ifPresentOrElse(t -> {
+			t = ClientesCorporativosDTO.CONVERTER_ENTITY.apply(clientesCorporativos);
+			t = clientesCorporativosRepository.save(t);
+		}, () -> {
+			throw new NotFoundException("ClientesCorporativos", clientesCorporativos.getCodigoCliente().toString());
+		});
+		return clientesCorporativos;
 	}
 }
