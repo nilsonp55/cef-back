@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
-import com.ath.adminefectivo.dto.ParametrosFiltroConciliacionCostoDTO;
+import com.ath.adminefectivo.dto.ParametrosFiltroCostoTransporteDTO;
 import com.ath.adminefectivo.dto.RegistroOperacionConciliacionDTO;
 import com.ath.adminefectivo.dto.compuestos.ConciliacionCostosTransporteDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionesLiquidacionTransporteDTO;
@@ -260,7 +260,7 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 	}
 
 	@Override
-	public Page<OperacionesLiquidacionTransporteDTO> getLiquidacionConciliadaTransporte(ParametrosFiltroConciliacionCostoDTO filtros) {
+	public Page<OperacionesLiquidacionTransporteDTO> getLiquidacionConciliadaTransporte(ParametrosFiltroCostoTransporteDTO filtros) {
 		
 		var ldtFechaServicioTransporte = convertToLocalDateTime(filtros.getFechaServicioTransporte());
 		var ldtFechaServicioTransporteFinal = convertToLocalDateTime(filtros.getFechaServicioTransporteFinal());
@@ -271,7 +271,7 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 				ldtFechaServicioTransporteFinal, 
 				filtros.getIdentificacionCliente(), 
 				filtros.getRazonSocial(), 
-				filtros.getCodigoPuntoCargo().toString(),
+				filtros.getCodigoPuntoCargo(),
 				filtros.getNombrePuntoCargo(), 
 				filtros.getCiudadFondo(), 
 				filtros.getNombreTipoServicio(), 
@@ -288,7 +288,7 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 	}
 
 	@Override
-	public Page<OperacionesLiquidacionTransporteDTO> getLiquidacionRemitidasNoIdentificadasTransporte(ParametrosFiltroConciliacionCostoDTO filtros) {
+	public Page<OperacionesLiquidacionTransporteDTO> getLiquidacionRemitidasNoIdentificadasTransporte(ParametrosFiltroCostoTransporteDTO filtros) {
 		
 		var ldtFechaServicioTransporte = convertToLocalDateTime(filtros.getFechaServicioTransporte());
 		var ldtFechaServicioTransporteFinal = convertToLocalDateTime(filtros.getFechaServicioTransporteFinal());
@@ -299,7 +299,7 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 				ldtFechaServicioTransporteFinal, 
 				filtros.getIdentificacionCliente(), 
 				filtros.getRazonSocial(), 
-				filtros.getCodigoPuntoCargo().toString(),
+				filtros.getCodigoPuntoCargo(),
 				filtros.getNombrePuntoCargo(), 
 				filtros.getCiudadFondo(), 
 				filtros.getNombreTipoServicio(), 
@@ -318,7 +318,7 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 	
 
 	@Override
-	public Page<OperacionesLiquidacionTransporteDTO> getLiquidadasNoCobradasTransporte(ParametrosFiltroConciliacionCostoDTO filtros) {
+	public Page<OperacionesLiquidacionTransporteDTO> getLiquidadasNoCobradasTransporte(ParametrosFiltroCostoTransporteDTO filtros) {
 		
 		var ldtFechaServicioTransporte = convertToLocalDateTime(filtros.getFechaServicioTransporte());
 		var ldtFechaServicioTransporteFinal = convertToLocalDateTime(filtros.getFechaServicioTransporteFinal());
@@ -329,7 +329,7 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 				ldtFechaServicioTransporteFinal, 
 				filtros.getIdentificacionCliente(), 
 				filtros.getRazonSocial(), 
-				filtros.getCodigoPuntoCargo().toString(),
+				filtros.getCodigoPuntoCargo(),
 				filtros.getNombrePuntoCargo(), 
 				filtros.getCiudadFondo(), 
 				filtros.getNombreTipoServicio(), 
@@ -346,7 +346,7 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 	}
 
 	@Override
-	public Page<OperacionesLiquidacionTransporteDTO> getIdentificadasConDiferenciasTransporte(ParametrosFiltroConciliacionCostoDTO filtros) {
+	public Page<OperacionesLiquidacionTransporteDTO> getIdentificadasConDiferenciasTransporte(ParametrosFiltroCostoTransporteDTO filtros) {
 		
 		var ldtFechaServicioTransporte = convertToLocalDateTime(filtros.getFechaServicioTransporte());
 		var ldtFechaServicioTransporteFinal = convertToLocalDateTime(filtros.getFechaServicioTransporteFinal());
@@ -356,7 +356,7 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 				ldtFechaServicioTransporteFinal, 
 				filtros.getIdentificacionCliente(), 
 				filtros.getRazonSocial(), 
-				filtros.getCodigoPuntoCargo().toString(),
+				filtros.getCodigoPuntoCargo(),
 				filtros.getNombrePuntoCargo(), 
 				filtros.getCiudadFondo(), 
 				filtros.getNombreTipoServicio(), 

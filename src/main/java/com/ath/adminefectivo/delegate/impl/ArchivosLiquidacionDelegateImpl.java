@@ -647,9 +647,11 @@ public class ArchivosLiquidacionDelegateImpl implements IArchivosLiquidacionDele
 	}
 
 	private String procesarTipo(ArchivosLiquidacionDTO dto, String cadena, String requiredFileExtension, List<String> cadenaTipos) {
-	    String[] nameAndExtension = getNameAndExtension(cadena, requiredFileExtension);
-	    cadena = nameAndExtension[0];
+	    
 	    try {
+	    	
+	    	String[] nameAndExtension = getNameAndExtension(cadena, requiredFileExtension);
+		    cadena = nameAndExtension[0];
 	        String existeTipo = validaCadena(cadenaTipos, cadena);
 	        String idMaestroArchivo = (existeTipo.equals("LIQ_TRANSPORTE")) ? Constantes.MAESTRO_ARCHIVO_TRANSPORTE : Constantes.MAESTRO_ARCHIVO_PROCESAMIENTO;
 	        int indiceCaracter = existeTipo.indexOf('_');

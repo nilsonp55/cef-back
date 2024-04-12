@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.delegate.IConciliacionCostosTransporteDelegate;
-import com.ath.adminefectivo.dto.ParametrosFiltroConciliacionCostoDTO;
+import com.ath.adminefectivo.dto.ParametrosFiltroCostoTransporteDTO;
 import com.ath.adminefectivo.dto.RegistroOperacionConciliacionDTO;
 import com.ath.adminefectivo.dto.compuestos.ConciliacionCostosTransporteDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionesLiquidacionTransporteDTO;
@@ -26,25 +26,25 @@ public class ConciliacionCostosTransporteDelegateImpl implements IConciliacionCo
 	}
 
 	@Override
-	public Page<OperacionesLiquidacionTransporteDTO> getLiquidacionConciliadaTransporte(ParametrosFiltroConciliacionCostoDTO filtros) {
+	public Page<OperacionesLiquidacionTransporteDTO> getLiquidacionConciliadaTransporte(ParametrosFiltroCostoTransporteDTO filtros) {
 
 		return costosTransporteService.getLiquidacionConciliadaTransporte(filtros);
 	}
 
 	@Override
-	public Page<OperacionesLiquidacionTransporteDTO> getLiquidacionRemitidasNoIdentificadasTransporte(ParametrosFiltroConciliacionCostoDTO filtros) {
+	public Page<OperacionesLiquidacionTransporteDTO> getLiquidacionRemitidasNoIdentificadasTransporte(ParametrosFiltroCostoTransporteDTO filtros) {
 
 		return costosTransporteService.getLiquidacionRemitidasNoIdentificadasTransporte(filtros);
 	}
 
 	@Override
-	public Page<OperacionesLiquidacionTransporteDTO> getLiquidadasNoCobradasTransporte(ParametrosFiltroConciliacionCostoDTO filtros) {
+	public Page<OperacionesLiquidacionTransporteDTO> getLiquidadasNoCobradasTransporte(ParametrosFiltroCostoTransporteDTO filtros) {
 
 		return costosTransporteService.getLiquidadasNoCobradasTransporte(filtros);
 	}
 
 	@Override
-	public Page<OperacionesLiquidacionTransporteDTO> getIdentificadasConDiferenciasTransporte(ParametrosFiltroConciliacionCostoDTO filtros) {
+	public Page<OperacionesLiquidacionTransporteDTO> getIdentificadasConDiferenciasTransporte(ParametrosFiltroCostoTransporteDTO filtros) {
 
 		return costosTransporteService.getIdentificadasConDiferenciasTransporte(filtros);
 	}

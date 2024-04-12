@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ath.adminefectivo.delegate.IConciliacionOperacionesProcesamientoDelegate;
-import com.ath.adminefectivo.dto.ParametrosFiltroConciliacionCostoDTO;
+import com.ath.adminefectivo.dto.ParametrosFiltroCostoProcesamientoDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionesLiquidacionProcesamientoDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
@@ -33,7 +33,7 @@ public class ConciliacionCostosProcesamientoController {
 
 	@Autowired
 	IConciliacionOperacionesProcesamientoDelegate operacionesLiquidacionDelegate;
-
+		
 	/**
 	 * Metodo encargado de retornar la lista de todas los operaciones conciliadas
 	 * 
@@ -48,28 +48,17 @@ public class ConciliacionCostosProcesamientoController {
 			@RequestParam(required = true) Date fechaServicioTransporteFinal,
 			@RequestParam(required = false) String identificacionCliente,
 			@RequestParam(required = false) String razonSocial,
-			@RequestParam(required = false) Integer codigoPuntoCargo,
+			@RequestParam(required = false) String codigoPuntoCargo,
 			@RequestParam(required = false) String nombrePuntoCargo,
 			@RequestParam(required = false) String ciudadFondo,
 			@RequestParam(required = false) String nombreTipoServicio,
 			@RequestParam(required = false) String monedaDivisa, @RequestParam(required = false) String estado,
 			Pageable page) {
 
-		var filtros = new ParametrosFiltroConciliacionCostoDTO();
-		filtros.setEntidad(entidad);
-		filtros.setFechaServicioTransporte(fechaServicioTransporte);
-		filtros.setFechaServicioTransporteFinal(fechaServicioTransporteFinal);
-		filtros.setIdentificacionCliente(identificacionCliente);
-		filtros.setRazonSocial(razonSocial);
-		filtros.setCodigoPuntoCargo(codigoPuntoCargo);
-		filtros.setNombrePuntoCargo(nombrePuntoCargo);
-		filtros.setCiudadFondo(ciudadFondo);
-		filtros.setNombreTipoServicio(nombreTipoServicio);
-		filtros.setMonedaDivisa(monedaDivisa); 
-		filtros.setEstado(estado);
-		filtros.setPage(page);
+		var filtrosConciliadasPr = ParametrosFiltroCostoProcesamientoDTO.create(entidad, fechaServicioTransporte, fechaServicioTransporteFinal, identificacionCliente, razonSocial,
+	            codigoPuntoCargo, nombrePuntoCargo, ciudadFondo, nombreTipoServicio, monedaDivisa, estado, page);
 		
-		var consulta = operacionesLiquidacionDelegate.getLiquidacionConciliadaProcesamiento(filtros);
+		var consulta = operacionesLiquidacionDelegate.getLiquidacionConciliadaProcesamiento(filtrosConciliadasPr);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
@@ -83,28 +72,17 @@ public class ConciliacionCostosProcesamientoController {
 			@RequestParam(required = true) Date fechaServicioTransporteFinal,
 			@RequestParam(required = false) String identificacionCliente,
 			@RequestParam(required = false) String razonSocial,
-			@RequestParam(required = false) Integer codigoPuntoCargo,
+			@RequestParam(required = false) String codigoPuntoCargo,
 			@RequestParam(required = false) String nombrePuntoCargo,
 			@RequestParam(required = false) String ciudadFondo,
 			@RequestParam(required = false) String nombreTipoServicio,
 			@RequestParam(required = false) String monedaDivisa, @RequestParam(required = false) String estado,
 			Pageable page) {
 
-		var filtros = new ParametrosFiltroConciliacionCostoDTO();
-		filtros.setEntidad(entidad);
-		filtros.setFechaServicioTransporte(fechaServicioTransporte);
-		filtros.setFechaServicioTransporteFinal(fechaServicioTransporteFinal);
-		filtros.setIdentificacionCliente(identificacionCliente);
-		filtros.setRazonSocial(razonSocial);
-		filtros.setCodigoPuntoCargo(codigoPuntoCargo);
-		filtros.setNombrePuntoCargo(nombrePuntoCargo);
-		filtros.setCiudadFondo(ciudadFondo);
-		filtros.setNombreTipoServicio(nombreTipoServicio);
-		filtros.setMonedaDivisa(monedaDivisa); 
-		filtros.setEstado(estado);
-		filtros.setPage(page);
+		var filtrosNoIdentificadasPr = ParametrosFiltroCostoProcesamientoDTO.create(entidad, fechaServicioTransporte, fechaServicioTransporteFinal, identificacionCliente, razonSocial,
+	            codigoPuntoCargo, nombrePuntoCargo, ciudadFondo, nombreTipoServicio, monedaDivisa, estado, page);
 		
-		var consulta = operacionesLiquidacionDelegate.getLiquidacionRemitidasNoIdentificadasProcesamiento(filtros);
+		var consulta = operacionesLiquidacionDelegate.getLiquidacionRemitidasNoIdentificadasProcesamiento(filtrosNoIdentificadasPr);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
@@ -117,28 +95,17 @@ public class ConciliacionCostosProcesamientoController {
 			@RequestParam(required = true) Date fechaServicioTransporteFinal,
 			@RequestParam(required = false) String identificacionCliente,
 			@RequestParam(required = false) String razonSocial,
-			@RequestParam(required = false) Integer codigoPuntoCargo,
+			@RequestParam(required = false) String codigoPuntoCargo,
 			@RequestParam(required = false) String nombrePuntoCargo,
 			@RequestParam(required = false) String ciudadFondo,
 			@RequestParam(required = false) String nombreTipoServicio,
 			@RequestParam(required = false) String monedaDivisa, @RequestParam(required = false) String estado,
 			Pageable page) {
 
-		var filtros = new ParametrosFiltroConciliacionCostoDTO();
-		filtros.setEntidad(entidad);
-		filtros.setFechaServicioTransporte(fechaServicioTransporte);
-		filtros.setFechaServicioTransporteFinal(fechaServicioTransporteFinal);
-		filtros.setIdentificacionCliente(identificacionCliente);
-		filtros.setRazonSocial(razonSocial);
-		filtros.setCodigoPuntoCargo(codigoPuntoCargo);
-		filtros.setNombrePuntoCargo(nombrePuntoCargo);
-		filtros.setCiudadFondo(ciudadFondo);
-		filtros.setNombreTipoServicio(nombreTipoServicio);
-		filtros.setMonedaDivisa(monedaDivisa); 
-		filtros.setEstado(estado);
-		filtros.setPage(page);
+		var filtrosNoCobradasPr = ParametrosFiltroCostoProcesamientoDTO.create(entidad, fechaServicioTransporte, fechaServicioTransporteFinal, identificacionCliente, razonSocial,
+	            codigoPuntoCargo, nombrePuntoCargo, ciudadFondo, nombreTipoServicio, monedaDivisa, estado, page);
 		
-		var consulta = operacionesLiquidacionDelegate.getLiquidadasNoCobradasProcesamiento(filtros);
+		var consulta = operacionesLiquidacionDelegate.getLiquidadasNoCobradasProcesamiento(filtrosNoCobradasPr);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
@@ -151,28 +118,17 @@ public class ConciliacionCostosProcesamientoController {
 			@RequestParam(required = true) Date fechaServicioTransporteFinal,
 			@RequestParam(required = false) String identificacionCliente,
 			@RequestParam(required = false) String razonSocial,
-			@RequestParam(required = false) Integer codigoPuntoCargo,
+			@RequestParam(required = false) String codigoPuntoCargo,
 			@RequestParam(required = false) String nombrePuntoCargo,
 			@RequestParam(required = false) String ciudadFondo,
 			@RequestParam(required = false) String nombreTipoServicio,
 			@RequestParam(required = false) String monedaDivisa, @RequestParam(required = false) String estado,
 			Pageable page) {
 		
-		var filtros = new ParametrosFiltroConciliacionCostoDTO();
-		filtros.setEntidad(entidad);
-		filtros.setFechaServicioTransporte(fechaServicioTransporte);
-		filtros.setFechaServicioTransporteFinal(fechaServicioTransporteFinal);
-		filtros.setIdentificacionCliente(identificacionCliente);
-		filtros.setRazonSocial(razonSocial);
-		filtros.setCodigoPuntoCargo(codigoPuntoCargo);
-		filtros.setNombrePuntoCargo(nombrePuntoCargo);
-		filtros.setCiudadFondo(ciudadFondo);
-		filtros.setNombreTipoServicio(nombreTipoServicio);
-		filtros.setMonedaDivisa(monedaDivisa); 
-		filtros.setEstado(estado);
-		filtros.setPage(page);
+		var filtrosConDiferenciasPr = ParametrosFiltroCostoProcesamientoDTO.create(entidad, fechaServicioTransporte, fechaServicioTransporteFinal, identificacionCliente, razonSocial,
+	            codigoPuntoCargo, nombrePuntoCargo, ciudadFondo, nombreTipoServicio, monedaDivisa, estado, page);
 
-		var consulta = operacionesLiquidacionDelegate.getIdentificadasConDiferenciasProcesamiento(filtros);
+		var consulta = operacionesLiquidacionDelegate.getIdentificadasConDiferenciasProcesamiento(filtrosConDiferenciasPr);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));

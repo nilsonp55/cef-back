@@ -459,7 +459,7 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 	}
 	
 	/**
-	 * Este método se encarga de porsistir los archivos y registros
+	 * Este método se encarga de persistir los archivos y registros
 	 * relacionados con el proceso de liquidación de costos.
 	 * 
 	 * @param archivosLiquidacion
@@ -469,86 +469,97 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 	    List<ArchivosLiquidacionDTO> archivosLiquidacionList = new ArrayList<>();
 	    
 	    for (ArchivosLiquidacionDTO archivos : archivosLiquidacion.getValidacionArchivo()) {
-	        ArchivosCargados archivoCargado = new ArchivosCargados();
-	        
-	        var maestroDefinicion = maestroDefinicionArchivoService.consultarDefinicionArchivoById(archivos.getIdMaestroArchivo());
-
-	        archivoCargado.setEstado(Constantes.REGISTRO_ACTIVO);
-	        archivoCargado.setEstadoCargue(archivos.getEstado());
-	        archivoCargado.setFechaArchivo(archivos.getFechaArchivo());
-	        archivoCargado.setFechaCreacion(archivos.getFechaTransferencia());
-	        archivoCargado.setFechaInicioCargue(new Date());
-	        archivoCargado.setIdModeloArchivo(archivos.getIdMaestroArchivo());
-	        archivoCargado.setNombreArchivo(archivos.getNombreArchivoCompleto());
-	        archivoCargado.setNumeroErrores(0);
-	        archivoCargado.setUsuarioCreacion("ATH");
-	        archivoCargado.setObservacion(archivos.getObservacion());
-	        archivoCargado.setNombreArchivoUpper(archivos.getNombreArchivoCompleto().toUpperCase());
-
-	        archivosCargadosRepository.save(archivoCargado);
-
-	        List<RegistrosCargados> registrosCargadosList = new ArrayList<>();
-	        List<String> contenidoArchivoList = archivos.getContenidoArchivo();
-	        
-	        // Si el objeto no incluye el contenido del archivo, obtiene el contenido del archivo en el bucket S3.
-	        if (contenidoArchivoList == null || contenidoArchivoList.isEmpty()) {
-	            contenidoArchivoList = filesService.obtenerContenidoCarpetaSummaryS3Object(archivos.getUrl(), 0, 0, true, archivos.getNombreArchivoCompleto())
-	                    .stream()
-	                    .flatMap(summary -> summary.getContenidoArchivo().stream())
-	                    .collect(Collectors.toList());
-	        }
-	        
-	        // Si el archivo no contiene información, se debe agregar un registro (‘Log’) para informar de esta situación
-	        if (contenidoArchivoList == null || contenidoArchivoList.isEmpty()) {
-                log.info("El archivo {} no contiene información.", archivos.getNombreArchivoCompleto());
-            }
-	        
-	        // Verifica si tiene cabecera y control final
-	        if (maestroDefinicion.isCabecera())
-	        	contenidoArchivoList.remove(0);
-    		if (maestroDefinicion.isControlFinal())
-    			contenidoArchivoList.remove(contenidoArchivoList.size() - 1);
-    		
-	        int consecutivo = 1;
-
-	        for (String line : contenidoArchivoList) {
-	            RegistrosCargados registroCargado = new RegistrosCargados();	            	          
-
-	            RegistrosCargadosPK registroPK = new RegistrosCargadosPK();
-	            registroPK.setIdArchivo(archivoCargado.getIdArchivo());
-	            registroPK.setConsecutivoRegistro(consecutivo);
-
-	            registroCargado.setId(registroPK);
-	            registroCargado.setEstado(Constantes.REGISTRO_ACTIVO);
-	            registroCargado.setEstadoRegistro(Constantes.ESTADO_CARGUE_VALIDO);
-	            registroCargado.setFechaCreacion(new Date());
-	            registroCargado.setTipoRegistro(Constantes.TIPO_REGISTROS_ELIMINADOS);
-	            registroCargado.setUsuarioCreacion("ATH");
-	            registroCargado.setContenido(line);
-
-	            registrosCargadosRepository.save(registroCargado);
-
-	            registrosCargadosList.add(registroCargado);
-	            consecutivo++;
-	        }
-
-	        archivoCargado.setRegistrosCargados(registrosCargadosList);
-	        archivoCargado.setNumeroRegistros(registrosCargadosList.size());
-
-	        archivosCargadosRepository.save(archivoCargado);
-	        
-	        // Si el estado del registro es ELIMINADO, entonces se debe borrar el archivo correspondiente del bucket S3.
-	        if (Constantes.ESTADO_CARGUE_ELIMINADO.equals(archivos.getEstado())) {
-	        	filesService.eliminarArchivo(archivos.getUrl() + archivos.getNombreArchivoCompleto());
-	        }
-	        
-	        // Establece el contenido como null, asigna el id_archivo de la base de datos y el estado al objeto response.
-	        archivos.setIdArchivodb(archivoCargado.getIdArchivo());
-	        archivos.setEstado(archivoCargado.getEstadoCargue());
-	        archivos.setContenidoArchivo(null);
+	        ArchivosCargados archivoCargado = crearArchivoCargado(archivos);
+	        List<RegistrosCargados> registrosCargadosList = crearRegistrosCargados(archivos, archivoCargado);
+	        actualizarArchivoCargado(archivos, archivoCargado, registrosCargadosList);
 	        archivosLiquidacionList.add(archivos);
 	    }
 	    	    
 	    return archivosLiquidacionList;
 	}
+
+	private ArchivosCargados crearArchivoCargado(ArchivosLiquidacionDTO archivos) {
+	    ArchivosCargados archivoCargado = new ArchivosCargados();
+	    
+	    archivoCargado.setEstado(Constantes.REGISTRO_ACTIVO);
+	    archivoCargado.setEstadoCargue(archivos.getEstado());
+	    archivoCargado.setFechaArchivo(archivos.getFechaArchivo());
+	    archivoCargado.setFechaCreacion(archivos.getFechaTransferencia());
+	    archivoCargado.setFechaInicioCargue(new Date());
+	    archivoCargado.setIdModeloArchivo(archivos.getIdMaestroArchivo());
+	    archivoCargado.setNombreArchivo(archivos.getNombreArchivoCompleto());
+	    archivoCargado.setNumeroErrores(0);
+	    archivoCargado.setUsuarioCreacion("ATH");
+	    archivoCargado.setObservacion(archivos.getObservacion());
+	    archivoCargado.setNombreArchivoUpper(archivos.getNombreArchivoCompleto().toUpperCase());
+
+	    archivosCargadosRepository.save(archivoCargado);
+	    return archivoCargado;
+	}
+
+	private List<RegistrosCargados> crearRegistrosCargados(ArchivosLiquidacionDTO archivos, ArchivosCargados archivoCargado) {
+	    List<RegistrosCargados> registrosCargadosList = new ArrayList<>();
+	    List<String> contenidoArchivoList = obtenerContenidoArchivo(archivos);
+
+	    int consecutivo = 1;
+	    for (String line : contenidoArchivoList) {
+	        RegistrosCargados registroCargado = new RegistrosCargados();	            	          
+
+	        RegistrosCargadosPK registroPK = new RegistrosCargadosPK();
+	        registroPK.setIdArchivo(archivoCargado.getIdArchivo());
+	        registroPK.setConsecutivoRegistro(consecutivo);
+
+	        registroCargado.setId(registroPK);
+	        registroCargado.setEstado(Constantes.REGISTRO_ACTIVO);
+	        registroCargado.setEstadoRegistro(Constantes.ESTADO_CARGUE_VALIDO);
+	        registroCargado.setFechaCreacion(new Date());
+	        registroCargado.setTipoRegistro(Constantes.TIPO_REGISTROS_ELIMINADOS);
+	        registroCargado.setUsuarioCreacion("ATH");
+	        registroCargado.setContenido(line);
+
+	        registrosCargadosRepository.save(registroCargado);
+
+	        registrosCargadosList.add(registroCargado);
+	        consecutivo++;
+	    }
+	    return registrosCargadosList;
+	}
+
+	private List<String> obtenerContenidoArchivo(ArchivosLiquidacionDTO archivos) {
+	    List<String> contenidoArchivoList = archivos.getContenidoArchivo();
+	    var maestroDefinicion = maestroDefinicionArchivoService.consultarDefinicionArchivoById(archivos.getIdMaestroArchivo());
+
+	    if (contenidoArchivoList == null || contenidoArchivoList.isEmpty()) {
+	        contenidoArchivoList = filesService.obtenerContenidoCarpetaSummaryS3Object(archivos.getUrl(), 0, 0, true, archivos.getNombreArchivoCompleto())
+	                .stream()
+	                .flatMap(summary -> summary.getContenidoArchivo().stream())
+	                .collect(Collectors.toList());
+	    }
+
+	    if (contenidoArchivoList != null && !contenidoArchivoList.isEmpty()) {
+	        if (maestroDefinicion.isCabecera() && !contenidoArchivoList.isEmpty())
+	            contenidoArchivoList.remove(0);
+	        if (maestroDefinicion.isControlFinal() && !contenidoArchivoList.isEmpty())
+	            contenidoArchivoList.remove(contenidoArchivoList.size() - 1);
+	    } else {
+	        log.info("El archivo {} no contiene información.", archivos.getNombreArchivoCompleto());
+	    }
+	    return contenidoArchivoList;
+	}
+
+	private void actualizarArchivoCargado(ArchivosLiquidacionDTO archivos, ArchivosCargados archivoCargado, List<RegistrosCargados> registrosCargadosList) {
+	    archivoCargado.setRegistrosCargados(registrosCargadosList);
+	    archivoCargado.setNumeroRegistros(registrosCargadosList.size());
+
+	    archivosCargadosRepository.save(archivoCargado);
+	    
+	    if (Constantes.ESTADO_CARGUE_ELIMINADO.equals(archivos.getEstado())) {
+	    	filesService.eliminarArchivo(archivos.getUrl() + archivos.getNombreArchivoCompleto());
+	    }
+	    
+	    archivos.setIdArchivodb(archivoCargado.getIdArchivo());
+	    archivos.setEstado(archivoCargado.getEstadoCargue());
+	    archivos.setContenidoArchivo(null);
+	}
+
 }
