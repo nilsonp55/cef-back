@@ -252,7 +252,7 @@ public class FilesDelegateImpl implements IFilesDelegate {
 
 			if (Constantes.ESTADO_CARGUE_ERROR.equals(archivosCargados.getEstadoCargue())) {
 
-				listaRegistros = obtenerErrores(listaRegistros, idArchivoCargado);
+				obtenerErrores(listaRegistros, idArchivoCargado);
 			}
 
 			downloadDTO.setId(idArchivoCargado);
