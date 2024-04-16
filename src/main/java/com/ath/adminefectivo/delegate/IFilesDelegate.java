@@ -81,5 +81,15 @@ public interface IFilesDelegate {
 	 * @author CamiloBenavides
 	 */
 	List<ArchivosCargadosDTO> consultarArchivos(String idMaestroDefinicion, String estado);
+	
+	/**
+	 * Obtiene los registros de los archivos de liquidacion y los retorna como un inputstream
+	 * para que pueda ser descargado
+	 * 
+	 * @param idArchivoCargado
+	 * @return DownloadDTO
+	 * @author johan.chaparro
+	 */
+	DownloadDTO descargarArchivoLiqProcesado(Long idArchivoCargado);
 
 }

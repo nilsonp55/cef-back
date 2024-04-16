@@ -1,8 +1,8 @@
 package com.ath.adminefectivo.delegate;
 
-import com.ath.adminefectivo.entities.ArchivosCargados;
-
 import java.util.List;
+
+import com.ath.adminefectivo.entities.ArchivosCargados;
 
 public interface ICertificacionesDelegate {
 
