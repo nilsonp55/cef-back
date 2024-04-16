@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
+import com.ath.adminefectivo.constantes.Parametros;
 import com.ath.adminefectivo.dto.ArchivosCargadosDTO;
 import com.ath.adminefectivo.dto.DetallesDefinicionArchivoDTO;
 import com.ath.adminefectivo.dto.FechasConciliacionDTO;
@@ -46,6 +47,7 @@ import com.ath.adminefectivo.service.ICiudadesService;
 import com.ath.adminefectivo.service.IClientesCorporativosService;
 import com.ath.adminefectivo.service.IDetalleDefinicionArchivoService;
 import com.ath.adminefectivo.service.IDominioService;
+import com.ath.adminefectivo.service.IFestivosNacionalesService;
 import com.ath.adminefectivo.service.IFondosService;
 import com.ath.adminefectivo.service.ILecturaArchivoService;
 import com.ath.adminefectivo.service.ILogProcesoDiarioService;
@@ -117,6 +119,9 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
   @Autowired
   ICiudadesRepository ciudadesRepository;
+  
+  @Autowired
+  IFestivosNacionalesService festivosNacionalesService;
 
   private IDominioService dominioService;
   private OperacionesProgramadasDTO operaciones;
@@ -1691,14 +1696,17 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
    * @param fila
    * @return String
    * @author cesar.castano
+   * @author rparra
+   * @author prv_nparra
    */
   private String asignarTipoServicio(String fila) {
-    Date fecha = null;
     var tipoServicio = "";
-    fecha = asignarFechaHora(fila);
-    Date fechaDiaAnterior = this.sumarRestarDiasFecha(fecha, -1);
-    if (Integer.parseInt(fechaDiaAnterior.toString().substring(12,
-        13)) <= Constantes.HORA_TIPO_SERVICIO_PROGRAMADA) {
+    Date fecha = asignarFechaHora(fila);
+    Date fechaActual = parametroService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
+    Date fechaAnteriorHabil = festivosNacionalesService.consultarAnteriorHabil(fechaActual);
+    // averiguar fecha del dia habil anterior, si la fecha sin horas, es igual o mayor se marca como
+    // Especial.
+    if (fecha.compareTo(fechaAnteriorHabil) < 0) {
       tipoServicio = dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_SERVICIO,
           Dominios.TIPO_SERVICIO_PROGRAMADA);
     } else {
