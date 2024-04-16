@@ -2,6 +2,8 @@ package com.ath.adminefectivo.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -27,6 +29,7 @@ public class ClientesCorporativos {
 
 	@Id
 	@Column(name = "CODIGO_CLIENTE")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer codigoCliente;
 	
 	@Column(name = "CODIGO_BANCO_AVAL")
@@ -43,5 +46,8 @@ public class ClientesCorporativos {
 	
 	@Column(name = "TARIFA_SEPARACION")
 	private Double tarifaSeparacion;
+	
+	@Column(name = "AMPARADO")
+	private Boolean amparado;
 	
 }

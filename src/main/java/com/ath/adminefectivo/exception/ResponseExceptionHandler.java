@@ -40,7 +40,7 @@ public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
 		log.error("manejarTodasExcepciones: {}", exception.getMessage());
 		return ResponseEntity.status(ApiResponseCode.GENERIC_ERROR.getHttpStatus())
 				.body(new ApiResponseADE<ExceptionResponse>(null, ResponseADE.builder().code(ApiResponseCode.GENERIC_ERROR.getCode())
-								.description(ApiResponseCode.GENERIC_ERROR.getDescription())
+								.description(ApiResponseCode.GENERIC_ERROR.getDescription().concat(exception.getMessage()))
 								.source(request.getDescription(false)).build()));
 
 	}
@@ -107,12 +107,13 @@ public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
 	 * @author CamiloBenavides
 	 */
 	@ExceptionHandler(AplicationException.class)
-	public ResponseEntity<ApiResponseADE<ExceptionResponse>> manejarExcepcionesDeAplicacin(AplicationException exception,
-			WebRequest request) {
+	public ResponseEntity<ApiResponseADE<ExceptionResponse>> manejarExcepcionesDeAplicacin(
+			AplicationException exception, WebRequest request) {
 		log.error("manejarExcepcionesDeAplicacin: {}", exception.getMessage());
 		return ResponseEntity.status(exception.getStatus())
 				.body(new ApiResponseADE<ExceptionResponse>(null, ResponseADE.builder().code(exception.getCode())
-						.description(ApiResponseCode.GENERIC_ERROR.getDescription()).source(request.getDescription(false)).build()));
+						.description(ApiResponseCode.GENERIC_ERROR.getDescription().concat(exception.getMessage()))
+						.source(request.getDescription(false)).build()));
 
 	}
 

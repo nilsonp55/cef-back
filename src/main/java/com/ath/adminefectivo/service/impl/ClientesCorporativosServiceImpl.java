@@ -3,11 +3,17 @@ package com.ath.adminefectivo.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.dto.ClientesCorporativosDTO;
+import com.ath.adminefectivo.entities.ClientesCorporativos;
+import com.ath.adminefectivo.exception.NotFoundException;
 import com.ath.adminefectivo.repositories.IClientesCorporativosRepository;
 import com.ath.adminefectivo.service.IClientesCorporativosService;
 import com.ath.adminefectivo.service.ISitiosClientesService;
@@ -19,12 +25,15 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class ClientesCorporativosServiceImpl implements IClientesCorporativosService {
 
-	@Autowired
-	IClientesCorporativosRepository clientesCorporativosRepository;
+	private final IClientesCorporativosRepository clientesCorporativosRepository;	
+	private final ISitiosClientesService sitiosClientesService;
 	
-	@Autowired
-	ISitiosClientesService sitiosClientesService;
-	
+	public ClientesCorporativosServiceImpl(@Autowired IClientesCorporativosRepository clientesCorporativosRepository,
+			@Autowired ISitiosClientesService sitiosClientesService) {
+		this.clientesCorporativosRepository = clientesCorporativosRepository;
+		this.sitiosClientesService = sitiosClientesService;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -67,4 +76,57 @@ public class ClientesCorporativosServiceImpl implements IClientesCorporativosSer
 		}
 		return estado;
 	}
+	
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Page<ClientesCorporativosDTO> listarClientesCorporativos(Predicate predicate,
+        Pageable page) {
+      Page<ClientesCorporativos> clientes = clientesCorporativosRepository.findAll(predicate, page);
+      return new PageImpl<>(clientes.stream().map(ClientesCorporativosDTO.CONVERTER_DTO).toList(),
+          clientes.getPageable(), clientes.getTotalElements());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ClientesCorporativosDTO guardarClientesCorporativos (
+        ClientesCorporativosDTO clientesCorporativos) throws NotFoundException {
+      ClientesCorporativos clienteCorporativoEntity =
+          ClientesCorporativosDTO.CONVERTER_ENTITY.apply(clientesCorporativos);
+      clienteCorporativoEntity = clientesCorporativosRepository.save(clienteCorporativoEntity);
+      return ClientesCorporativosDTO.CONVERTER_DTO.apply(clienteCorporativoEntity);
+    }
+	
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ClientesCorporativosDTO actualizarClientesCorporativos(
+        ClientesCorporativosDTO clientesCorporativos) throws NotFoundException {
+      Optional<ClientesCorporativos> clienteFind =
+          clientesCorporativosRepository.findById(clientesCorporativos.getCodigoCliente());
+      clienteFind.ifPresentOrElse(t -> {
+        t = ClientesCorporativosDTO.CONVERTER_ENTITY.apply(clientesCorporativos);
+        t = clientesCorporativosRepository.save(t);
+      }, () -> {
+        throw new NotFoundException("ClientesCorporativos",
+            clientesCorporativos.getCodigoCliente().toString());
+      });
+      return clientesCorporativos;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void eliminarClientesCorporativos(Integer codigoCliente) throws NotFoundException {
+      Optional<ClientesCorporativos> clienteFind =
+          clientesCorporativosRepository.findById(codigoCliente);
+      clienteFind.ifPresentOrElse(t -> clientesCorporativosRepository.delete(t), () -> {
+        throw new NotFoundException("ClientesCorporativos", codigoCliente.toString());
+      });
+    }
 }
