@@ -119,6 +119,7 @@ public enum ApiResponseCode {
 
 	/**
 	 * Error no se puede obtener la fecha del nombre del archivo
+	 *
 	 */
 	ERROR_FECHA_NO_VALIDA("E024", "El archivo no cuenta con una fecha valida", HttpStatus.PRECONDITION_FAILED),
 
@@ -721,11 +722,23 @@ public enum ApiResponseCode {
 	 */
 	ERROR_TIPO_PUNTO_DIFERENTE("E977", "No estᡰermitido modificar el tipo punto",
 			HttpStatus.PRECONDITION_FAILED),
-  
-    /**
+
+	/**
+	 * Error al obtener el contenido de un archivo en un repositorio local
+	 */
+	ERROR_CONTENIDO_ARCHIVO ("E978", "Ocurrió un error al intentar obtener el contenido del archivo en el directorio local",
+			HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Error al obtener el contenido de un archivo en un repositorio local
+	 */
+	ERROR_CONTENIDO_ARCHIVO_PROCESADO ("E979", "Ocurrió un error al intentar obtener el contenido del archivo procesado, por favor consulta con el administrador",
+			HttpStatus.PRECONDITION_FAILED),
+
+	/**
      * Ocurrió un error al consultar la tabla de puntos, retorna mas de un registro
      */
-    ERROR_PUNTOS_ENCONTRADOS_REPETIDOS("E978", "Al consultar puntos, retorna mas de un registro",
+    ERROR_PUNTOS_ENCONTRADOS_REPETIDOS("E980", "Al consultar puntos, retorna mas de un registro",
           HttpStatus.PRECONDITION_FAILED);
 	
 	/**

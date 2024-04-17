@@ -6,7 +6,7 @@ import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.querydsl.core.types.Predicate;
+
 import com.ath.adminefectivo.dto.TiposCuentasDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.TiposCuentas;
@@ -14,6 +14,7 @@ import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.exception.ConflictException;
 import com.ath.adminefectivo.repositories.ITiposCuentasRepository;
 import com.ath.adminefectivo.service.ITiposCuentasService;
+import com.querydsl.core.types.Predicate;
 
 /**
  * Servicios para gestionar los tipos de cuentas

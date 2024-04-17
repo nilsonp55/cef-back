@@ -1,6 +1,7 @@
 package com.ath.adminefectivo.dto;
 
 import java.util.function.Function;
+
 import com.ath.adminefectivo.entities.DominioMaestro;
 import com.ath.adminefectivo.utils.UtilsObjects;
 
