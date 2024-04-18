@@ -14,6 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
@@ -91,6 +92,9 @@ public class ArchivosLiquidacionDelegateImpl implements IArchivosLiquidacionDele
 	IDetalleDefinicionArchivoService detalleDefinicionArchivoService;
        
     private ValidacionArchivoDTO validacionArchivo;
+    
+    @Value("${aws.s3.active}")
+    Boolean s3aws;
    	
 	/**
 	 * {@inheritDoc}
@@ -100,6 +104,9 @@ public class ArchivosLiquidacionDelegateImpl implements IArchivosLiquidacionDele
 		
 		List<BancoSimpleInfoEntity> bancos;
 	    List<Transportadoras> transportadoras;
+	    	    	    
+	    log.info("Inicia Proceso Archivos Pendientes de carga : Acceso AWS:{}", s3aws);
+	    
 	    try {
 	        bancos = bancosRepository.findByEsAvalEqualsOne();
 	        transportadoras = transportadorasRepository.findAll();
@@ -120,15 +127,16 @@ public class ArchivosLiquidacionDelegateImpl implements IArchivosLiquidacionDele
 	        return new PageImpl<>(dtoResponseList);
 	    }
 
+	    log.info("Archivos en directorio Pendientes de carga: url:{} - cantidad:{}", url, dtoResponseList.size());
+	    
 	    List<String> cadenaMascara = obtenerCadenaMascara(maestrosDefinicion);
 	    String[][] estructuraMascara = procesarMascaras(cadenaMascara);
 	    List<String> cadenaTipos = getSegmentosCadena(cadenaMascara);
-
-	    log.info("Archivos en directorio Pendientes: url:{} - cantidad:{}", url, dtoResponseList.size());
-
+	    
 	    List<ArchivosLiquidacionDTO> responseList = procesarNombreArchivos(dtoResponseList, estructuraMascara, cadenaTrasportadoras, cadenaEntidades, requiredFileExtension, cadenaTipos, bancos);
 	    ordenarYAsignarIds(responseList);
-
+	    
+	    log.info("Finaliza proceso cargue de archivos pendientes - Total procesados: {}", responseList.size());
 	    return new PageImpl<>(responseList);
 	}
 	
@@ -634,12 +642,16 @@ public class ArchivosLiquidacionDelegateImpl implements IArchivosLiquidacionDele
 	    String valorCampo = keyValue[1];
 	    switch (nombreCampo) {
 	        case "TIPO":
+	        	log.info("Archivos Pendientes de carga - Procesa tipo: {}", cadena);
 	            return procesarTipo(archivosLiquidacionDTO, cadena, requiredFileExtension, cadenaTipos);
 	        case "TRANSPORTADORA":
+	        	log.info("Archivos Pendientes de carga - Procesa Transportadora: {}", cadena);
 	            return procesarTransportadora(archivosLiquidacionDTO, cadenaTrasportadoras, cadena);
 	        case "BANCO":
+	        	log.info("Archivos Pendientes de carga - Procesa Banco: {}", cadena);
 	            return procesarBanco(archivosLiquidacionDTO, cadenaEntidades, cadena, bancos);
 	        case "FECHA":
+	        	log.info("Archivos Pendientes de carga - Procesa Fecha: {}", cadena);
 	            return procesarFecha(archivosLiquidacionDTO, valorCampo, cadena) ? cadena : null;
 	        default:
 	            return cadena;
