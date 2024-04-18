@@ -498,16 +498,16 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 	                    .collect(Collectors.toList());
 	        }
 	        
-	        // Si el archivo no contiene información, se debe agregar un registro (‘Log’) para informar de esta situación
-	        if (contenidoArchivoList == null || contenidoArchivoList.isEmpty()) {
-                log.info("El archivo {} no contiene información.", archivos.getNombreArchivoCompleto());
-            }
-	        
-	        // Verifica si tiene cabecera y control final
-	        if (maestroDefinicion.isCabecera())
-	        	contenidoArchivoList.remove(0);
-    		if (maestroDefinicion.isControlFinal())
-    			contenidoArchivoList.remove(contenidoArchivoList.size() - 1);
+	        if (contenidoArchivoList != null && !contenidoArchivoList.isEmpty()) {
+	            // Verifica si tiene cabecera y control final
+	            if (maestroDefinicion.isCabecera() && !contenidoArchivoList.isEmpty())
+	                contenidoArchivoList.remove(0);
+	            if (maestroDefinicion.isControlFinal() && !contenidoArchivoList.isEmpty())
+	                contenidoArchivoList.remove(contenidoArchivoList.size() - 1);
+	        } else {
+	        	// Si el archivo no contiene información, se debe agregar un registro (‘Log’) para informar de esta situación
+	        	log.info("El archivo {} no contiene información.", archivos.getNombreArchivoCompleto());
+	        }
     		
 	        int consecutivo = 1;
 
