@@ -137,44 +137,44 @@ public class ArchivosLiquidacionServiceImpl implements IArchivosLiquidacionServi
 	private List<ErroresCamposDTO> validarCostoTransporteAceptado(ValidacionLineasDTO lineaDTO)
 	{
 	
-		List<String> listaDominioFecha = new ArrayList<>();
-		listaDominioFecha.add(Constantes.FECHA_PATTERN_DD_MM_YYYY_WITH_SLASH);
+		List<String> listaFechaDominio = new ArrayList<>();
+		listaFechaDominio.add(Constantes.FECHA_PATTERN_DD_MM_YYYY_WITH_SLASH);
 		
 		List<ErroresCamposDTO> erroresCamposDTO = new ArrayList<>();
-		List<String> contenido = lineaDTO.getContenido();	
+		List<String> contenidoLinea = lineaDTO.getContenido();	
 		
 		List<String> mensajes = new ArrayList<>();
 		mensajes.add("Este servicio y/o proceso ya se encuentra conciliado en un archivo diferente");
 		
 		//Transporte
-		String entidad = contenido.get(0);
-        var fechaServicioTransporte = UtilsString.toDate(contenido.get(3),listaDominioFecha);
-        String codigoPuntoCargo = contenido.get(6);
-        String nombrePuntoCargo = contenido.get(7);
-  	    String ciudadFondo = contenido.get(11);
-  	    String nombreTipoServicio = contenido.get(12);
+		String entidadTransporte = contenidoLinea.get(0);
+        var fechaServicioTransporte = UtilsString.toDate(contenidoLinea.get(3),listaFechaDominio);
+        String codigoPuntoCargoTransporte = contenidoLinea.get(6);
+        String nombrePuntoCargoTransporte = contenidoLinea.get(7);
+  	    String ciudadFondoTransporte = contenidoLinea.get(11);
+  	    String nombreTipoServicioTransporte = contenidoLinea.get(12);
   	    
-  	    var valor = String.format("%s, %s, %s, %s, %s, %s", entidad,
-  	    								contenido.get(3),
-  	    							  codigoPuntoCargo,
-  	    							  nombrePuntoCargo,
-  	    							  ciudadFondo,
-  	    							  nombreTipoServicio);
+  	    var valorCadenaTransporte = String.format("%s, %s, %s, %s, %s, %s", entidadTransporte,
+  	    								contenidoLinea.get(3),
+  	    							  codigoPuntoCargoTransporte,
+  	    							  nombrePuntoCargoTransporte,
+  	    							  ciudadFondoTransporte,
+  	    							  nombreTipoServicioTransporte);
 		
   	    
-  	    List<CostosTransporte> registros = costosTransporteService.findAceptados(entidad, 
+  	    List<CostosTransporte> registrosTransporte = costosTransporteService.findAceptados(entidadTransporte, 
   	    									fechaServicioTransporte,
-  	    									codigoPuntoCargo,
-  	    									nombrePuntoCargo,
-  	    									ciudadFondo,
-  	    									nombreTipoServicio);
+  	    									codigoPuntoCargoTransporte,
+  	    									nombrePuntoCargoTransporte,
+  	    									ciudadFondoTransporte,
+  	    									nombreTipoServicioTransporte);
   	   
   	   
-  	   if (Objects.nonNull(registros) && !registros.isEmpty()) {
+  	   if (Objects.nonNull(registrosTransporte) && !registrosTransporte.isEmpty()) {
 			var mensajeErrores = mensajes;
 			var mensajeErroresTxt = String.join(Constantes.SEPARADOR_PUNTO_Y_COMA, mensajeErrores);
 			erroresCamposDTO.add(ErroresCamposDTO.builder().numeroCampo(1)
-					.estado(Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO).contenido(valor)
+					.estado(Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO).contenido(valorCadenaTransporte)
 					.mensajeErrorTxt(mensajeErroresTxt).mensajeError(mensajeErrores).build());
 		}
   	   

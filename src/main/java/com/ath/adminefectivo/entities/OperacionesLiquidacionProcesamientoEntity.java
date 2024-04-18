@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 import javax.inject.Named;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -26,87 +27,87 @@ import lombok.NoArgsConstructor;
 public class OperacionesLiquidacionProcesamientoEntity {
 	
 	@Id
-    @Named(value = "CONSECUTIVO_REGISTRO")
-    private Integer consecutivoRegistro;
+    @Column(name = "CONSECUTIVO_REGISTRO")
+    private Integer recordConsecutive;
 
-    @Named(value = "ID_ARCHIVO_CARGADO")
-    private Integer idArchivoCargado;
+    @Column(name = "ID_ARCHIVO_CARGADO")
+    private Integer loadedFileId;
 
-    @Named(value = "ID_REGISTRO")
-    private Integer idRegistro;
+    @Column(name = "ID_REGISTRO")
+    private Integer recordId;
 
-    @Named(value = "ID_LIQUIDACION")
-    private Long idLiquidacion; // Se asume que ID_LIQUIDACION es INT8 en la tabla
+    @Column(name = "ID_LIQUIDACION")
+    private Long settlementId;
 
-    @Named(value = "TIPO_TRANSACCION")
-    private Integer tipoTransaccion;
+    @Column(name = "TIPO_TRANSACCION")
+    private Integer transactionType;
 
-    @Named(value = "ENTIDAD")
-    private String entidad;
+    @Column(name = "ENTIDAD")
+    private String entity;
 
-    @Named(value = "FECHA_SERVICIO_TRANSPORTE")
-    private LocalDateTime fechaServicioTransporte;
+    @Column(name = "FECHA_SERVICIO_TRANSPORTE")
+    private LocalDateTime transportServiceDate;
 
-    @Named(value = "IDENTIFICACION_CLIENTE")
-    private String identificacionCliente;
+    @Column(name = "IDENTIFICACION_CLIENTE")
+    private String clientIdentification;
 
-    @Named(value = "RAZON_SOCIAL")
-    private String razonSocial;
+    @Column(name = "RAZON_SOCIAL")
+    private String businessName;
 
-    @Named(value = "CODIGO_PUNTO_CARGO")
-    private String codigoPuntoCargo;
+    @Column(name = "CODIGO_PUNTO_CARGO")
+    private String cargoPointCode;
 
-    @Named(value = "NOMBRE_PUNTO_CARGO")
-    private String nombrePuntoCargo;
+    @Column(name = "NOMBRE_PUNTO_CARGO")
+    private String cargoPointName;
 
-    @Named(value = "CIUDAD_FONDO")
-    private String ciudadFondo;
+    @Column(name = "CIUDAD_FONDO")
+    private String fundCity;
 
-    @Named(value = "NOMBRE_TIPO_SERVICIO")
-    private String nombreTipoServicio;
+    @Column(name = "NOMBRE_TIPO_SERVICIO")
+    private String serviceTypeName;
 
-    @Named(value = "MONEDA_DIVISA")
-    private String monedaDivisa;
+    @Column(name = "MONEDA_DIVISA")
+    private String currencyExchange;
 
-    @Named(value = "APLICATIVO")
-    private Integer aplicativo;
+    @Column(name = "APLICATIVO")
+    private Integer application;
 
-    @Named(value = "TDV")
-    private Integer tdv;
+    @Column(name = "TDV")
+    private Integer stdv;
 
-    @Named(value = "VALOR_PROCESADO_BILLETE")
-    private Double valorProcesadoBillete;
+    @Column(name = "VALOR_PROCESADO_BILLETE")
+    private Double processedBillname;
 
-    @Named(value = "VALOR_PROCESADO_BILLETE_TDV")
-    private BigDecimal valorProcesadoBilleteTdv;
+    @Column(name = "VALOR_PROCESADO_BILLETE_TDV")
+    private BigDecimal processedBillnameTdv;
 
-    @Named(value = "VALOR_PROCESADO_MONEDA")
-    private Double valorProcesadoMoneda;
+    @Column(name = "VALOR_PROCESADO_MONEDA")
+    private Double processedCoinname;
 
-    @Named(value = "VALOR_PROCESADO_MONEDA_TDV")
-    private BigDecimal valorProcesadoMonedaTdv;
+    @Column(name = "VALOR_PROCESADO_MONEDA_TDV")
+    private BigDecimal processedCoinnameTdv;
 
-    @Named(value = "VALOR_TOTAL_PROCESADO")
-    private Double valorTotalProcesado;
+    @Column(name = "VALOR_TOTAL_PROCESADO")
+    private Double totalProcessedname;
 
-    @Named(value = "VALOR_TOTAL_PROCESADO_TDV")
-    private BigDecimal valorTotalProcesadoTdv;
+    @Column(name = "VALOR_TOTAL_PROCESADO_TDV")
+    private BigDecimal totalProcessednameTdv;
 
-    @Named(value = "SUBTOTAL")
-    private Double subtotal;
+    @Column(name = "SUBTOTAL")
+    private Double processSubtotal;
 
-    @Named(value = "SUBTOTAL_TDV")
-    private BigDecimal subtotalTdv;
+    @Column(name = "SUBTOTAL_TDV")
+    private BigDecimal processSubtotalTdv;
 
-    @Named(value = "IVA")
-    private BigDecimal iva;
+    @Column(name = "IVA")
+    private BigDecimal tax;
 
-    @Named(value = "VALOR_TOTAL")
-    private BigDecimal valorTotal;
+    @Column(name = "VALOR_TOTAL")
+    private BigDecimal totalname;
 
-    @Named(value = "ESTADO")
-    private String estado;
+    @Column(name = "ESTADO")
+    private String state;
 
-    @Named(value = "MODULO")
-    private String modulo;
+    @Column(name = "MODULO")
+    private String module;
 }

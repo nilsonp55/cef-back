@@ -56,24 +56,24 @@ import lombok.extern.log4j.Log4j2;
 @Service
 @Log4j2
 public class ArchivosLiquidacionDelegateImpl implements IArchivosLiquidacionDelegate {
-
-	@Autowired
-	IParametroService parametrosService;
 	
-    @Autowired
+	@Autowired
     IFilesService filesService;
 	
-    @Autowired
-    IMaestroDefinicionArchivoService maestroDefinicionArchivoService;
+	@Autowired
+	IParametroService parametrosService;
     
 	@Autowired
 	IValidacionArchivoService validacionArchivoService;
-	
-	@Autowired
-	ILecturaArchivoService lecturaArchivoService;
+
+    @Autowired
+    IMaestroDefinicionArchivoService maestroDefinicionArchivoService;
 	
 	@Autowired
 	IArchivosCargadosService archivosCargadosService;
+	
+	@Autowired
+	ILecturaArchivoService lecturaArchivoService;
 	
 	@Autowired
 	IArchivosLiquidacionService archivosLiquidacionService;
@@ -420,10 +420,10 @@ public class ArchivosLiquidacionDelegateImpl implements IArchivosLiquidacionDele
 				.fechaArchivo(fechaArchivo)
 				.maestroDefinicion(maestroDefinicion)
 				.url(url)
-				.numeroRegistros(obtenerNumeroRegistros(maestroDefinicion, contenido.size())).build();
+				.numeroRegistros(obtenerNumeroRegistrosConciliacion(maestroDefinicion, contenido.size())).build();
 		
 		//5. Validar Contenido,  validar que archivo no se encuentra aceptado
-		if (this.validarCantidadRegistros(maestroDefinicion, this.validacionArchivo.getNumeroRegistros())) {
+		if (this.validarCantidadRegistrosConciliacion(maestroDefinicion, this.validacionArchivo.getNumeroRegistros())) {
 			
 			//si validacion de archivo es true = (no ha sido aceptado)
 			if (this.validarArchivoAceptado(nombreArchivo,idMaestroDefinicion)) {
@@ -469,10 +469,10 @@ public class ArchivosLiquidacionDelegateImpl implements IArchivosLiquidacionDele
 	 * @return int
 	 * @author hector.mercado
 	 */
-	private int obtenerNumeroRegistros(MaestrosDefinicionArchivoDTO maestroDefinicion, int cantidad) {
-		if (maestroDefinicion.isCabecera())
+	private int obtenerNumeroRegistrosConciliacion(MaestrosDefinicionArchivoDTO maestroArchivo, int cantidad) {
+		if (maestroArchivo.isControlFinal())
 			cantidad--;
-		if (maestroDefinicion.isControlFinal())
+		if (maestroArchivo.isCabecera())
 			cantidad--;
 
 		return cantidad;
@@ -487,16 +487,16 @@ public class ArchivosLiquidacionDelegateImpl implements IArchivosLiquidacionDele
 	 * @return boolean
 	 * @author CamiloBenavides
 	 */
-	private boolean validarCantidadRegistros(MaestrosDefinicionArchivoDTO maestroDefinicion, int contenido) {
-		var validacionCantidad = !maestroDefinicion.isCantidadMinima()
-				|| contenido >= maestroDefinicion.getNumeroCantidadMinima();
-		if (!validacionCantidad) {
+	private boolean validarCantidadRegistrosConciliacion(MaestrosDefinicionArchivoDTO maestroArchivo, int contenidoArchivo) {
+		var validaCantidad = !maestroArchivo.isCantidadMinima()
+				|| contenidoArchivo >= maestroArchivo.getNumeroCantidadMinima();
+		if (!validaCantidad) {
 			this.validacionArchivo.setEstadoValidacion(Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO);
 			this.validacionArchivo
 					.setDescripcionErrorEstructura("El numero de lineas es menor al esperado, o parametrizado");
 			this.validacionArchivo.setNumeroErrores(1);
 		}
-		return validacionCantidad;
+		return validaCantidad;
 	}
 	
 	/**
@@ -647,9 +647,11 @@ public class ArchivosLiquidacionDelegateImpl implements IArchivosLiquidacionDele
 	}
 
 	private String procesarTipo(ArchivosLiquidacionDTO dto, String cadena, String requiredFileExtension, List<String> cadenaTipos) {
-	    String[] nameAndExtension = getNameAndExtension(cadena, requiredFileExtension);
-	    cadena = nameAndExtension[0];
+	    
 	    try {
+	    	
+	    	String[] nameAndExtension = getNameAndExtension(cadena, requiredFileExtension);
+		    cadena = nameAndExtension[0];
 	        String existeTipo = validaCadena(cadenaTipos, cadena);
 	        String idMaestroArchivo = (existeTipo.equals("LIQ_TRANSPORTE")) ? Constantes.MAESTRO_ARCHIVO_TRANSPORTE : Constantes.MAESTRO_ARCHIVO_PROCESAMIENTO;
 	        int indiceCaracter = existeTipo.indexOf('_');

@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
-import com.ath.adminefectivo.dto.ParametrosFiltroConciliacionCostoDTO;
+import com.ath.adminefectivo.dto.ParametrosFiltroCostoTransporteDTO;
 import com.ath.adminefectivo.dto.RegistroOperacionConciliacionDTO;
 import com.ath.adminefectivo.dto.compuestos.ConciliacionCostosTransporteDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionesLiquidacionTransporteDTO;
@@ -106,85 +106,85 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 		List<String> listaDominioFecha = new ArrayList<>();
 		listaDominioFecha.add(Constantes.FECHA_PATTERN_DD_MM_YYYY_WITH_SLASH);
 
-		List<CostosTransporte> list = new ArrayList<>();
+		List<CostosTransporte> listTransporte = new ArrayList<>();
 
 		// Obtener Lineas Validadas
 		List<ValidacionLineasDTO> lineas = validacionArchivo.getValidacionLineas();
 
 		lineas.forEach(f -> {
-			var costo = new CostosTransporte();
-			var contenido = f.getContenido();
-			costo.setEntidad(contenido.get(0));
-			costo.setFactura(contenido.get(1));
-			costo.setTipoRegistro(contenido.get(2));
-			costo.setFechaServicioTransporte(UtilsString.toDate(contenido.get(3), listaDominioFecha));
+			var costoTransporte = new CostosTransporte();
+			var contenidoArchivoTransporte = f.getContenido();
+			costoTransporte.setEntidadTransporte(contenidoArchivoTransporte.get(0));
+			costoTransporte.setFacturaTransporte(contenidoArchivoTransporte.get(1));
+			costoTransporte.setTipoRegistroTransporte(contenidoArchivoTransporte.get(2));
+			costoTransporte.setFechaServicioTransporte(UtilsString.toDate(contenidoArchivoTransporte.get(3), listaDominioFecha));
 
-			costo.setIdentificacionCliente(contenido.get(4));
-			costo.setRazonSocial(contenido.get(5));
-			costo.setCodigoPuntoCargo(contenido.get(6));
-			costo.setNombrePuntoCargo(contenido.get(7));
+			costoTransporte.setIdentificacionClienteTransporte(contenidoArchivoTransporte.get(4));
+			costoTransporte.setRazonSocialTransporte(contenidoArchivoTransporte.get(5));
+			costoTransporte.setCodigoPuntoCargoTransporte(contenidoArchivoTransporte.get(6));
+			costoTransporte.setNombrePuntoCargoTransporte(contenidoArchivoTransporte.get(7));
 
-			costo.setCodigoCiiuPunto(UtilsString.toInteger(contenido.get(8)));
-			costo.setCiudadMunicipioPunto(contenido.get(9));
-			costo.setCodigoCiiuFondo(UtilsString.toInteger(contenido.get(10)));
-			costo.setCiudadFondo(contenido.get(11));
+			costoTransporte.setCodigoCiiuPuntoTransporte(UtilsString.toInteger(contenidoArchivoTransporte.get(8)));
+			costoTransporte.setCiudadMunicipioPunto(contenidoArchivoTransporte.get(9));
+			costoTransporte.setCodigoCiiuFondoTransporte(UtilsString.toInteger(contenidoArchivoTransporte.get(10)));
+			costoTransporte.setCiudadFondoTransporte(contenidoArchivoTransporte.get(11));
 
-			costo.setNombreTipoServicio(contenido.get(12));
-			costo.setTipoPedido(contenido.get(13));
+			costoTransporte.setNombreTipoServicioTransporte(contenidoArchivoTransporte.get(12));
+			costoTransporte.setTipoPedidoTransporte(contenidoArchivoTransporte.get(13));
 
-			costo.setEscala(contenido.get(14));
+			costoTransporte.setEscalaTransporte(contenidoArchivoTransporte.get(14));
 
-			costo.setExclusivoMoneda(contenido.get(15));
-			costo.setMonedaDivisa(contenido.get(16));
+			costoTransporte.setExclusivoMonedaTransporte(contenidoArchivoTransporte.get(15));
+			costoTransporte.setMonedaDivisaTransporte(contenidoArchivoTransporte.get(16));
 
-			costo.setTrmConversion(UtilsString.toDecimal(contenido.get(17), Constantes.DECIMAL_SEPARATOR));
+			costoTransporte.setTrmConversionTransporte(UtilsString.toDecimal(contenidoArchivoTransporte.get(17), Constantes.DECIMAL_SEPARATOR));
 
-			costo.setValorTransportadoBillete(UtilsString.toDecimal(contenido.get(18), Constantes.DECIMAL_SEPARATOR));
-			costo.setValorTransportadoMoneda(UtilsString.toDecimal(contenido.get(19), Constantes.DECIMAL_SEPARATOR));
-			costo.setValorTotalTransportado(UtilsString.toDecimal(contenido.get(20), Constantes.DECIMAL_SEPARATOR));
+			costoTransporte.setValorTransportadoBillete(UtilsString.toDecimal(contenidoArchivoTransporte.get(18), Constantes.DECIMAL_SEPARATOR));
+			costoTransporte.setValorTransportadoMoneda(UtilsString.toDecimal(contenidoArchivoTransporte.get(19), Constantes.DECIMAL_SEPARATOR));
+			costoTransporte.setValorTotalTransportado(UtilsString.toDecimal(contenidoArchivoTransporte.get(20), Constantes.DECIMAL_SEPARATOR));
 
-			costo.setNumeroFajos(UtilsString.toDecimal(contenido.get(21), Constantes.DECIMAL_SEPARATOR));
-			costo.setNumeroBolsasMoneda(UtilsString.toDecimal(contenido.get(22), Constantes.DECIMAL_SEPARATOR));
+			costoTransporte.setNumeroFajosTransporte(UtilsString.toDecimal(contenidoArchivoTransporte.get(21), Constantes.DECIMAL_SEPARATOR));
+			costoTransporte.setNumeroBolsasMonedaTransporte(UtilsString.toDecimal(contenidoArchivoTransporte.get(22), Constantes.DECIMAL_SEPARATOR));
 
-			costo.setCostoFijo(UtilsString.toLong(contenido.get(23)));
+			costoTransporte.setCostoFijoTransporte(UtilsString.toLong(contenidoArchivoTransporte.get(23)));
 
-			costo.setCostoMilaje(UtilsString.toDecimal(contenido.get(24), Constantes.DECIMAL_SEPARATOR));
-			costo.setCostoBolsa(UtilsString.toDecimal(contenido.get(25), Constantes.DECIMAL_SEPARATOR));
+			costoTransporte.setCostoMilajeTransporte(UtilsString.toDecimal(contenidoArchivoTransporte.get(24), Constantes.DECIMAL_SEPARATOR));
+			costoTransporte.setCostoBolsaTransporte(UtilsString.toDecimal(contenidoArchivoTransporte.get(25), Constantes.DECIMAL_SEPARATOR));
 
-			costo.setCostoFletes(UtilsString.toLong(contenido.get(26)));
-			costo.setCostoEmisarios(UtilsString.toLong(contenido.get(27)));
-			costo.setOtros1(UtilsString.toLong(contenido.get(28)));
-			costo.setOtros2(UtilsString.toLong(contenido.get(29)));
-			costo.setOtros3(UtilsString.toLong(contenido.get(30)));
-			costo.setOtros4(UtilsString.toLong(contenido.get(31)));
-			costo.setOtros5(UtilsString.toLong(contenido.get(32)));
+			costoTransporte.setCostoFletesTransporte(UtilsString.toLong(contenidoArchivoTransporte.get(26)));
+			costoTransporte.setCostoEmisariosTransporte(UtilsString.toLong(contenidoArchivoTransporte.get(27)));
+			costoTransporte.setOtros1(UtilsString.toLong(contenidoArchivoTransporte.get(28)));
+			costoTransporte.setOtros2(UtilsString.toLong(contenidoArchivoTransporte.get(29)));
+			costoTransporte.setOtros3(UtilsString.toLong(contenidoArchivoTransporte.get(30)));
+			costoTransporte.setOtros4(UtilsString.toLong(contenidoArchivoTransporte.get(31)));
+			costoTransporte.setOtros5(UtilsString.toLong(contenidoArchivoTransporte.get(32)));
 
-			costo.setSubtotal(UtilsString.toDecimal(contenido.get(33), Constantes.DECIMAL_SEPARATOR));
-			costo.setIva(UtilsString.toDecimal(contenido.get(34), Constantes.DECIMAL_SEPARATOR));
-			costo.setValorTotal(UtilsString.toDecimal(contenido.get(35), Constantes.DECIMAL_SEPARATOR));
+			costoTransporte.setSubtotalTransporte(UtilsString.toDecimal(contenidoArchivoTransporte.get(33), Constantes.DECIMAL_SEPARATOR));
+			costoTransporte.setIvaTransporte(UtilsString.toDecimal(contenidoArchivoTransporte.get(34), Constantes.DECIMAL_SEPARATOR));
+			costoTransporte.setValorTotalTransporte(UtilsString.toDecimal(contenidoArchivoTransporte.get(35), Constantes.DECIMAL_SEPARATOR));
 
-			costo.setObservacionesAth(contenido.get(36));
-			costo.setObservacionesTdv(contenido.get(37));
+			costoTransporte.setObservacionesAthTransporte(contenidoArchivoTransporte.get(36));
+			costoTransporte.setObservacionesTdvTransporte(contenidoArchivoTransporte.get(37));
 
-			costo.setEstadoConciliacion(Constantes.ESTADO_PROCESO_PENDIENTE);
-			costo.setEstado(Constantes.REGISTRO_ACTIVO);
+			costoTransporte.setEstadoConciliacionTransporte(Constantes.ESTADO_PROCESO_PENDIENTE);
+			costoTransporte.setEstadoTransporte(Constantes.REGISTRO_ACTIVO);
 
-			costo.setIdArchivoCargado(validacionArchivo.getIdArchivo());
-			costo.setIdRegistro(Long.valueOf(f.getNumeroLinea()));
+			costoTransporte.setIdArchivoCargadoTransporte(validacionArchivo.getIdArchivo());
+			costoTransporte.setIdRegistroTransporte(Long.valueOf(f.getNumeroLinea()));
 
-			costo.setUsuarioCreacion(Constantes.USUARIO_PROCESA_ARCHIVO);
+			costoTransporte.setUsuarioCreacionTransporte(Constantes.USUARIO_PROCESA_ARCHIVO);
 
-			costo.setFechaCreacion(timestamp);
+			costoTransporte.setFechaCreacionTransporte(timestamp);
 
-			costo.setUsuarioModificacion(null);
+			costoTransporte.setUsuarioModificacionTransporte(null);
 
-			costo.setFechaModificacion(null);
+			costoTransporte.setFechaModificacionTransporte(null);
 
-			list.add(costo);
+			listTransporte.add(costoTransporte);
 
 		});
 
-		return list;
+		return listTransporte;
 	}
 	
 	/**
@@ -227,28 +227,53 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 
 	public ConciliacionCostosTransporteDTO toDTO(CostosTransporte ent) {
 
-		return ConciliacionCostosTransporteDTO.builder().consecutivo(ent.getConsecutivo()).entidad(ent.getEntidad())
-				.factura(ent.getFactura()).tipoRegistro(ent.getTipoRegistro())
+		return ConciliacionCostosTransporteDTO.builder().consecutivo(ent.getConsecutivoTransporte())
+				.entidad(ent.getEntidadTransporte())
+				.factura(ent.getFacturaTransporte())
+				.tipoRegistro(ent.getTipoRegistroTransporte())
 				.fechaServicioTransporte(ent.getFechaServicioTransporte())
-				.identificacionCliente(ent.getIdentificacionCliente()).razonSocial(ent.getRazonSocial())
-				.codigoPuntoCargo(ent.getCodigoPuntoCargo()).nombrePuntoCargo(ent.getNombrePuntoCargo())
-				.codigoCiiuPunto(ent.getCodigoCiiuPunto()).ciudadMunicipioPunto(ent.getCiudadMunicipioPunto())
-				.codigoCiiuFondo(ent.getCodigoCiiuFondo()).ciudadFondo(ent.getCiudadFondo())
-				.nombreTipoServicio(ent.getNombreTipoServicio()).tipoPedido(ent.getTipoPedido()).escala(ent.getEscala())
-				.exclusivoMoneda(ent.getExclusivoMoneda()).monedaDivisa(ent.getMonedaDivisa())
-				.trmConversion(ent.getTrmConversion()).valorTransportadoBillete(ent.getValorTransportadoBillete())
+				.identificacionCliente(ent.getIdentificacionClienteTransporte())
+				.razonSocial(ent.getRazonSocialTransporte())
+				.codigoPuntoCargo(ent.getCodigoPuntoCargoTransporte())
+				.nombrePuntoCargo(ent.getNombrePuntoCargoTransporte())
+				.codigoCiiuPunto(ent.getCodigoCiiuPuntoTransporte())
+				.ciudadMunicipioPunto(ent.getCiudadMunicipioPunto())
+				.codigoCiiuFondo(ent.getCodigoCiiuFondoTransporte())
+				.ciudadFondo(ent.getCiudadFondoTransporte())
+				.nombreTipoServicio(ent.getNombreTipoServicioTransporte())
+				.tipoPedido(ent.getTipoPedidoTransporte())
+				.escala(ent.getEscalaTransporte())
+				.exclusivoMoneda(ent.getExclusivoMonedaTransporte())
+				.monedaDivisa(ent.getMonedaDivisaTransporte())
+				.trmConversion(ent.getTrmConversionTransporte())
+				.valorTransportadoBillete(ent.getValorTransportadoBillete())
 				.valorTransportadoMoneda(ent.getValorTransportadoMoneda())
-				.valorTotalTransportado(ent.getValorTotalTransportado()).numeroFajos(ent.getNumeroFajos())
-				.numeroBolsasMoneda(ent.getNumeroBolsasMoneda()).costoFijo(ent.getCostoFijo())
-				.costoMilaje(ent.getCostoMilaje()).costoBolsa(ent.getCostoBolsa()).costoFletes(ent.getCostoFletes())
-				.costoEmisarios(ent.getCostoEmisarios()).otros1(ent.getOtros1()).otros2(ent.getOtros2())
-				.otros3(ent.getOtros3()).otros4(ent.getOtros4()).otros5(ent.getOtros5()).subtotal(ent.getSubtotal())
-				.iva(ent.getIva()).valorTotal(ent.getValorTotal()).estadoConciliacion(ent.getEstadoConciliacion())
-				.estado(ent.getEstado()).observacionesAth(ent.getObservacionesAth())
-				.observacionesTdv(ent.getObservacionesTdv()).idArchivoCargado(ent.getIdArchivoCargado())
-				.idRegistro(ent.getIdRegistro()).usuarioCreacion(ent.getUsuarioCreacion())
-				.fechaCreacion(ent.getFechaCreacion()).usuarioModificacion(ent.getUsuarioModificacion())
-				.fechaModificacion(ent.getFechaModificacion()).build();
+				.valorTotalTransportado(ent.getValorTotalTransportado())
+				.numeroFajos(ent.getNumeroFajosTransporte())
+				.numeroBolsasMoneda(ent.getNumeroBolsasMonedaTransporte())
+				.costoFijo(ent.getCostoFijoTransporte())
+				.costoMilaje(ent.getCostoMilajeTransporte())
+				.costoBolsa(ent.getCostoBolsaTransporte())
+				.costoFletes(ent.getCostoFletesTransporte())
+				.costoEmisarios(ent.getCostoEmisariosTransporte())
+				.otros1(ent.getOtros1())
+				.otros2(ent.getOtros2())
+				.otros3(ent.getOtros3())
+				.otros4(ent.getOtros4())
+				.otros5(ent.getOtros5())
+				.subtotal(ent.getSubtotalTransporte())
+				.iva(ent.getIvaTransporte())
+				.valorTotal(ent.getValorTotalTransporte())
+				.estadoConciliacion(ent.getEstadoConciliacionTransporte())
+				.estado(ent.getEstadoTransporte())
+				.observacionesAth(ent.getObservacionesAthTransporte())
+				.observacionesTdv(ent.getObservacionesTdvTransporte())
+				.idArchivoCargado(ent.getIdArchivoCargadoTransporte())
+				.idRegistro(ent.getIdRegistroTransporte())
+				.usuarioCreacion(ent.getUsuarioCreacionTransporte())
+				.fechaCreacion(ent.getFechaCreacionTransporte())
+				.usuarioModificacion(ent.getUsuarioModificacionTransporte())
+				.fechaModificacion(ent.getFechaModificacionTransporte()).build();
 	}
 
 	public List<ConciliacionCostosTransporteDTO> toListDTO(List<CostosTransporte> listCostosTransporte) {
@@ -260,7 +285,7 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 	}
 
 	@Override
-	public Page<OperacionesLiquidacionTransporteDTO> getLiquidacionConciliadaTransporte(ParametrosFiltroConciliacionCostoDTO filtros) {
+	public Page<OperacionesLiquidacionTransporteDTO> getLiquidacionConciliadaTransporte(ParametrosFiltroCostoTransporteDTO filtros) {
 		
 		var ldtFechaServicioTransporte = convertToLocalDateTime(filtros.getFechaServicioTransporte());
 		var ldtFechaServicioTransporteFinal = convertToLocalDateTime(filtros.getFechaServicioTransporteFinal());
@@ -271,7 +296,7 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 				ldtFechaServicioTransporteFinal, 
 				filtros.getIdentificacionCliente(), 
 				filtros.getRazonSocial(), 
-				filtros.getCodigoPuntoCargo().toString(),
+				filtros.getCodigoPuntoCargo(),
 				filtros.getNombrePuntoCargo(), 
 				filtros.getCiudadFondo(), 
 				filtros.getNombreTipoServicio(), 
@@ -288,7 +313,7 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 	}
 
 	@Override
-	public Page<OperacionesLiquidacionTransporteDTO> getLiquidacionRemitidasNoIdentificadasTransporte(ParametrosFiltroConciliacionCostoDTO filtros) {
+	public Page<OperacionesLiquidacionTransporteDTO> getLiquidacionRemitidasNoIdentificadasTransporte(ParametrosFiltroCostoTransporteDTO filtros) {
 		
 		var ldtFechaServicioTransporte = convertToLocalDateTime(filtros.getFechaServicioTransporte());
 		var ldtFechaServicioTransporteFinal = convertToLocalDateTime(filtros.getFechaServicioTransporteFinal());
@@ -299,7 +324,7 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 				ldtFechaServicioTransporteFinal, 
 				filtros.getIdentificacionCliente(), 
 				filtros.getRazonSocial(), 
-				filtros.getCodigoPuntoCargo().toString(),
+				filtros.getCodigoPuntoCargo(),
 				filtros.getNombrePuntoCargo(), 
 				filtros.getCiudadFondo(), 
 				filtros.getNombreTipoServicio(), 
@@ -318,7 +343,7 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 	
 
 	@Override
-	public Page<OperacionesLiquidacionTransporteDTO> getLiquidadasNoCobradasTransporte(ParametrosFiltroConciliacionCostoDTO filtros) {
+	public Page<OperacionesLiquidacionTransporteDTO> getLiquidadasNoCobradasTransporte(ParametrosFiltroCostoTransporteDTO filtros) {
 		
 		var ldtFechaServicioTransporte = convertToLocalDateTime(filtros.getFechaServicioTransporte());
 		var ldtFechaServicioTransporteFinal = convertToLocalDateTime(filtros.getFechaServicioTransporteFinal());
@@ -329,7 +354,7 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 				ldtFechaServicioTransporteFinal, 
 				filtros.getIdentificacionCliente(), 
 				filtros.getRazonSocial(), 
-				filtros.getCodigoPuntoCargo().toString(),
+				filtros.getCodigoPuntoCargo(),
 				filtros.getNombrePuntoCargo(), 
 				filtros.getCiudadFondo(), 
 				filtros.getNombreTipoServicio(), 
@@ -346,7 +371,7 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 	}
 
 	@Override
-	public Page<OperacionesLiquidacionTransporteDTO> getIdentificadasConDiferenciasTransporte(ParametrosFiltroConciliacionCostoDTO filtros) {
+	public Page<OperacionesLiquidacionTransporteDTO> getIdentificadasConDiferenciasTransporte(ParametrosFiltroCostoTransporteDTO filtros) {
 		
 		var ldtFechaServicioTransporte = convertToLocalDateTime(filtros.getFechaServicioTransporte());
 		var ldtFechaServicioTransporteFinal = convertToLocalDateTime(filtros.getFechaServicioTransporteFinal());
@@ -356,7 +381,7 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 				ldtFechaServicioTransporteFinal, 
 				filtros.getIdentificacionCliente(), 
 				filtros.getRazonSocial(), 
-				filtros.getCodigoPuntoCargo().toString(),
+				filtros.getCodigoPuntoCargo(),
 				filtros.getNombrePuntoCargo(), 
 				filtros.getCiudadFondo(), 
 				filtros.getNombreTipoServicio(), 
@@ -411,19 +436,19 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 			CostosTransporte costo = costosTransporteRepository.findById(id).orElse(null);
 			
 			if (Objects.nonNull(costo)) {
-				String estado = costo.getEstadoConciliacion();
-				Long idLiquidacion = costo.getIdLiquidacion();
-				Integer tipo = costo.getTipoTransaccion();
+				String estado = costo.getEstadoConciliacionTransporte();
+				Long idLiquidacion = costo.getIdLiquidacionTransporte();
+				Integer tipo = costo.getTipoTransaccionTransporte();
 				
 				continuar = desconciliarParametroLiquidacionCosto(estado, tipo, idLiquidacion);
 				
 			    if (continuar) {
 					//actualizar estado de registro inicial
-					costo.setIdLiquidacion(0l);
-					costo.setTipoTransaccion(0);
-					costo.setEstadoConciliacion(Dominios.ESTADO_VALIDACION_EN_CONCILIACION);
-					costo.setUsuarioModificacion(Constantes.USUARIO_PROCESA_ARCHIVO);
-					costo.setFechaModificacion(timestamp);
+					costo.setIdLiquidacionTransporte(0l);
+					costo.setTipoTransaccionTransporte(0);
+					costo.setEstadoConciliacionTransporte(Dominios.ESTADO_VALIDACION_EN_CONCILIACION);
+					costo.setUsuarioModificacionTransporte(Constantes.USUARIO_PROCESA_ARCHIVO);
+					costo.setFechaModificacionTransporte(timestamp);
 						
 					costosTransporteRepository.save(costo);
 			    	f.setOperacionEstado("DESCONCILIADO");
@@ -470,23 +495,23 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 					if (idLiquidacion.compareTo(0l)>0)
 					{
 						continuar = true;
-						costo.setIdLiquidacion(idLiquidacion);
-						costo.setTipoTransaccion(1);
-						costo.setEstadoConciliacion(Constantes.ESTADO_CONCILIACION_MANUAL);
+						costo.setIdLiquidacionTransporte(idLiquidacion);
+						costo.setTipoTransaccionTransporte(1);
+						costo.setEstadoConciliacionTransporte(Constantes.ESTADO_CONCILIACION_MANUAL);
 					}
 				}
 				
 				if (operacion.equalsIgnoreCase("RECHAZAR"))
 				{
 					continuar = true;
-					costo.setEstadoConciliacion(Constantes.ESTADO_CONCILIACION_RECHAZADA);
+					costo.setEstadoConciliacionTransporte(Constantes.ESTADO_CONCILIACION_RECHAZADA);
 				}
 				
 			    if (continuar) {
 					//actualizar estado de registro
-			    	costo.setObservacionesAth(observacionATH);
-					costo.setUsuarioModificacion(Constantes.USUARIO_PROCESA_ARCHIVO);
-					costo.setFechaModificacion(timestamp);
+			    	costo.setObservacionesAthTransporte(observacionATH);
+					costo.setUsuarioModificacionTransporte(Constantes.USUARIO_PROCESA_ARCHIVO);
+					costo.setFechaModificacionTransporte(timestamp);
 					costosTransporteRepository.save(costo);
 					f.setOperacionEstado("APLICADO");
 			    }
@@ -554,38 +579,38 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 	
 		Long idLiquidacion = 0l;
 	
-		if (costo.getEstadoConciliacion().equals(Dominios.ESTADO_VALIDACION_EN_CONCILIACION))
+		if (costo.getEstadoConciliacionTransporte().equals(Dominios.ESTADO_VALIDACION_EN_CONCILIACION))
 		{
 			var parametro = new ParametrosLiquidacionCosto();
 			var valorLiq = new ValoresLiquidadosFlatEntity();
 		
-			var banco = bancoService.findBancoByAbreviatura(costo.getEntidad());
+			var banco = bancoService.findBancoByAbreviatura(costo.getEntidadTransporte());
 			
 			parametro.setCodigoBanco(banco.getCodigoPunto());
 			parametro.setFechaEjecucion(costo.getFechaServicioTransporte());
-			parametro.setNombreCliente(costo.getRazonSocial());
-			parametro.setCodigoPropioTdv(costo.getCodigoPuntoCargo()+costo.getNombrePuntoCargo());
+			parametro.setNombreCliente(costo.getRazonSocialTransporte());
+			parametro.setCodigoPropioTdv(costo.getCodigoPuntoCargoTransporte()+costo.getNombrePuntoCargoTransporte());
 			
-			parametro.setTipoOperacion(costo.getNombreTipoServicio());
-			parametro.setTipoServicio(costo.getTipoPedido());
-			parametro.setEscala(costo.getEscala());
+			parametro.setTipoOperacion(costo.getNombreTipoServicioTransporte());
+			parametro.setTipoServicio(costo.getTipoPedidoTransporte());
+			parametro.setEscala(costo.getEscalaTransporte());
 			
 			parametro.setValorBilletes(costo.getValorTransportadoBillete().doubleValue());
 			parametro.setValorMonedas(costo.getValorTransportadoMoneda().doubleValue());
 			parametro.setValorTotal(costo.getValorTotalTransportado().doubleValue());
 			
-			parametro.setNumeroBolsas(costo.getNumeroBolsasMoneda().intValue());
+			parametro.setNumeroBolsas(costo.getNumeroBolsasMonedaTransporte().intValue());
 			
-			valorLiq.setCostoFijoParada(costo.getCostoFijo().doubleValue());
-			valorLiq.setMilajePorRuteo(costo.getCostoMilaje().doubleValue());
-			valorLiq.setCostoMoneda(costo.getCostoBolsa().doubleValue());
-			valorLiq.setCostoCharter(costo.getCostoFletes().doubleValue());
-			valorLiq.setCostoEmisario(costo.getCostoEmisarios().doubleValue());
+			valorLiq.setCostoFijoParadaFlat(costo.getCostoFijoTransporte().doubleValue());
+			valorLiq.setMilajePorRuteoFlat(costo.getCostoMilajeTransporte().doubleValue());
+			valorLiq.setCostoMonedaFlat(costo.getCostoBolsaTransporte().doubleValue());
+			valorLiq.setCostoCharterFlat(costo.getCostoFletesTransporte().doubleValue());
+			valorLiq.setCostoEmisarioFlat(costo.getCostoEmisariosTransporte().doubleValue());
 						
 			parametro = parametrosLiquidacionCostosService.f2actualizarParametrosLiquidacionCostos(parametro);
 			idLiquidacion= parametro.getIdLiquidacion();
 			
-			valorLiq.setIdLiquidacion(idLiquidacion);
+			valorLiq.setIdLiquidacionFlat(idLiquidacion);
 			valoresLiquidadosFlatService.f2actualizarvaloresLiquidadosRepository(valorLiq);
 		}
 		

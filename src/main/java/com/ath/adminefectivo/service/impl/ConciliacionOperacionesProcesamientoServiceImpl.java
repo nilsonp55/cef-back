@@ -13,7 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.constantes.Constantes;
-import com.ath.adminefectivo.dto.ParametrosFiltroConciliacionCostoDTO;
+import com.ath.adminefectivo.dto.ParametrosFiltroCostoProcesamientoDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionesLiquidacionProcesamientoDTO;
 import com.ath.adminefectivo.entities.OperacionesLiquidacionProcesamientoEntity;
 import com.ath.adminefectivo.repositories.IConciliacionOperacionesProcesamientoRepository;
@@ -29,22 +29,22 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 	IConciliacionOperacionesProcesamientoRepository operacionesLiquidacion;
 
 	@Override
-	public Page<OperacionesLiquidacionProcesamientoDTO> getLiquidacionConciliadaProcesamiento(ParametrosFiltroConciliacionCostoDTO filtros) {
+	public Page<OperacionesLiquidacionProcesamientoDTO> getLiquidacionConciliadaProcesamiento(ParametrosFiltroCostoProcesamientoDTO filtros) {
 		
-		var ldtFechaServicioTransporte = convertToLocalDateTime(filtros.getFechaServicioTransporte());
-		var ldtFechaServicioTransporteFinal = convertToLocalDateTime(filtros.getFechaServicioTransporteFinal());
+		var ldtFechaServicioTransporte = convertToLocalDateTime(filtros.getProcessServiceDate());
+		var ldtFechaServicioTransporteFinal = convertToLocalDateTime(filtros.getFinalProcessServiceDate());
 		
-		var consulta = operacionesLiquidacion.conciliadasLiquidadasProcesamiento(filtros.getEntidad(), 
+		var consulta = operacionesLiquidacion.conciliadasLiquidadasProcesamiento(filtros.getEntity(), 
 				ldtFechaServicioTransporte,
 				ldtFechaServicioTransporteFinal, 
-				filtros.getIdentificacionCliente(), 
-				filtros.getRazonSocial(), 
-				filtros.getCodigoPuntoCargo(),
-				filtros.getNombrePuntoCargo(), 
-				filtros.getCiudadFondo(), 
-				filtros.getNombreTipoServicio(), 
-				filtros.getMonedaDivisa(), 
-				filtros.getEstado(),
+				filtros.getClientIdentification(), 
+				filtros.getSocialReason(), 
+				filtros.getCargoPointCode(),
+				filtros.getCargoPointName(), 
+				filtros.getCityBackground(), 
+				filtros.getServiceTypeName(), 
+				filtros.getCurrency(), 
+				filtros.getStatus(),
 				Constantes.OPERACIONES_LIQUIDACION_CONCILIADAS, 
 				filtros.getPage());
 
@@ -53,22 +53,22 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 
 	@Override
 	public Page<OperacionesLiquidacionProcesamientoDTO> getLiquidacionRemitidasNoIdentificadasProcesamiento(
-			ParametrosFiltroConciliacionCostoDTO filtros) {
+			ParametrosFiltroCostoProcesamientoDTO filtros) {
 		
-		var ldtFechaServicioTransporte = convertToLocalDateTime(filtros.getFechaServicioTransporte());
-		var ldtFechaServicioTransporteFinal = convertToLocalDateTime(filtros.getFechaServicioTransporteFinal());
+		var ldtFechaServicioTransporte = convertToLocalDateTime(filtros.getProcessServiceDate());
+		var ldtFechaServicioTransporteFinal = convertToLocalDateTime(filtros.getFinalProcessServiceDate());
 		
-		var consulta = operacionesLiquidacion.conciliadasLiquidadasProcesamiento(filtros.getEntidad(), 
+		var consulta = operacionesLiquidacion.conciliadasLiquidadasProcesamiento(filtros.getEntity(), 
 				ldtFechaServicioTransporte,
 				ldtFechaServicioTransporteFinal, 
-				filtros.getIdentificacionCliente(), 
-				filtros.getRazonSocial(), 
-				filtros.getCodigoPuntoCargo(),
-				filtros.getNombrePuntoCargo(), 
-				filtros.getCiudadFondo(), 
-				filtros.getNombreTipoServicio(), 
-				filtros.getMonedaDivisa(), 
-				filtros.getEstado(),
+				filtros.getClientIdentification(), 
+				filtros.getSocialReason(), 
+				filtros.getCargoPointCode(),
+				filtros.getCargoPointName(), 
+				filtros.getCityBackground(), 
+				filtros.getServiceTypeName(), 
+				filtros.getCurrency(), 
+				filtros.getStatus(),
 				Constantes.OPERACIONES_LIQUIDACION_REMITIDAS_NO_IDENTIFICADAS, 
 				filtros.getPage());
 
@@ -76,22 +76,22 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 	}
 
 	@Override
-	public Page<OperacionesLiquidacionProcesamientoDTO> getLiquidadasNoCobradasProcesamiento(ParametrosFiltroConciliacionCostoDTO filtros) {
+	public Page<OperacionesLiquidacionProcesamientoDTO> getLiquidadasNoCobradasProcesamiento(ParametrosFiltroCostoProcesamientoDTO filtros) {
 		
-		var ldtFechaServicioTransporte = convertToLocalDateTime(filtros.getFechaServicioTransporte());
-		var ldtFechaServicioTransporteFinal = convertToLocalDateTime(filtros.getFechaServicioTransporteFinal());
+		var ldtFechaServicioTransporte = convertToLocalDateTime(filtros.getProcessServiceDate());
+		var ldtFechaServicioTransporteFinal = convertToLocalDateTime(filtros.getFinalProcessServiceDate());
 		
-		var consulta = operacionesLiquidacion.conciliadasLiquidadasProcesamiento(filtros.getEntidad(), 
+		var consulta = operacionesLiquidacion.conciliadasLiquidadasProcesamiento(filtros.getEntity(), 
 				ldtFechaServicioTransporte,
 				ldtFechaServicioTransporteFinal, 
-				filtros.getIdentificacionCliente(), 
-				filtros.getRazonSocial(), 
-				filtros.getCodigoPuntoCargo(),
-				filtros.getNombrePuntoCargo(), 
-				filtros.getCiudadFondo(), 
-				filtros.getNombreTipoServicio(), 
-				filtros.getMonedaDivisa(), 
-				filtros.getEstado(),
+				filtros.getClientIdentification(), 
+				filtros.getSocialReason(), 
+				filtros.getCargoPointCode(),
+				filtros.getCargoPointName(), 
+				filtros.getCityBackground(), 
+				filtros.getServiceTypeName(), 
+				filtros.getCurrency(), 
+				filtros.getStatus(),
 				Constantes.OPERACIONES_LIQUIDACION_LIQUIDADAS_NO_COBRADAS, 
 				filtros.getPage());
 
@@ -99,22 +99,22 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 	}
 
 	@Override
-	public Page<OperacionesLiquidacionProcesamientoDTO> getIdentificadasConDiferenciasProcesamiento(ParametrosFiltroConciliacionCostoDTO filtros) {
+	public Page<OperacionesLiquidacionProcesamientoDTO> getIdentificadasConDiferenciasProcesamiento(ParametrosFiltroCostoProcesamientoDTO filtros) {
 		
-		var ldtFechaServicioTransporte = convertToLocalDateTime(filtros.getFechaServicioTransporte());
-		var ldtFechaServicioTransporteFinal = convertToLocalDateTime(filtros.getFechaServicioTransporteFinal());
+		var ldtFechaServicioTransporte = convertToLocalDateTime(filtros.getProcessServiceDate());
+		var ldtFechaServicioTransporteFinal = convertToLocalDateTime(filtros.getFinalProcessServiceDate());
 		
-		var consulta = operacionesLiquidacion.conciliadasLiquidadasProcesamiento(filtros.getEntidad(), 
+		var consulta = operacionesLiquidacion.conciliadasLiquidadasProcesamiento(filtros.getEntity(), 
 				ldtFechaServicioTransporte,
 				ldtFechaServicioTransporteFinal, 
-				filtros.getIdentificacionCliente(), 
-				filtros.getRazonSocial(), 
-				filtros.getCodigoPuntoCargo(),
-				filtros.getNombrePuntoCargo(), 
-				filtros.getCiudadFondo(), 
-				filtros.getNombreTipoServicio(), 
-				filtros.getMonedaDivisa(), 
-				filtros.getEstado(),
+				filtros.getClientIdentification(), 
+				filtros.getSocialReason(), 
+				filtros.getCargoPointCode(),
+				filtros.getCargoPointName(), 
+				filtros.getCityBackground(), 
+				filtros.getServiceTypeName(), 
+				filtros.getCurrency(), 
+				filtros.getStatus(),
 				Constantes.OPERACIONES_LIQUIDACION_IDENTIFICADAS_CON_DIFERENCIAS, 
 				filtros.getPage());
 

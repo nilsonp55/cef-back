@@ -31,51 +31,51 @@ public class ValoresLiquidadosFlatEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID_VALORES_LIQ")
-	private Long idValoresLiq;
+	private Long idValoresLiqFlat;
 	
 	@Column(name = "CLASIFICACION_FAJADO")
-	private Double clasificacionFajado;
+	private Double clasificacionFajadoFlat;
 	
 	@Column(name = "CLASIFICACION_NO_FAJADO")
-	private Double clasificacionNoFajado;
+	private Double clasificacionNoFajadoFlat;
 	
 	@Column(name = "COSTO_CHARTER")
-	private Double costoCharter;
+	private Double costoCharterFlat;
 	
 	@Column(name = "COSTO_EMISARIO")
-	private Double costoEmisario;
+	private Double costoEmisarioFlat;
 	
 	@Column(name = "COSTO_FIJO_PARADA")
-	private Double costoFijoParada;
+	private Double costoFijoParadaFlat;
 	
 	@Column(name = "COSTO_MONEDA")
-	private Double costoMoneda;
+	private Double costoMonedaFlat;
 	
 	@Column(name = "COSTO_PAQUETEO")
-	private Double costoPaqueteo;
+	private Double costoPaqueteoFlat;
 	
 	@Column(name = "ID_LIQUIDACION")
-	private Long idLiquidacion;	
+	private Long idLiquidacionFlat;	
 		
 	@Column(name = "MILAJE_POR_RUTEO")
-	private Double milajePorRuteo;
+	private Double milajePorRuteoFlat;
 	
 	@Column(name = "MILAJE_VERIFICACION")
-	private Double milajeVerificacion;
+	private Double milajeVerificacionFlat;
 	
 	@Column(name = "MONEDA_RESIDUO")
-	private Double modenaResiduo;
+	private Double modenaResiduoFlat;
 	
 	@Column(name = "TASA_AEROPORTUARIA")
-	private Double tasaAeroportuaria;
+	private Double tasaAeroportuariaFlat;
 	
 	@Column(name = "ID_SEQ_GRUPO")
-	private Integer idSeqGrupo;
+	private Integer idSeqGrupoFlat;
 	
 	@Column(name = "BILLETE_RESIDUO")
-	private Double billeteResiduo;
+	private Double billeteResiduoFlat;
 	
 	@Column(name = "CLASIFICACION_MONEDA")
-	private Double clasificacionMoneda;
+	private Double clasificacionMonedaFlat;
 	
 }

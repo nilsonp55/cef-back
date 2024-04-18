@@ -459,7 +459,7 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 	}
 	
 	/**
-	 * Este método se encarga de porsistir los archivos y registros
+	 * Este método se encarga de persistir los archivos y registros
 	 * relacionados con el proceso de liquidación de costos.
 	 * 
 	 * @param archivosLiquidacion
@@ -469,6 +469,7 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 	    List<ArchivosLiquidacionDTO> archivosLiquidacionList = new ArrayList<>();
 	    
 	    for (ArchivosLiquidacionDTO archivos : archivosLiquidacion.getValidacionArchivo()) {
+<<<<<<< HEAD
 	        ArchivosCargados archivoCargado = new ArchivosCargados();
 	        
 	        var maestroDefinicion = maestroDefinicionArchivoService.consultarDefinicionArchivoById(archivos.getIdMaestroArchivo());
@@ -546,9 +547,99 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 	        archivos.setIdArchivodb(archivoCargado.getIdArchivo());
 	        archivos.setEstado(archivoCargado.getEstadoCargue());
 	        archivos.setContenidoArchivo(null);
+=======
+	        ArchivosCargados archivoCargado = crearArchivoCargado(archivos);
+	        List<RegistrosCargados> registrosCargadosList = crearRegistrosCargados(archivos, archivoCargado);
+	        actualizarArchivoCargado(archivos, archivoCargado, registrosCargadosList);
+>>>>>>> f2722806116d797243446468bd59f218786c86fa
 	        archivosLiquidacionList.add(archivos);
 	    }
 	    	    
 	    return archivosLiquidacionList;
 	}
+
+	private ArchivosCargados crearArchivoCargado(ArchivosLiquidacionDTO archivos) {
+	    ArchivosCargados archivoCargado = new ArchivosCargados();
+	    
+	    archivoCargado.setEstado(Constantes.REGISTRO_ACTIVO);
+	    archivoCargado.setEstadoCargue(archivos.getEstado());
+	    archivoCargado.setFechaArchivo(archivos.getFechaArchivo());
+	    archivoCargado.setFechaCreacion(archivos.getFechaTransferencia());
+	    archivoCargado.setFechaInicioCargue(new Date());
+	    archivoCargado.setIdModeloArchivo(archivos.getIdMaestroArchivo());
+	    archivoCargado.setNombreArchivo(archivos.getNombreArchivoCompleto());
+	    archivoCargado.setNumeroErrores(0);
+	    archivoCargado.setUsuarioCreacion("ATH");
+	    archivoCargado.setObservacion(archivos.getObservacion());
+	    archivoCargado.setNombreArchivoUpper(archivos.getNombreArchivoCompleto().toUpperCase());
+
+	    archivosCargadosRepository.save(archivoCargado);
+	    return archivoCargado;
+	}
+
+	private List<RegistrosCargados> crearRegistrosCargados(ArchivosLiquidacionDTO archivos, ArchivosCargados archivoCargado) {
+	    List<RegistrosCargados> registrosCargadosList = new ArrayList<>();
+	    List<String> contenidoArchivoList = obtenerContenidoArchivo(archivos);
+
+	    int consecutivo = 1;
+	    for (String line : contenidoArchivoList) {
+	        RegistrosCargados registroCargado = new RegistrosCargados();	            	          
+
+	        RegistrosCargadosPK registroPK = new RegistrosCargadosPK();
+	        registroPK.setIdArchivo(archivoCargado.getIdArchivo());
+	        registroPK.setConsecutivoRegistro(consecutivo);
+
+	        registroCargado.setId(registroPK);
+	        registroCargado.setEstado(Constantes.REGISTRO_ACTIVO);
+	        registroCargado.setEstadoRegistro(Constantes.ESTADO_CARGUE_VALIDO);
+	        registroCargado.setFechaCreacion(new Date());
+	        registroCargado.setTipoRegistro(Constantes.TIPO_REGISTROS_ELIMINADOS);
+	        registroCargado.setUsuarioCreacion("ATH");
+	        registroCargado.setContenido(line);
+
+	        registrosCargadosRepository.save(registroCargado);
+
+	        registrosCargadosList.add(registroCargado);
+	        consecutivo++;
+	    }
+	    return registrosCargadosList;
+	}
+
+	private List<String> obtenerContenidoArchivo(ArchivosLiquidacionDTO archivos) {
+	    List<String> contenidoArchivoList = archivos.getContenidoArchivo();
+	    var maestroDefinicion = maestroDefinicionArchivoService.consultarDefinicionArchivoById(archivos.getIdMaestroArchivo());
+
+	    if (contenidoArchivoList == null || contenidoArchivoList.isEmpty()) {
+	        contenidoArchivoList = filesService.obtenerContenidoCarpetaSummaryS3Object(archivos.getUrl(), 0, 0, true, archivos.getNombreArchivoCompleto())
+	                .stream()
+	                .flatMap(summary -> summary.getContenidoArchivo().stream())
+	                .collect(Collectors.toList());
+	    }
+
+	    if (contenidoArchivoList != null && !contenidoArchivoList.isEmpty()) {
+	        if (maestroDefinicion.isCabecera() && !contenidoArchivoList.isEmpty())
+	            contenidoArchivoList.remove(0);
+	        if (maestroDefinicion.isControlFinal() && !contenidoArchivoList.isEmpty())
+	            contenidoArchivoList.remove(contenidoArchivoList.size() - 1);
+	    } else {
+	        log.info("El archivo {} no contiene información.", archivos.getNombreArchivoCompleto());
+	    }
+	    return contenidoArchivoList;
+	}
+
+	private void actualizarArchivoCargado(ArchivosLiquidacionDTO archivos, ArchivosCargados archivoCargado, List<RegistrosCargados> registrosCargadosList) {
+	    archivoCargado.setRegistrosCargados(registrosCargadosList);
+	    archivoCargado.setNumeroRegistros(registrosCargadosList.size());
+
+	    archivosCargadosRepository.save(archivoCargado);
+	    
+	    if (Constantes.ESTADO_CARGUE_ELIMINADO.equals(archivos.getEstado())) {
+	    	filesService.eliminarArchivo(archivos.getUrl() + archivos.getNombreArchivoCompleto());
+	    }
+	    
+	    archivos.setIdArchivodb(archivoCargado.getIdArchivo());
+	    archivos.setEstado(archivoCargado.getEstadoCargue());
+	    archivos.setContenidoArchivo(null);
+	}
+
 }

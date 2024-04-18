@@ -34,61 +34,61 @@ public class CostosTransporte {
 	@Id
 	@Column(name = "CONSECUTIVO_REGISTRO")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long consecutivo;
+	private Long consecutivoTransporte;
 	
 	@Column(name = "ENTIDAD")
-	private String entidad;
+	private String entidadTransporte;
 	
 	@Column(name = "FACTURA")
-	private String factura;
+	private String facturaTransporte;
 	
 	@Column(name = "TIPO_REGISTRO")
-	private String tipoRegistro;
+	private String tipoRegistroTransporte;
 	
 	@Column(name = "FECHA_SERVICIO_TRANSPORTE")
 	private Date fechaServicioTransporte;
 
 	@Column(name = "IDENTIFICACION_CLIENTE")
-	private String identificacionCliente;
+	private String identificacionClienteTransporte;
 	
 	@Column(name = "RAZON_SOCIAL")
-	private String razonSocial;
+	private String razonSocialTransporte;
 
 	@Column(name = "CODIGO_PUNTO_CARGO")
-	private String codigoPuntoCargo;
+	private String codigoPuntoCargoTransporte;
 
 	@Column(name = "NOMBRE_PUNTO_CARGO")
-	private String nombrePuntoCargo;
+	private String nombrePuntoCargoTransporte;
 	
 	@Column(name = "CODIGO_CIIU_PUNTO")
-	private Integer codigoCiiuPunto;
+	private Integer codigoCiiuPuntoTransporte;
 	
 	@Column(name = "CIUDAD_MUNICIPIO_PUNTO")
 	private String ciudadMunicipioPunto;
 	
 	@Column(name = "CODIGO_CIIU_FONDO")
-	private Integer codigoCiiuFondo;
+	private Integer codigoCiiuFondoTransporte;
 	
 	@Column(name = "CIUDAD_FONDO")
-	private String ciudadFondo;
+	private String ciudadFondoTransporte;
 	
 	@Column(name = "NOMBRE_TIPO_SERVICIO")
-	private String nombreTipoServicio;
+	private String nombreTipoServicioTransporte;
 	
 	@Column(name = "TIPO_PEDIDO")
-	private String tipoPedido;
+	private String tipoPedidoTransporte;
 
 	@Column(name = "ESCALA")
-	private String escala;
+	private String escalaTransporte;
 
 	@Column(name = "EXCLUSIVO_MONEDA")
-	private String exclusivoMoneda;
+	private String exclusivoMonedaTransporte;
 	
 	@Column(name = "MONEDA_DIVISA")
-	private String monedaDivisa;
+	private String monedaDivisaTransporte;
 	
 	@Column(name = "TRM_CONVERSION")
-	private BigDecimal trmConversion;
+	private BigDecimal trmConversionTransporte;
 	
 	@Column(name = "VALOR_TRANSPORTADO_BILLETE")
 	private BigDecimal valorTransportadoBillete;
@@ -100,25 +100,25 @@ public class CostosTransporte {
 	private BigDecimal valorTotalTransportado;
 	
 	@Column(name = "NUMERO_FAJOS")
-	private BigDecimal numeroFajos;
+	private BigDecimal numeroFajosTransporte;
 	
 	@Column(name = "NUMERO_DE_BOLSAS_MONEDA")
-	private BigDecimal numeroBolsasMoneda;
+	private BigDecimal numeroBolsasMonedaTransporte;
 	
 	@Column(name = "COSTO_FIJO")
-	private Long costoFijo;
+	private Long costoFijoTransporte;
 	
 	@Column(name = "COSTO_POR_MILAJE")
-	private BigDecimal costoMilaje;
+	private BigDecimal costoMilajeTransporte;
 
 	@Column(name = "COSTO_POR_BOLSA")
-	private BigDecimal costoBolsa;
+	private BigDecimal costoBolsaTransporte;
 
 	@Column(name = "COSTO_FLETES")
-	private Long costoFletes;
+	private Long costoFletesTransporte;
 
 	@Column(name = "COSTO_EMISARIOS")
-	private Long costoEmisarios;
+	private Long costoEmisariosTransporte;
 
 	@Column(name = "OTROS_1")
 	private Long otros1;
@@ -136,49 +136,49 @@ public class CostosTransporte {
 	private Long otros5;
 	
 	@Column(name = "SUBTOTAL")
-	private BigDecimal subtotal;
+	private BigDecimal subtotalTransporte;
 	
 	@Column(name = "IVA")
-	private BigDecimal iva;
+	private BigDecimal ivaTransporte;
 
 	@Column(name = "VALOR_TOTAL")
-	private BigDecimal valorTotal;
+	private BigDecimal valorTotalTransporte;
 	
 	@Column(name = "ESTADO_CONCILIACION")
-	private String estadoConciliacion;
+	private String estadoConciliacionTransporte;
 
 	@Column(name = "ESTADO")
-	private String estado;
+	private String estadoTransporte;
 
 	@Column(name = "OBSERVACIONES_ATH")
-	private String observacionesAth;
+	private String observacionesAthTransporte;
 	
 	@Column(name = "OBSERVACIONES_TDV")
-	private String observacionesTdv;
+	private String observacionesTdvTransporte;
 
 	@Column(name = "ID_ARCHIVO_CARGADO")
-	private Long idArchivoCargado;
+	private Long idArchivoCargadoTransporte;
 
 	@Column(name = "ID_REGISTRO")
-	private Long idRegistro;
+	private Long idRegistroTransporte;
 
 	@Column(name = "USUARIO_CREACION")
-	private String usuarioCreacion;
+	private String usuarioCreacionTransporte;
 	
 	@Column(name = "FECHA_CREACION")
-	private Timestamp fechaCreacion;
+	private Timestamp fechaCreacionTransporte;
 	
 	@Column(name = "USUARIO_MODIFICACION")
-	private String usuarioModificacion;
+	private String usuarioModificacionTransporte;
 
 	@Column(name = "FECHA_MODIFICACION")
-	private Timestamp fechaModificacion;
+	private Timestamp fechaModificacionTransporte;
 	
 	@Column(name = "ID_LIQUIDACION")
-	private Long idLiquidacion;
+	private Long idLiquidacionTransporte;
 	
 	@Column(name = "TIPO_TRANSACCION")
-	private Integer tipoTransaccion;
+	private Integer tipoTransaccionTransporte;
 
 
 }

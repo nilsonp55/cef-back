@@ -21,56 +21,61 @@ import lombok.NoArgsConstructor;
 public class OperacionesLiquidacionProcesamientoDTO {
 
 	@JsonProperty("consecutivo_registro")
-	private Integer consecutivoRegistro;
+	private Integer recordConsecutive;
 	@JsonProperty("id_archivo_cargado")	
-	private Integer idArchivoCargado;
+	private Integer loadedFileId;
 	@JsonProperty("id_registro")	
-	private Integer idRegistro;
+	private Integer recordId;
 	@JsonProperty("id_liquidacion")
-	private Long idLiquidacion;
+	private Long settlementId;
 	@JsonProperty("tipo_trasaccion")
-	private Integer tipoTransaccion;	
+	private Integer transactionType;	
 	@JsonProperty("entidad")
-	private String entidad;
+	private String entity;
 	@JsonProperty("fecha_servicio_transporte")
-	private LocalDateTime fechaServicioTransporte;
+	private LocalDateTime transportServiceDate;
 	@JsonProperty("identificacion_cliente")
-	private String identificacionCliente;
+	private String clientIdentification;
 	@JsonProperty("razon_social")
-	private String razonSocial;
+	private String businessName;
 	@JsonProperty("codigo_punto_cargo")
-	private String codigoPuntoCargo;
+	private String cargoPointCode;
 	@JsonProperty("nombre_punto_cargo")
-	private String nombrePuntoCargo;
+	private String cargoPointName;
 	@JsonProperty("ciudad_fondo")
-	private String ciudadFondo;
+	private String fundCity;
 	@JsonProperty("nombre_tipo_servicio")
-	private String nombreTipoServicio;
+	private String serviceTypeName;
 	@JsonProperty("moneda_divisa")
-	private String monedaDivisa;
+	private String currencyExchange;
 	@JsonProperty("aplicativo")
-	private Integer aplicativo;
+	private Integer application;
 	@JsonProperty("tdv")
-	private Integer tdv;
+	private Integer stdv;
 	@JsonProperty("valor_procesado_billete")
-	private Double valorProcesadoBillete;
+	private Double processedBillValue;
 	@JsonProperty("valor_procesado_billete_tdv")
-	private BigDecimal valorProcesadoBilleteTdv;
+	private BigDecimal processedBillValueTdv;
 	@JsonProperty("valor_procesado_moneda")
-	private Double valorProcesadoMoneda;
+	private Double processedCoinValue;
 	@JsonProperty("valor_procesado_moneda_tdv")
-	private BigDecimal valorProcesadoMonedaTdv;
+	private BigDecimal processedCoinValueTdv;
 	@JsonProperty("valor_total_procesado")
-	private Double valorTotalProcesado;
+	private Double totalProcessedValue;
 	@JsonProperty("valor_total_procesado_tdv")
-	private BigDecimal valorTotalProcesadoTdv;
-	private Double subtotal;
-	private BigDecimal subtotalTdv;
-	private BigDecimal iva;
+	private BigDecimal totalProcessedValueTdv;
+	@JsonProperty("subtotal")
+	private Double processSubtotal;
+	@JsonProperty("subtotalTdv")
+	private BigDecimal processSubtotalTdv;
+	@JsonProperty("iva")
+	private BigDecimal tax;
 	@JsonProperty("valor_total")
-	private BigDecimal valorTotal;
-	private String estado;
-	private String modulo;
+	private BigDecimal totalValue;
+	@JsonProperty("estado")
+	private String state;
+	@JsonProperty("modulo")
+	private String module;
 	
 	/**
 	 * Funcion que convierte la entity a archivo DTO  
