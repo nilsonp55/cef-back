@@ -1684,16 +1684,16 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
   private String asignarTipoServicio(String fila) {
     var tipoServicio = "";
     Date fecha = asignarFechaHora(fila);
-    log.debug("fecha: {}", fecha);
+    log.info("fecha: {}", fecha);
     Date fechaActual = parametroService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
     Date fechaAnteriorHabil = festivosNacionalesService.consultarAnteriorHabil(fechaActual);
-    log.debug("fechaAnteriorHabil: {}", fechaAnteriorHabil);
+    log.info("fechaAnteriorHabil: {}", fechaAnteriorHabil);
     var sdf = new SimpleDateFormat("yyyy-MM-dd");
     
     // averiguar fecha del dia habil anterior, si la fecha sin horas, es igual o mayor se marca como
     // Especial.
-    log.debug("format fecha: {}", sdf.format(fechaActual));
-    log.debug("format fechaAnteriorHabil: {}", sdf.format(fechaAnteriorHabil));
+    log.info("format fecha: {}", sdf.format(fechaActual));
+    log.info("format fechaAnteriorHabil: {}", sdf.format(fechaAnteriorHabil));
     if (sdf.format(fecha).equals(sdf.format(fechaAnteriorHabil))) {
       tipoServicio = dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_SERVICIO,
           Dominios.TIPO_SERVICIO_ESPECIAL);
