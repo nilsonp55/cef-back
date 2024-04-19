@@ -1691,7 +1691,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
     Date fechaActual = parametroService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
     Date fechaAnteriorHabil = festivosNacionalesService.consultarAnteriorHabil(fechaActual);
     log.debug("fechaAnteriorHabil: {}", fechaAnteriorHabil);
-    var sdf = new SimpleDateFormat("YYYY-MM-DD");
+    var sdf = new SimpleDateFormat("yyyy-MM-dd");
     
     // averiguar fecha del dia habil anterior, si la fecha sin horas, es igual o mayor se marca como
     // Especial.
