@@ -1334,9 +1334,9 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
         operaciones.setEntradaSalida(entraSale);
         operaciones.setCodigoPuntoOrigen(
-            determinarPuntoOrigen(contenido, detalleArchivo, transportadora, ciudad));
+            determinarPuntoOrigen(contenido, detalleArchivo, transportadora, ciudad, entraSale));
         operaciones.setCodigoPuntoDestino(
-            determinarPuntoDestino(contenido, detalleArchivo, transportadora, ciudad));
+            determinarPuntoDestino(contenido, detalleArchivo, transportadora, ciudad, entraSale));
         operaciones.setEstadoConciliacion(dominioService.valorTextoDominio(
             Constantes.DOMINIO_ESTADO_CONCILIACION, Dominios.ESTADO_CONCILIACION_NO_CONCILIADO));
         operaciones.setEstadoOperacion(determinarEstadoOperacion(contenido, detalleArchivo));
@@ -1425,15 +1425,15 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
    * @author cesar.castano
    */
   private Integer determinarPuntoOrigen(String[] contenido,
-      List<DetallesDefinicionArchivoDTO> detalleArchivo, String transportadora, String ciudad) {
+      List<DetallesDefinicionArchivoDTO> detalleArchivo, String transportadora, String ciudad, String entradaSalida) {
     Integer codigo = 0;
-    if (this.asignarEntradaSalida(asignarTipoOperacion(contenido, detalleArchivo))
-        .equals(Constantes.VALOR_SALIDA)) {
+    if (entradaSalida.equals(Constantes.VALOR_SALIDA)) {
       return fondosService.getCodigoFondo(transportadora,
           determinarCodigoCompensacion(contenido, detalleArchivo), ciudad).getCodigoPunto();
+    } else {
+      codigo = asignarClienteOficina(contenido, detalleArchivo);
+      return codigo;
     }
-    codigo = asignarClienteOficina(contenido, detalleArchivo);
-    return codigo;
   }
 
   /**
@@ -1444,15 +1444,16 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
    * @author cesar.castano
    */
   private Integer determinarPuntoDestino(String[] contenido,
-      List<DetallesDefinicionArchivoDTO> detalleArchivo, String transportadora, String ciudad) {
+      List<DetallesDefinicionArchivoDTO> detalleArchivo, String transportadora, String ciudad, String entradaSalida) {
     Integer codigo = 0;
-    if (!this.asignarEntradaSalida(asignarTipoOperacion(contenido, detalleArchivo))
-        .equals(Constantes.VALOR_SALIDA)) {
+    if (entradaSalida.equals(Constantes.VALOR_ENTRADA)) {
       return fondosService.getCodigoFondo(transportadora,
           determinarCodigoCompensacion(contenido, detalleArchivo), ciudad).getCodigoPunto();
+    } else {
+      codigo = asignarClienteOficina(contenido, detalleArchivo);
+      return codigo;
     }
-    codigo = asignarClienteOficina(contenido, detalleArchivo);
-    return codigo;
+    
   }
 
   /**
@@ -1520,25 +1521,6 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
       valorTotal = Double.parseDouble(shipOut);
     }
     return valorTotal;
-  }
-
-  /**
-   * Metodo encargado de asignar la entrada o la salida de la operacion
-   * 
-   * @param tipoOperacion
-   * @return String
-   * @author cesar.castano
-   */
-  private String asignarEntradaSalida(String tipoOperacion) {
-    var entradaSalida = " ";
-    if (tipoOperacion.equals(dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_OPERACION,
-        Dominios.TIPO_OPERA_PROVISION))) {
-      entradaSalida = Constantes.VALOR_SALIDA;
-    } else if (tipoOperacion.equals(dominioService
-        .valorTextoDominio(Constantes.DOMINIO_TIPO_OPERACION, Dominios.TIPO_OPERA_RECOLECCION))) {
-      entradaSalida = Constantes.VALOR_ENTRADA;
-    }
-    return entradaSalida;
   }
 
   /**
@@ -1702,16 +1684,22 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
   private String asignarTipoServicio(String fila) {
     var tipoServicio = "";
     Date fecha = asignarFechaHora(fila);
+    log.debug("fecha: {}", fecha);
     Date fechaActual = parametroService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
     Date fechaAnteriorHabil = festivosNacionalesService.consultarAnteriorHabil(fechaActual);
+    log.debug("fechaAnteriorHabil: {}", fechaAnteriorHabil);
+    var sdf = new SimpleDateFormat("YYYY-MM-DD");
+    
     // averiguar fecha del dia habil anterior, si la fecha sin horas, es igual o mayor se marca como
     // Especial.
-    if (fecha.compareTo(fechaAnteriorHabil) < 0) {
-      tipoServicio = dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_SERVICIO,
-          Dominios.TIPO_SERVICIO_PROGRAMADA);
-    } else {
+    log.debug("format fecha: {}", sdf.format(fechaActual));
+    log.debug("format fechaAnteriorHabil: {}", sdf.format(fechaAnteriorHabil));
+    if (sdf.format(fecha).equals(sdf.format(fechaAnteriorHabil))) {
       tipoServicio = dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_SERVICIO,
           Dominios.TIPO_SERVICIO_ESPECIAL);
+    } else {
+      tipoServicio = dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_SERVICIO,
+          Dominios.TIPO_SERVICIO_PROGRAMADA);
     }
     return tipoServicio;
   }
