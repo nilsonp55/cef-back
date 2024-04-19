@@ -129,6 +129,11 @@ public class ArchivosLiquidacionDelegateImpl implements IArchivosLiquidacionDele
 
 	    log.info("Archivos en directorio Pendientes de carga: url:{} - cantidad:{}", url, dtoResponseList.size());
 	    
+	    // Traza para nombres de archivos en S3 
+	    for (ArchivosLiquidacionDTO dto : dtoResponseList) {
+	        log.info("Nombre del archivo: {}", dto.getNombreArchivo());
+	    }
+	    
 	    List<String> cadenaMascara = obtenerCadenaMascara(maestrosDefinicion);
 	    String[][] estructuraMascara = procesarMascaras(cadenaMascara);
 	    List<String> cadenaTipos = getSegmentosCadena(cadenaMascara);
