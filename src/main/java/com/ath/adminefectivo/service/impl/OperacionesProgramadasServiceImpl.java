@@ -1302,6 +1302,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
     }
 
     if (valorSale > 0) {
+      log.debug("shipOut: ", shipOut);
       crearSumarRegistroOficina(orderId, archivo.getIdArchivo().intValue(), S_ENTRADA, valorSale,
           contenido, detalleArchivo);
     }
@@ -1354,7 +1355,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
         operaciones.setIdNegociacion(null);
         operaciones.getIdOperacionRelac();
         operaciones.setTasaNegociacion(null);
-        operaciones.setTipoOperacion(asignarTipoOperacion(contenido, detalleArchivo, entraSale));
+        operaciones.setTipoOperacion(asignarTipoOperacion(detalleArchivo, entraSale));
         if (operaciones.getFechaProgramacion().before(fechaDestino)) {
           operaciones.setTipoServicio(dominioService.valorTextoDominio(
               Constantes.DOMINIO_TIPO_SERVICIO, Dominios.TIPO_SERVICIO_PROGRAMADA));
@@ -1573,8 +1574,8 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
    * @return String
    * @author cesar.castano
    */
-  private String asignarTipoOperacion(String[] contenido,
-      List<DetallesDefinicionArchivoDTO> detalleArchivo, String entraSale) {
+  private String asignarTipoOperacion(List<DetallesDefinicionArchivoDTO> detalleArchivo,
+      String entraSale) {
     var tipoOperacion = "";
     if (entraSale.equals(Constantes.VALOR_SALIDA)) {
       tipoOperacion = dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_OPERACION,
