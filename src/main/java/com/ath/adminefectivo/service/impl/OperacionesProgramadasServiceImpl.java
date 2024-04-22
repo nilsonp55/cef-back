@@ -1292,7 +1292,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
     }
     Long valorEntra = Long.parseLong(shipIn);
     Long valorSale = Long.parseLong(shipOut);
-    if(valorEntra > 0 & valorSale > 0) {
+    if(valorEntra > 0 && valorSale > 0) {
       log.info("orderId: {} - shipIn: {} - shipOut: {}", orderId, valorEntra, valorSale);
     }
 
