@@ -1294,12 +1294,13 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
     Long valorSale = Long.parseLong(shipOut);
 
     if (valorEntra > 0) {
+      log.debug("shipIn: ", shipIn);
       crearSumarRegistroOficina(orderId, archivo.getIdArchivo().intValue(), S_SALIDA, valorEntra,
           contenido, detalleArchivo);
     }
 
     if (valorSale > 0) {
-      log.debug("shipOut: ", shipOut);
+      log.info("shipOut: - orderId: {}", shipOut, orderId);
       crearSumarRegistroOficina(orderId, archivo.getIdArchivo().intValue(), S_ENTRADA, valorSale,
           contenido, detalleArchivo);
     }
