@@ -332,7 +332,7 @@ public class FilesDelegateImpl implements IFilesDelegate {
 	            String contenido = removerSaltoDeLineaSiExiste(registro.getContenido());
 	            StringBuilder contenidoActualizado = new StringBuilder(contenido);
 	            for (String estructura : estructurasAgrupadas) {
-	                contenidoActualizado.append(",[").append(estructura).append("]\n");
+	                contenidoActualizado.append(",[").append(estructura).append("]");
 	            }
 	            registro.setContenido(contenidoActualizado.toString());
 	        }
