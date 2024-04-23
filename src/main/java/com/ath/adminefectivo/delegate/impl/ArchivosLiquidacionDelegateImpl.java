@@ -221,15 +221,6 @@ public class ArchivosLiquidacionDelegateImpl implements IArchivosLiquidacionDele
 
 			// Agrega el nuevo registro al principio de la lista
 			listaRegistros.add(0, registrosCargados);
-			
-			// Itera sobre la lista de registros
-		    for (RegistrosCargadosDTO registro : listaRegistros) {
-		        // Agrega un salto de línea al contenido
-		        String contenido = registro.getContenido();
-		        if (contenido != null) {
-		            registro.setContenido(contenido + "\n");
-		        }
-		    }
 		}
 		
 		return listaRegistros;
