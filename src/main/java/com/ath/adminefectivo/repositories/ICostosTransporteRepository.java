@@ -48,20 +48,20 @@ QuerydslPredicateExecutor<CostosTransporte>, PagingAndSortingRepository<CostosTr
 	 * @author hector.mercado
 	 */
 	@Query("SELECT ct FROM CostosTransporte ct " 
-	        + " WHERE estadoConciliacion =:estadoConciliacion"
-			+ " AND entidad =:entidad "
+	        + " WHERE estadoConciliacionTransporte =:estadoConciliacionTransporte"
+			+ " AND entidadTransporte =:entidadTransporte "
 			+ " AND fechaServicioTransporte =:fechaServicioTransporte"
-			+ " AND codigoPuntoCargo =:codigoPuntoCargo"
-			+ " AND nombrePuntoCargo =:nombrePuntoCargo"
-			+ " AND ciudadFondo =:ciudadFondo"
-			+ " AND nombreTipoServicio =:nombreTipoServicio"
+			+ " AND codigoPuntoCargoTransporte =:codigoPuntoCargoTransporte"
+			+ " AND nombrePuntoCargoTransporte =:nombrePuntoCargoTransporte"
+			+ " AND ciudadFondoTransporte =:ciudadFondoTransporte"
+			+ " AND nombreTipoServicioTransporte =:nombreTipoServicioTransporte"
 			)
-	List<CostosTransporte> findByEstadoEntidadFechaServicio(String entidad,
+	List<CostosTransporte> findByEstadoEntidadFechaServicio(String entidadTransporte,
 			Date fechaServicioTransporte,
-			String codigoPuntoCargo,
-			String nombrePuntoCargo,
-			String ciudadFondo,
-			String nombreTipoServicio,
-			String estadoConciliacion);
+			String codigoPuntoCargoTransporte,
+			String nombrePuntoCargoTransporte,
+			String ciudadFondoTransporte,
+			String nombreTipoServicioTransporte,
+			String estadoConciliacionTransporte);
 }
 
