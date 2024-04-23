@@ -1295,15 +1295,18 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
     }
     Long valorEntra = Long.parseLong(shipIn);
     Long valorSale = Long.parseLong(shipOut);
+    if(valorEntra > 0 && valorSale > 0) {
+      log.info("orderId: {} - shipIn: {} - shipOut: {}", orderId, valorEntra, valorSale);
+    }
 
     if (valorEntra > 0) {
-      log.debug("shipIn: ", shipIn);
+      log.debug("shipIn: {} - orderId: {}", shipIn, orderId);
       crearSumarRegistroOficina(orderId, archivo.getIdArchivo().intValue(), S_SALIDA, valorEntra,
           contenido, detalleArchivo);
     }
 
     if (valorSale > 0) {
-      log.info("shipOut: - orderId: {}", shipOut, orderId);
+      log.debug("shipOut: {} - orderId: {}", shipOut, orderId);
       crearSumarRegistroOficina(orderId, archivo.getIdArchivo().intValue(), S_ENTRADA, valorSale,
           contenido, detalleArchivo);
     }
