@@ -253,7 +253,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 				}
 				break;
 			}
-			case "TH": {
+			case "TH", "VG": {
 				fecha = getString(nombreArchivo);
 				mascaraFecha = maestroDefinicion.getMascaraArch().substring(19, 27);
 				formatoFecha = new ArrayList<>();
