@@ -35,4 +35,5 @@ public interface IValoresLiquidadosService {
 	 * @author duvan.naranjo
 	 */
 	ValorLiquidadoDTO consultarValoresLiquidadosPorIdLiquidacion(Long idLiquidacion);
+
 }

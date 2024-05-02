@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.ath.adminefectivo.dto.ArchivosCargadosDTO;
+import com.ath.adminefectivo.dto.ArchivosLiquidacionDTO;
+import com.ath.adminefectivo.dto.compuestos.ArchivosLiquidacionListDTO;
 import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoDTO;
 import com.ath.adminefectivo.entities.ArchivosCargados;
 import com.querydsl.core.types.Predicate;
@@ -67,6 +69,15 @@ public interface IArchivosCargadosService {
 	 * @author CamiloBenavides
 	 */
 	List<ArchivosCargados> guardarArchivos(List<ArchivosCargadosDTO> archivosCargados);
+	
+	/**
+	 * Servicio encargado persistir una lista de ArchivosCargados en base de datos y sus registros
+	 * 
+	 * @param archivosCargados
+	 * @return ArchivosCargados
+	 * @author johan.chaparro
+	 */
+	List<ArchivosLiquidacionDTO> guardarArchivosLiquidacion(ArchivosLiquidacionListDTO archivosLiquidacion);
 
 	/**
 	 * Servicio encargado de consultar el detalle de los archivos cargados y
@@ -168,4 +179,19 @@ public interface IArchivosCargadosService {
 	 * @author rafael.parra
 	 */
 	public List<ArchivosCargados> consultarArchivosPorEstadoCargue(String estado);
+	
+	/**
+	 * Método encargado de devolver los archivos que presentan estado cargue, nombre y modelo 
+	 * 
+	 * @param estadoCargue
+	 * @param nombreArchivo
+	 * @param idModeloArchivo
+	 * @return
+	 * @return List<ArchivosCargados>
+	 * @author hector.mercado
+	 */
+	 List<ArchivosCargados> getRegistrosCargadosPorEstadoCargueyNombreUpperyModelo(String estadoCargue,	
+			 																		String nombreArchivo, 
+			 																		String idModeloArchivo);
+	
 }

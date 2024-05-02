@@ -2,6 +2,7 @@ package com.ath.adminefectivo.entities;
 
 import java.util.Date;
 import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.ColumnResult;
 import javax.persistence.ConstructorResult;
@@ -17,7 +18,9 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+
 import com.ath.adminefectivo.dto.compuestos.OperacionIntradiaDTO;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

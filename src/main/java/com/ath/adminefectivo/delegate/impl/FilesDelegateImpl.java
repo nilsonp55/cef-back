@@ -4,8 +4,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,10 +22,16 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Parametros;
+import com.ath.adminefectivo.delegate.IArchivosLiquidacionDelegate;
 import com.ath.adminefectivo.delegate.IFilesDelegate;
 import com.ath.adminefectivo.dto.ArchivosCargadosDTO;
 import com.ath.adminefectivo.dto.DownloadDTO;
+import com.ath.adminefectivo.dto.RegistrosCargadosDTO;
+import com.ath.adminefectivo.dto.compuestos.ErroresCamposDTO;
+import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoDTO;
+import com.ath.adminefectivo.dto.compuestos.ValidacionLineasDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
+import com.ath.adminefectivo.entities.ArchivosCargados;
 import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.exception.ConflictException;
 import com.ath.adminefectivo.exception.NegocioException;
@@ -52,6 +67,9 @@ public class FilesDelegateImpl implements IFilesDelegate {
 		 
 	@Autowired
 	IGeneralRepository generalRepository;
+	
+	@Autowired
+	IArchivosLiquidacionDelegate archivosLiquidacion;
 
 	/**
 	 * {@inheritDoc}
@@ -212,4 +230,152 @@ public class FilesDelegateImpl implements IFilesDelegate {
 				Comparator.nullsLast(Comparator.naturalOrder())));
 		return archivosCargados;
 	}
+	
+	/**
+	 * Este método se encarga de consultar los registros contenidos en los archivos de liquidación.
+	 * Los resultados de la consulta se devuelven como un InputStream, permitiendo así su descarga.
+	 * En caso de que los archivos contengan errores, el método implementa una lógica especial que 
+	 * añade los detalles de dichos errores en la línea correspondiente.
+	 * 
+	 * @param idArchivoCargado
+	 * @return DownloadDTO
+	 * @author johan.chaparro
+	 */
+	public DownloadDTO descargarArchivoLiqProcesado(Long idArchivoCargado) {
+
+		DownloadDTO downloadDTO = new DownloadDTO();
+		List<RegistrosCargadosDTO> listaRegistros = archivosLiquidacion.consultarDetalleArchivo(idArchivoCargado);
+
+		if (!listaRegistros.isEmpty()) {
+
+			ArchivosCargados archivosCargados = archivosCargadosService.consultarArchivoById(idArchivoCargado);
+
+			if (Constantes.ESTADO_CARGUE_ERROR.equals(archivosCargados.getEstadoCargue())) {
+
+				obtenerErrores(listaRegistros, idArchivoCargado);
+			}
+
+			downloadDTO.setId(idArchivoCargado);
+			downloadDTO.setName(archivosCargados.getNombreArchivo());
+			downloadDTO.setFile(obtenerContenidos(listaRegistros)); // InputStream del archivo	
+						
+		} else {
+			
+			throw new NegocioException(ApiResponseCode.ERROR_CONTENIDO_ARCHIVO_PROCESADO.getCode(),
+			          ApiResponseCode.ERROR_CONTENIDO_ARCHIVO_PROCESADO.getDescription(),
+			          ApiResponseCode.ERROR_CONTENIDO_ARCHIVO_PROCESADO.getHttpStatus());
+		}
+
+		return downloadDTO;
+	}
+
+	private List<RegistrosCargadosDTO> obtenerErrores(List<RegistrosCargadosDTO> listaRegistros, Long idArchivoCargado) {
+	    try {
+	        actualizaPrimerRegistro(listaRegistros);
+	        Map<Integer, List<String>> lineasAgrupadas = agruparLineasPorNumero(idArchivoCargado);
+	        actualizaEstructurasAgrupadas(listaRegistros, lineasAgrupadas);
+	    } catch (Exception e) {
+	        throw new NegocioException(ApiResponseCode.ERROR_CONTENIDO_ARCHIVO_PROCESADO.getCode(),
+	                ApiResponseCode.ERROR_CONTENIDO_ARCHIVO_PROCESADO.getDescription(),
+	                ApiResponseCode.ERROR_CONTENIDO_ARCHIVO_PROCESADO.getHttpStatus());
+	    }
+	    return listaRegistros;
+	}
+
+	private void actualizaPrimerRegistro(List<RegistrosCargadosDTO> listaRegistros) {
+	    RegistrosCargadosDTO firstRecord = listaRegistros.get(0);
+	    if (firstRecord.getId().getConsecutivoRegistro() == 0) {
+	        String contenido = removerSaltoDeLineaSiExiste(firstRecord.getContenido());
+	        contenido += "," + Constantes.CAMPO_OBSERVACION_ERRORES;
+	        firstRecord.setContenido(contenido);
+	        listaRegistros.set(0, firstRecord);
+	    }
+	}
+
+	private String removerSaltoDeLineaSiExiste(String contenido) {
+	    if (contenido.endsWith("\n")) {
+	        contenido = contenido.substring(0, contenido.length() - 1);
+	    }
+	    return contenido;
+	}
+
+	private Map<Integer, List<String>> agruparLineasPorNumero(Long idArchivoCargado) {
+	    ValidacionArchivoDTO validacionArchivoDTO = archivosLiquidacion.consultarDetalleError(idArchivoCargado);
+	    Map<Integer, List<String>> lineasAgrupadas = new HashMap<>();
+	    for (ValidacionLineasDTO linea : validacionArchivoDTO.getValidacionLineas()) {
+	        int numeroLinea = linea.getNumeroLinea();
+	        String estructura = getGrupoRegistrosError(linea);
+	        lineasAgrupadas.computeIfAbsent(numeroLinea, k -> new ArrayList<>()).add(estructura);
+	    }
+	    return lineasAgrupadas;
+	}
+
+	private String getGrupoRegistrosError(ValidacionLineasDTO linea) {
+	    StringBuilder estructura = new StringBuilder();
+	    for (ErroresCamposDTO campo : linea.getCampos()) {
+	        estructura.append("{");
+	        estructura.append("CAMPO=").append(campo.getNumeroCampo()).append(",");
+	        estructura.append("DESCRIPCION_ERROR=").append(campo.getMensajeErrorTxt()).append(",");
+	        estructura.append("CONTENIDO_ERROR=").append(campo.getContenido());
+	        estructura.append("},");
+	    }
+	    if (estructura.length() > 0)
+	        estructura.setLength(estructura.length() - 1);
+	    return estructura.toString();
+	}
+
+	private void actualizaEstructurasAgrupadas(List<RegistrosCargadosDTO> listaRegistros, Map<Integer, List<String>> lineasAgrupadas) {
+	    for (RegistrosCargadosDTO registro : listaRegistros) {
+	        int numeroLinea = registro.getId().getConsecutivoRegistro();
+	        List<String> estructurasAgrupadas = lineasAgrupadas.get(numeroLinea);
+	        if (estructurasAgrupadas != null) {
+	            String contenido = removerSaltoDeLineaSiExiste(registro.getContenido());
+	            StringBuilder contenidoActualizado = new StringBuilder(contenido);
+	            for (String estructura : estructurasAgrupadas) {
+	                contenidoActualizado.append(",[").append(estructura).append("]");
+	            }
+	            registro.setContenido(contenidoActualizado.toString());
+	        }
+	    }
+	}
+
+	private InputStream obtenerContenidos(List<RegistrosCargadosDTO> listaRegistros) {
+		
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		List<String> contenidos = listaRegistros.stream().map(RegistrosCargadosDTO::getContenido).collect(Collectors.toList());
+
+        // Escribir el contenido en el flujo de bytes
+        for (String contenido : contenidos) {
+            try {
+				outputStream.write(contenido.getBytes(StandardCharsets.UTF_8));
+			} catch (IOException e) {
+				
+				throw new NegocioException(ApiResponseCode.ERROR_CONTENIDO_ARCHIVO_PROCESADO.getCode(),
+						ApiResponseCode.ERROR_CONTENIDO_ARCHIVO_PROCESADO.getDescription(),
+						ApiResponseCode.ERROR_CONTENIDO_ARCHIVO_PROCESADO.getHttpStatus());
+			}
+            try {
+				outputStream.write(System.lineSeparator().getBytes(StandardCharsets.UTF_8));
+			} catch (IOException e) {
+				
+				throw new NegocioException(ApiResponseCode.ERROR_CONTENIDO_ARCHIVO_PROCESADO.getCode(),
+						ApiResponseCode.ERROR_CONTENIDO_ARCHIVO_PROCESADO.getDescription(),
+						ApiResponseCode.ERROR_CONTENIDO_ARCHIVO_PROCESADO.getHttpStatus());
+			} 
+        }
+
+        // Convierte el flujo de bytes en un array de bytes
+        byte[] bytes = outputStream.toByteArray();
+        // Cierra el recurso 
+        try {
+			outputStream.close();
+			
+		} catch (IOException e) {
+			throw new NegocioException(ApiResponseCode.ERROR_CONTENIDO_ARCHIVO_PROCESADO.getCode(),
+					ApiResponseCode.ERROR_CONTENIDO_ARCHIVO_PROCESADO.getDescription(),
+					ApiResponseCode.ERROR_CONTENIDO_ARCHIVO_PROCESADO.getHttpStatus());
+		}
+        
+		return new ByteArrayInputStream(bytes);
+	}	
 }
