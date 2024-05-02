@@ -3,8 +3,10 @@ package com.ath.adminefectivo.service.impl;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.ParametrosLiquidacionCostoDTO;
@@ -13,6 +15,7 @@ import com.ath.adminefectivo.dto.ValoresLiquidadosDTO;
 import com.ath.adminefectivo.dto.compuestos.CostosCharterDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.LogProcesoDiario;
+import com.ath.adminefectivo.entities.ParametrosLiquidacionCosto;
 import com.ath.adminefectivo.entities.Puntos;
 import com.ath.adminefectivo.entities.ValoresLiquidados;
 import com.ath.adminefectivo.exception.NegocioException;
@@ -26,6 +29,7 @@ import com.ath.adminefectivo.service.IParametrosLiquidacionCostosService;
 import com.ath.adminefectivo.service.IPuntosService;
 import com.ath.adminefectivo.service.ITransportadorasService;
 import com.ath.adminefectivo.service.IValoresLiquidadosService;
+
 import lombok.extern.log4j.Log4j2;
 
 @Service
@@ -276,4 +280,5 @@ public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService 
         + valoresLiquidados.getModenaResiduo() + valoresLiquidados.getTasaAeroportuaria();
     return total;
   }
+  
 }

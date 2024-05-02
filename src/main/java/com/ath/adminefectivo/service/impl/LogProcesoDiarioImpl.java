@@ -157,7 +157,7 @@ public class LogProcesoDiarioImpl implements ILogProcesoDiarioService {
 		var logProcesoDiario = logProcesoDiarioRepository.findByCodigoProcesoAndFechaCreacion(codigoProceso, fecha);
 		if(Objects.isNull(logProcesoDiario)) {
 			auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION, 
-					fecha, 
+					parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO), 
 					Constantes.ESTADO_PROCESO_PROCESADO, 
 					ApiResponseCode.ERROR_LOGPROCESODIARIO_NO_ENCONTRADO.getDescription());
 			throw new AplicationException(ApiResponseCode.ERROR_LOGPROCESODIARIO_NO_ENCONTRADO.getCode(),

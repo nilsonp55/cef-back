@@ -76,10 +76,6 @@ public class OperacionesCertificadasDTO {
 	
 	private Long  consecutivoRegistro;
 	
-	private String codigoPuntoCodigotdv;
-	
-	private String descripcionPuntoCodigotdv;
-	
 	/**
 	 * Funcion que convierte el archivo DTO OperacionesCertificadasDTO a Entity OperacionesCertificadas
 	 * @author cesar.castano

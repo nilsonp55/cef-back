@@ -2,7 +2,9 @@ package com.ath.adminefectivo.dto;
 
 import java.util.Date;
 import java.util.function.Function;
+
 import com.ath.adminefectivo.entities.AuditoriaLogin;
+
 import lombok.Data;
 
 @Data
