@@ -22,6 +22,10 @@ public class TipoReglaFactory {
 
 	@Autowired
 	ReglaExcluidos reglaExcluidos;
+	
+	@Autowired
+	ReglaFormatoFecha reglaFormatoFecha;
+
 
 	public ITipoReglaInterface getInstance(String tipoRegla) {
 
@@ -38,6 +42,10 @@ public class TipoReglaFactory {
 
 		case Dominios.TIPO_REGLA_CONSULTA_SQL:
 			return reglaSql;
+			
+		case Dominios.TIPO_REGLA_FORMATO_FECHA:
+			return reglaFormatoFecha;
+			
 		default:
 			throw new AplicationException(ApiResponseCode.ERROR_TIPO_REGLA_NOT_FOUND.getCode(),
 					ApiResponseCode.ERROR_TIPO_REGLA_NOT_FOUND.getDescription(),

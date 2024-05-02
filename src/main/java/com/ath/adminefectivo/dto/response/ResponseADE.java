@@ -2,6 +2,7 @@ package com.ath.adminefectivo.dto.response;
 
 
 import java.io.Serializable;
+import java.util.List;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -25,5 +26,7 @@ public class ResponseADE implements Serializable{
 	private String description;
 
 	private String source;
+	
+	private List<String> errors;
 
 }

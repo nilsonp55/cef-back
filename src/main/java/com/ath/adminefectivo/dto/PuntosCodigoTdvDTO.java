@@ -9,8 +9,8 @@ import com.ath.adminefectivo.utils.UtilsObjects;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.ToString;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * Clase que contiene el DTO  de la tabla PuntosCodigoTDV
