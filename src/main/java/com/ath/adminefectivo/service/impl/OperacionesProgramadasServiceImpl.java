@@ -1359,7 +1359,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
         operaciones.setIdNegociacion(null);
         operaciones.getIdOperacionRelac();
         operaciones.setTasaNegociacion(null);
-        operaciones.setTipoOperacion(asignarTipoOperacion(detalleArchivo, entraSale));
+        operaciones.setTipoOperacion(asignarTipoOperacion(entraSale));
         if (operaciones.getFechaProgramacion().before(fechaDestino)) {
           operaciones.setTipoServicio(dominioService.valorTextoDominio(
               Constantes.DOMINIO_TIPO_SERVICIO, Dominios.TIPO_SERVICIO_PROGRAMADA));
@@ -1578,8 +1578,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
    * @return String
    * @author cesar.castano
    */
-  private String asignarTipoOperacion(List<DetallesDefinicionArchivoDTO> detalleArchivo,
-      String entraSale) {
+  private String asignarTipoOperacion(String entraSale) {
     var tipoOperacion = "";
     if (entraSale.equals(Constantes.VALOR_SALIDA)) {
       tipoOperacion = dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_OPERACION,
