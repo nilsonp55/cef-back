@@ -8,11 +8,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.DetallesDefinicionArchivoDTO;
@@ -43,7 +42,6 @@ import com.ath.adminefectivo.service.IOperacionesCertificadasService;
 import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.IPuntosCodigoTdvService;
 import com.ath.adminefectivo.service.IPuntosService;
-
 import lombok.extern.log4j.Log4j2;
 
 @Service
@@ -972,6 +970,11 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
           if (Objects.isNull(codigoServicio) || codigoServicio.trim().isEmpty()) {
             codigoServicio = SIN_CODIGO_SERVICIO;
           }
+          
+          if(StringUtils.isEmpty(tipoServicio)) {
+            tipoServicio = Constantes.VALOR_DOMINIO_TIPO_SERVICIO_PROGRAMADA;
+          }
+          
           procesarOperacionTransporte(fila, registro, elemento, codigoServicio, entradaSalida,
               codigoPunto + nombrePunto, tipoServicio, codigoOperacion, consecutivoRegistro);
           break;
