@@ -736,4 +736,6 @@ public static final String DELETE_SEPARADORES = "";
 	
 	public static final String ESTADO_CONCILIACION_MANUAL = "MANUAL";
 	public static final String ESTADO_CONCILIACION_RECHAZADA = "RECHAZADA";
+	
+	public static final String VALOR_DOMINIO_TIPO_SERVICIO_PROGRAMADA = "P";
 }
