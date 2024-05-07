@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -83,6 +84,24 @@ public class ClientesCorporativosController {
 	}
 	
 	/**
+	 * Servicio crud para obtener Clientes Corporativos por codigoCliente
+	 * 
+	 * @return HttpStatus 200 -
+	 *         ResponseEntity<ApiResponseADE<ClientesCorporativosDTO>>
+	 * @author prv_nparra
+	 */
+	@GetMapping(value = "${endpoints.ClientesCorporativos.crud.get}")
+	public ResponseEntity<ApiResponseADE<ClientesCorporativosDTO>> obtenerClientesCorporativo(
+			@PathVariable @NotNull @Valid Integer codigoCliente) {
+		log.debug("obtenerClientesCorporativo - codigoCliente: {}", codigoCliente);
+		ClientesCorporativosDTO cliente = clientesCorporativosService.getClientesCorporativos(codigoCliente);
+		log.debug("obtenerClientesCorporativo - identificacion: {}", cliente.getIdentificacion());
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ApiResponseADE<>(cliente, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
+	}
+	
+	/**
 	 * Servicio crud guardar nuevo Clientes Corporativos
 	 * 
 	 * @return HttpStatus 200 -
@@ -148,10 +167,12 @@ public class ClientesCorporativosController {
 	 * @return HttpStatus 200 - ResponseEntity<ApiResposeADE<ClientesCorporativosDTO>>
 	 * @author prv_nparra
 	 */
-    @DeleteMapping(value = "${endpoints.ClientesCorporativos.crud}")
-    public ResponseEntity<ApiResponseADE<ClientesCorporativosDTO>> eliminarClientesCorporativos(
-        @NotNull @Valid Integer codigoCliente) {
-      clientesCorporativosService.eliminarClientesCorporativos(codigoCliente);
-      return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
-    }
+	@DeleteMapping(value = "${endpoints.ClientesCorporativos.crud.get}")
+	public ResponseEntity<ApiResponseADE<ClientesCorporativosDTO>> eliminarClientesCorporativos(
+			@PathVariable @NotNull @Valid Integer codigoCliente) {
+		log.debug("eliminarClientesCorporativos - codigoCliente: {}", codigoCliente);
+		clientesCorporativosService.eliminarClientesCorporativos(codigoCliente);
+		log.debug("eliminarClientesCorporativos - deleted: {}", codigoCliente);
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+	}
 }
