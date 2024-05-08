@@ -109,7 +109,8 @@ public class ClientesCorporativosServiceImpl implements IClientesCorporativosSer
 		Optional<ClientesCorporativos> clienteFind = clientesCorporativosRepository.findById(codigoCliente);
 		log.debug("getClientesCorporativos - isEmpty: {}", clienteFind.isEmpty());
 		return ClientesCorporativosDTO.CONVERTER_DTO.apply(
-				clienteFind.orElseThrow(() -> new NotFoundException("ClientesCorporativos", codigoCliente.toString())));
+				clienteFind.orElseThrow(() -> new NotFoundException(ClientesCorporativosServiceImpl.class.getName(),
+						codigoCliente.toString())));
 	}
 
     /**
@@ -142,7 +143,7 @@ public class ClientesCorporativosServiceImpl implements IClientesCorporativosSer
 			log.debug("actualizarClientesCorporativos - save: {}", t.getCodigoCliente());
 		}, () -> {
 			log.debug("actualizarClientesCorporativos - save error: {}", clientesCorporativos.getCodigoCliente());
-			throw new NotFoundException("ClientesCorporativos", clientesCorporativos.getCodigoCliente().toString());
+			throw new NotFoundException(ClientesCorporativosServiceImpl.class.getName(), clientesCorporativos.getCodigoCliente().toString());
 		});
 		return clientesCorporativos;
 	}
@@ -157,7 +158,7 @@ public class ClientesCorporativosServiceImpl implements IClientesCorporativosSer
 		log.debug("eliminarClientesCorporativos - isEmpty: {}", clienteFind.isEmpty());
 		clienteFind.ifPresentOrElse(t -> clientesCorporativosRepository.delete(t), () -> {
 			log.debug("eliminarClientesCorporativos - delete error: {}", codigoCliente);
-			throw new NotFoundException("ClientesCorporativos", codigoCliente.toString());
+			throw new NotFoundException(ClientesCorporativosServiceImpl.class.getName(), codigoCliente.toString());
 		});
 	}
 
