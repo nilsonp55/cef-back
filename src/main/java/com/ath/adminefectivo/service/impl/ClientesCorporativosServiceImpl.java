@@ -10,13 +10,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.ath.adminefectivo.dto.ClientesCorporativosDTO;
 import com.ath.adminefectivo.entities.ClientesCorporativos;
+import com.ath.adminefectivo.entities.QClientesCorporativos;
 import com.ath.adminefectivo.exception.NotFoundException;
 import com.ath.adminefectivo.repositories.IClientesCorporativosRepository;
 import com.ath.adminefectivo.service.IClientesCorporativosService;
 import com.ath.adminefectivo.service.ISitiosClientesService;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 
 import lombok.extern.log4j.Log4j2;
@@ -81,9 +84,17 @@ public class ClientesCorporativosServiceImpl implements IClientesCorporativosSer
      * {@inheritDoc}
      */
 	@Override
-	public Page<ClientesCorporativosDTO> listarClientesCorporativos(Predicate predicate, Pageable page) {
-		log.debug("listarClientesCorporativos - predicate: {}", predicate.toString());
-		Page<ClientesCorporativos> clientes = clientesCorporativosRepository.findAll(predicate, page);
+	public Page<ClientesCorporativosDTO> listarClientesCorporativos(Predicate predicate, Pageable page,
+			String busqueda) {
+		log.debug("listarClientesCorporativos - predicate: {} - busqueda: {}", predicate.toString(), busqueda);
+
+		BooleanBuilder builder = new BooleanBuilder().and(predicate);
+		if (StringUtils.hasText(busqueda)) {
+			builder.and(QClientesCorporativos.clientesCorporativos.nombreCliente.containsIgnoreCase(busqueda))
+					.or(QClientesCorporativos.clientesCorporativos.identificacion.containsIgnoreCase(busqueda))
+					.or(QClientesCorporativos.clientesCorporativos.codigoCliente.like(busqueda));
+		}
+		Page<ClientesCorporativos> clientes = clientesCorporativosRepository.findAll(builder, page);
 		log.debug("listarClientesCorporativos - totalElements: {}", clientes.getTotalElements());
 		return new PageImpl<>(clientes.stream().map(ClientesCorporativosDTO.CONVERTER_DTO).toList(),
 				clientes.getPageable(), clientes.getTotalElements());

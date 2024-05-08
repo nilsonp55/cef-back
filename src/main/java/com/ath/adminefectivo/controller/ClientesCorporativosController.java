@@ -73,10 +73,10 @@ public class ClientesCorporativosController {
 	 */
 	@GetMapping(value = "${endpoints.ClientesCorporativos.crud}")
 	public ResponseEntity<ApiResponseADE<Page<ClientesCorporativosDTO>>> listarClientesCorporativos(
-			@QuerydslPredicate(root = ClientesCorporativos.class) Predicate predicate, Pageable page) {
-		log.debug("listarClientesCorporativos - predacate: {} - page: {}", predicate.toString(), page.getPageNumber());
+			@QuerydslPredicate(root = ClientesCorporativos.class) Predicate predicate, Pageable page, String busqueda) {
+		log.debug("listarClientesCorporativos - predicate: {} - page: {}", predicate.toString(), page.getPageNumber());
 		Page<ClientesCorporativosDTO> clientesReturn = clientesCorporativosService.listarClientesCorporativos(predicate,
-				page);
+				page, busqueda); 
 		log.debug("listarClientesCorporativos - clientes: {}", clientesReturn.getTotalElements());
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(clientesReturn, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
@@ -113,6 +113,7 @@ public class ClientesCorporativosController {
 			@RequestBody @Valid ClientesCorporativosDTO clientesCorporativosDTO, BindingResult bindingResult) {
 
 		if (bindingResult.hasFieldErrors()) {
+			log.debug("guardarClientesCorporativos -  failed validation: {}", bindingResult.getErrorCount());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseADE<>(null, ResponseADE.builder()
 					.code(Constantes.CAMPO_REQUERIDO).description(Constantes.CAMPO_REQUERIDO)
 					.errors(bindingResult.getFieldErrors().stream()
@@ -140,6 +141,7 @@ public class ClientesCorporativosController {
 			@RequestBody @Valid ClientesCorporativosDTO clientesCorporativosDTO, BindingResult bindingResult) {
 		// Validacion campos obligatorios del DTO
 		if (bindingResult.hasFieldErrors()) {
+			log.debug("actualizarClientesCorporativos - failed validation: {}", bindingResult.getErrorCount());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseADE<>(null, ResponseADE.builder()
 					.code(Constantes.CAMPO_REQUERIDO).description(Constantes.CAMPO_REQUERIDO)
 					.errors(bindingResult.getFieldErrors().stream()

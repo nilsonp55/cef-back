@@ -43,10 +43,11 @@ public interface IClientesCorporativosService {
      * 
      * @param predicate
      * @param pageable
+     * @param busqueda
      * @return List<ClientesCorporativosDTO>
      * @author prv_nparra
      */
-    Page<ClientesCorporativosDTO> listarClientesCorporativos(Predicate predicate, Pageable page);
+    Page<ClientesCorporativosDTO> listarClientesCorporativos(Predicate predicate, Pageable page, String busqueda);
     
     /**
      * Servicio encargado de consultar cliente corporativo por codigo de cliente (Id)
