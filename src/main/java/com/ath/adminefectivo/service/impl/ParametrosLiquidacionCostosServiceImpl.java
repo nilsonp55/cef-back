@@ -11,10 +11,8 @@ import org.springframework.stereotype.Service;
 import com.ath.adminefectivo.dto.ParametrosLiquidacionCostoDTO;
 import com.ath.adminefectivo.dto.compuestos.EstimadoClasificacionCostosDTO;
 import com.ath.adminefectivo.entities.ParametrosLiquidacionCosto;
-import com.ath.adminefectivo.entities.ValoresLiquidados;
 import com.ath.adminefectivo.repositories.IParametrosLiquidacionCostosRepository;
 import com.ath.adminefectivo.repositories.IValoresLiquidadosFlatRepository;
-import com.ath.adminefectivo.repositories.IValoresLiquidadosRepository;
 import com.ath.adminefectivo.service.IParametrosLiquidacionCostosService;
 import com.ath.adminefectivo.service.IValoresLiquidadosService;
 
