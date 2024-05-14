@@ -20,7 +20,7 @@ public interface IClientesCorporativosService {
 	 * @author cesar.castano
 	 */
 	List<ClientesCorporativosDTO> getClientesCorporativos(Predicate predicate);
-	
+		
 	/**
 	 * Servicio encargado de consultar el codigo de cliente corporativos
 	 * @param Nit
@@ -43,10 +43,20 @@ public interface IClientesCorporativosService {
      * 
      * @param predicate
      * @param pageable
+     * @param busqueda
      * @return List<ClientesCorporativosDTO>
      * @author prv_nparra
      */
-    Page<ClientesCorporativosDTO> listarClientesCorporativos(Predicate predicate, Pageable page);
+    Page<ClientesCorporativosDTO> listarClientesCorporativos(Predicate predicate, Pageable page, String busqueda);
+    
+    /**
+     * Servicio encargado de consultar cliente corporativo por codigo de cliente (Id)
+     * 
+     * @param codigoCliente
+     * @return List<ClientesCorporativosDTO>
+     * @author prv_nparra
+     */
+	ClientesCorporativosDTO getClientesCorporativos(Integer codigoCliente) throws NotFoundException;
 
     /**
      * Servicio encargado de crear un nuevo clientes corporativos

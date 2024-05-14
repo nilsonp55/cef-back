@@ -15,7 +15,6 @@ import com.ath.adminefectivo.dto.ValoresLiquidadosDTO;
 import com.ath.adminefectivo.dto.compuestos.CostosCharterDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.LogProcesoDiario;
-import com.ath.adminefectivo.entities.ParametrosLiquidacionCosto;
 import com.ath.adminefectivo.entities.Puntos;
 import com.ath.adminefectivo.entities.ValoresLiquidados;
 import com.ath.adminefectivo.exception.NegocioException;
