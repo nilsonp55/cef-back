@@ -59,7 +59,6 @@ public class FestivosNacionalesController {
     @DeleteMapping(value = "${endpoints.FestivosNacionales.eliminar}")
     public ResponseEntity<ApiResponseADE<Boolean>> eliminar(@PathVariable String idFestivoNacional)
         throws ParseException {
-      //boolean consulta = festivosNacionalesService.eliminarFestivosNacionales(new SimpleDateFormat("yyyy-MM-dd").parse(idFestivoNacional));
       boolean consulta = festivosNacionalesService
           .eliminarFestivosNacionales(new SimpleDateFormat("yyyy-MM-dd").parse(idFestivoNacional));
       return ResponseEntity.status(HttpStatus.OK)
