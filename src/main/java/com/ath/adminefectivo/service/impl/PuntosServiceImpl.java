@@ -317,13 +317,14 @@ public class PuntosServiceImpl implements IPuntosService {
   @Override
   public Puntos validarPuntoActualizar(Integer codigoPunto, String tipoPunto) {
 
-    Optional<Puntos> punto = puntosRepository.findByIdAndTipoPunto(codigoPunto, tipoPunto);
+    Optional<Puntos> punto =
+        Optional.ofNullable(puntosRepository.findByCodigoPuntoAndTipoPunto(codigoPunto, tipoPunto));
     if (punto.isPresent()) {
       throw new NegocioException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
           ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription(),
           ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
     }
-    
+
     return punto.get();
   }
 

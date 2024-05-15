@@ -1,11 +1,9 @@
 package com.ath.adminefectivo.repositories;
 
 import java.util.List;
-import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
-
 import com.ath.adminefectivo.entities.Puntos;
 
 /**
@@ -86,15 +84,5 @@ public interface IPuntosRepository
    * @author prv_nparra
    */
   public List<Puntos> findByTipoPunto(String tipoPunto);
-  
-  /**
-   * Consulta la tabla puntos por codigo punto y tipo de punto
-   * 
-   * @param codigoPunto id del punto
-   * @param tipoPunto Valor tipo punto para filtrar registros
-   * @return Un Optional de puntos
-   * @author prv_nparra
-   */
-  public Optional<Puntos> findByIdAndTipoPunto(Integer codigoPunto, String tipoPunto);
 
 }
