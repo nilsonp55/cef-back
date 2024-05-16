@@ -1,6 +1,6 @@
 package com.ath.adminefectivo.controller;
 
-import java.util.Date;
+import java.text.ParseException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,14 +53,15 @@ public class FestivosNacionalesController {
 	
 	/**
 	 * Metodo encargado de eliminar un dia festivo nacional
-	 * @param idEscalas
+	 * @param idFecha
 	 * @return
+	 * @throws ParseException 
 	 */
 	@DeleteMapping(value = "${endpoints.FestivosNacionales.eliminar}")
-	public ResponseEntity<ApiResponseADE<Boolean>> eliminar(@RequestParam("id") Date idFestivoNacional) {
-		boolean consulta = festivosNacionalesService.eliminarFestivosNacionales(idFestivoNacional);
+	public ResponseEntity<ApiResponseADE<Boolean>> eliminar(@RequestParam("idFecha") String idFestivoNacional) {
+		festivosNacionalesService.eliminarFestivosNacionales(idFestivoNacional);
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+				.body(new ApiResponseADE<>(Boolean.TRUE, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
 	
