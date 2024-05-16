@@ -126,12 +126,11 @@ public class FestivosNacionalesServiceImpl implements IFestivosNacionalesService
 			throw new AplicationException(Constantes.ERROR_GENERAL, e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 
-		festivosNacionalesRepository.findById(fechaDelete).ifPresentOrElse((festivo) -> {
-			festivosNacionalesRepository.delete(festivo);
-		}, () -> {
-			throw new AplicationException(Constantes.ERROR_GENERAL, Constantes.REGISTRO_NO_ENCONTRADO,
-					HttpStatus.NOT_FOUND);
-		});
+		festivosNacionalesRepository.findById(fechaDelete)
+				.ifPresentOrElse(festivo -> festivosNacionalesRepository.delete(festivo), () -> {
+					throw new AplicationException(Constantes.ERROR_GENERAL, Constantes.REGISTRO_NO_ENCONTRADO,
+							HttpStatus.NOT_FOUND);
+				});
 	}
 
 	/**
