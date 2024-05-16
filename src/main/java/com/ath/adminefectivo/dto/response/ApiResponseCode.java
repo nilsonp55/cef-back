@@ -19,7 +19,7 @@ public enum ApiResponseCode {
 	/**
 	 * Codigo generico de error
 	 */
-	GENERIC_ERROR("E400", "Ocurrió un error interno, intente de nuevo más tarde", HttpStatus.BAD_REQUEST),
+	GENERIC_ERROR("E400", "Ocurrió un error. ", HttpStatus.BAD_REQUEST),
 
 	/**
 	 * Error de en la persistencia de documentos
