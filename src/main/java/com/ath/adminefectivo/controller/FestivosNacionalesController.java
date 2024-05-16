@@ -11,10 +11,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
@@ -57,8 +57,8 @@ public class FestivosNacionalesController {
 	 * @throws ParseException 
 	 */
     @DeleteMapping(value = "${endpoints.FestivosNacionales.eliminar}")
-    public ResponseEntity<ApiResponseADE<Boolean>> eliminar(@PathVariable String idFestivoNacional)
-        throws ParseException {
+    public ResponseEntity<ApiResponseADE<Boolean>> eliminar(
+        @RequestParam("idFecha") String idFestivoNacional) throws ParseException {
       boolean consulta = festivosNacionalesService
           .eliminarFestivosNacionales(new SimpleDateFormat("yyyy-MM-dd").parse(idFestivoNacional));
       return ResponseEntity.status(HttpStatus.OK)
