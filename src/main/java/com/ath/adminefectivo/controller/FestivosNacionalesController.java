@@ -1,8 +1,8 @@
 package com.ath.adminefectivo.controller;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
@@ -56,16 +57,13 @@ public class FestivosNacionalesController {
 	 * @return
 	 * @throws ParseException 
 	 */
-    @DeleteMapping(value = "${endpoints.FestivosNacionales.eliminar}")
-    public ResponseEntity<ApiResponseADE<Boolean>> eliminar(
-        @RequestParam("idFecha") String idFestivoNacional) throws ParseException {
-      boolean consulta = festivosNacionalesService
-          .eliminarFestivosNacionales(new SimpleDateFormat("yyyy-MM-dd").parse(idFestivoNacional));
-      return ResponseEntity.status(HttpStatus.OK)
-          .body(new ApiResponseADE<>(consulta,
-              ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
-                  .description(ApiResponseCode.SUCCESS.getDescription()).build()));
-    }
+	@DeleteMapping(value = "${endpoints.FestivosNacionales.eliminar}")
+	public ResponseEntity<ApiResponseADE<Boolean>> eliminar(@RequestParam("idFecha") String idFestivoNacional) {
+		festivosNacionalesService.eliminarFestivosNacionales(idFestivoNacional);
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ApiResponseADE<>(Boolean.TRUE, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
+	}
 	
 	@GetMapping(value = "${endpoints.FestivosNacionales.consultar}")
 	public ResponseEntity<ApiResponseADE<List<FestivosNacionales>>> getFestivosNacionales(@QuerydslPredicate(root = FestivosNacionales.class) Predicate predicate, Pageable page) {
