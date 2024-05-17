@@ -41,6 +41,8 @@ public class PuntosDTO {
 	private CajerosATMDTO cajeroATM;
 
 	private BancosDTO bancos;
+	
+	private String estado;
 
 	/**
 	 * Función encargada de recibir un DTO y retornar un objeto con los mismos datos

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
-
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -317,18 +317,15 @@ public class PuntosServiceImpl implements IPuntosService {
   @Override
   public Puntos validarPuntoActualizar(Integer codigoPunto, String tipoPunto) {
 
-    var punto = puntosRepository.getById(codigoPunto);
-    if (!Objects.nonNull(punto)) {
+    Optional<Puntos> punto =
+        Optional.ofNullable(puntosRepository.findByCodigoPuntoAndTipoPunto(codigoPunto, tipoPunto));
+    if (punto.isPresent()) {
       throw new NegocioException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
           ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription(),
           ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
     }
-    if (!punto.getTipoPunto().equals(tipoPunto)) {
-      throw new NegocioException(ApiResponseCode.ERROR_TIPO_PUNTO_DIFERENTE.getCode(),
-          ApiResponseCode.ERROR_TIPO_PUNTO_DIFERENTE.getDescription(),
-          ApiResponseCode.ERROR_TIPO_PUNTO_DIFERENTE.getHttpStatus());
-    }
-    return punto;
+
+    return punto.get();
   }
 
   @Override
