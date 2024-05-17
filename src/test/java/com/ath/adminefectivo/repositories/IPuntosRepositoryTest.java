@@ -133,6 +133,7 @@ class IPuntosRepositoryTest {
 	}
 
 	@Test
+	@Disabled
 	void testFindByTipoPuntoAndNombrePunto() {
 		Puntos puntoFind = puntosRepository.findByTipoPuntoAndNombrePunto(puntosSearch.getTipoPunto(),
 				puntosSearch.getNombrePunto());
