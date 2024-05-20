@@ -319,7 +319,7 @@ public class PuntosServiceImpl implements IPuntosService {
 
     Optional<Puntos> punto =
         Optional.ofNullable(puntosRepository.findByCodigoPuntoAndTipoPunto(codigoPunto, tipoPunto));
-    if (punto.isPresent()) {
+    if (punto.isEmpty()) {
       throw new NegocioException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
           ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription(),
           ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());

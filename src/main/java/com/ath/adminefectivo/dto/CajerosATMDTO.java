@@ -25,7 +25,7 @@ private Integer codigoPunto;
 	
 	private String codigoATM;
 	
-	private Integer codigoBancoAval;
+	private Integer bancoAval;
 	
 	private String nombreCajero;
 	

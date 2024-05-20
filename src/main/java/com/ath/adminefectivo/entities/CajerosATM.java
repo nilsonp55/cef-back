@@ -32,7 +32,7 @@ public class CajerosATM {
 	private Integer codigoPunto;
 	
 	@Column(name = "CODIGO_ATM")
-	private Integer codigoATM;
+	private String codigoATM;
 	
 	@Column(name = "COD_BANCO_AVAL")
 	private Integer bancoAval;
