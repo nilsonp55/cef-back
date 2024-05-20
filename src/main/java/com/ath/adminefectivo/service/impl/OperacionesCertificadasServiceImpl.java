@@ -325,7 +325,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
       codigoServicio = SIN_CODIGO_SERVICIO;
     }
     procesarOperacionTransporte(fila, registro, elemento, codigoServicio, entradaSalida,
-        codigoPunto + nombrePunto, tipoServicio, null, consecutivoRegistro);
+        codigoPunto, nombrePunto, tipoServicio, null, consecutivoRegistro);
   }
 
   /**
@@ -367,9 +367,10 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
    * @author cesar.castano
    */
   private void procesarOperacionTransporte(String[] fila, RegistroTipo1ArchivosFondosDTO registro,
-      ArchivosCargados elemento, String codigoServicio, String entradaSalida, String codigoPropio,
-      String tipoServicio, String codigoOperacion, Long consecutivoRegistro) {
+      ArchivosCargados elemento, String codigoServicio, String entradaSalida, String codigoPunto, 
+      String nombrePunto, String tipoServicio, String codigoOperacion, Long consecutivoRegistro) {
 
+    String codigoPropio = codigoPunto + nombrePunto;
     OperacionesCertificadas certificadas;
     CodigoPuntoOrigenDestinoDTO codigoPuntoOrigenDestino;
     Integer longitud = 0;
@@ -424,10 +425,14 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
         operaciones.setMoneda(asignarMoneda(fila, Constantes.TIPO_MONEDA_BRINKS));
       }
 
+      operaciones.setCodigoPuntoCodigotdv(codigoPunto);
+      operaciones.setDescripcionPuntoCodigotdv(nombrePunto);
+      
       if (!operaciones.getValorTotal().equals(0.0)) {
         operacionesCertificadasRepository
             .save(OperacionesCertificadasDTO.CONVERTER_ENTITY.apply(operaciones));
       }
+      
     } else {
       if ((elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_ITVCS))
           || (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IATCS))
@@ -976,7 +981,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
           }
           
           procesarOperacionTransporte(fila, registro, elemento, codigoServicio, entradaSalida,
-              codigoPunto + nombrePunto, tipoServicio, codigoOperacion, consecutivoRegistro);
+              codigoPunto, nombrePunto, tipoServicio, codigoOperacion, consecutivoRegistro);
           break;
         }
         case 5: {
