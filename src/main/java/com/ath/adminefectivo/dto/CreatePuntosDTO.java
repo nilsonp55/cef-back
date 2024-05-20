@@ -55,7 +55,7 @@ public class CreatePuntosDTO {
 	private String nombreFondo;
 	
 	//Cajeros
-	private Integer codigoATM;
+	private String codigoATM;
 	
 	
 }
