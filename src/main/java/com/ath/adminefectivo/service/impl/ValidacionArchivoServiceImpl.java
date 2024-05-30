@@ -540,16 +540,9 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 		List<String> contenido = validacionLineasDTO.getContenido();
 		boolean errorCampo = false;
 		int minimo = 0;
-		
-		ErroresCamposDTO validacionEstructuraCampo = validarEstructuraLinea(contenido);
-		
-		if (!Objects.isNull(validacionEstructuraCampo)) {
-			erroresCampos.add(validacionEstructuraCampo);
-			errorCampo = true;
-		}
-		
+				
 		for (int i = 0; i < contenido.size() - minimo; i++) {
-			 validacionEstructuraCampo = validarEstructuraCampo(contenido.get(i), idMaestro, i + 1,
+		    ErroresCamposDTO validacionEstructuraCampo = validarEstructuraCampo(contenido.get(i), idMaestro, i + 1,
 					validacionLineasDTO.getTipo());
 			if (!Objects.isNull(validacionEstructuraCampo)) {
 				erroresCampos.add(validacionEstructuraCampo);
@@ -596,33 +589,6 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 		}
 
 		return erroresCampo;
-	}
-	
-	/**
-	 * Metodo encargado de realizar la validacion de la estructura por cantidad de campos
-	 * 
-	 * @param contenido
-	 * @param idMaestro
-	 * @return ErroresCamposDTO
-	 * @author johan.chaparro
-	 */
-	private ErroresCamposDTO validarEstructuraLinea(List<String> contenido) {
-
-		List<String> mensajesErrores = new ArrayList<>();
-		List<DetallesDefinicionArchivoDTO> detalle = this.getListaDetalleDefinicion();
-		boolean coinciden = detalle.size() == detalle.size();
-
-		if (!coinciden) {
-			mensajesErrores.add(Constantes.ERROR_DE_ESTRUCTURA);
-		}
-
-		if (!mensajesErrores.isEmpty()) {
-			var mensajeErroresTxt = String.join(Constantes.SEPARADOR_PUNTO_Y_COMA, mensajesErrores);
-			return ErroresCamposDTO.builder().nombreCampo(null).estado(Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO)
-					.contenido(null).mensajeError(mensajesErrores).mensajeErrorTxt(mensajeErroresTxt).build();
-		}
-
-		return null;
 	}
 
 	/**
