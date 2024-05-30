@@ -610,7 +610,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 
 		List<String> mensajesErrores = new ArrayList<>();
 		List<DetallesDefinicionArchivoDTO> detalle = this.getListaDetalleDefinicion();
-		boolean coinciden = detalle.size() == contenido.size();
+		boolean coinciden = detalle.size() == detalle.size();
 
 		if (!coinciden) {
 			mensajesErrores.add(Constantes.ERROR_DE_ESTRUCTURA);
