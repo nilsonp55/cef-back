@@ -26,6 +26,8 @@ public class SitiosClientesDTO {
 	
 	private String nombreSitio;
 	
+	private Boolean fajado;
+	
 	/**
 	 * Funcion que retorna la entidad recibiendo un DTO *
 	 */

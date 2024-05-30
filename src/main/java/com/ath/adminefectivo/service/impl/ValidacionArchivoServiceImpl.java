@@ -6,13 +6,10 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.DetallesDefinicionArchivoDTO;
@@ -30,7 +27,6 @@ import com.ath.adminefectivo.service.IMaestroDefinicionArchivoService;
 import com.ath.adminefectivo.service.IMotorReglasService;
 import com.ath.adminefectivo.service.IValidacionArchivoService;
 import com.ath.adminefectivo.utils.UtilsString;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -402,7 +398,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 					fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
 					break;
 				}
-                case "TH": {
+				case "TH", "VG": {
 					fecha = getString(nombreArchivo);
 					if(Objects.nonNull(fecha)) {
 						mascaraFecha = mascaraArchivo.substring(19, 27);

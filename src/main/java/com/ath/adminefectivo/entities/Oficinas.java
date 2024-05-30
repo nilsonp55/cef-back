@@ -41,7 +41,7 @@ public class Oficinas {
 	private Boolean fajado;
 	
 	@Column(name = "REFAJILLADO")
-	private Boolean refagillado;
+	private Boolean refajillado;
 	
 	@Column(name = "TARIFA_RUTEO")
 	private Double tarifaRuteo;
