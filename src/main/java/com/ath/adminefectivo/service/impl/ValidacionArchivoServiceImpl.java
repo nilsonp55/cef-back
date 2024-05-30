@@ -590,34 +590,6 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 
 		return erroresCampo;
 	}
-	
-	/**
-	 * Metodo encargado de realizar la validacion de la estructura por cantidad de campos
-	 * 
-	 * @param contenido
-	 * @param idMaestro
-	 * @return ErroresCamposDTO
-	 * @author johan.chaparro
-	 */
-	private ErroresCamposDTO validarEstructuraLinea(List<String> contenido) {
-
-		List<String> mensajesErrores = new ArrayList<>();
-		List<DetallesDefinicionArchivoDTO> detalle = this.getListaDetalleDefinicion();
-            
-		boolean coinciden = detalle.size() == contenido.size();
-
-		if (!coinciden) {
-			mensajesErrores.add(Constantes.ERROR_DE_ESTRUCTURA);
-		}
-
-		if (!mensajesErrores.isEmpty()) {
-			var mensajeErroresTxt = String.join(Constantes.SEPARADOR_PUNTO_Y_COMA, mensajesErrores);
-			return ErroresCamposDTO.builder().nombreCampo(null).estado(Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO)
-					.contenido(null).mensajeError(mensajesErrores).mensajeErrorTxt(mensajeErroresTxt).build();
-		}
-
-		return null;
-	}
 
 	/**
 	 * Método encargado de validar el detalle de un campo
