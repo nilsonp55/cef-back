@@ -39,7 +39,10 @@ public class EstadoConciliacionParametrosLiquidacion {
 	private String datosParametrosLiquidacionCostos;
 	
 	@Column(name = "DATOS_VALORES_LIQUIDADOS")
-	private Integer datosValoresLiquidados;
+	private String datosValoresLiquidados;
+	
+	@Column(name = "DATOS_DETALLES_LIQUIDACION_COSTO")
+	private String datosDetallesLiquidados;
 
 	@Column(name = "ESTADO")
 	private Integer estado;

@@ -1,5 +1,7 @@
 package com.ath.adminefectivo.dto.compuestos;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.function.Function;
 
@@ -27,24 +29,24 @@ public class OperacionesLiquidacionTransporteDTO {
 
 	@JsonProperty("consecutivo_registro")
 	private Integer consecutivoRegistro;
-	@JsonProperty("id_archivo_cargado")	
+	@JsonProperty("id_archivo_cargado") 
 	private Integer idArchivoCargado;
-	@JsonProperty("id_registro")	
+	@JsonProperty("id_registro") 
 	private Integer idRegistro;
 	@JsonProperty("id_liquidacion")
 	private Integer idLiquidacion;
 	@JsonProperty("tipo_trasaccion")
-	private Integer tipoTransaccion;	
+	private Integer tipoTransaccion; 
 	@JsonProperty("entidad")
 	private String entidad;
 	@JsonProperty("fecha_servicio_transporte")
-	private Date fechaServicioTransporte;
+	private LocalDateTime fechaServicioTransporte;
 	@JsonProperty("identificacion_cliente")
 	private String identificacionCliente;
 	@JsonProperty("razon_social")
 	private String razonSocial;
 	@JsonProperty("codigo_punto_cargo")
-	private Integer codigoPuntoCargo;
+	private String codigoPuntoCargo; //Integer
 	@JsonProperty("nombre_punto_cargo")
 	private String nombrePuntoCargo;
 	@JsonProperty("ciudad_fondo")
@@ -66,55 +68,55 @@ public class OperacionesLiquidacionTransporteDTO {
 	@JsonProperty("escala_tdv")
 	private String escalaTdv;
 	@JsonProperty("valor_transportado_billetes")
-	private Integer valorTransportadoBilletes;
+	private BigDecimal valorTransportadoBilletes;
 	@JsonProperty("valor_transportado_billetes_tdv")
-	private Integer valorTransportadoBilletesTdv;
+	private BigDecimal valorTransportadoBilletesTdv;
 	@JsonProperty("valor_transportado_monedas")
-	private Integer valorTransportadoMonedas;
+	private BigDecimal valorTransportadoMonedas;
 	@JsonProperty("valor_transportado_monedas_tdv")
-	private Integer valorTransportadoMonedasTdv;
+	private BigDecimal valorTransportadoMonedasTdv;
 	@JsonProperty("valor_total_transportado")
-	private Integer valorTotalTransportado;
+	private BigDecimal valorTotalTransportado;
 	@JsonProperty("valor_total_transportado_tdv")
-	private Integer valorTotalTransportadoTdv;
+	private BigDecimal valorTotalTransportadoTdv;
 	@JsonProperty("numero_bolsas")
-	private Integer numeroBolsas;
+	private BigDecimal numeroBolsas;
 	@JsonProperty("numero_bolsas_tdv")
-	private Integer numeroBolsasTdv;
+	private BigDecimal numeroBolsasTdv;
 	@JsonProperty("costo_fijo")
 	private Integer costoFijo;
 	@JsonProperty("costo_fijo_tdv")
 	private Integer costoFijoTdv;
 	@JsonProperty("costo_milaje")
-	private Integer costoMilaje;
+	private BigDecimal costoMilaje;
 	@JsonProperty("costo_milaje_tdv")
-	private Integer costoMilajeTdv;
+	private BigDecimal costoMilajeTdv;
 	@JsonProperty("costo_bolsa")
-	private Integer costoBolsa;
+	private BigDecimal costoBolsa;
 	@JsonProperty("costo_bolsa_tdv")
-	private Integer costoBolsaTdv;
+	private BigDecimal costoBolsaTdv;
 	@JsonProperty("costo_flete")
 	private Integer costoFlete;
 	@JsonProperty("costo_flete_tdv")
 	private Integer costoFleteTdv;
 	@JsonProperty("costo_emisario")
-	private Integer costoEmisario;	
+	private Integer costoEmisario; 
 	@JsonProperty("costo_emisario_tdv")
-	private Integer costoEmisarioTdv;	
+	private Integer costoEmisarioTdv; 
 	@JsonProperty("otros_1")
-	private Integer otros_1;	
+	private Integer otros1; 
 	@JsonProperty("otros_2")
-	private Integer otros_2;
+	private Integer otros2;
 	@JsonProperty("otros_3")
-	private Integer otros_3;
+	private Integer otros3;
 	@JsonProperty("otros_4")
-	private Integer otros_4;
+	private Integer otros4;
 	@JsonProperty("otros_5")
-	private Integer otros_5;	
-	private Integer subtotal;
-	private Integer iva;
+	private Integer otros5; 
+	private BigDecimal subtotal;
+	private BigDecimal iva;
 	@JsonProperty("valor_total")
-	private Integer valorTotal;
+	private BigDecimal valorTotal;
 	private String estado;
 	private String modulo;
 	
