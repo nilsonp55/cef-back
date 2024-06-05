@@ -26,11 +26,14 @@ public class EstadoConciliacionParametrosLiquidacionServiceImpl
 	 * @author hector.mercado
 	 */
 	public List<EstadoConciliacionParametrosLiquidacion> buscarLiquidacion(Long idLiquidacion, Integer estado) {
-		
 		return estadoConciliacionParametrosLiquidacionRepository.findByIdLiquidacionAndEstado(idLiquidacion, estado);
-	  
 	}
 
+
+	@Override
+	public EstadoConciliacionParametrosLiquidacion save(EstadoConciliacionParametrosLiquidacion registro) {
+		return estadoConciliacionParametrosLiquidacionRepository.save(registro);
+	}
 
 
 }

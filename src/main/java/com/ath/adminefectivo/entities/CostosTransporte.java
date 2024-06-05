@@ -180,5 +180,7 @@ public class CostosTransporte {
 	@Column(name = "TIPO_TRANSACCION")
 	private Integer tipoTransaccionTransporte;
 
+	@Column(name = "CODIGO_TDV")
+	private String codigoTdvTransportadora;
 
 }

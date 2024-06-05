@@ -12,6 +12,7 @@ import com.ath.adminefectivo.dto.ParametrosLiquidacionCostoDTO;
 import com.ath.adminefectivo.dto.compuestos.EstimadoClasificacionCostosDTO;
 import com.ath.adminefectivo.entities.ParametrosLiquidacionCosto;
 import com.ath.adminefectivo.entities.ValoresLiquidados;
+import com.ath.adminefectivo.repositories.IDetallesLiquidacionCostoRepository;
 import com.ath.adminefectivo.repositories.IParametrosLiquidacionCostosRepository;
 import com.ath.adminefectivo.repositories.IValoresLiquidadosFlatRepository;
 import com.ath.adminefectivo.repositories.IValoresLiquidadosRepository;
@@ -29,7 +30,9 @@ public class ParametrosLiquidacionCostosServiceImpl implements IParametrosLiquid
 	
 	@Autowired
 	IValoresLiquidadosFlatRepository valoresLiquidadosFlatRepository;
-	
+
+	@Autowired
+	IDetallesLiquidacionCostoRepository detallesLiquidacionCostoRepository;
 	
 
 	/**
@@ -69,10 +72,15 @@ public class ParametrosLiquidacionCostosServiceImpl implements IParametrosLiquid
 	public ParametrosLiquidacionCosto f2eliminarParametrosLiquidacionCostos(ParametrosLiquidacionCosto eliminar) {
 		
 		var valorLiq =  valoresLiquidadosFlatRepository.consultarPorIdLiquidacion(eliminar.getIdLiquidacion());
-		
 		if (Objects.nonNull(valorLiq))
 		{
 			valoresLiquidadosFlatRepository.delete(valorLiq);
+		}
+		
+		var detallesLiq =  detallesLiquidacionCostoRepository.consultarPorIdLiquidacion(eliminar.getIdLiquidacion());
+		if (Objects.nonNull(detallesLiq) && !detallesLiq.isEmpty())
+		{
+			detallesLiquidacionCostoRepository.deleteAll(detallesLiq);
 		}
 		
 		parametrosLiquidacionCostosRepository.delete(eliminar);

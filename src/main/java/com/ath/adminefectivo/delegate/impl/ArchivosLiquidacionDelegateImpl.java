@@ -129,11 +129,6 @@ public class ArchivosLiquidacionDelegateImpl implements IArchivosLiquidacionDele
 
 	    log.info("Archivos en directorio Pendientes de carga: url:{} - cantidad:{}", url, dtoResponseList.size());
 	    
-	    // Traza para nombres de archivos en S3 
-	    for (ArchivosLiquidacionDTO dto : dtoResponseList) {
-	        log.info("Nombre del archivo: {}", dto.getNombreArchivo());
-	    }
-	    
 	    List<String> cadenaMascara = obtenerCadenaMascara(maestrosDefinicion);
 	    String[][] estructuraMascara = procesarMascaras(cadenaMascara);
 	    List<String> cadenaTipos = getSegmentosCadena(cadenaMascara);
@@ -448,7 +443,13 @@ public class ArchivosLiquidacionDelegateImpl implements IArchivosLiquidacionDele
 			if (Objects.equals(this.validacionArchivo.getEstadoValidacion(), Dominios.ESTADO_VALIDACION_CORRECTO)) {
 				
 				//Persistir datos correctos en costos procesamiento y costos transporte
-				archivosLiquidacionService.persistirCostos(this.validacionArchivo);
+				archivosLiquidacionService.persistirCostos(this.validacionArchivo, archivoProcesar);
+				
+				//Actualizar el estado de archivo a estado EN_CONCILIACION
+				var actualizarArchivo = archivosCargadosService.consultarArchivoById(idArchivo);
+				actualizarArchivo.setEstadoCargue(Dominios.ESTADO_VALIDACION_EN_CONCILIACION);
+				archivosCargadosService.actualizarArchivosCargados(actualizarArchivo);
+				this.validacionArchivo.setEstadoValidacion(Dominios.ESTADO_VALIDACION_EN_CONCILIACION);
 				
 				/*Mover archivo a carpeta de procesados*/
 				String urlDestino = parametrosService.valorParametro(Parametros.RUTA_ARCHIVOS_PROCESADOS);
@@ -623,7 +624,7 @@ public class ArchivosLiquidacionDelegateImpl implements IArchivosLiquidacionDele
 	    return true;
 	}
 
-	private String procesarCampo(ProcesarCampoDTO dto) {
+private String procesarCampo(ProcesarCampoDTO dto) {
 		
 		ArchivosLiquidacionDTO archivosLiquidacionDTO = dto.getArchivosLiquidacionDTO();
 	    List<String> cadenaTrasportadoras = dto.getCadenaTrasportadoras();
