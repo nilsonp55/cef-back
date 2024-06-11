@@ -14,7 +14,7 @@ import com.ath.adminefectivo.entities.OperacionesLiquidacionTransporteEntity;
 public interface IOperacionesLiquidacionTransporte
 		extends CrudRepository<OperacionesLiquidacionTransporteEntity, Integer> {
 	@Transactional(readOnly = true)
-	@Query(value = "SELECT " + "* FROM " + "v_detalle_liquidacion_transporte  v"
+	@Query(value = "SELECT " + "* FROM " + "v_detalle_liquidacion_transporte v"
 			+ " WHERE (:entidad is null or v.entidad = cast(:entidad AS text))"
 			+ " AND (:identificacionCliente is null or v.identificacion_cliente = cast(:identificacionCliente AS text))"
 			+ " AND (:razonSocial is null or v.razon_social = cast(:razonSocial AS text))"
@@ -30,8 +30,8 @@ public interface IOperacionesLiquidacionTransporte
 	
 	Page<OperacionesLiquidacionTransporteEntity> conciliadasLiquidadasTransporte(
 			@Param("entidad") String entidad,
-			@Param("fechaServicioTransporte") LocalDateTime  fechaServicioTransporte,
-			@Param("fechaServicioTransporteFinal") LocalDateTime  fechaServicioTransporteFinal,
+			@Param("fechaServicioTransporte") LocalDateTime fechaServicioTransporte,
+			@Param("fechaServicioTransporteFinal") LocalDateTime fechaServicioTransporteFinal,
 			@Param("identificacionCliente") String identificacionCliente,
 			@Param("razonSocial") String razonSocial,
 			@Param("codigoPuntoCargo") String codigoPuntoCargo,
@@ -44,7 +44,7 @@ public interface IOperacionesLiquidacionTransporte
 			Pageable pageable);
 
 	@Transactional(readOnly = true)
-	@Query(value = "SELECT " + "* FROM " + "v_detalle_liquidacion_transporte  v"
+	@Query(value = "SELECT " + "* FROM " + "v_detalle_liquidacion_transporte v"
 			+ "	WHERE (:entidad is null or v.entidad = cast(:entidad AS text))"
 			+ " AND (:identificacionCliente is null or v.identificacion_cliente = cast(:identificacionCliente AS text))"
 			+ " AND (:razonSocial is null or v.razon_social = cast(:razonSocial AS text))"
@@ -59,8 +59,8 @@ public interface IOperacionesLiquidacionTransporte
 
 	Page<OperacionesLiquidacionTransporteEntity> registrosNoModuloTransporte(
 			@Param("entidad") String entidad,
-			@Param("fechaServicioTransporte") LocalDateTime  fechaServicioTransporte,
-			@Param("fechaServicioTransporteFinal") LocalDateTime  fechaServicioTransporteFinal,
+			@Param("fechaServicioTransporte") LocalDateTime fechaServicioTransporte,
+			@Param("fechaServicioTransporteFinal") LocalDateTime fechaServicioTransporteFinal,
 			@Param("identificacionCliente") String identificacionCliente,
 			@Param("razonSocial") String razonSocial,
 			@Param("codigoPuntoCargo") String codigoPuntoCargo,

@@ -80,7 +80,7 @@ public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService 
             ApiResponseCode.ERROR_VALORES_LIQUIDADOS_NO_ENCONTRADO.getHttpStatus());
       }
       valores.setParametrosLiquidacionCosto(parametrosLiquidacionCostosService
-          .getParametrosLiquidacionCostosById(costos.getIdLiquidacion()));
+          .getParametrosLiquidacionCostosById(costos.getIdLiquidacion()).orElse(null));
       valores.setCostoCharter(costos.getCostosCharter());
       valoresLiquidadosRepository.save(valores);
       estado = true;

@@ -352,7 +352,7 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 			)
 		{
 			var parametroLiquidacion = 
-				parametrosLiquidacionCostosService.getParametrosLiquidacionCostosById(idLiquidacion);
+				parametrosLiquidacionCostosService.getParametrosLiquidacionCostosById(idLiquidacion).orElse(null);
 			
 			if (Objects.nonNull(parametroLiquidacion))
 			{
@@ -439,13 +439,12 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 		var timestamp = new Timestamp(System.currentTimeMillis());
 		var costo = new CostosProcesamiento();
 		var parametroLiquidacion = 
-				parametrosLiquidacionCostosService.getParametrosLiquidacionCostosById(id);
-		
-		var banco = bancoService.findBancoByCodigoPunto(parametroLiquidacion.getCodigoBanco());
-		BigDecimal subTotal = BigDecimal.ZERO;
-		
+				parametrosLiquidacionCostosService.getParametrosLiquidacionCostosById(id).orElse(null);
+
 		if (Objects.nonNull(parametroLiquidacion))
 		{
+			var banco = bancoService.findBancoByCodigoPunto(parametroLiquidacion.getCodigoBanco());
+			BigDecimal subTotal = BigDecimal.ZERO;
 			costo.setEntidad(banco.getAbreviatura());
 			costo.setFactura("PROCESAMIENTO CLIENTES");
 			costo.setTipoRegistro("PROCESAMIENTO");
@@ -553,7 +552,7 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 	private void aceptarCostoProcesamientoIdentificadasConDiferencia(CostosProcesamiento costo, Long idLiquidacion)
 	{
 		var parametroLiquidacion = 
-				parametrosLiquidacionCostosService.getParametrosLiquidacionCostosById(idLiquidacion);
+				parametrosLiquidacionCostosService.getParametrosLiquidacionCostosById(idLiquidacion).orElse(null);
 	
 		if (Objects.nonNull(parametroLiquidacion)) 
 		{
