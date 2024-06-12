@@ -14,5 +14,15 @@ public interface IEstadoConciliacionParametrosLiquidacionService  {
 	 * @author hector.mercado
 	 */
 	List<EstadoConciliacionParametrosLiquidacion> buscarLiquidacion(Long idLiquidacion, Integer estado);
+	
+	
+	/**
+	 * Servicio encargado de guardar un EstadoConciliacionParametrosLiquidacion
+	 * 
+	 * @param EstadoConciliacionParametrosLiquidacion
+	 * @return EstadoConciliacionParametrosLiquidacion
+	 * @author hector.mercado
+	 */
+	EstadoConciliacionParametrosLiquidacion save(EstadoConciliacionParametrosLiquidacion registro);	
 
 }

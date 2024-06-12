@@ -18,6 +18,7 @@ import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
 
 import com.ath.adminefectivo.dto.compuestos.EstimadoClasificacionCostosDTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -127,6 +128,7 @@ public class ParametrosLiquidacionCosto {
 
 	@OneToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "ID_LIQUIDACION", referencedColumnName = "ID_LIQUIDACION")
+	@JsonIgnore
 	private ValoresLiquidados valoresLiquidados;
 
 	@Column(name = "fecha_concilia")

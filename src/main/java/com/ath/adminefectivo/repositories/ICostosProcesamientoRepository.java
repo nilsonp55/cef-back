@@ -9,7 +9,6 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import com.ath.adminefectivo.entities.CostosProcesamiento;
-import com.ath.adminefectivo.entities.CostosTransporte;
 
 public interface ICostosProcesamientoRepository extends JpaRepository<CostosProcesamiento, Long>,
 QuerydslPredicateExecutor<CostosProcesamiento>, PagingAndSortingRepository<CostosProcesamiento, Long> {
