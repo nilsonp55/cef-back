@@ -908,16 +908,16 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 	}
 
 	private void salvarValoresLiquidadosLiquidacionCostos(
-		ParametrosLiquidacionCosto LiquidacionCostoParametro, ValoresLiquidadosFlatEntity valoresLiquidadosFlagEntity){
+		ParametrosLiquidacionCosto liquidacionCostoParametro, ValoresLiquidadosFlatEntity valoresLiquidadosFlagEntity){
 			
 			try {
 				var objectMapper = new ObjectMapper();
-				var imgParametroLiqCostos = objectMapper.writeValueAsString(LiquidacionCostoParametro);
+				var imgParametroLiqCostos = objectMapper.writeValueAsString(liquidacionCostoParametro);
 				var imgparametroValLiquidados = objectMapper.writeValueAsString(valoresLiquidadosFlagEntity);
 
 				var estadoConciliacionParametrosLiquidacion = new EstadoConciliacionParametrosLiquidacion();
 
-				estadoConciliacionParametrosLiquidacion.setIdLiquidacion(LiquidacionCostoParametro.getIdLiquidacion());
+				estadoConciliacionParametrosLiquidacion.setIdLiquidacion(liquidacionCostoParametro.getIdLiquidacion());
 				estadoConciliacionParametrosLiquidacion.setDatosParametrosLiquidacionCostos(imgParametroLiqCostos);
 				estadoConciliacionParametrosLiquidacion.setDatosValoresLiquidados(imgparametroValLiquidados);
 				estadoConciliacionParametrosLiquidacion.setEstado(2);
