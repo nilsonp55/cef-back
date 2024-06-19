@@ -45,7 +45,7 @@ public interface IOperacionesLiquidacionTransporte
 
 	@Transactional(readOnly = true)
 	@Query(value = "SELECT " + "* FROM " + "v_detalle_liquidacion_transporte v"
-			+ "	WHERE (:entidad is null or v.entidad = cast(:entidad AS text))"
+			+ " WHERE (:entidad is null or v.entidad = cast(:entidad AS text))"
 			+ " AND (:identificacionCliente is null or v.identificacion_cliente = cast(:identificacionCliente AS text))"
 			+ " AND (:razonSocial is null or v.razon_social = cast(:razonSocial AS text))"
 			+ " AND (:codigoPuntoCargo is null or v.codigo_punto_cargo = cast(:codigoPuntoCargo AS text))"
