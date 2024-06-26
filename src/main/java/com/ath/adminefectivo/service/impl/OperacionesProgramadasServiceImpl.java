@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.ArchivosCargadosDTO;
@@ -46,6 +48,7 @@ import com.ath.adminefectivo.service.ICiudadesService;
 import com.ath.adminefectivo.service.IClientesCorporativosService;
 import com.ath.adminefectivo.service.IDetalleDefinicionArchivoService;
 import com.ath.adminefectivo.service.IDominioService;
+import com.ath.adminefectivo.service.IFestivosNacionalesService;
 import com.ath.adminefectivo.service.IFondosService;
 import com.ath.adminefectivo.service.ILecturaArchivoService;
 import com.ath.adminefectivo.service.ILogProcesoDiarioService;
@@ -58,6 +61,7 @@ import com.ath.adminefectivo.service.IRegistrosCargadosService;
 import com.ath.adminefectivo.service.ITransportadorasService;
 import com.ath.adminefectivo.utils.UtilsString;
 import com.querydsl.core.types.Predicate;
+
 import lombok.extern.log4j.Log4j2;
 
 @Service
@@ -117,6 +121,9 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
   @Autowired
   ICiudadesRepository ciudadesRepository;
+  
+  @Autowired
+  IFestivosNacionalesService festivosNacionalesService;
 
   private IDominioService dominioService;
   private OperacionesProgramadasDTO operaciones;
@@ -1288,13 +1295,18 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
     }
     Long valorEntra = Long.parseLong(shipIn);
     Long valorSale = Long.parseLong(shipOut);
+    if(valorEntra > 0 && valorSale > 0) {
+      log.info("orderId: {} - shipIn: {} - shipOut: {}", orderId, valorEntra, valorSale);
+    }
 
     if (valorEntra > 0) {
+      log.debug("shipIn: {} - orderId: {}", shipIn, orderId);
       crearSumarRegistroOficina(orderId, archivo.getIdArchivo().intValue(), S_SALIDA, valorEntra,
           contenido, detalleArchivo);
     }
 
     if (valorSale > 0) {
+      log.debug("shipOut: {} - orderId: {}", shipOut, orderId);
       crearSumarRegistroOficina(orderId, archivo.getIdArchivo().intValue(), S_ENTRADA, valorSale,
           contenido, detalleArchivo);
     }
@@ -1329,9 +1341,9 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
         operaciones.setEntradaSalida(entraSale);
         operaciones.setCodigoPuntoOrigen(
-            determinarPuntoOrigen(contenido, detalleArchivo, transportadora, ciudad));
+            determinarPuntoOrigen(contenido, detalleArchivo, transportadora, ciudad, entraSale));
         operaciones.setCodigoPuntoDestino(
-            determinarPuntoDestino(contenido, detalleArchivo, transportadora, ciudad));
+            determinarPuntoDestino(contenido, detalleArchivo, transportadora, ciudad, entraSale));
         operaciones.setEstadoConciliacion(dominioService.valorTextoDominio(
             Constantes.DOMINIO_ESTADO_CONCILIACION, Dominios.ESTADO_CONCILIACION_NO_CONCILIADO));
         operaciones.setEstadoOperacion(determinarEstadoOperacion(contenido, detalleArchivo));
@@ -1347,12 +1359,13 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
         operaciones.setIdNegociacion(null);
         operaciones.getIdOperacionRelac();
         operaciones.setTasaNegociacion(null);
-        operaciones.setTipoOperacion(asignarTipoOperacion(contenido, detalleArchivo));
+        operaciones.setTipoOperacion(asignarTipoOperacion(entraSale));
         if (operaciones.getFechaProgramacion().before(fechaDestino)) {
           operaciones.setTipoServicio(dominioService.valorTextoDominio(
               Constantes.DOMINIO_TIPO_SERVICIO, Dominios.TIPO_SERVICIO_PROGRAMADA));
         } else {
-          operaciones.setTipoServicio(determinarTipoServicio(contenido, detalleArchivo));
+          operaciones.setTipoServicio(dominioService.valorTextoDominio(
+              Constantes.DOMINIO_TIPO_SERVICIO, Dominios.TIPO_SERVICIO_ESPECIAL));
         }
         operaciones.setTipoTransporte(null);
         operaciones.setUsuarioCreacion(USER1);
@@ -1360,7 +1373,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
         operaciones.setValorTotal(valor.doubleValue());
         operaciones.setIdServicio(orderId);
         operaciones.setEsCambio(false);
-        operaciones = crearDetalleOperacionesProgramadas(contenido, detalleArchivo);
+        operaciones = crearDetalleOperacionesProgramadas(contenido, detalleArchivo, valor.doubleValue());
         OperacionesProgramadas op = OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(operaciones);
 
         var operacionesP = operacionesProgramadasRepository
@@ -1375,7 +1388,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
     } else if (valor != 0) {
       operaciones = OperacionesProgramadasDTO.CONVERTER_DTO.apply(operacionesProg);
       operaciones.setValorTotal(operaciones.getValorTotal() + valor);
-      operaciones = crearDetalleOperacionesProgramadas(contenido, detalleArchivo);
+      operaciones = crearDetalleOperacionesProgramadas(contenido, detalleArchivo, valor.doubleValue());
 
       OperacionesProgramadas op = OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(operaciones);
 
@@ -1420,15 +1433,15 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
    * @author cesar.castano
    */
   private Integer determinarPuntoOrigen(String[] contenido,
-      List<DetallesDefinicionArchivoDTO> detalleArchivo, String transportadora, String ciudad) {
+      List<DetallesDefinicionArchivoDTO> detalleArchivo, String transportadora, String ciudad, String entradaSalida) {
     Integer codigo = 0;
-    if (this.asignarEntradaSalida(asignarTipoOperacion(contenido, detalleArchivo))
-        .equals(Constantes.VALOR_SALIDA)) {
+    if (entradaSalida.equals(Constantes.VALOR_SALIDA)) {
       return fondosService.getCodigoFondo(transportadora,
           determinarCodigoCompensacion(contenido, detalleArchivo), ciudad).getCodigoPunto();
+    } else {
+      codigo = asignarClienteOficina(contenido, detalleArchivo);
+      return codigo;
     }
-    codigo = asignarClienteOficina(contenido, detalleArchivo);
-    return codigo;
   }
 
   /**
@@ -1439,15 +1452,16 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
    * @author cesar.castano
    */
   private Integer determinarPuntoDestino(String[] contenido,
-      List<DetallesDefinicionArchivoDTO> detalleArchivo, String transportadora, String ciudad) {
+      List<DetallesDefinicionArchivoDTO> detalleArchivo, String transportadora, String ciudad, String entradaSalida) {
     Integer codigo = 0;
-    if (!this.asignarEntradaSalida(asignarTipoOperacion(contenido, detalleArchivo))
-        .equals(Constantes.VALOR_SALIDA)) {
+    if (entradaSalida.equals(Constantes.VALOR_ENTRADA)) {
       return fondosService.getCodigoFondo(transportadora,
           determinarCodigoCompensacion(contenido, detalleArchivo), ciudad).getCodigoPunto();
+    } else {
+      codigo = asignarClienteOficina(contenido, detalleArchivo);
+      return codigo;
     }
-    codigo = asignarClienteOficina(contenido, detalleArchivo);
-    return codigo;
+    
   }
 
   /**
@@ -1501,42 +1515,6 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
   }
 
   /**
-   * Metodo encargado de asignar el valor del detalle
-   * 
-   * @param fila
-   * @return Integer
-   * @author cesar.castano
-   */
-  private Double asignarValorTotal(String shipIn, String shipOut) {
-    Double valorTotal = 0.0;
-    if (!shipIn.equals("0")) {
-      valorTotal = Double.parseDouble(shipIn);
-    } else if (!shipOut.equals("0")) {
-      valorTotal = Double.parseDouble(shipOut);
-    }
-    return valorTotal;
-  }
-
-  /**
-   * Metodo encargado de asignar la entrada o la salida de la operacion
-   * 
-   * @param tipoOperacion
-   * @return String
-   * @author cesar.castano
-   */
-  private String asignarEntradaSalida(String tipoOperacion) {
-    var entradaSalida = " ";
-    if (tipoOperacion.equals(dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_OPERACION,
-        Dominios.TIPO_OPERA_PROVISION))) {
-      entradaSalida = Constantes.VALOR_SALIDA;
-    } else if (tipoOperacion.equals(dominioService
-        .valorTextoDominio(Constantes.DOMINIO_TIPO_OPERACION, Dominios.TIPO_OPERA_RECOLECCION))) {
-      entradaSalida = Constantes.VALOR_ENTRADA;
-    }
-    return entradaSalida;
-  }
-
-  /**
    * Metodo encargado de asignar la fecha
    * 
    * @param fila
@@ -1553,20 +1531,6 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
       e.getMessage();
     }
     return fecha;
-  }
-
-  /**
-   * Metodo encargado de asignar la fecha
-   * 
-   * @param fila
-   * @return Date
-   * @author cesar.castano
-   */
-  private Date asignarFechaHora(String contenido) {
-    List<String> listadoFechas =
-        dominioService.consultaListValoresPorDominio(Constantes.DOMINIO_FORMATO_FECHA_HORA);
-    return UtilsString.toDateWithHours(contenido, listadoFechas);
-
   }
 
   /**
@@ -1614,15 +1578,12 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
    * @return String
    * @author cesar.castano
    */
-  private String asignarTipoOperacion(String[] contenido,
-      List<DetallesDefinicionArchivoDTO> detalleArchivo) {
+  private String asignarTipoOperacion(String entraSale) {
     var tipoOperacion = "";
-    String shipIn = determinarShipIn(contenido, detalleArchivo);
-    String shipOut = determinarShipOut(contenido, detalleArchivo);
-    if (!shipIn.equals("0")) {
+    if (entraSale.equals(Constantes.VALOR_SALIDA)) {
       tipoOperacion = dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_OPERACION,
           Dominios.TIPO_OPERA_PROVISION);
-    } else if (!shipOut.equals("0")) {
+    } else if (entraSale.equals(Constantes.VALOR_ENTRADA)) {
       tipoOperacion = dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_OPERACION,
           Dominios.TIPO_OPERA_RECOLECCION);
     }
@@ -1639,10 +1600,8 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
    * @author cesar.castano
    */
   private OperacionesProgramadasDTO crearDetalleOperacionesProgramadas(String[] contenido,
-      List<DetallesDefinicionArchivoDTO> detalleArchivo) {
+      List<DetallesDefinicionArchivoDTO> detalleArchivo, Double valorTotal) {
 
-    String shipIn = determinarShipIn(contenido, detalleArchivo);
-    String shipOut = determinarShipOut(contenido, detalleArchivo);
     String[] fila1 = contenido[detalleArchivo.stream()
         .filter(deta -> deta.getNombreCampo().toUpperCase().trim()
             .equals(Constantes.CAMPO_DETALLE_ARCHIVO_DENOMINACION))
@@ -1655,7 +1614,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
     }
     detalleOperacionesDTO.setCalidad(null);
     detalleOperacionesDTO.setDenominacion(fila1[0].trim());
-    detalleOperacionesDTO.setValorDetalle(this.asignarValorTotal(shipIn, shipOut));
+    detalleOperacionesDTO.setValorDetalle(valorTotal);
     detalleOperacionesDTO.setFechaCreacion(new Date());
     detalleOperacionesDTO.setFechaModificacion(new Date());
     detalleOperacionesDTO.setUsuarioCreacion("User ATH");
@@ -1683,29 +1642,6 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
     calendar.setTime(fecha); // Configuramos la fecha que se recibe
     calendar.add(Calendar.DAY_OF_YEAR, dias); // numero de días a añadir, o restar en caso de días<0
     return calendar.getTime(); // Devuelve el objeto Date con los nuevos días añadidos
-  }
-
-  /**
-   * Metodo encargado de asignar el tipo de Servicio
-   * 
-   * @param fila
-   * @return String
-   * @author cesar.castano
-   */
-  private String asignarTipoServicio(String fila) {
-    Date fecha = null;
-    var tipoServicio = "";
-    fecha = asignarFechaHora(fila);
-    Date fechaDiaAnterior = this.sumarRestarDiasFecha(fecha, -1);
-    if (Integer.parseInt(fechaDiaAnterior.toString().substring(12,
-        13)) <= Constantes.HORA_TIPO_SERVICIO_PROGRAMADA) {
-      tipoServicio = dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_SERVICIO,
-          Dominios.TIPO_SERVICIO_PROGRAMADA);
-    } else {
-      tipoServicio = dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_SERVICIO,
-          Dominios.TIPO_SERVICIO_ESPECIAL);
-    }
-    return tipoServicio;
   }
 
   /**
@@ -1906,22 +1842,6 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
   private Date determinarFechaProgramacion(String[] contenido,
       List<DetallesDefinicionArchivoDTO> detalleArchivo) {
     return asignarFecha(contenido[detalleArchivo.stream()
-        .filter(deta -> deta.getNombreCampo().toUpperCase().trim()
-            .equals(Constantes.CAMPO_DETALLE_ARCHIVO_FECHA_APROBACION))
-        .findFirst().orElse(null).getId().getNumeroCampo() - 1].trim());
-  }
-
-  /**
-   * Metodo utilizado para determinar el campo Tipo Servicio
-   * 
-   * @param contenido
-   * @param detalleArchivo
-   * @return String
-   * @author cesar.castano
-   */
-  private String determinarTipoServicio(String[] contenido,
-      List<DetallesDefinicionArchivoDTO> detalleArchivo) {
-    return asignarTipoServicio(contenido[detalleArchivo.stream()
         .filter(deta -> deta.getNombreCampo().toUpperCase().trim()
             .equals(Constantes.CAMPO_DETALLE_ARCHIVO_FECHA_APROBACION))
         .findFirst().orElse(null).getId().getNumeroCampo() - 1].trim());

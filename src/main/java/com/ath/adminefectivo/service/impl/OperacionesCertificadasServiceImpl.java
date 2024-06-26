@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -379,7 +380,8 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
     certificadas = codigoPuntoOrigenDestino.getCertificadas();
     if ((elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_ITVCS))
         || (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IATCS))
-        || (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IPRCS))) {
+        || (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IPRCS))
+        || (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IVGLS))) {
       longitud = fila.length;
     } else {
       longitud = fila.length - 1;
@@ -413,7 +415,8 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
       operaciones.setCodigoOperacion(codigoOperacion);
       if ((elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_ITVCS))
           || (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IATCS))
-          || (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IPRCS))) {
+          || (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IPRCS))
+          || (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IVGLS))) {
         operaciones.setValorTotal(
             asignarValorTotal(fila, Constantes.INICIA_DENOMINACION_OTROS_FONDOS, longitud));
         operaciones.setMoneda(Constantes.MONEDA_COP);
@@ -435,7 +438,8 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
     } else {
       if ((elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_ITVCS))
           || (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IATCS))
-          || (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IPRCS))) {
+          || (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IPRCS))
+          || (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IVGLS))) {
         certificadas.setValorTotal(certificadas.getValorTotal()
             + asignarValorTotal(fila, Constantes.INICIA_DENOMINACION_OTROS_FONDOS, longitud));
       } else {
@@ -974,6 +978,11 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
           if (Objects.isNull(codigoServicio) || codigoServicio.trim().isEmpty()) {
             codigoServicio = SIN_CODIGO_SERVICIO;
           }
+          
+          if(StringUtils.isEmpty(tipoServicio)) {
+            tipoServicio = Constantes.VALOR_DOMINIO_TIPO_SERVICIO_PROGRAMADA;
+          }
+          
           procesarOperacionTransporte(fila, registro, elemento, codigoServicio, entradaSalida,
               codigoPunto, nombrePunto, tipoServicio, codigoOperacion, consecutivoRegistro);
           break;

@@ -85,13 +85,16 @@ public class LecturaArchivoServiceImpl implements ILecturaArchivoService {
 						resultadoValidado.add(linea);
 					}}
 					);
+					
+					csvReader.close();
+					
 					return resultadoValidado;
+					
 			} catch (Exception e) {
 				throw new NegocioException(ApiResponseCode.ERROR_LECTURA_DOCUMENTO.getCode(),
 						ApiResponseCode.ERROR_LECTURA_DOCUMENTO.getDescription(),
 						ApiResponseCode.ERROR_LECTURA_DOCUMENTO.getHttpStatus());
 			}
-			
 			
 		}else {
 			return encriptarService.desencriptarArchivoPorAlgoritmo(algoritmoEncriptado, archivo,delimitador );

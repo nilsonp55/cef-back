@@ -14,6 +14,7 @@ public final class Constantes {
 	public static final String ZONE_ID = "America/Bogota";
 	public static final String TIMEZONE = "EST";
 	public static final String FECHA_PATTERN = "dd-MM-yyyy";
+	public static final String FECHA_PATTERN_NO_GUION = "ddMMyyyy";
 	public static final String FECHA_HORA_PATTERN = "dd-MM-yyyy hh:mm:ss a";
 	public static final String FORMATO_FECHA_ARCHIVOS = "ddMMyyyyhhmmss";
 	public static final String ESTADO_MAESTRO_DEFINICION_ACTIVO = "ACTIVO";
@@ -62,6 +63,7 @@ public final class Constantes {
 
 	public static final String ESTADO_CARGUE_PENDIENTE = "PEND";
 	public static final String ESTADO_CARGUE_ERROR = "ERRADO";
+	public static final String ESTADO_CARGUE_ELIMINADO = "ELIMINADO";
 	public static final String ESTADO_CARGUE_VALIDO = "OK";
 	public static final String ESTADO_ARCHIVO_HISTORICO = "HIS";
 	
@@ -287,6 +289,11 @@ public final class Constantes {
 	public static final String EXPRESION_REGULAR_PUNTO = "\\.";
 
 	public static final String REGEX_PUNTO = "\\.";
+
+	/**
+	 * Expresión regular formato para extraer información de la mascara
+	 */
+	public static final String REGEX_EXTRAER_MASCARA = "\\[(.*?)\\]";
 	
 	/**
 	 * Expresión regular formato valido de horas en formato am/pm 
@@ -337,6 +344,11 @@ public final class Constantes {
 	  *  La Estructura no es validada.
 	 */
 	public static final String ESTRUCTURA_OK = "OK";
+	
+	/**
+	  *  La Estructura no es validada.
+	 */
+	public static final String ERROR_DE_ESTRUCTURA = "El delimitador no es válido o la cantidad de campos no coincide con la estructura esperada";
 	
 	/**
 	 * Constante de control y cierre de procesos, para evitar ciclos infinitos
@@ -666,7 +678,7 @@ public static final String DELETE_SEPARADORES = "";
 	 * Mensaje de campo no valido 
 	 */
 	public static final String CAMPO_NO_VALIDO ="El tipo campo no es válido";
-	
+		
 	/**
 	 * 
 	 */
@@ -699,4 +711,34 @@ public static final String DELETE_SEPARADORES = "";
 	public static final String MIN_DENOM_COP = "MIN_DENOM_COP";
 	public static final Integer BANCO_BOGOTA = 297;
 	public static final String MONEDA_COP = "COP";
+	
+	
+	/**
+	 * Constantes de ArchivosLiquidacion.
+	 */
+	public static final String LIQUIDACION_INDICATIVO = "LIQ_";
+	public static final String LIQUIDACION_AGRUPADOR = "LIQCO";
+	public static final String MAESTRO_ARCHIVO_TRANSPORTE = "LIQTP";
+	public static final String MAESTRO_ARCHIVO_PROCESAMIENTO = "LIQPR";
+	public static final Integer NUMERO_MAXIMO_ITEMS_S3 = 100;
+	public static final Integer TIPO_REGISTROS_ELIMINADOS = 1;
+	public static final char DECIMAL_SEPARATOR = '.';
+	public static final String USUARIO_PROCESA_ARCHIVO = "ATH";
+	public static final String CAMPO_OBSERVACION_ERRORES = "OBSERVACION";
+	
+	/**
+	 * Constantes de Operaciones Liquidacion
+	 */
+	public static final String OPERACIONES_LIQUIDACION_CONCILIADAS = "CONCILIADAS";
+	public static final String OPERACIONES_LIQUIDACION_IDENTIFICADAS_CON_DIFERENCIAS = "IDENTIFICADAS_CON_DIFERENCIAS";
+	public static final String OPERACIONES_LIQUIDACION_LIQUIDADAS_NO_COBRADAS = "LIQUIDADAS_NO_COBRADAS";
+	public static final String OPERACIONES_LIQUIDACION_REMITIDAS_NO_IDENTIFICADAS = "REMITIDAS_NO_IDENTIFICADAS";
+	
+	public static final String ESTADO_CONCILIACION_MANUAL = "MANUAL";
+	public static final String ESTADO_CONCILIACION_RECHAZADA = "RECHAZADA";
+	
+	public static final String VALOR_DOMINIO_TIPO_SERVICIO_PROGRAMADA = "P";
+	
+	public static final String ERROR_GENERAL = "ERROR";
+	public static final String REGISTRO_NO_ENCONTRADO = "Registro no encontrado";
 }

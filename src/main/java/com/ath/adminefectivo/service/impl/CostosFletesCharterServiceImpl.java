@@ -3,8 +3,10 @@ package com.ath.adminefectivo.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.ParametrosLiquidacionCostoDTO;
@@ -39,38 +41,39 @@ public class CostosFletesCharterServiceImpl implements ICostosFleteCharterServic
   @Autowired
   IDominioService dominioService;
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public List<ParametrosLiquidacionCostoDTO> consultarCostosFleteCharter(Date fechaInicial,
-      Date fechaFinal) {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<ParametrosLiquidacionCostoDTO> consultarCostosFleteCharter(Date fechaInicial, Date fechaFinal) {
 
-    String escalaCharter =
-        dominioService.valorTextoDominio(Constantes.DOMINIO_ESCALAS, Dominios.ESCALA_AEREO_CHARTER);
-    String escalaComercial = dominioService.valorTextoDominio(Constantes.DOMINIO_ESCALAS,
-        Dominios.ESCALA_AEREO_COMERCIAL);
+		String escalaCharter = dominioService.valorTextoDominio(Constantes.DOMINIO_ESCALAS,
+				Dominios.ESCALA_AEREO_CHARTER);
+		String escalaComercial = dominioService.valorTextoDominio(Constantes.DOMINIO_ESCALAS,
+				Dominios.ESCALA_AEREO_COMERCIAL);
 
-    List<ParametrosLiquidacionCostoDTO> listCostosCharter = new ArrayList<>();
+		List<ParametrosLiquidacionCostoDTO> listCostosCharter = new ArrayList<>();
 
-    List<ParametrosLiquidacionCosto> costoCharter = costosFletesCharterRepository
-        .findByEscalaAndFechaEjecucionBetween(escalaCharter, fechaInicial, fechaFinal);
+		List<ParametrosLiquidacionCosto> costoCharter = costosFletesCharterRepository
+				.findByEscalaAndFechaEjecucionBetween(escalaCharter, fechaInicial, fechaFinal);
 
-    costoCharter.addAll(costosFletesCharterRepository
-        .findByEscalaAndFechaEjecucionBetween(escalaComercial, fechaInicial, fechaFinal));
+		costoCharter.addAll(costosFletesCharterRepository.findByEscalaAndFechaEjecucionBetween(escalaComercial,
+				fechaInicial, fechaFinal));
 
-    for (ParametrosLiquidacionCosto parametros : costoCharter) {
-      ParametrosLiquidacionCostoDTO parametrosDTO =
-          ParametrosLiquidacionCostoDTO.CONVERTER_DTO.apply(parametros);
-      parametrosDTO.setNombreBanco(bancosService.getAbreviatura(parametros.getCodigoBanco()));
-      parametrosDTO
-          .setNombreTdv(transportadorasService.getNombreTransportadora(parametros.getCodigoTdv()));
-      parametrosDTO.setNombreFondo(puntosService.getNombrePunto(parametros.getPuntoOrigen()));
-      parametrosDTO.setNombrePunto(puntosService.getNombrePunto(parametros.getPuntoDestino()));
-      listCostosCharter.add(parametrosDTO);
-    }
-    return listCostosCharter;
-  }
+		for (ParametrosLiquidacionCosto parametros : costoCharter) {
+			ParametrosLiquidacionCostoDTO parametrosDTO = ParametrosLiquidacionCostoDTO.CONVERTER_DTO.apply(parametros);
+
+			parametrosDTO.setNombreBanco(bancosService.getAbreviatura(parametros.getCodigoBanco()));
+			parametrosDTO.setNombreTdv(transportadorasService.getNombreTransportadora(parametros.getCodigoTdv()));
+			parametrosDTO.setNombreFondo(puntosService.getNombrePunto(parametros.getPuntoOrigen()));
+			parametrosDTO.setNombrePunto(puntosService.getNombrePunto(parametros.getPuntoDestino()));
+			parametrosDTO.setValoresLiquidadosDTO(
+					valoresLiquidadosService.consultarValoresLiquidadosPorIdLiquidacion(parametros.getIdLiquidacion()));
+
+			listCostosCharter.add(parametrosDTO);
+		}
+		return listCostosCharter;
+	}
 
   /**
    * {@inheritDoc}

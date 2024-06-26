@@ -18,7 +18,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -94,6 +93,9 @@ public class ArchivosCargados {
 
 	@Column(name = "USUARIO_MODIFICACION")
 	private String usuarioModificacion;
+	
+	@Column(name = "OBSERVACION")
+	private String observacion;
 	
 	@Temporal(TemporalType.DATE)
 	@Column(name = "FECHA_MODIFICACION")

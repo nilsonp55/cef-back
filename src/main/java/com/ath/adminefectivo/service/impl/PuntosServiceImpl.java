@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.dto.PuntosDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
@@ -34,6 +36,7 @@ import com.ath.adminefectivo.repositories.ISitiosClientesRepository;
 import com.ath.adminefectivo.service.IPuntosService;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
+
 import lombok.extern.log4j.Log4j2;
 
 @Service
@@ -314,18 +317,15 @@ public class PuntosServiceImpl implements IPuntosService {
   @Override
   public Puntos validarPuntoActualizar(Integer codigoPunto, String tipoPunto) {
 
-    var punto = puntosRepository.getById(codigoPunto);
-    if (!Objects.nonNull(punto)) {
+    Optional<Puntos> punto =
+        Optional.ofNullable(puntosRepository.findByCodigoPuntoAndTipoPunto(codigoPunto, tipoPunto));
+    if (punto.isEmpty()) {
       throw new NegocioException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
           ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription(),
           ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
     }
-    if (!punto.getTipoPunto().equals(tipoPunto)) {
-      throw new NegocioException(ApiResponseCode.ERROR_TIPO_PUNTO_DIFERENTE.getCode(),
-          ApiResponseCode.ERROR_TIPO_PUNTO_DIFERENTE.getDescription(),
-          ApiResponseCode.ERROR_TIPO_PUNTO_DIFERENTE.getHttpStatus());
-    }
-    return punto;
+
+    return punto.get();
   }
 
   @Override

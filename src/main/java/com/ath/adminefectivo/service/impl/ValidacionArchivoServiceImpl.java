@@ -6,12 +6,10 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.DetallesDefinicionArchivoDTO;
@@ -24,10 +22,11 @@ import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.service.IDetalleDefinicionArchivoService;
 import com.ath.adminefectivo.service.IDominioService;
+import com.ath.adminefectivo.service.ILecturaArchivoService;
+import com.ath.adminefectivo.service.IMaestroDefinicionArchivoService;
 import com.ath.adminefectivo.service.IMotorReglasService;
 import com.ath.adminefectivo.service.IValidacionArchivoService;
 import com.ath.adminefectivo.utils.UtilsString;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -50,6 +49,12 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 
 	@Autowired
 	IMotorReglasService motorReglasService;
+	
+	@Autowired
+	ILecturaArchivoService lecturaArchivoService;
+	
+	@Autowired
+    IMaestroDefinicionArchivoService maestroDefinicionArchivoService;
 
 	private List<DetallesDefinicionArchivoDTO> listaDetalleDefinicion;
 
@@ -66,7 +71,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 	public ValidacionArchivoDTO validar(MaestrosDefinicionArchivoDTO maestroDefinicion, List<String[]> contenido,
 			ValidacionArchivoDTO validacionArchivo) {
 		validacionArchivo.setEstadoValidacion(Dominios.ESTADO_VALIDACION_CORRECTO);
-		List<ValidacionLineasDTO> respuesta = cargueDataInicial(maestroDefinicion, contenido);
+		List<ValidacionLineasDTO> respuesta = cargueDataInicial(maestroDefinicion, contenido);		
 		validacionArchivo = validarEstructura(maestroDefinicion, contenido, validacionArchivo, respuesta);
 		if (validacionArchivo.getEstadoValidacion().equals(Dominios.ESTADO_VALIDACION_CORRECTO)) {
 			validarContenido(maestroDefinicion, validacionArchivo);
@@ -103,6 +108,8 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 		}
 		return validacionArchivo;
 	}
+
+
 
 	/**
 	 * Metodo encargado de realizar la validacion de cada columna de la linea
@@ -160,6 +167,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 		}
 		return null;
 	}
+	
 
 	/**
 	 * metodo encargado de realizar las acciones previas a validar estructura y
@@ -253,7 +261,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 				}
 				break;
 			}
-			case "TH": {
+			case "TH", "VG": {
 				fecha = getString(nombreArchivo);
 				mascaraFecha = maestroDefinicion.getMascaraArch().substring(19, 27);
 				formatoFecha = new ArrayList<>();
@@ -390,7 +398,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 					fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
 					break;
 				}
-                case "TH": {
+				case "TH", "VG": {
 					fecha = getString(nombreArchivo);
 					if(Objects.nonNull(fecha)) {
 						mascaraFecha = mascaraArchivo.substring(19, 27);
@@ -438,6 +446,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 	
 		return fechaArchivo;
 	}
+	
 
 	/**
 	 * Metodo encargado de validar si el maestro tiene cabecera y control final
@@ -531,8 +540,9 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 		List<String> contenido = validacionLineasDTO.getContenido();
 		boolean errorCampo = false;
 		int minimo = 0;
+				
 		for (int i = 0; i < contenido.size() - minimo; i++) {
-			ErroresCamposDTO validacionEstructuraCampo = validarEstructuraCampo(contenido.get(i), idMaestro, i + 1,
+		    ErroresCamposDTO validacionEstructuraCampo = validarEstructuraCampo(contenido.get(i), idMaestro, i + 1,
 					validacionLineasDTO.getTipo());
 			if (!Objects.isNull(validacionEstructuraCampo)) {
 				erroresCampos.add(validacionEstructuraCampo);

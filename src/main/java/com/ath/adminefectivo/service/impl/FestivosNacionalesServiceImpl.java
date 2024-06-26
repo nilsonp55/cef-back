@@ -1,5 +1,7 @@
 package com.ath.adminefectivo.service.impl;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -7,7 +9,9 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
@@ -110,17 +114,25 @@ public class FestivosNacionalesServiceImpl implements IFestivosNacionalesService
 	
 	/**
 	 * {@inheritDoc}
+	 * @throws ParseException 
 	 */
 	@Override
-	public boolean eliminarFestivosNacionales(Date idFestivoNacional) {
+	public void eliminarFestivosNacionales(String idFestivoNacional) {
+		Date fechaDelete;
+
 		try {
-			festivosNacionalesRepository.deleteById(idFestivoNacional);
-			return true;
-		} catch (Exception e) {
-			return false;
+			fechaDelete = new SimpleDateFormat("yyyy-MM-dd").parse(idFestivoNacional);
+		} catch (ParseException e) {
+			throw new AplicationException(Constantes.ERROR_GENERAL, e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
+
+		festivosNacionalesRepository.findById(fechaDelete)
+				.ifPresentOrElse(festivo -> festivosNacionalesRepository.delete(festivo), () -> {
+					throw new AplicationException(Constantes.ERROR_GENERAL, Constantes.REGISTRO_NO_ENCONTRADO,
+							HttpStatus.NOT_FOUND);
+				});
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */

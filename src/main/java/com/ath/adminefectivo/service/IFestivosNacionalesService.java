@@ -52,7 +52,7 @@ public interface IFestivosNacionalesService {
 	/**
 	 * eliminar un festivo nacional con su descripción
 	 */
-	boolean eliminarFestivosNacionales(Date idFestivoNacional);
+	void eliminarFestivosNacionales(String idFestivoNacional);
 	
 	List<FestivosNacionales> consultarFestivosNacionales();
 }

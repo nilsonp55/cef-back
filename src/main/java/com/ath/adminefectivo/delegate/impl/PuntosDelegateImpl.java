@@ -1,11 +1,13 @@
 package com.ath.adminefectivo.delegate.impl;
 
 import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.delegate.IPuntosDelegate;
 import com.ath.adminefectivo.dto.CreatePuntosDTO;
@@ -47,13 +49,15 @@ public class PuntosDelegateImpl implements IPuntosDelegate {
       punto = new Puntos();
       punto.setTipoPunto(createPuntosDTO.getTipoPunto());
       punto.setNombrePunto(createPuntosDTO.getNombrePunto());
-      punto.setCodigoCiudad(createPuntosDTO.getCodigoCiudad());
+      punto.setCodigoCiudad(createPuntosDTO.getCodigoDANE());
+      punto.setEstado(createPuntosDTO.getEstado());
 
       puntoResponse = puntosService.crearPunto(punto);
 
       // Se genera logica para decidir que tipo de punto se crea
       if (createPuntosDTO.getTipoPunto().equals(Constantes.PUNTO_BANCO)) {
         Bancos banco = new Bancos();
+        banco.setNombreBanco(createPuntosDTO.getNombrePunto());
         banco.setCodigoCompensacion(createPuntosDTO.getCodigoCompensacion());
         banco.setNumeroNit(createPuntosDTO.getNumeroNit());
         banco.setAbreviatura(createPuntosDTO.getAbreviatura());
@@ -96,7 +100,7 @@ public class PuntosDelegateImpl implements IPuntosDelegate {
         oficina.setCodigoOficina(createPuntosDTO.getCodigoOficina());
         oficina.setBancoAVAL(createPuntosDTO.getBancoAVAL());
         oficina.setFajado(createPuntosDTO.getFajado());
-        oficina.setRefagillado(createPuntosDTO.getRefagillado());
+        oficina.setRefajillado(createPuntosDTO.getRefagillado());
         oficina.setTarifaRuteo(createPuntosDTO.getTarifaRuteo());
         oficina.setTarifaVerificacion(createPuntosDTO.getTarifaVerificacion());
 
@@ -108,12 +112,13 @@ public class PuntosDelegateImpl implements IPuntosDelegate {
           createPuntosDTO.getTipoPunto());
 
       punto.setNombrePunto(createPuntosDTO.getNombrePunto());
-      punto.setCodigoCiudad(createPuntosDTO.getCodigoCiudad());
+      punto.setCodigoCiudad(createPuntosDTO.getCodigoDANE());
       punto.setEstado(createPuntosDTO.getEstado());
 
       // lógica para decidir qué tipo de punto se actualiza
       if (punto.getTipoPunto().equals(Constantes.PUNTO_BANCO)) {
         punto.getBancos().setCodigoCompensacion(createPuntosDTO.getCodigoCompensacion());
+        punto.getBancos().setNombreBanco(createPuntosDTO.getNombrePunto());
         punto.getBancos().setNumeroNit(createPuntosDTO.getNumeroNit());
         punto.getBancos().setAbreviatura(createPuntosDTO.getAbreviatura());
         punto.getBancos().setEsAVAL(createPuntosDTO.getEsAVAL());
@@ -141,7 +146,7 @@ public class PuntosDelegateImpl implements IPuntosDelegate {
         punto.getOficinas().setCodigoOficina(createPuntosDTO.getCodigoOficina());
         punto.getOficinas().setBancoAVAL(createPuntosDTO.getBancoAVAL());
         punto.getOficinas().setFajado(createPuntosDTO.getFajado());
-        punto.getOficinas().setRefagillado(createPuntosDTO.getRefagillado());
+        punto.getOficinas().setRefajillado(createPuntosDTO.getRefagillado());
         punto.getOficinas().setTarifaRuteo(createPuntosDTO.getTarifaRuteo());
         punto.getOficinas().setTarifaVerificacion(createPuntosDTO.getTarifaVerificacion());
       }
