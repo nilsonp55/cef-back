@@ -16,6 +16,7 @@ import com.ath.adminefectivo.entities.CostosProcesamiento;
 import com.ath.adminefectivo.entities.CostosTransporte;
 import com.ath.adminefectivo.repositories.ICostosProcesamientoRepository;
 import com.ath.adminefectivo.service.ICostosProcesamientoService;
+import com.ath.adminefectivo.service.ITransportadorasService;
 import com.ath.adminefectivo.utils.UtilsString;
 
 import lombok.extern.log4j.Log4j2;
@@ -24,6 +25,10 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class CostosProcesamientoServiceImpl implements ICostosProcesamientoService {
 
+	
+	@Autowired
+	ITransportadorasService transportadorasService;
+	
 	@Autowired
 	ICostosProcesamientoRepository costosprocesamientoRepository;
 	
@@ -59,6 +64,8 @@ public class CostosProcesamientoServiceImpl implements ICostosProcesamientoServi
 		
 		//Obtener Lineas Validadas
 		List<ValidacionLineasDTO> lineas = validacionArchivo.getValidacionLineas();
+		
+		var transportadora = transportadorasService.getcodigoTransportadora(validacionArchivo.getDescripcion());
 		
 		lineas.forEach( f -> {
 		   CostosProcesamiento costo = new CostosProcesamiento();	
@@ -110,6 +117,8 @@ public class CostosProcesamientoServiceImpl implements ICostosProcesamientoServi
     		costo.setUsuarioModificacion(null);
 
     		costo.setFechaModificacion(null);
+    		
+    		costo.setCodigoTdv(transportadora);
     		
     		list.add(costo);
  			
