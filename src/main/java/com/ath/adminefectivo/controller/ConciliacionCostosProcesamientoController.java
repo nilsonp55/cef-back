@@ -227,5 +227,22 @@ public class ConciliacionCostosProcesamientoController {
 				.body(new ApiResponseADE<>(respuesta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
+
+	/**
+	 * Método encargado de Reintegrar registros liquidados eliminados
+	 * @param RegistrosConciliacionListDTO
+	 * @return List<RegistroOperacionConciliacionDTO>
+	 * @author jose.pabon
+	 */
+	@PutMapping(value = "${endpoints.conciliacion.procesadas.liquidadas-reintegrar}")
+	public ResponseEntity<ApiResponseADE<List<RegistroOperacionConciliacionDTO>>> reintegrarLiquidadas(
+			@RequestBody RegistrosConciliacionListDTO registrosConciliación) {
+
+		var respuesta = operacionesLiquidacionDelegate.reintegrarLiquidadas(registrosConciliación);
+
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ApiResponseADE<>(respuesta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
+	}
 	
 }
