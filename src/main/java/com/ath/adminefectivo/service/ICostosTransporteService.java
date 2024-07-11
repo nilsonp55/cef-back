@@ -1,6 +1,5 @@
 package com.ath.adminefectivo.service;
 
-import java.awt.print.Pageable;
 import java.util.Date;
 import java.util.List;
 
@@ -69,4 +68,7 @@ public interface ICostosTransporteService {
 	List<RegistroOperacionConciliacionDTO> liquidadasEliminarRechazar(RegistrosConciliacionListDTO registros);
 	
 	List<RegistroAceptarRechazarDTO> identificadasConDiferenciaAceptarRechazar(RegistrosAceptarRechazarListDTO registros);
+
+	List<RegistroOperacionConciliacionDTO> reintegrarLiquidadas(RegistrosConciliacionListDTO registros);
+
 }

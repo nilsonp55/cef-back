@@ -35,5 +35,15 @@ public class EstadoConciliacionParametrosLiquidacionServiceImpl
 		return estadoConciliacionParametrosLiquidacionRepository.save(registro);
 	}
 
-
+	/**
+	 * Servicio encargado de eliminar un registro en EstadoConciliacionParametrosLiquidacion
+	 * 
+	 * @param idLiquidacion
+	 * @return 
+	 * @author jose.pabon
+	 */
+	@Override
+	public void delete(EstadoConciliacionParametrosLiquidacion registro) {
+		estadoConciliacionParametrosLiquidacionRepository.delete(registro);
+	}
 }

@@ -26,7 +26,6 @@ import com.ath.adminefectivo.dto.compuestos.RegistrosConciliacionListDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
-import com.ath.adminefectivo.utils.UtilsString;
 
 /**
  * Controlador responsable de exponer los metodos referentes al proceso de
@@ -242,4 +241,22 @@ public class ConciliacionCostosTransporteController {
 				.body(new ApiResponseADE<>(respuesta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
+
+	/**
+	 * Método encargado de reintegrar registros liquidados eliminados
+	 * @param RegistrosConciliacionListDTO
+	 * @return List<RegistroOperacionConciliacionDTO>
+	 * @author jose.pabon
+	 */
+	@PutMapping(value = "${endpoints.conciliacion.transporte.liquidadas-reintegrar}")
+	public ResponseEntity<ApiResponseADE<List<RegistroOperacionConciliacionDTO>>> reintegrarLiquidadas(
+			@RequestBody RegistrosConciliacionListDTO registrosConciliación) {
+
+		var respuesta = conciliacionCostosTransporteDelegate.reintegrarLiquidadas(registrosConciliación);
+
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ApiResponseADE<>(respuesta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
+	}
+	
 }

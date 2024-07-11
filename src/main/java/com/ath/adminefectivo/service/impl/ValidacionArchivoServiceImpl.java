@@ -545,11 +545,15 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 		boolean errorCampo = false;
 		int minimo = 0;
 		
-		ErroresCamposDTO validacionEstructuraCampo = validarEstructuraLinea(contenido);
+		ErroresCamposDTO validacionEstructuraCampo;
 		
-		if (!Objects.isNull(validacionEstructuraCampo)) {
-			erroresCampos.add(validacionEstructuraCampo);
-			errorCampo = true;
+		if (idMaestro.contains("LIQTP") || idMaestro.contains("LIQPR")) {
+			validacionEstructuraCampo = validarEstructuraLinea(contenido);
+
+			if (!Objects.isNull(validacionEstructuraCampo)) {
+				erroresCampos.add(validacionEstructuraCampo);
+				errorCampo = true;
+			}
 		}
 		
 		for (int i = 0; i < contenido.size() - minimo; i++) {

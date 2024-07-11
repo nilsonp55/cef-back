@@ -1,7 +1,5 @@
 package com.ath.adminefectivo.delegate.impl;
 
-import java.awt.print.Pageable;
-import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,9 +12,6 @@ import com.ath.adminefectivo.dto.compuestos.OperacionesLiquidacionProcesamientoD
 import com.ath.adminefectivo.dto.compuestos.RegistrosConciliacionListDTO;
 import com.ath.adminefectivo.service.IConciliacionOperacionesProcesamientoService;
 import com.ath.adminefectivo.dto.compuestos.RegistrosAceptarRechazarListDTO;
-import com.ath.adminefectivo.dto.compuestos.RegistrosConciliacionListDTO;
-import com.ath.adminefectivo.service.IConciliacionOperacionesProcesamientoService;
-import lombok.extern.log4j.Log4j2;
 
 @Service
 public class ConciliacionOperacionesProcesamientoDelegateImpl implements IConciliacionOperacionesProcesamientoDelegate {
@@ -68,6 +63,11 @@ public class ConciliacionOperacionesProcesamientoDelegateImpl implements IConcil
 	@Override
 	public List<RegistroAceptarRechazarDTO> identificadasConDiferenciaAceptarRechazar(RegistrosAceptarRechazarListDTO registros) {
 		return operacionesLiquidacion.identificadasConDiferenciaAceptarRechazar(registros);
+	}
+
+	@Override
+	public List<RegistroOperacionConciliacionDTO> reintegrarLiquidadas(RegistrosConciliacionListDTO registros) {
+		return operacionesLiquidacion.reintegrarLiquidadas(registros);
 	}
 
 

@@ -1,7 +1,5 @@
 package com.ath.adminefectivo.service;
 
-import java.awt.print.Pageable;
-import java.util.Date;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import com.ath.adminefectivo.dto.RegistroAceptarRechazarDTO;
@@ -31,4 +29,6 @@ public interface IConciliacionOperacionesProcesamientoService {
 
 	List<RegistroAceptarRechazarDTO> identificadasConDiferenciaAceptarRechazar(RegistrosAceptarRechazarListDTO registros);
 
+	List<RegistroOperacionConciliacionDTO> reintegrarLiquidadas(RegistrosConciliacionListDTO registros);	
+	
 }
