@@ -940,7 +940,7 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 	 * @author jose.pabon
 	 */	
 	@Override
-	public List<RegistroOperacionConciliacionDTO> reintegrarLiquidadas(RegistrosConciliacionListDTO registros) {
+	public List<RegistroOperacionConciliacionDTO> reintegrarLiquidadasTransporte(RegistrosConciliacionListDTO registros) {
 		
 		List<RegistroOperacionConciliacionDTO> registrosReintegrados = registros.getRegistroOperacion();
 		

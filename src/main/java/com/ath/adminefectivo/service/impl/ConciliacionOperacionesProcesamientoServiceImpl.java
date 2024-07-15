@@ -596,8 +596,8 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 	 * @author jose.pabon
 	 */	
 	@Override
-	public List<RegistroOperacionConciliacionDTO> reintegrarLiquidadas(RegistrosConciliacionListDTO registros) {
-		return costosTransporteService.reintegrarLiquidadas(registros);
+	public List<RegistroOperacionConciliacionDTO> reintegrarLiquidadasTransporte(RegistrosConciliacionListDTO registros) {
+		return costosTransporteService.reintegrarLiquidadasTransporte(registros);
 	}
 	
 }

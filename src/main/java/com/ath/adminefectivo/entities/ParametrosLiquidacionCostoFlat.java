@@ -30,73 +30,73 @@ public class ParametrosLiquidacionCostoFlat {
 
 	@Id
 	@Column(name = "ID_LIQUIDACION")
-	private Long idLiquidacion;
+	private Long idLiquidacionFlat;
 
 	@Column(name = "BILLETES")
-	private String billetes;
+	private String billetesFlat;
 
 	@Column(name = "CODIGO_BANCO")
-	private Integer codigoBanco;
+	private Integer codigoBancoFlat;
 
 	@Column(name = "CODIGO_TDV")
-	private String codigoTdv;
+	private String codigoTdvFlat;
 
 	@Column(name = "ESCALA")
-	private String escala;
+	private String escalaFlat;
 
 	@Column(name = "FAJADO")
-	private String fajado;
+	private String fajadoFlat;
 
 	@Column(name = "FECHA_EJECUCION")
-	private Date fechaEjecucion;
+	private Date fechaEjecucionFlat;
 
 	@Column(name = "MONEDAS")
-	private String monedas;
+	private String monedasFlat;
 
 	@Column(name = "NUMERO_BOLSAS")
-	private Integer numeroBolsas;
+	private Integer numeroBolsasFlat;
 
 	@Column(name = "NUMERO_FAJOS")
-	private Integer numeroFajos;
+	private Integer numeroFajosFlat;
 
 	@Column(name = "NUMERO_PARADAS")
-	private Integer numeroParadas;
+	private Integer numeroParadasFlat;
 
 	@Column(name = "PUNTO_DESTINO")
-	private Integer puntoDestino;
+	private Integer puntoDestinoFlat;
 
 	@Column(name = "PUNTO_ORIGEN")
-	private Integer puntoOrigen;
+	private Integer puntoOrigenFlat;
 
 	@Column(name = "RESIDUO_BILLETES")
-	private Integer residuoBilletes;
+	private Integer residuoBilletesFlat;
 
 	@Column(name = "RESIDUO_MONEDAS")
-	private Integer residuoMonedas;
+	private Integer residuoMonedasFlat;
 
 	@Column(name = "SEQ_GRUPO")
-	private Integer seqGrupo;
+	private Integer seqGrupoFlat;
 
 	@Column(name = "TIPO_OPERACION")
-	private String tipoOperacion;
+	private String tipoOperacionFlat;
 
 	@Column(name = "TIPO_PUNTO")
-	private String tipoPunto;
+	private String tipoPuntoFlat;
 
 	@Column(name = "TIPO_SERVICIO")
-	private String tipoServicio;
+	private String tipoServicioFlat;
 
 	@Column(name = "VALOR_BILLETES")
-	private Double valorBilletes;
+	private Double valorBilletesFlat;
 
 	@Column(name = "VALOR_MONEDAS")
-	private Double valorMonedas;
+	private Double valorMonedasFlat;
 
 	@Column(name = "VALOR_TOTAL")
-	private Double valorTotal;
+	private Double valorTotalFlat;
 
 	@Column(name = "ENTRADA_SALIDA")
-	private String entradaSalida;
+	private String entradaSalidaFlat;
 
 	@OneToOne(cascade = CascadeType.MERGE)
 	@JoinColumn(name = "ID_LIQUIDACION", referencedColumnName = "ID_LIQUIDACION")

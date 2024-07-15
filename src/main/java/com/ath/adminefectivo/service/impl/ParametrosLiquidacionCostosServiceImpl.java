@@ -76,13 +76,13 @@ public class ParametrosLiquidacionCostosServiceImpl implements IParametrosLiquid
 	@Override
 	public ParametrosLiquidacionCostoFlat f2eliminarParametrosLiquidacionCostos(ParametrosLiquidacionCostoFlat eliminar) {
 		
-		var valorLiq =  valoresLiquidadosFlatRepository.consultarPorIdLiquidacion(eliminar.getIdLiquidacion());
+		var valorLiq =  valoresLiquidadosFlatRepository.consultarPorIdLiquidacion(eliminar.getIdLiquidacionFlat());
 		if (Objects.nonNull(valorLiq))
 		{	
 			valoresLiquidadosFlatRepository.delete(valorLiq);
 		}
 		
-		var detallesLiq =  detallesLiquidacionCostoRepository.consultarPorIdLiquidacion(eliminar.getIdLiquidacion());
+		var detallesLiq =  detallesLiquidacionCostoRepository.consultarPorIdLiquidacion(eliminar.getIdLiquidacionFlat());
 		if (Objects.nonNull(detallesLiq) && !detallesLiq.isEmpty())
 		{
 			detallesLiquidacionCostoRepository.deleteAll(detallesLiq);

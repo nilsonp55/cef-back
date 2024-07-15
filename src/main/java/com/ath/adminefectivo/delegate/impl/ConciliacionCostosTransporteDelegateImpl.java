@@ -81,8 +81,8 @@ public class ConciliacionCostosTransporteDelegateImpl implements IConciliacionCo
 	}
 	
 	@Override
-	public List<RegistroOperacionConciliacionDTO> reintegrarLiquidadas(RegistrosConciliacionListDTO registros) {
-		return costosTransporteService.reintegrarLiquidadas(registros);
+	public List<RegistroOperacionConciliacionDTO> reintegrarLiquidadasTransporte(RegistrosConciliacionListDTO registros) {
+		return costosTransporteService.reintegrarLiquidadasTransporte(registros);
 	}
 
 }
