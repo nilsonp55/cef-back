@@ -67,7 +67,7 @@ public class ConciliacionOperacionesProcesamientoDelegateImpl implements IConcil
 
 	@Override
 	public List<RegistroOperacionConciliacionDTO> reintegrarLiquidadas(RegistrosConciliacionListDTO registros) {
-		return operacionesLiquidacion.reintegrarLiquidadas(registros);
+		return operacionesLiquidacion.reintegrarLiquidadasTransporte(registros);
 	}
 
 

@@ -252,7 +252,7 @@ public class ConciliacionCostosTransporteController {
 	public ResponseEntity<ApiResponseADE<List<RegistroOperacionConciliacionDTO>>> reintegrarLiquidadas(
 			@RequestBody RegistrosConciliacionListDTO registrosConciliación) {
 
-		var respuesta = conciliacionCostosTransporteDelegate.reintegrarLiquidadas(registrosConciliación);
+		var respuesta = conciliacionCostosTransporteDelegate.reintegrarLiquidadasTransporte(registrosConciliación);
 
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(respuesta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())

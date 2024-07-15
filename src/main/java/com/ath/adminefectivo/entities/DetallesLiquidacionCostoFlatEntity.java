@@ -31,27 +31,27 @@ public class DetallesLiquidacionCostoFlatEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID_DETALLE_LIQ")
-	private Long idDetalleLiq;
+	private Long idDetalleLiqFlat;
 	
 	@Column(name = "BILLETE_MONEDA")
-	private String billeteMoneda;
+	private String billeteMonedaFlat;
 	
 	@Column(name = "CALIDAD")
-	private String calidad;
+	private String calidadFlat;
 	
 	@Column(name = "DENOMINACION")
-	private String denominacion;
+	private String denominacionFlat;
 
 	@Column(name = "ID_LIQUIDACION")
-	private Long idLiquidacion;
+	private Long idLiquidacionFlat;
 	
 	@Column(name = "NUMERO_FAJOS_BOLSAS")
-	private Integer numeroFajosBolsas;
+	private Integer numeroFajosBolsasFlat;
 	
 	@Column(name = "RESIDUO")
-	private Integer residuo;
+	private Integer residuoFlat;
 	
 	@Column(name = "VALOR_DENOMINACION")
-	private Double valorDenominacion;
+	private Double valorDenominacionFlat;
 	
 }
