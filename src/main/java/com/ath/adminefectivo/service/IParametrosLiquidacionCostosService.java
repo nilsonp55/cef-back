@@ -7,6 +7,7 @@ import java.util.Optional;
 import com.ath.adminefectivo.dto.ParametrosLiquidacionCostoDTO;
 import com.ath.adminefectivo.dto.compuestos.EstimadoClasificacionCostosDTO;
 import com.ath.adminefectivo.entities.ParametrosLiquidacionCosto;
+import com.ath.adminefectivo.entities.ParametrosLiquidacionCostoFlat;
 
 public interface IParametrosLiquidacionCostosService {
 
@@ -42,13 +43,22 @@ public interface IParametrosLiquidacionCostosService {
 	Optional<ParametrosLiquidacionCosto> getParametrosLiquidacionCostosById(Long idLiquidacion);
 
 	/**
+	 * Metodo encargado de realizar la consulta de parametros liquidacion costos (flat) por idLiquidacion 
+	 * 
+	 * @param idLiquidacion
+	 * @return ParametrosLiquidacionCosto
+	 * @author jose.pabon
+	 */
+	ParametrosLiquidacionCostoFlat getParametrosLiquidacionCostosByIdFlat(Long idLiquidacion);
+
+	/**
 	 * Metodo encargado de eliminar los registros de ParametrosLiquidacionCostos
 	 * 
 	 * @param ParametrosLiquidacionCosto
 	 * @return ParametrosLiquidacionCosto
 	 * @author duvan.naranjo
 	 */
-	ParametrosLiquidacionCosto f2eliminarParametrosLiquidacionCostos(ParametrosLiquidacionCosto eliminar);
+	ParametrosLiquidacionCostoFlat f2eliminarParametrosLiquidacionCostos(ParametrosLiquidacionCostoFlat eliminar);
 	
 	/**
 	 * Metodo encargado de actualizar los registros de ParametrosLiquidacionCostos
@@ -59,5 +69,6 @@ public interface IParametrosLiquidacionCostosService {
 	 */
 	ParametrosLiquidacionCosto f2actualizarParametrosLiquidacionCostos(ParametrosLiquidacionCosto actualizar);
 	
+	ParametrosLiquidacionCostoFlat f2actualizarParametrosLiquidacionCostosFlat(ParametrosLiquidacionCostoFlat actualizar);
 
 }

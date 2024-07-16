@@ -352,7 +352,7 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 			)
 		{
 			var parametroLiquidacion = 
-				parametrosLiquidacionCostosService.getParametrosLiquidacionCostosById(idLiquidacion).orElse(null);
+				parametrosLiquidacionCostosService.getParametrosLiquidacionCostosByIdFlat(idLiquidacion);
 			
 			if (Objects.nonNull(parametroLiquidacion))
 			{
@@ -586,6 +586,18 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 				// No se manjea la excepcion
 			}
 
+	}
+
+	/**
+	 * Metodo encargado de reintegrar los registros eliminados de costos_procesamiento
+	 * 
+	 * @param registros
+	 * @return List<RegistroOperacionConciliacionDTO>
+	 * @author jose.pabon
+	 */	
+	@Override
+	public List<RegistroOperacionConciliacionDTO> reintegrarLiquidadasTransporte(RegistrosConciliacionListDTO registros) {
+		return costosTransporteService.reintegrarLiquidadasTransporte(registros);
 	}
 	
 }
