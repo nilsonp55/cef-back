@@ -236,9 +236,9 @@ public class ConciliacionCostosProcesamientoController {
 	 */
 	@PutMapping(value = "${endpoints.conciliacion.procesadas.liquidadas-reintegrar}")
 	public ResponseEntity<ApiResponseADE<List<RegistroOperacionConciliacionDTO>>> reintegrarLiquidadas(
-			@RequestBody RegistrosConciliacionListDTO registrosConciliación) {
+			@RequestBody RegistrosConciliacionListDTO registrosConciliacion) {
 
-		var respuesta = operacionesLiquidacionDelegate.reintegrarLiquidadas(registrosConciliación);
+		var respuesta = operacionesLiquidacionDelegate.reintegrarLiquidadas(registrosConciliacion);
 
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(respuesta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
