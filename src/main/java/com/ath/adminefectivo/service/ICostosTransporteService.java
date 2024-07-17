@@ -1,14 +1,17 @@
 package com.ath.adminefectivo.service;
 
+import java.awt.print.Pageable;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
 
 import com.ath.adminefectivo.dto.ParametrosFiltroCostoTransporteDTO;
+import com.ath.adminefectivo.dto.RegistroAceptarRechazarDTO;
 import com.ath.adminefectivo.dto.RegistroOperacionConciliacionDTO;
 import com.ath.adminefectivo.dto.compuestos.ConciliacionCostosTransporteDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionesLiquidacionTransporteDTO;
+import com.ath.adminefectivo.dto.compuestos.RegistrosAceptarRechazarListDTO;
 import com.ath.adminefectivo.dto.compuestos.RegistrosConciliacionListDTO;
 import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoDTO;
 import com.ath.adminefectivo.entities.CostosTransporte;
@@ -57,8 +60,13 @@ public interface ICostosTransporteService {
 
 	Page<OperacionesLiquidacionTransporteDTO> getIdentificadasConDiferenciasTransporte(ParametrosFiltroCostoTransporteDTO filtros);
 	
+	Page<OperacionesLiquidacionTransporteDTO> getEliminadasTransporte(ParametrosFiltroCostoTransporteDTO filtros);
+	
 	List<RegistroOperacionConciliacionDTO> desconciliar(RegistrosConciliacionListDTO registros);
 	
 	List<RegistroOperacionConciliacionDTO> remitidasAceptarRechazar(RegistrosConciliacionListDTO registros);
-
+	
+	List<RegistroOperacionConciliacionDTO> liquidadasEliminarRechazar(RegistrosConciliacionListDTO registros);
+	
+	List<RegistroAceptarRechazarDTO> identificadasConDiferenciaAceptarRechazar(RegistrosAceptarRechazarListDTO registros);
 }

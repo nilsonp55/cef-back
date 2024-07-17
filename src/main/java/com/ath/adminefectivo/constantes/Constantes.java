@@ -733,7 +733,7 @@ public static final String DELETE_SEPARADORES = "";
 	public static final String OPERACIONES_LIQUIDACION_IDENTIFICADAS_CON_DIFERENCIAS = "IDENTIFICADAS_CON_DIFERENCIAS";
 	public static final String OPERACIONES_LIQUIDACION_LIQUIDADAS_NO_COBRADAS = "LIQUIDADAS_NO_COBRADAS";
 	public static final String OPERACIONES_LIQUIDACION_REMITIDAS_NO_IDENTIFICADAS = "REMITIDAS_NO_IDENTIFICADAS";
-	
+	public static final String OPERACIONES_LIQUIDACION_LIQUIDADAS_NO_COBRADAS_ELIMINADAS = "LIQUIDADAS_NO_COBRADAS_ELIMINADAS";
 	public static final String ESTADO_CONCILIACION_MANUAL = "MANUAL";
 	public static final String ESTADO_CONCILIACION_RECHAZADA = "RECHAZADA";
 	
@@ -741,4 +741,9 @@ public static final String DELETE_SEPARADORES = "";
 	
 	public static final String ERROR_GENERAL = "ERROR";
 	public static final String REGISTRO_NO_ENCONTRADO = "Registro no encontrado";
+
+	public static final String ESTADO_OPERACION_NO_REALIZADA = "NO PUDO REALIZAR LA OPERACION";
+	public static final String OPERACION_RECHAZAR = "RECHAZAR";
+	public static final String OPERACION_ACEPTAR = "ACEPTAR";
+
 }

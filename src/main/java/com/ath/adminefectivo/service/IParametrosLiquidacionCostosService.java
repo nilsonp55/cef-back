@@ -2,6 +2,7 @@ package com.ath.adminefectivo.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import com.ath.adminefectivo.dto.ParametrosLiquidacionCostoDTO;
 import com.ath.adminefectivo.dto.compuestos.EstimadoClasificacionCostosDTO;
@@ -38,7 +39,7 @@ public interface IParametrosLiquidacionCostosService {
 	 * @return ParametrosLiquidacionCosto
 	 * @author duvan.naranjo
 	 */
-	ParametrosLiquidacionCosto getParametrosLiquidacionCostosById(Long idLiquidacion);
+	Optional<ParametrosLiquidacionCosto> getParametrosLiquidacionCostosById(Long idLiquidacion);
 
 	/**
 	 * Metodo encargado de eliminar los registros de ParametrosLiquidacionCostos

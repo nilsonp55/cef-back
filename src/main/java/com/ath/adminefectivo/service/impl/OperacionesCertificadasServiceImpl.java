@@ -380,7 +380,8 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
     certificadas = codigoPuntoOrigenDestino.getCertificadas();
     if ((elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_ITVCS))
         || (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IATCS))
-        || (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IPRCS))) {
+        || (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IPRCS))
+        || (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IVGLS))) {
       longitud = fila.length;
     } else {
       longitud = fila.length - 1;
@@ -414,7 +415,8 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
       operaciones.setCodigoOperacion(codigoOperacion);
       if ((elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_ITVCS))
           || (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IATCS))
-          || (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IPRCS))) {
+          || (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IPRCS))
+          || (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IVGLS))) {
         operaciones.setValorTotal(
             asignarValorTotal(fila, Constantes.INICIA_DENOMINACION_OTROS_FONDOS, longitud));
         operaciones.setMoneda(Constantes.MONEDA_COP);
@@ -436,7 +438,8 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
     } else {
       if ((elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_ITVCS))
           || (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IATCS))
-          || (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IPRCS))) {
+          || (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IPRCS))
+          || (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IVGLS))) {
         certificadas.setValorTotal(certificadas.getValorTotal()
             + asignarValorTotal(fila, Constantes.INICIA_DENOMINACION_OTROS_FONDOS, longitud));
       } else {
