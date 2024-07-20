@@ -30,9 +30,11 @@ import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoDTO;
 import com.ath.adminefectivo.dto.compuestos.ValidacionLineasDTO;
 
 import com.ath.adminefectivo.entities.CostosTransporte;
+import com.ath.adminefectivo.entities.DetallesLiquidacionCostoFlatEntity;
 import com.ath.adminefectivo.entities.EstadoConciliacionParametrosLiquidacion;
 import com.ath.adminefectivo.entities.OperacionesLiquidacionTransporteEntity;
 import com.ath.adminefectivo.entities.ParametrosLiquidacionCosto;
+import com.ath.adminefectivo.entities.ParametrosLiquidacionCostoFlat;
 import com.ath.adminefectivo.entities.ValoresLiquidadosFlatEntity;
 import com.ath.adminefectivo.repositories.ICostosTransporteRepository;
 import com.ath.adminefectivo.repositories.IOperacionesLiquidacionTransporte;
@@ -47,6 +49,7 @@ import com.ath.adminefectivo.utils.UtilsParsing;
 import com.ath.adminefectivo.utils.UtilsString;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
 
@@ -571,7 +574,7 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 		return eliminadosRechazados;
 	}
 	
-	private boolean desconciliarParametroLiquidacionCosto(String estadoTransporte, Integer tipoEstado, Long idLiquidacionCostos)
+	private boolean desconciliarParametroLiquidacionCosto(String estadoTransporte, Integer tipoEstado, Long idLiquidacion)
 	{
 		
 		var paso = false;
@@ -581,12 +584,12 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 		if (estadoTransporte.equals(Dominios.ESTADO_VALIDACION_CONCILIACION_MANUAL) && tipoEstado.equals(1)
 			)
 		{
-			var parametrosLiquidacionCostos =
-				parametrosLiquidacionCostosService.getParametrosLiquidacionCostosById(idLiquidacionCostos).orElse(null);
+			var parametroLiquidacion = 
+				parametrosLiquidacionCostosService.getParametrosLiquidacionCostosByIdFlat(idLiquidacion);
 			
-			if (Objects.nonNull(parametrosLiquidacionCostos))
+			if (Objects.nonNull(parametroLiquidacion))
 			{
-				parametrosLiquidacionCostosService.f2eliminarParametrosLiquidacionCostos(parametrosLiquidacionCostos);
+				parametrosLiquidacionCostosService.f2eliminarParametrosLiquidacionCostos(parametroLiquidacion);
 			}
 			paso = true;
 		}
@@ -599,7 +602,7 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 			ObjectMapper objectMapper = new ObjectMapper();
 			ParametrosLiquidacionCosto parametroLiquidacionCostoTransprote;
 			//Buscar valores antiguos
-			List<EstadoConciliacionParametrosLiquidacion> oldListEstadoConciliacion = estadoConciliacionParametrosLiquidacionService.buscarLiquidacion(idLiquidacionCostos, 2);
+			List<EstadoConciliacionParametrosLiquidacion> oldListEstadoConciliacion = estadoConciliacionParametrosLiquidacionService.buscarLiquidacion(idLiquidacion, 2);
 			try {
 				if (Objects.nonNull(oldListEstadoConciliacion) && !oldListEstadoConciliacion.isEmpty())
 				{
@@ -678,23 +681,23 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 		var estadoConciliacionLiqTransporte = new EstadoConciliacionParametrosLiquidacion();
 		var objectMapper = new ObjectMapper();
 		//Obtener el registro de la base de datos
-		var parametroLiquidacionCostoTransporte =
-				parametrosLiquidacionCostosService.getParametrosLiquidacionCostosById(id).orElse(null);
-		var valorLiqFlagTransporte =
+		var parametroLiquidacion = 
+				parametrosLiquidacionCostosService.getParametrosLiquidacionCostosByIdFlat(id);
+		var valorLiq =
 				valoresLiquidadosFlatService.consultarPorIdLiquidacion(id);
-		var detalleLiqTransporte =
-				detallesLiquidacionCostoService.consultarPorIdLiquidacion(id);
+		var detalleLiq =
+				detallesLiquidacionCostoService.consultarPorIdLiquidacionFlat(id);
 		
-		if (Objects.nonNull(parametroLiquidacionCostoTransporte)) {
+		if (Objects.nonNull(parametroLiquidacion)) {
 			eliminadoId = id;
 			var fotoParametrosLiqCostoTransportte = "";
 			var foto2VarlorLiqFlagTransporte = "";
 			var foto3DetalleLiqTransporte = "";
 			//sacar foto del registro
 			try {
-				fotoParametrosLiqCostoTransportte = objectMapper.writeValueAsString(parametroLiquidacionCostoTransporte);
-				foto2VarlorLiqFlagTransporte = objectMapper.writeValueAsString(valorLiqFlagTransporte);
-				foto3DetalleLiqTransporte = objectMapper.writeValueAsString(detalleLiqTransporte);
+				fotoParametrosLiqCostoTransportte = objectMapper.writeValueAsString(parametroLiquidacion);
+				foto2VarlorLiqFlagTransporte = objectMapper.writeValueAsString(valorLiq);
+				foto3DetalleLiqTransporte = objectMapper.writeValueAsString(detalleLiq);
 				List<EstadoConciliacionParametrosLiquidacion> oldListEstadoConciliacionTransporte = estadoConciliacionParametrosLiquidacionService.buscarLiquidacion(id, 1);
 				if (Objects.nonNull(oldListEstadoConciliacionTransporte) && !oldListEstadoConciliacionTransporte.isEmpty())
 				{
@@ -710,7 +713,7 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 				estadoConciliacionParametrosLiquidacionService.save(estadoConciliacionLiqTransporte);
 				
 				//se elimina el registro de parametro liquidacion
-				parametrosLiquidacionCostosService.f2eliminarParametrosLiquidacionCostos(parametroLiquidacionCostoTransporte);
+				parametrosLiquidacionCostosService.f2eliminarParametrosLiquidacionCostos(parametroLiquidacion);
 				
 			} catch (JsonProcessingException e) {
 				//Excepcion no manejada
@@ -927,6 +930,71 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 			} catch (Exception e) {
 				// No se maneja la excepcion para este metodo
 			}
+	}
+
+	/**
+	 * Metodo encargado de reintegrar los registros eliminados de costos_transporte 
+	 * 
+	 * @param RegistrosConciliacionListDTO
+	 * @return List<RegistroOperacionConciliacionDTO>
+	 * @author jose.pabon
+	 */	
+	@Override
+	public List<RegistroOperacionConciliacionDTO> reintegrarLiquidadasTransporte(RegistrosConciliacionListDTO registros) {
+		
+		List<RegistroOperacionConciliacionDTO> registrosReintegrados = registros.getRegistroOperacion();
+		
+		registrosReintegrados.forEach(f->{
+			boolean continuar = false;
+			Long id = f.getIdRegistro();
+			String operacion = f.getOperacionEstado();
+			
+			f.setOperacionEstado("NO PUDO REALIZAR LA OPERACION");
+			
+			if (operacion.equalsIgnoreCase("REINTEGRAR"))
+			{
+				continuar = reintegrarRegistrosLiquidados(id, continuar);
+			}
+			if (continuar) {
+				f.setOperacionEstado("REINTEGRADA");
+			}
+		});
+		return registrosReintegrados;
+	}
+
+	public boolean reintegrarRegistrosLiquidados(Long id, boolean continuar)
+	{
+		var objectMapper = new ObjectMapper();
+		ParametrosLiquidacionCostoFlat parametroLiquidacion;
+		ValoresLiquidadosFlatEntity valoresLiquidados;
+		List<DetallesLiquidacionCostoFlatEntity> detallesLiquidacionCosto;
+		EstadoConciliacionParametrosLiquidacion estadoConciliacionParametrosLiquidacion = new EstadoConciliacionParametrosLiquidacion();
+
+		
+		var registrosEstadoConciliacion = estadoConciliacionParametrosLiquidacionService.buscarLiquidacion(id, 1);
+		if (!Objects.nonNull(registrosEstadoConciliacion))
+			{return false;}
+
+		try {
+			estadoConciliacionParametrosLiquidacion = registrosEstadoConciliacion.get(0);
+			parametroLiquidacion = objectMapper.readValue(estadoConciliacionParametrosLiquidacion.getDatosParametrosLiquidacionCostos(), ParametrosLiquidacionCostoFlat.class);
+			valoresLiquidados = objectMapper.readValue(estadoConciliacionParametrosLiquidacion.getDatosValoresLiquidados(), ValoresLiquidadosFlatEntity.class);
+			TypeReference<List<DetallesLiquidacionCostoFlatEntity>> typeReference = new TypeReference<List<DetallesLiquidacionCostoFlatEntity>>() {};
+			detallesLiquidacionCosto = objectMapper.readValue(estadoConciliacionParametrosLiquidacion.getDatosDetallesLiquidados(),typeReference);
+
+			if (Objects.nonNull(parametroLiquidacion) && Objects.nonNull(valoresLiquidados) && Objects.nonNull(detallesLiquidacionCosto))
+			{	parametrosLiquidacionCostosService.f2actualizarParametrosLiquidacionCostosFlat(parametroLiquidacion);
+				valoresLiquidadosFlatService.f2actualizarvaloresLiquidadosRepository(valoresLiquidados);
+				detallesLiquidacionCostoService.f2actualizarListaDetallesValoresLiquidados(detallesLiquidacionCosto);
+				continuar= true;
+			}
+		} catch (JsonProcessingException e) {
+			continuar = false;
+		}
+		if(continuar){
+			estadoConciliacionParametrosLiquidacionService.delete(estadoConciliacionParametrosLiquidacion);
+		}
+		return continuar;
 	}
 	
 }

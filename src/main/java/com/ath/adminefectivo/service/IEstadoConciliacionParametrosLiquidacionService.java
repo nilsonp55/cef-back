@@ -25,4 +25,12 @@ public interface IEstadoConciliacionParametrosLiquidacionService  {
 	 */
 	EstadoConciliacionParametrosLiquidacion save(EstadoConciliacionParametrosLiquidacion registro);	
 
+	/**
+	 * Servicio encargado de eliminar un EstadoConciliacionParametrosLiquidacion
+	 * 
+	 * @param EstadoConciliacionParametrosLiquidacion
+	 * @author jose.pabon
+	 * @return 
+	 */
+	void delete(EstadoConciliacionParametrosLiquidacion registro);
 }
