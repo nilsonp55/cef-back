@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -95,7 +96,8 @@ public class ClientesCorporativosServiceImpl implements IClientesCorporativosSer
 					.or(QClientesCorporativos.clientesCorporativos.codigoCliente.like(busqueda));
 		}
 		Page<ClientesCorporativos> clientes = clientesCorporativosRepository.findAll(builder, page);
-		log.debug("listarClientesCorporativos - totalElements: {}", clientes.getTotalElements());
+		if(ObjectUtils.isNotEmpty(clientes))
+			log.debug("listarClientesCorporativos - totalElements: {}", clientes.getTotalElements());
 		return new PageImpl<>(clientes.stream().map(ClientesCorporativosDTO.CONVERTER_DTO).toList(),
 				clientes.getPageable(), clientes.getTotalElements());
 	}
