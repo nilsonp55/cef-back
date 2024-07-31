@@ -540,7 +540,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 		List<String> contenido = validacionLineasDTO.getContenido();
 		boolean errorCampo = false;
 		int minimo = 0;
-				
+
 		for (int i = 0; i < contenido.size() - minimo; i++) {
 		    ErroresCamposDTO validacionEstructuraCampo = validarEstructuraCampo(contenido.get(i), idMaestro, i + 1,
 					validacionLineasDTO.getTipo());

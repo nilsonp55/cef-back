@@ -1,7 +1,5 @@
 package com.ath.adminefectivo.delegate;
 
-import java.awt.print.Pageable;
-import java.util.Date;
 import java.util.List;
 import org.springframework.data.domain.Page;
 
@@ -40,4 +38,6 @@ public interface IConciliacionCostosTransporteDelegate {
 	
 	public List<RegistroAceptarRechazarDTO> identificadasConDiferenciaAceptarRechazar(RegistrosAceptarRechazarListDTO entidad);
 
+	public List<RegistroOperacionConciliacionDTO> reintegrarLiquidadasTransporte(RegistrosConciliacionListDTO registros);
+	
 }
