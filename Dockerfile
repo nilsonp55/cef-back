@@ -1,4 +1,4 @@
-FROM eclipse-temurin:17-jdk-alpine as build
+FROM openjdk:17-alpine as build
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -10,7 +10,7 @@ COPY . .
 RUN ./mvnw clean package -Dmaven.test.skip
 
 # Start a new stage from scratch to keep the image small
-FROM eclipse-temurin:17-jdk-alpine
+FROM openjdk:17-alpine
 
 WORKDIR /app
 

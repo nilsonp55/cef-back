@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -26,6 +27,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.ath.adminefectivo.dto.ClientesCorporativosDTO;
 import com.ath.adminefectivo.service.IClientesCorporativosService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.querydsl.core.types.Predicate;
 
@@ -99,6 +101,16 @@ class ClientesCorporativosControllerTest {
 				.thenReturn(clientesCorporativosDTO);
 		
 		mockMvc.perform(post("/v1.0.1/ade/clientes-corporativos/")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(clientesCorporativosDTO)))
+		.andExpect(status().isOk());
+	}
+	
+	@Test
+	void testUpdateClientesCorporativosCrud() throws JsonProcessingException, Exception {
+		when(clientesCorporativosService.actualizarClientesCorporativos(any())).thenReturn(clientesCorporativosDTO);
+		
+		mockMvc.perform(put("/v1.0.1/ade/clientes-corporativos/")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(clientesCorporativosDTO)))
 		.andExpect(status().isOk());
