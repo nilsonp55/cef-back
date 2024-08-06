@@ -80,7 +80,10 @@ public class ConciliacionCostosTransporteDelegateImpl implements IConciliacionCo
 		return costosTransporteService.identificadasConDiferenciaAceptarRechazar(registros);
 	}
 	
-	
+	@Override
+	public List<RegistroOperacionConciliacionDTO> reintegrarLiquidadasTransporte(RegistrosConciliacionListDTO registros) {
+		return costosTransporteService.reintegrarLiquidadasTransporte(registros);
+	}
 
 }
 

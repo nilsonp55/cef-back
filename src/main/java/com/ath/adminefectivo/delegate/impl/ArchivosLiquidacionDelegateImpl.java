@@ -100,8 +100,9 @@ public class ArchivosLiquidacionDelegateImpl implements IArchivosLiquidacionDele
 	 * {@inheritDoc}
 	 */
 	@Override	
-	public Page<ArchivosLiquidacionDTO> getAll(int start, int end, boolean content, String fileName) {
+	public Page<ArchivosLiquidacionDTO> getAll(int start, int end, boolean content, String fileName, Optional<List<ArchivosLiquidacionDTO>> dtoResponseListOptional) {
 		
+		Boolean generarIndices = true;
 		List<BancoSimpleInfoEntity> bancos;
 	    List<Transportadoras> transportadoras;
 	    	    	    
@@ -122,7 +123,15 @@ public class ArchivosLiquidacionDelegateImpl implements IArchivosLiquidacionDele
 	    String urlPendientes = filesService.consultarPathArchivos(Constantes.ESTADO_CARGUE_PENDIENTE);
 	    String url = maestrosDefinicion.get(0).getUbicacion().concat(urlPendientes);
 	    String requiredFileExtension = maestrosDefinicion.get(0).getExtension();
-	    List<ArchivosLiquidacionDTO> dtoResponseList = obtenerDtoResponseList(start, end, content, fileName, url);
+	    
+	    List<ArchivosLiquidacionDTO> dtoResponseList;
+	    if (dtoResponseListOptional.isPresent() && !dtoResponseListOptional.get().isEmpty()) {
+	        dtoResponseList = dtoResponseListOptional.get();
+	        generarIndices = false;
+	    } else {
+	        dtoResponseList = obtenerDtoResponseList(start, end, content, fileName, url);
+	    }
+	    	    
 	    if (dtoResponseList.isEmpty()) {
 	        return new PageImpl<>(dtoResponseList);
 	    }
@@ -134,7 +143,7 @@ public class ArchivosLiquidacionDelegateImpl implements IArchivosLiquidacionDele
 	    List<String> cadenaTipos = getSegmentosCadena(cadenaMascara);
 	    
 	    List<ArchivosLiquidacionDTO> responseList = procesarNombreArchivos(dtoResponseList, estructuraMascara, cadenaTrasportadoras, cadenaEntidades, requiredFileExtension, cadenaTipos, bancos);
-	    ordenarYAsignarIds(responseList);
+	    ordenarYAsignarIds(responseList,generarIndices);
 	    
 	    log.info("Finaliza proceso cargue de archivos pendientes - Total procesados: {}", responseList.size());
 	    return new PageImpl<>(responseList);
@@ -586,7 +595,11 @@ public class ArchivosLiquidacionDelegateImpl implements IArchivosLiquidacionDele
 	   
 	    for (ArchivosLiquidacionDTO dto : dtoResponseList) {
 	        if (procesarNombreArchivo(dto, cadenaTrasportadoras, cadenaEntidades, requiredFileExtension, estructuraMascara, cadenaTipos, bancos)) {
-	        	dto.setEstado(Constantes.ESTADO_PROCESO_PENDIENTE);
+	        	
+	        	if (dto.getEstado() == null || dto.getEstado().isEmpty()) {
+	        	    dto.setEstado(Constantes.ESTADO_PROCESO_PENDIENTE);
+	        	}
+	        	
 	        	responseList.add(dto);
 	        }
 	    }
@@ -714,13 +727,14 @@ private String procesarCampo(ProcesarCampoDTO dto) {
 	    }
 	}
 
-	private void ordenarYAsignarIds(List<ArchivosLiquidacionDTO> responseList) {
+	private void ordenarYAsignarIds(List<ArchivosLiquidacionDTO> responseList, boolean generaIndice) {
 	    responseList.sort(Comparator.comparing(ArchivosLiquidacionDTO::getFechaArchivo)
 	            .thenComparing(ArchivosLiquidacionDTO::getNombreArchivo));
-
-	    AtomicLong counter = new AtomicLong(1);
-	    responseList.forEach(dto -> dto.setIdArchivo(counter.getAndIncrement()));
+	    
+		if (generaIndice) {
+			AtomicLong counter = new AtomicLong(1);
+			responseList.forEach(dto -> dto.setIdArchivo(counter.getAndIncrement()));
+		}
 	}
 
 }
-

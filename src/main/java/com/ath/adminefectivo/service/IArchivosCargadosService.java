@@ -2,6 +2,7 @@ package com.ath.adminefectivo.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -129,6 +130,18 @@ public interface IArchivosCargadosService {
 	 * @author cesar.castano
 	 */
 	Page<ArchivosCargadosDTO> getAllByAgrupador(String agrupador, Pageable page);
+	
+	/**
+	 * Servicio encargado de consultar los archivos cargados sin cierre de conciliacion
+	 * por filtro y con paginación para el proceso de liquidacion de costos
+	 * 
+	 * @param agrupador
+	 * @param estadosCargue
+	 * @param page
+	 * @return Page<ArchivosCargadosDTO>
+	 * @author johan.chaparro
+	 */
+	Page<ArchivosCargadosDTO> getAllByAgrupadorAndEstadoCargue(String agrupador, Set<String> estadosCargue, Pageable page);
 
 	/**
 	 * Metodo encagado de listar los archivos cargados sin procesar de definitiva

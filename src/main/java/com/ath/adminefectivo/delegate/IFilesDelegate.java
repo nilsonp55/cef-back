@@ -8,6 +8,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.ath.adminefectivo.dto.ArchivosCargadosDTO;
 import com.ath.adminefectivo.dto.DownloadDTO;
+import com.ath.adminefectivo.dto.DownloadGestionArchivosDTO;
+import com.ath.adminefectivo.dto.GestionArchivosDTO;
 
 public interface IFilesDelegate {
 
@@ -91,5 +93,18 @@ public interface IFilesDelegate {
 	 * @author johan.chaparro
 	 */
 	DownloadDTO descargarArchivoLiqProcesado(Long idArchivoCargado);
+	
+	/**
+	 * Obtiene los registros de los archivos de liquidacion y los retorna como un inputstream
+	 * para que pueda ser descargado
+	 * 
+	 * @param idArchivoCargado
+	 * @return DownloadDTO
+	 * @author johan.chaparro
+	 */
+	DownloadGestionArchivosDTO descargarGestionArchivosLiq(GestionArchivosDTO Archivos);
+	
+	// PARA BORRAR HENRY
+	void saveFileFromDTO(DownloadGestionArchivosDTO downloadGestionArchivosDTO);
 
 }

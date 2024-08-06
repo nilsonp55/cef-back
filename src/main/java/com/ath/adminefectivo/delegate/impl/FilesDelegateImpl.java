@@ -2,6 +2,7 @@ package com.ath.adminefectivo.delegate.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -9,12 +10,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,15 +33,19 @@ import com.ath.adminefectivo.delegate.IArchivosLiquidacionDelegate;
 import com.ath.adminefectivo.delegate.IFilesDelegate;
 import com.ath.adminefectivo.dto.ArchivosCargadosDTO;
 import com.ath.adminefectivo.dto.DownloadDTO;
+import com.ath.adminefectivo.dto.DownloadGestionArchivosDTO;
+import com.ath.adminefectivo.dto.GestionArchivosDTO;
 import com.ath.adminefectivo.dto.RegistrosCargadosDTO;
 import com.ath.adminefectivo.dto.compuestos.ErroresCamposDTO;
 import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoDTO;
 import com.ath.adminefectivo.dto.compuestos.ValidacionLineasDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.ArchivosCargados;
+import com.ath.adminefectivo.entities.CostosTransporte;
 import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.exception.ConflictException;
 import com.ath.adminefectivo.exception.NegocioException;
+import com.ath.adminefectivo.repositories.ICostosTransporteRepository;
 import com.ath.adminefectivo.repositories.IGeneralRepository;
 import com.ath.adminefectivo.service.IArchivosCargadosService;
 import com.ath.adminefectivo.service.IFilesService;
@@ -70,6 +81,9 @@ public class FilesDelegateImpl implements IFilesDelegate {
 	
 	@Autowired
 	IArchivosLiquidacionDelegate archivosLiquidacion;
+	
+	@Autowired
+	ICostosTransporteRepository costosTransporteRepository;
 
 	/**
 	 * {@inheritDoc}
@@ -243,7 +257,7 @@ public class FilesDelegateImpl implements IFilesDelegate {
 	 */
 	public DownloadDTO descargarArchivoLiqProcesado(Long idArchivoCargado) {
 
-		DownloadDTO downloadDTO = new DownloadDTO();
+		DownloadDTO downloadDTO = new DownloadDTO();		
 		List<RegistrosCargadosDTO> listaRegistros = archivosLiquidacion.consultarDetalleArchivo(idArchivoCargado);
 
 		if (!listaRegistros.isEmpty()) {
@@ -268,7 +282,107 @@ public class FilesDelegateImpl implements IFilesDelegate {
 
 		return downloadDTO;
 	}
+	
+	/**
+	 * Este método se encarga de consultar los registros contenidos en los archivos de liquidación.
+	 * Los resultados de la consulta se devuelven como un InputStream, permitiendo así su descarga.
+	 * En caso de que los archivos contengan errores, el método implementa una lógica especial que 
+	 * añade los detalles de dichos errores en la línea correspondiente.
+	 * 
+	 * @param idArchivoCargado
+	 * @return DownloadDTO
+	 * @author johan.chaparro
+	 */
+	public DownloadGestionArchivosDTO descargarGestionArchivosLiq(GestionArchivosDTO Archivos) {
 
+		DownloadDTO downloadDTO = new DownloadDTO();
+		DownloadGestionArchivosDTO downloadGestionArchivosDTO = new DownloadGestionArchivosDTO();
+		List<Long> idArchivos = Archivos.getIdArchivos();
+
+        if (idArchivos.isEmpty()) {
+            return downloadGestionArchivosDTO;
+        }
+
+        // Si la lista contiene solo un elemento, retornar el resultado del metodo
+        if (idArchivos.size() == 1) {
+        	downloadDTO = descargarArchivoLiqProcesado(idArchivos.get(0));
+        	return convertToDownloadBase64(downloadDTO);
+        }
+
+        // Si la lista contiene más de un elemento, crear un archivo .zip
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        try (ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream)) {
+            for (Long idArchivo : idArchivos) {
+                DownloadDTO archivoDTO = descargarArchivoLiqProcesado(idArchivo);
+                buildZip(zipOutputStream, archivoDTO);
+            }
+        } catch (IOException e) {
+            // Manejar la excepción de manera adecuada
+            e.printStackTrace();
+        }
+
+        // Configurar el DownloadDTO para el archivo .zip
+        downloadDTO.setFile(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()));
+        downloadDTO.setName("RemisionArchivosLiquidacionTDVs.zip");
+
+        return convertToDownloadBase64(downloadDTO);
+	}
+	
+	// BORRAR HENRY
+	public void saveFileFromDTO(DownloadGestionArchivosDTO downloadGestionArchivosDTO) {
+		
+	    try {
+	        // Decodificar la cadena Base64 a un arreglo de bytes
+	        byte[] fileBytes = Base64.getDecoder().decode(downloadGestionArchivosDTO.getFile());
+
+	        // Crear un objeto File para la ruta en el disco
+	        File file = Paths.get("C:\\Users\\henry.montoya\\Documents\\Test\\RemisionArchivosLiquidacionTDVs.zip").toFile();
+
+	        // Escribir el arreglo de bytes en el archivo
+	        try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
+	            fileOutputStream.write(fileBytes);
+	        }
+	    } catch (IOException e) {
+	        // Manejar la excepción de manera adecuada
+	        e.printStackTrace();
+	    }
+	}
+	    	
+	private void buildZip(ZipOutputStream zipOutputStream, DownloadDTO archivoDTO) throws IOException {
+        ZipEntry zipEntry = new ZipEntry(archivoDTO.getName());
+        zipOutputStream.putNextEntry(zipEntry);
+        byte[] buffer = new byte[1024];
+        int len;
+        while ((len = archivoDTO.getFile().read(buffer)) > 0) {
+            zipOutputStream.write(buffer, 0, len);
+        }
+        zipOutputStream.closeEntry();
+    }
+	
+	public DownloadGestionArchivosDTO convertToDownloadBase64(DownloadDTO downloadDTO) {
+	    // Convertir InputStream a byte[]
+	    byte[] fileBytes = null;
+	    
+		try {
+			fileBytes = downloadDTO.getFile().readAllBytes();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	    // Convertir byte[] a String en Base64
+	    String fileBase64 = Base64.getEncoder().encodeToString(fileBytes);
+
+	    // Crear y retornar DownloadGestionArchivosDTO
+	    DownloadGestionArchivosDTO downloadGestionArchivosDTO = new DownloadGestionArchivosDTO();
+	    downloadGestionArchivosDTO.setId(downloadDTO.getId());
+	    downloadGestionArchivosDTO.setName(downloadDTO.getName());
+	    downloadGestionArchivosDTO.setUrl(downloadDTO.getUrl());
+	    downloadGestionArchivosDTO.setFile(fileBase64);
+
+	    return downloadGestionArchivosDTO;
+	}
+		
 	private List<RegistrosCargadosDTO> obtenerErrores(List<RegistrosCargadosDTO> listaRegistros, Long idArchivoCargado) {
 	    try {
 	        actualizaPrimerRegistro(listaRegistros);

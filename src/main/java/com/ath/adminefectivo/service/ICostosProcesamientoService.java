@@ -19,5 +19,9 @@ public interface ICostosProcesamientoService {
 											String nombrePuntoCargo, 
 											String ciudadFondo, 
 											String nombreTipoServicio);
+	
+	List<CostosProcesamiento> getByIdArchivoCargado(Long idArchivo);
+	
+	void aceptarConciliacionRegistro(Long idArchivoCargado);
 
 }
