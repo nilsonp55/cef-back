@@ -1,6 +1,7 @@
 package com.ath.adminefectivo.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.transaction.RollbackException;
 
@@ -12,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -25,7 +27,10 @@ import com.ath.adminefectivo.controller.endpoints.FilesEndpoint;
 import com.ath.adminefectivo.delegate.IFilesDelegate;
 import com.ath.adminefectivo.dto.ArchivosCargadosDTO;
 import com.ath.adminefectivo.dto.DownloadDTO;
+import com.ath.adminefectivo.dto.DownloadGestionArchivosDTO;
+import com.ath.adminefectivo.dto.GestionArchivosDTO;
 import com.ath.adminefectivo.dto.MaestrosDefinicionArchivoDTO;
+import com.ath.adminefectivo.dto.compuestos.ArchivosLiquidacionListDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
@@ -197,5 +202,23 @@ public class FilesController {
 		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, Constantes.PARAMETER_HEADER + file.getName())
 				.body(new InputStreamResource(file.getFile()));
 	}
+	
+	/**
+	 * Servicio para la descarga de los archivos de liquidacion posterior al procesamiento 
+	 * @param idArchivo
+	 * @return ResponseEntity<InputStreamResource>
+	 * @author johan.chaparro
+	 */
+	@PostMapping("/descargar-gestion-archivos-liquidacion")
+	@ApiOperation(value = "Download files settlement", notes = "")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = SwaggerConstants.RESPONSE_MESSAGE_200) })
+	public ResponseEntity<DownloadGestionArchivosDTO> downloadGestionFiles(
+	        @RequestBody GestionArchivosDTO archivos)  {
 
+		DownloadGestionArchivosDTO files = filesDelegate.descargarGestionArchivosLiq(archivos);
+
+	    return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, Constantes.PARAMETER_HEADER + files.getName())
+	            .body(files);
+	}
+		
 }

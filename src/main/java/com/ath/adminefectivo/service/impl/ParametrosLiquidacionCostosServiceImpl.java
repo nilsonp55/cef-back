@@ -106,7 +106,5 @@ public class ParametrosLiquidacionCostosServiceImpl implements IParametrosLiquid
 		
 		return parametrosLiquidacionCostosRepositoryFlat.save(actualizar);
 		
-	}
-
-	
+	}	
 }

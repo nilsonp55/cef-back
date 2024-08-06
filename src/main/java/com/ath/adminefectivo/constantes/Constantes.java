@@ -745,5 +745,6 @@ public static final String DELETE_SEPARADORES = "";
 	public static final String ESTADO_OPERACION_NO_REALIZADA = "NO PUDO REALIZAR LA OPERACION";
 	public static final String OPERACION_RECHAZAR = "RECHAZAR";
 	public static final String OPERACION_ACEPTAR = "ACEPTAR";
-
+	public static final String ESTADO_CONCILIACION_AUTOMATICO = "AUTOMATICO";
+	public static final String ESTADO_CONCILIACION_ACEPTADO = "ACEPTADO";
 }
