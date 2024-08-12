@@ -77,10 +77,8 @@ public class GestionArchivosLiquidacionDelegateImpl implements IGestionArchivosL
 	        
 	        dtoResponseList.add(archivoLiquidacionDTO);
 	    });
-	    	  
-	    Page<ArchivosLiquidacionDTO> responsePage = archivosLiquidacion.getAll(0, 0, false, "", Optional.of(dtoResponseList));
-	    	    
-		return responsePage;
+
+		return archivosLiquidacion.getAll(0, 0, false, "", Optional.of(dtoResponseList));
 	}
 	
 	
@@ -121,20 +119,20 @@ public class GestionArchivosLiquidacionDelegateImpl implements IGestionArchivosL
 		//1. Obtener todos los registros que pertenecen al archivo
 		var archivoCargado =  archivosCargadosService.consultarArchivoById(idArchivo);
 		var idModelo = archivoCargado.getIdModeloArchivo();
-		archivoAceptar.setEstado("NO CONCILIADO");
+
+		archivoAceptar.setEstado(Constantes.ESTADO_NO_CONCILIADO);
 		
 		if (idModelo.equalsIgnoreCase(Constantes.MAESTRO_ARCHIVO_TRANSPORTE))
 		{
-			archivoAceptar = aceptarArchivoTransporte(archivoAceptar, archivoCargado);
+			return aceptarArchivoTransporte(archivoAceptar, archivoCargado);
 		}
-		
+
 		if (idModelo.equalsIgnoreCase(Constantes.MAESTRO_ARCHIVO_PROCESAMIENTO))
 		{
 			//Validacion de transporte
-			archivoAceptar = aceptarArchivoProcesamiento(archivoAceptar, archivoCargado);
-			
+			return aceptarArchivoProcesamiento(archivoAceptar, archivoCargado);
 		}
-		
+
 		return archivoAceptar;
 		
 	}
@@ -196,7 +194,7 @@ public class GestionArchivosLiquidacionDelegateImpl implements IGestionArchivosL
 			}
 			else
 			{
-				archivoAceptar.setEstado("NO CONCILIADO");
+				archivoAceptar.setEstado(Constantes.ESTADO_NO_CONCILIADO);
 			}
 		
 	   }
@@ -262,7 +260,7 @@ public class GestionArchivosLiquidacionDelegateImpl implements IGestionArchivosL
 			}
 			else
 			{
-				archivoAceptar.setEstado("NO CONCILIADO");
+				archivoAceptar.setEstado(Constantes.ESTADO_NO_CONCILIADO);
 			}
 		
 		}

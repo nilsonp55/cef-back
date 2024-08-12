@@ -293,11 +293,11 @@ public class FilesDelegateImpl implements IFilesDelegate {
 	 * @return DownloadDTO
 	 * @author johan.chaparro
 	 */
-	public DownloadGestionArchivosDTO descargarGestionArchivosLiq(GestionArchivosDTO Archivos) {
+	public DownloadGestionArchivosDTO descargarGestionArchivosLiq(GestionArchivosDTO archivos) {
 
 		DownloadDTO downloadDTO = new DownloadDTO();
 		DownloadGestionArchivosDTO downloadGestionArchivosDTO = new DownloadGestionArchivosDTO();
-		List<Long> idArchivos = Archivos.getIdArchivos();
+		List<Long> idArchivos = archivos.getIdArchivos();
 
         if (idArchivos.isEmpty()) {
             return downloadGestionArchivosDTO;
@@ -318,7 +318,6 @@ public class FilesDelegateImpl implements IFilesDelegate {
             }
         } catch (IOException e) {
             // Manejar la excepción de manera adecuada
-            e.printStackTrace();
         }
 
         // Configurar el DownloadDTO para el archivo .zip
@@ -344,7 +343,6 @@ public class FilesDelegateImpl implements IFilesDelegate {
 	        }
 	    } catch (IOException e) {
 	        // Manejar la excepción de manera adecuada
-	        e.printStackTrace();
 	    }
 	}
 	    	
@@ -366,8 +364,7 @@ public class FilesDelegateImpl implements IFilesDelegate {
 		try {
 			fileBytes = downloadDTO.getFile().readAllBytes();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//Manejar la excepción de manera adecuada
 		}
 
 	    // Convertir byte[] a String en Base64
