@@ -94,6 +94,12 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.instancio</groupId>
+    		<artifactId>instancio-core</artifactId>
+    		<version>2.10.0</version>
+    		<scope>test</scope>
+		</dependency>
 		<!-- dependencia para el manejo de logs -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

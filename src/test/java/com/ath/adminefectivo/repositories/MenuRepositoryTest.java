@@ -38,7 +38,6 @@ class MenuRepositoryTest {
 			.usuarioModificacion("user1")
 			.build();
 		
-		menuRepository.save(menu);
 	}
 	
 	@DisplayName("Crear menu nuevo devolver menu creado")
@@ -59,6 +58,7 @@ class MenuRepositoryTest {
 	@Test
 	void givenMenuListWhenFindAllThenMenuList(){
 		// given - precondition or setup
+		menuRepository.save(menu);
 		
 		// when -  action or the behaviour that we are going test
 		List<Menu> menuList = menuRepository.findAll();
@@ -70,15 +70,16 @@ class MenuRepositoryTest {
 	@DisplayName("Buscar por IdMenu y retornar objeto Menu")
 	@Test
 	void givenMenuObjectWhenFindByIdThenReturnMenuObject() {
-		//given - precondition or setup		
-		
-		// when -  action or the behaviour that we are going test
+		// given - precondition or setup
+		menuRepository.save(menu);
+
+		// when - action or the behaviour that we are going test
 		Optional<Menu> menuFind = menuRepository.findById(menu.getIdMenu());
-		
+
 		// then - verify the output
 		assertThat(menuFind).isNotEmpty();
-		assertThat(menuFind.get().getIdMenu()).isEqualTo(menu.getIdMenu());
-		
+		menuFind.ifPresent(m -> assertThat(m.getIdMenu()).isEqualTo(menu.getIdMenu()));
+
 	}
 	
 	@DisplayName("Actualizar objeto Menu y retornar menu actualizado")
@@ -87,6 +88,7 @@ class MenuRepositoryTest {
 		//given - precondition or setup
 		Date fechaCreacion = Date.from(Instant.now());
 		Date fechaModificacion = Date.from(Instant.now());
+		menuRepository.save(menu);
 		Menu menuFind = menuRepository.findById(menu.getIdMenu()).get();
 		
 		// when -  action or the behaviour that we are going test
@@ -120,6 +122,7 @@ class MenuRepositoryTest {
 	@Test
     void givenMenuObjectWhenDeleteThenRemoveMenu(){
 		//given - precondition or setup
+		menuRepository.save(menu);
 		
 		// when -  action or the behaviour that we are going test
 		menuRepository.delete(menu);

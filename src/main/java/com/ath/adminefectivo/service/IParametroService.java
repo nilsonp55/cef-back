@@ -65,5 +65,12 @@ public interface IParametroService {
 	 * @author CamiloBenavides
 	 */
 	boolean actualizarValorParametro(String codigo, String valor);
+	
+	/**
+	 * Actualiza el valor de un parámetro
+	 * @param parametro DTO 
+	 * @return DTO Parametro
+	 */
+	ParametroDTO actualizarValorParametro(ParametroDTO parametro);
 
 }

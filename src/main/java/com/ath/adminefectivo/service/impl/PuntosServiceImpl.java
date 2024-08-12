@@ -343,4 +343,11 @@ public class PuntosServiceImpl implements IPuntosService {
     return mapaPuntos;
   }
 
+  @Override
+  public void eliminarPunto(Integer codigoPunto) throws Exception {
+    log.debug("Eliminar punto: {}", codigoPunto);
+    puntosRepository.deleteById(codigoPunto);
+    log.debug("Punto Eliminado: {}", codigoPunto);
+  }
+  
 }

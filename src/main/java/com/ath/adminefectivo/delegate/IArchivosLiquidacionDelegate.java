@@ -1,7 +1,6 @@
 package com.ath.adminefectivo.delegate;
 
 import com.ath.adminefectivo.dto.ArchivosLiquidacionDTO;
-import com.ath.adminefectivo.dto.DownloadDTO;
 import com.ath.adminefectivo.dto.compuestos.ArchivosLiquidacionListDTO;
 import com.ath.adminefectivo.dto.RegistrosCargadosDTO;
 import java.util.List;
