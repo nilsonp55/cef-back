@@ -317,7 +317,10 @@ public class FilesDelegateImpl implements IFilesDelegate {
                 buildZip(zipOutputStream, archivoDTO);
             }
         } catch (IOException e) {
-            // Manejar la excepción de manera adecuada
+            
+        	throw new NegocioException(ApiResponseCode.ERROR_CONTENIDO_ARCHIVO_ZIP.getCode(),
+			          ApiResponseCode.ERROR_CONTENIDO_ARCHIVO_ZIP.getDescription(),
+			          ApiResponseCode.ERROR_CONTENIDO_ARCHIVO_ZIP.getHttpStatus());
         }
 
         // Configurar el DownloadDTO para el archivo .zip
@@ -326,26 +329,7 @@ public class FilesDelegateImpl implements IFilesDelegate {
 
         return convertToDownloadBase64(downloadDTO);
 	}
-	
-	// BORRAR HENRY
-	public void saveFileFromDTO(DownloadGestionArchivosDTO downloadGestionArchivosDTO) {
-		
-	    try {
-	        // Decodificar la cadena Base64 a un arreglo de bytes
-	        byte[] fileBytes = Base64.getDecoder().decode(downloadGestionArchivosDTO.getFile());
-
-	        // Crear un objeto File para la ruta en el disco
-	        File file = Paths.get("C:\\Users\\henry.montoya\\Documents\\Test\\RemisionArchivosLiquidacionTDVs.zip").toFile();
-
-	        // Escribir el arreglo de bytes en el archivo
-	        try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
-	            fileOutputStream.write(fileBytes);
-	        }
-	    } catch (IOException e) {
-	        // Manejar la excepción de manera adecuada
-	    }
-	}
-	    	
+		    	
 	private void buildZip(ZipOutputStream zipOutputStream, DownloadDTO archivoDTO) throws IOException {
         ZipEntry zipEntry = new ZipEntry(archivoDTO.getName());
         zipOutputStream.putNextEntry(zipEntry);
@@ -364,7 +348,10 @@ public class FilesDelegateImpl implements IFilesDelegate {
 		try {
 			fileBytes = downloadDTO.getFile().readAllBytes();
 		} catch (IOException e) {
-			//Manejar la excepción de manera adecuada
+
+			throw new NegocioException(ApiResponseCode.ERROR_ARCHIVOS_NO_EXISTE_BD.getCode(),
+					ApiResponseCode.ERROR_ARCHIVOS_NO_EXISTE_BD.getDescription(),
+					ApiResponseCode.ERROR_ARCHIVOS_NO_EXISTE_BD.getHttpStatus());
 		}
 
 	    // Convertir byte[] a String en Base64

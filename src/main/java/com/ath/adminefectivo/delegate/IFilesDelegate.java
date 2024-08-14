@@ -103,8 +103,5 @@ public interface IFilesDelegate {
 	 * @author johan.chaparro
 	 */
 	DownloadGestionArchivosDTO descargarGestionArchivosLiq(GestionArchivosDTO archivos);
-	
-	// PARA BORRAR HENRY
-	void saveFileFromDTO(DownloadGestionArchivosDTO downloadGestionArchivosDTO);
 
 }
