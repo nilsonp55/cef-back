@@ -2,6 +2,7 @@ package com.ath.adminefectivo.repositories;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -140,5 +141,23 @@ public interface ArchivosCargadosRepository extends JpaRepository<ArchivosCargad
 	 * @author duvan.naranjo
 	 */
 	List<ArchivosCargados> findByFechaArchivo(Date fechaArchivo);
+	
+	/**
+	 * Metodo encargado de realizar la consulta de los registros cargados cierre de conciliacion
+	 * para el proceso de liquidacion de costos
+	 * 
+	 * @param agrupador
+	 * @param estadosCargue
+	 * @return Page<ArchivosCargados>
+	 * @author johan.chaparro
+	 */
+	@Query("select ac from ArchivosCargados ac " +
+		       "where idModeloArchivo IN (" +
+		       "select idMaestroDefinicionArchivo from MaestroDefinicionArchivo " +
+		       "where agrupador = ?1) " +
+		       "and estado = ?2 " +
+		       "and estadoCargue IN ?3 " +
+		       "order by fechaArchivo desc, estadoCargue asc")
+	Page<ArchivosCargados> getArchivosByAgrupadorAndEstadoCargue(String agrupador, String estado, Set<String> estadoCargue, Pageable page);
 
 }
