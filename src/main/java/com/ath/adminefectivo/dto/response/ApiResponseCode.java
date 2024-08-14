@@ -733,6 +733,12 @@ public enum ApiResponseCode {
 	 * Error al obtener el contenido de un archivo en un repositorio local
 	 */
 	ERROR_CONTENIDO_ARCHIVO_PROCESADO ("E979", "Ocurrió un error al intentar obtener el contenido del archivo procesado, por favor consulta con el administrador",
+			HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Error al obtener el contenido de un archivo en un repositorio local
+	 */
+	ERROR_CONTENIDO_ARCHIVO_ZIP ("E980", "Ocurrió un error al intentar comprimir los archivos. No se pudo crear el archivo .zip. Por favor, consulta con el administrador.",
 			HttpStatus.PRECONDITION_FAILED);
 	
 	/**
