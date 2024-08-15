@@ -52,6 +52,5 @@ public class DetallesLiquidacionCostoFlatEntity {
 	private Integer residuoFlat;
 	
 	@Column(name = "VALOR_DENOMINACION")
-	private Double valorDenominacionFlat;
-	
+	private Double valorDenominacionFlat;	
 }

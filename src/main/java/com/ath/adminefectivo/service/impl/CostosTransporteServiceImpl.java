@@ -997,4 +997,15 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 		return continuar;
 	}
 	
+	public List<CostosTransporte> getByIdArchivoCargado(Long idArchivo)
+	{
+		return costosTransporteRepository.findByIdArchivoCargado(idArchivo);
+	}
+	
+	
+	public void aceptarConciliacionRegistro(Long idArchivoCargado)
+	{
+		costosTransporteRepository.actualizarEstadoByIdArchivoCargado(idArchivoCargado, Constantes.ESTADO_CONCILIACION_ACEPTADO);
+	}
+	
 }
