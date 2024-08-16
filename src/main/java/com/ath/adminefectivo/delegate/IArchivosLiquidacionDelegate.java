@@ -1,10 +1,11 @@
 package com.ath.adminefectivo.delegate;
 
 import com.ath.adminefectivo.dto.ArchivosLiquidacionDTO;
-import com.ath.adminefectivo.dto.DownloadDTO;
 import com.ath.adminefectivo.dto.compuestos.ArchivosLiquidacionListDTO;
 import com.ath.adminefectivo.dto.RegistrosCargadosDTO;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoDTO;
 
@@ -14,7 +15,7 @@ public interface IArchivosLiquidacionDelegate {
      * @return List<ArchivosLiquidacionDTO>
      * @author hector.mercado
      */
-	Page<ArchivosLiquidacionDTO> getAll(int start, int end, boolean content, String fileName);
+	Page<ArchivosLiquidacionDTO> getAll(int start, int end, boolean content, String fileName, Optional<List<ArchivosLiquidacionDTO>> dtoResponseListOptional);
 
 	ArchivosLiquidacionListDTO eliminarArchivo(ArchivosLiquidacionListDTO archivosLiquidacion);
     

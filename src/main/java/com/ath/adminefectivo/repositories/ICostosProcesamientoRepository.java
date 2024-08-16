@@ -3,13 +3,15 @@ package com.ath.adminefectivo.repositories;
 import java.util.Date;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import com.ath.adminefectivo.entities.CostosProcesamiento;
-import com.ath.adminefectivo.entities.CostosTransporte;
 
 public interface ICostosProcesamientoRepository extends JpaRepository<CostosProcesamiento, Long>,
 QuerydslPredicateExecutor<CostosProcesamiento>, PagingAndSortingRepository<CostosProcesamiento, Long> {
@@ -43,4 +45,15 @@ QuerydslPredicateExecutor<CostosProcesamiento>, PagingAndSortingRepository<Costo
 			String nombreTipoServicio,
 			String estadoConciliacion);
 
+	
+	@Query("SELECT ct FROM CostosProcesamiento ct " 
+	        + " WHERE idArchivoCargado =:idArchivo "
+			)
+	List<CostosProcesamiento> findByIdArchivoCargado(Long idArchivo);
+	
+	@Transactional
+	@Modifying
+    @Query(value = "UPDATE COSTOS_PROCESAMIENTO SET ESTADO_CONCILIACION = :estado WHERE ID_ARCHIVO_CARGADO = :idArchivoCargado", nativeQuery = true)
+	void actualizarEstadoByIdArchivoCargado(Long idArchivoCargado, String estado);
+	
 }

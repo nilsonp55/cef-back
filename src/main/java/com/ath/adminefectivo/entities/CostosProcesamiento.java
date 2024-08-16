@@ -146,6 +146,8 @@ public class CostosProcesamiento {
 	
 	@Column(name = "TIPO_TRANSACCION")
 	private Integer tipoTransaccion;
-
+	
+	@Column(name = "CODIGO_TDV")
+	private String codigoTdv;
 
 }
