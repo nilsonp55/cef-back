@@ -62,7 +62,7 @@ QuerydslPredicateExecutor<CostosTransporte>, PagingAndSortingRepository<CostosTr
 			String estadoConciliacionTransporte);
 
 	@Query("SELECT ct FROM CostosTransporte ct " 
-	        + " WHERE idArchivoCargado =:idArchivo "
+	        + " WHERE idArchivoCargadoTransporte =:idArchivo "
 			)
 	List<CostosTransporte> findByIdArchivoCargado(Long idArchivo);
 	
