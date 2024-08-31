@@ -410,7 +410,7 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 		if (costo.getEstadoConciliacion().equals(Dominios.ESTADO_VALIDACION_EN_CONCILIACION))
 		{
 			var parametro = new ParametrosLiquidacionCosto();
-		
+			
 			var banco = bancoService.findBancoByAbreviatura(costo.getEntidad());
 			
 			parametro.setCodigoBanco(banco.getCodigoPunto());

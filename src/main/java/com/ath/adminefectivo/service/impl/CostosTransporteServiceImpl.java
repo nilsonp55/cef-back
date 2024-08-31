@@ -601,6 +601,8 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 			
 			ObjectMapper objectMapper = new ObjectMapper();
 			ParametrosLiquidacionCosto parametroLiquidacionCostoTransprote;
+			ValoresLiquidadosFlatEntity valoresLiquidadosFlat;
+			
 			//Buscar valores antiguos
 			List<EstadoConciliacionParametrosLiquidacion> oldListEstadoConciliacion = estadoConciliacionParametrosLiquidacionService.buscarLiquidacion(idLiquidacion, 2);
 			try {
@@ -609,11 +611,22 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 					EstadoConciliacionParametrosLiquidacion oldEstadoConciliacion = oldListEstadoConciliacion.get(0);
 					
 					parametroLiquidacionCostoTransprote = objectMapper.readValue(oldEstadoConciliacion.getDatosParametrosLiquidacionCostos(), ParametrosLiquidacionCosto.class);
+					valoresLiquidadosFlat = objectMapper.readValue(oldEstadoConciliacion.getDatosValoresLiquidados(), ValoresLiquidadosFlatEntity.class);
+					
 					if (Objects.nonNull(parametroLiquidacionCostoTransprote))
 					{
 						parametrosLiquidacionCostosService.f2actualizarParametrosLiquidacionCostos(parametroLiquidacionCostoTransprote);
 					}
+
 					paso = true;
+
+					if (Objects.nonNull(valoresLiquidadosFlat))
+					{
+						valoresLiquidadosFlatService.f2actualizarvaloresLiquidadosRepository(valoresLiquidadosFlat);
+					}
+					
+					paso = true;
+					
 				}
 
 			} catch (JsonProcessingException e) {
@@ -890,7 +903,7 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 			{	
 				salvarValoresLiquidadosLiquidacionCostos(liquidacionCostosTransporteParametro, valoresLiquidadosParametro);
 			
-				liquidacionCostosTransporteParametro.setTipoServicio(costoTransporteDif.getTipoPedidoTransporte());
+				liquidacionCostosTransporteParametro.setTipoOperacion(costoTransporteDif.getNombreTipoServicioTransporte());
 				liquidacionCostosTransporteParametro.setEscala(costoTransporteDif.getEscalaTransporte());
 				liquidacionCostosTransporteParametro.setValorBilletes(costoTransporteDif.getValorTransportadoBillete().doubleValue());
 				liquidacionCostosTransporteParametro.setValorMonedas(costoTransporteDif.getValorTransportadoMoneda().doubleValue());
@@ -898,9 +911,23 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 				liquidacionCostosTransporteParametro.setNumeroBolsas(costoTransporteDif.getNumeroBolsasMonedaTransporte().intValue());
 				
 				valoresLiquidadosParametro.setCostoFijoParadaFlat(costoTransporteDif.getCostoFijoTransporte().doubleValue());
-				valoresLiquidadosParametro.setMilajePorRuteoFlat(costoTransporteDif.getCostoMilajeTransporte().doubleValue());
+				
+				double milajeVerificacionFlat = valoresLiquidadosParametro.getMilajeVerificacionFlat() != null 
+					    ? valoresLiquidadosParametro.getMilajeVerificacionFlat() 
+					    : 0;
+				
+				valoresLiquidadosParametro.setMilajePorRuteoFlat(UtilsString.calcularDiferenciaAbsoluta(
+						costoTransporteDif.getCostoMilajeTransporte().doubleValue(),
+						milajeVerificacionFlat));
 				valoresLiquidadosParametro.setCostoMonedaFlat(costoTransporteDif.getCostoBolsaTransporte().doubleValue());
-				valoresLiquidadosParametro.setCostoCharterFlat(costoTransporteDif.getCostoFletesTransporte().doubleValue());
+				
+				double tasaAeroportuariaFlat = valoresLiquidadosParametro.getTasaAeroportuariaFlat() != null 
+					    ? valoresLiquidadosParametro.getTasaAeroportuariaFlat() 
+					    : 0;
+				
+				valoresLiquidadosParametro.setCostoCharterFlat(UtilsString.calcularDiferenciaAbsoluta(
+						costoTransporteDif.getCostoFletesTransporte().doubleValue(),
+						tasaAeroportuariaFlat));
 				valoresLiquidadosParametro.setCostoEmisarioFlat(costoTransporteDif.getCostoEmisariosTransporte().doubleValue());
 				costoTransporteDif.getSubtotalTransporte(); //Revisar donde conseguir este parámetro
 							
