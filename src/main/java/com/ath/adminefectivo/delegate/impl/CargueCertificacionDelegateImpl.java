@@ -259,8 +259,7 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 		log.info("Archivos procesados: {}", validacionesArchivos.size());
 
 		this.procesarValidacionRealizada(bitacoraDTO, validacionesArchivos);
-		bitacoraDTO.setFechaHoraFinal(new Date());
-		bitacoraAutomaicosService.guardarBitacoraAutomaticos(bitacoraDTO);
+		
 		log.info("Finaliza procesar certificacion: {}", bitacoraDTO.getFechaHoraFinal().toString());
 	}
 
