@@ -693,13 +693,9 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 						.valueOf(validacionLineasDTO.getContenido().get(maestroDefinicion.getCampoMultiformato()));
 				validacionLineasDTO.setTipo(tipo);
 			} catch (ArrayIndexOutOfBoundsException e) {
-				throw new NegocioException(ApiResponseCode.ERROR_MULTIFORMATO_POSICION.getCode(),
-						ApiResponseCode.ERROR_MULTIFORMATO_POSICION.getDescription(),
-						ApiResponseCode.ERROR_MULTIFORMATO_POSICION.getHttpStatus());
+			  log.error("Validacion archivo: {}", ApiResponseCode.ERROR_MULTIFORMATO_POSICION.getDescription());
 			} catch (NumberFormatException e) {
-				throw new NegocioException(ApiResponseCode.ERROR_MULTIFORMATO_INVALIDO.getCode(),
-						ApiResponseCode.ERROR_MULTIFORMATO_INVALIDO.getDescription(),
-						ApiResponseCode.ERROR_MULTIFORMATO_INVALIDO.getHttpStatus());
+			  log.error("Validacion archivo: {}", ApiResponseCode.ERROR_MULTIFORMATO_INVALIDO.getDescription());
 			}
 		} else {
 			validacionLineasDTO.setTipo(Constantes.ID_MULTIFORMATO_STD);
