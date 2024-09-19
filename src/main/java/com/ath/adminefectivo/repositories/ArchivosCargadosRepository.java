@@ -75,6 +75,21 @@ public interface ArchivosCargadosRepository extends JpaRepository<ArchivosCargad
 			+ "select idMaestroDefinicionArchivo from MaestroDefinicionArchivo "
 			+ "where agrupador = ?1) and estado = ?2 order by fechaArchivo desc, estadoCargue asc")
 	Page<ArchivosCargados> getArchivosByAgrupador(String agrupador, String estado, Pageable page);
+	
+	/**
+	 * Metodo encargado de realizar la consulta de los registros cargados sin
+	 * procesar de hoy
+	 * 
+	 * @param agrupador
+	 * @param estado
+	 * @param fechaProceso
+	 * @return Page<ArchivosCargados>
+	 * @author prv_nparra
+	 */
+	@Query("select ac from ArchivosCargados ac " + "where idModeloArchivo IN ("
+			+ "select idMaestroDefinicionArchivo from MaestroDefinicionArchivo "
+			+ "where agrupador = ?1) and estado = ?2 and fechaArchivo = ?3 order by fechaArchivo desc, estadoCargue asc")
+	Page<ArchivosCargados> getArchivosByAgrupadorAndFechaArchivo(String agrupador, String estado, Date fechaProceso, Pageable page);
 
 	/**
 	 * Metodo encargado de realizar la consulta de los registros cargados sin
