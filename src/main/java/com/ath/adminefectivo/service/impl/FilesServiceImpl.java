@@ -163,7 +163,7 @@ public class FilesServiceImpl implements IFilesService {
     if (Boolean.TRUE.equals(s3Bucket)) {
       contenidoCarpeta = s3Util.getObjectsFromPathS3(url);
     } else {
-      File carpeta = new File(TEMPORAL_URL);
+      File carpeta = new File(url);
       contenidoCarpeta = Arrays.asList(carpeta.list());
     }
 
@@ -301,14 +301,12 @@ public class FilesServiceImpl implements IFilesService {
     String[] arregloNombre = nombreArchivo.split(Constantes.EXPRESION_REGULAR_PUNTO);
     nombreArchivo = arregloNombre[0].concat("-" + postfijo);
     Path destinoPath =
-        FileSystems.getDefault().getPath(TEMPORAL_URL+"\\Procesados", nombreArchivo.concat("." + arregloNombre[1]));
-    Path originPath =
-            FileSystems.getDefault().getPath(TEMPORAL_URL, arregloNombre[0].concat("." + arregloNombre[1]));
+        FileSystems.getDefault().getPath(urlDestino, nombreArchivo.concat("." + arregloNombre[1]));
     try {
       if (Boolean.TRUE.equals(s3Bucket)) {
         s3Util.moverObjeto(origenPath.toString(), destinoPath.toString());
       } else {
-        Files.move(originPath, destinoPath);
+        Files.move(origenPath, destinoPath);
       }
 
     } catch (IOException e) {
@@ -398,5 +396,4 @@ public class FilesServiceImpl implements IFilesService {
       throw new IllegalArgumentException();
     }
   }
-
 }
