@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ath.adminefectivo.constantes.Constantes;
+import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.constantes.Parametros;
 import com.ath.adminefectivo.delegate.IArchivosLiquidacionDelegate;
 import com.ath.adminefectivo.delegate.IFilesDelegate;
@@ -268,7 +269,7 @@ public class FilesDelegateImpl implements IFilesDelegate {
 
 				obtenerErrores(listaRegistros, idArchivoCargado);
 			}
-
+			
 			downloadDTO.setId(idArchivoCargado);
 			downloadDTO.setName(archivosCargados.getNombreArchivo());
 			downloadDTO.setFile(obtenerContenidos(listaRegistros)); // InputStream del archivo	
