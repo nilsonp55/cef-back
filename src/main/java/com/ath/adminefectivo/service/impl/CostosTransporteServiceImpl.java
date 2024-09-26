@@ -468,7 +468,7 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 				
 			    if (continuarFlag) {
 					//actualizar estado de registro inicial
-					costoTransporte.setIdLiquidacionTransporte(0l);
+					costoTransporte.setIdLiquidacionTransporte(idLiquidacionTransporte);
 					costoTransporte.setTipoTransaccionTransporte(0);
 					costoTransporte.setEstadoConciliacionTransporte(Dominios.ESTADO_VALIDACION_EN_CONCILIACION);
 					costoTransporte.setUsuarioModificacionTransporte(Constantes.USUARIO_PROCESA_ARCHIVO);
@@ -1009,11 +1009,24 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 			TypeReference<List<DetallesLiquidacionCostoFlatEntity>> typeReference = new TypeReference<List<DetallesLiquidacionCostoFlatEntity>>() {};
 			detallesLiquidacionCosto = objectMapper.readValue(estadoConciliacionParametrosLiquidacion.getDatosDetallesLiquidados(),typeReference);
 
-			if (Objects.nonNull(parametroLiquidacion) && Objects.nonNull(valoresLiquidados) && Objects.nonNull(detallesLiquidacionCosto))
-			{	parametrosLiquidacionCostosService.f2actualizarParametrosLiquidacionCostosFlat(parametroLiquidacion);
-				valoresLiquidadosFlatService.f2actualizarvaloresLiquidadosRepository(valoresLiquidados);
-				detallesLiquidacionCostoService.f2actualizarListaDetallesValoresLiquidados(detallesLiquidacionCosto);
-				continuar= true;
+			if (Objects.nonNull(parametroLiquidacion) || Objects.nonNull(valoresLiquidados)
+					|| Objects.nonNull(detallesLiquidacionCosto)) {
+				
+				if (Objects.nonNull(parametroLiquidacion)) {
+					parametrosLiquidacionCostosService
+							.f2actualizarParametrosLiquidacionCostosFlat(parametroLiquidacion);
+				}
+
+				if (Objects.nonNull(valoresLiquidados)) {
+					valoresLiquidadosFlatService.f2actualizarvaloresLiquidadosRepository(valoresLiquidados);
+				}
+
+				if (Objects.nonNull(detallesLiquidacionCosto)) {
+					detallesLiquidacionCostoService
+							.f2actualizarListaDetallesValoresLiquidados(detallesLiquidacionCosto);
+				}
+
+				continuar = true;
 			}
 		} catch (JsonProcessingException e) {
 			continuar = false;

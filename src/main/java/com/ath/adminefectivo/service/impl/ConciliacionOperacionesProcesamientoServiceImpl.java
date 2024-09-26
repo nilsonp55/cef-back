@@ -227,7 +227,7 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 				
 			    if (continuar) {
 					//actualizar estado de registro inicial
-					costo.setIdLiquidacion(0l);
+					costo.setIdLiquidacion(idLiquidacion);
 					costo.setTipoTransaccion(0);
 					costo.setEstadoConciliacion(Dominios.ESTADO_VALIDACION_EN_CONCILIACION);
 					costo.setUsuarioModificacion(Constantes.USUARIO_PROCESA_ARCHIVO);
