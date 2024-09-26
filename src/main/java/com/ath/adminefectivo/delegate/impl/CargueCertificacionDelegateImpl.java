@@ -6,12 +6,10 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.constantes.Parametros;
@@ -33,7 +31,6 @@ import com.ath.adminefectivo.service.ILogProcesoDiarioService;
 import com.ath.adminefectivo.service.IMaestroDefinicionArchivoService;
 import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.IValidacionArchivoService;
-
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -259,9 +256,8 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 		log.info("Archivos procesados: {}", validacionesArchivos.size());
 
 		this.procesarValidacionRealizada(bitacoraDTO, validacionesArchivos);
-		bitacoraDTO.setFechaHoraFinal(new Date());
-		bitacoraAutomaicosService.guardarBitacoraAutomaticos(bitacoraDTO);
-		log.info("Finaliza procesar certificacion: {}", bitacoraDTO.getFechaHoraFinal().toString());
+		
+		log.info("Finaliza procesar certificacion: {}",  fechaActual.toString());
 	}
 
 	private BitacoraAutomaticosDTO procesarValidacionRealizada(BitacoraAutomaticosDTO bitacoraDTO,

@@ -97,9 +97,9 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 	 */
 	@Override
 	public Page<ArchivosCargadosDTO> getAllByAgrupador(String agrupador, Pageable page) {
-
-		Page<ArchivosCargados> archivosCargados = archivosCargadosRepository.getArchivosByAgrupador(agrupador, "ACT",
-				page);
+		Date fechaProceso = parametrosService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
+		Page<ArchivosCargados> archivosCargados = archivosCargadosRepository
+				.getArchivosByAgrupadorAndFechaArchivo(agrupador, "ACT", fechaProceso, page);
 		return new PageImpl<>(archivosCargados.getContent().stream().map(ArchivosCargadosDTO.CONVERTER_DTO).toList(),
 				archivosCargados.getPageable(), archivosCargados.getTotalElements());
 
