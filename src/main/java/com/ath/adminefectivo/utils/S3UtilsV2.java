@@ -69,7 +69,7 @@ public class S3UtilsV2 {
     List<String> list2 = new ArrayList<>();
     for (int i = 0; i < list.size(); i++) {
 
-      if (!list.get(i).equals(path.substring(0, path.length()))) {
+      if (!list.get(i).equals(path)) {
         name = list.get(i).replace(path, "");
         list2.add(name);
       }
