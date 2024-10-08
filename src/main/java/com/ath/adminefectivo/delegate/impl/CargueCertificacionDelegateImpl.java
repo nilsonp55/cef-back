@@ -19,7 +19,6 @@ import com.ath.adminefectivo.dto.BitacoraAutomaticosDTO;
 import com.ath.adminefectivo.dto.DetallesProcesoAutomaticoDTO;
 import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
-import com.ath.adminefectivo.entities.MaestroDefinicionArchivo;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.service.IArchivosCargadosService;
 import com.ath.adminefectivo.service.IBitacoraAutomaticosService;
@@ -177,25 +176,30 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 		List<ArchivosCargadosDTO> listArchivosCargados = new ArrayList<>();
 		var maestrosDefinicion = maestroDefinicionArchivoService.consultarDefinicionArchivoByAgrupador(estado, agrupador);
 		var maestro = maestrosDefinicion.get(0);
-		var urlPendinetes = filesService.consultarPathArchivos(estado);
-		var url = maestro.getUbicacion().concat(urlPendinetes);
+		var urlPendientes = filesService.consultarPathArchivos(estado);
+		var url = maestro.getUbicacion().concat(urlPendientes);
 		var archivos = filesService.obtenerContenidoCarpeta(url);
-		log.info("Archivos en directorio Pendientes: url:{} - cantidad:{}",urlPendinetes, archivos.size());
+		log.info("Archivos, previo a procesar, encontrados en directorio Pendientes: url:{} - cantidad:{}",urlPendientes, archivos.size());
 		archivos.forEach(x -> {
-			log.debug("Nombre archivo: {}", x);
+			log.debug("Validar archivo: {}", x);
 			String nombreArchivo;
 			nombreArchivo = x.split("_")[0];
 			String inicialMascara = nombreArchivo.substring(0, 2);
-			MaestroDefinicionArchivo maestroDefinicion = maestroDefinicionArchivoService
-					.consultarInicialMascara(inicialMascara);
-			if (Objects.nonNull(maestroDefinicion)) {
-				listArchivosCargados.add(organizarDatosArchivo(x, estado,
-						maestroDefinicion.getIdMaestroDefinicionArchivo(), maestroDefinicion.getMascaraArch()));
-			}
+			
+			maestrosDefinicion.stream().filter( f -> f.getMascaraArch().startsWith(inicialMascara) )
+			.findFirst().ifPresent(t -> {
+              listArchivosCargados.add(organizarDatosArchivo(x, estado,
+                  t.getIdMaestroDefinicionArchivo(), t.getMascaraArch()));
+              log.debug("Archivo agregado a lista de procesar: {}", x);
+            });
+			
 		});
 		listArchivosCargados.sort(Comparator.comparing(ArchivosCargadosDTO::getFechaArchivo,
 				Comparator.nullsLast(Comparator.naturalOrder())));
-
+		
+		archivos = filesService.obtenerContenidoCarpeta(url);
+		log.info("Archivos, posterior a procesar, encontrados en directorio Pendientes: url:{} - cantidad:{}",urlPendientes, archivos.size());
+		
 		return listArchivosCargados;
 	}
 
