@@ -32,7 +32,7 @@ import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.service.IFilesService;
 import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.utils.S3Utils;
-
+import com.ath.adminefectivo.utils.S3UtilsV2;
 import lombok.extern.log4j.Log4j2;
 
 @Service
@@ -48,6 +48,9 @@ public class FilesServiceImpl implements IFilesService {
 
   @Autowired
   private S3Utils s3Util;
+  
+  @Autowired
+  private S3UtilsV2 s3UtilsV2;
 
   /**
    * {@inheritDoc}
@@ -161,7 +164,7 @@ public class FilesServiceImpl implements IFilesService {
 
     List<String> contenidoCarpeta;
     if (Boolean.TRUE.equals(s3Bucket)) {
-      contenidoCarpeta = s3Util.getObjectsFromPathS3(url);
+      contenidoCarpeta = s3UtilsV2.getObjectsFromPathS3(url);
     } else {
       File carpeta = new File(url);
       contenidoCarpeta = Arrays.asList(carpeta.list());
