@@ -380,8 +380,8 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 	public Date obtenerFechaArchivo(String nombreArchivo, String mascaraArchivo) {
 
 		Date fechaArchivo = null;
-		String fecha;
-		String mascaraFecha;
+		String fecha = null;
+		String mascaraFecha = null;
 		try {
 			String inicioNombre = mascaraArchivo.substring(0, 2);											
 			switch (inicioNombre) {
@@ -438,12 +438,14 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 					
 				}
 			}
-	
+            log.info(
+                "Obtener fecha archivo: {} - mascaraFecha: {} - fechaString: {} - fechaArchivo: {}",
+                nombreArchivo, mascaraFecha, fecha, fechaArchivo.toString());
 		} catch (Exception e) {
 			log.error("Exception: {}", e);
 			fechaArchivo = null;
 		}
-	
+		
 		return fechaArchivo;
 	}
 	
