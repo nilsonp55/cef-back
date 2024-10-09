@@ -227,7 +227,7 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 				
 			    if (continuar) {
 					//actualizar estado de registro inicial
-					costo.setIdLiquidacion(0l);
+					costo.setIdLiquidacion(idLiquidacion);
 					costo.setTipoTransaccion(0);
 					costo.setEstadoConciliacion(Dominios.ESTADO_VALIDACION_EN_CONCILIACION);
 					costo.setUsuarioModificacion(Constantes.USUARIO_PROCESA_ARCHIVO);
@@ -410,7 +410,7 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 		if (costo.getEstadoConciliacion().equals(Dominios.ESTADO_VALIDACION_EN_CONCILIACION))
 		{
 			var parametro = new ParametrosLiquidacionCosto();
-		
+			
 			var banco = bancoService.findBancoByAbreviatura(costo.getEntidad());
 			
 			parametro.setCodigoBanco(banco.getCodigoPunto());
