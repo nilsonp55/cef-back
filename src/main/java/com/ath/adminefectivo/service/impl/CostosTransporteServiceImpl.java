@@ -721,12 +721,9 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 				estadoConciliacionLiqTransporte.setDatosValoresLiquidados(foto2VarlorLiqFlagTransporte);
 				estadoConciliacionLiqTransporte.setDatosDetallesLiquidados(foto3DetalleLiqTransporte);
 				estadoConciliacionLiqTransporte.setEstado(1);
-				
-				//Se guarda la foto de como estaba antes parametro liquidacion
-				estadoConciliacionParametrosLiquidacionService.save(estadoConciliacionLiqTransporte);
-				
+											
 				//se elimina el registro de parametro liquidacion
-				parametrosLiquidacionCostosService.f2eliminarParametrosLiquidacionCostos(parametroLiquidacion);
+				parametrosLiquidacionCostosService.f2eliminarParametrosLiquidacionCostos(parametroLiquidacion, estadoConciliacionLiqTransporte);
 				
 			} catch (JsonProcessingException e) {
 				//Excepcion no manejada
