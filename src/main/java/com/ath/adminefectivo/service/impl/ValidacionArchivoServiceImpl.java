@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -380,8 +381,8 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 	public Date obtenerFechaArchivo(String nombreArchivo, String mascaraArchivo) {
 
 		Date fechaArchivo = null;
-		String fecha;
-		String mascaraFecha;
+		String fecha = null;
+		String mascaraFecha = null;
 		try {
 			String inicioNombre = mascaraArchivo.substring(0, 2);											
 			switch (inicioNombre) {
@@ -438,12 +439,14 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 					
 				}
 			}
-	
+            log.info("Obtener fecha archivo: {} - mascaraFecha: {} - fechaString: {}",
+                nombreArchivo, mascaraFecha, fecha);
+            Optional.of(fechaArchivo).ifPresent(t -> log.info("fechaArchivo: {}", t.toString()));
 		} catch (Exception e) {
 			log.error("Exception: {}", e);
 			fechaArchivo = null;
 		}
-	
+		
 		return fechaArchivo;
 	}
 	
