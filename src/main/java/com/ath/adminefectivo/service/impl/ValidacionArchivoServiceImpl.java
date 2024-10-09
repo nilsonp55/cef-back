@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -438,9 +439,9 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 					
 				}
 			}
-            log.info(
-                "Obtener fecha archivo: {} - mascaraFecha: {} - fechaString: {} - fechaArchivo: {}",
-                nombreArchivo, mascaraFecha, fecha, fechaArchivo.toString());
+            log.info("Obtener fecha archivo: {} - mascaraFecha: {} - fechaString: {}",
+                nombreArchivo, mascaraFecha, fecha);
+            Optional.of(fechaArchivo).ifPresent(t -> log.info("fechaArchivo: {}", t.toString()));
 		} catch (Exception e) {
 			log.error("Exception: {}", e);
 			fechaArchivo = null;
