@@ -256,7 +256,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 				formatoFecha = new ArrayList<>();
 				formatoFecha.add(mascaraFecha);
 				if (!UtilsString.isFecha(fecha, formatoFecha)) {
-				  log.debug("Exception isFecha fecha: {} - formatoFecha: {}", fecha, formatoFecha);
+				  log.debug("Exception AC isFecha fecha: {} - formatoFecha: {}", fecha, formatoFecha);
 					throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
 							ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
 							ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
@@ -269,7 +269,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 				formatoFecha = new ArrayList<>();
 				formatoFecha.add(mascaraFecha);
 				if (!UtilsString.isFecha(fecha, formatoFecha)) {
-				  log.debug("Exception isFecha fecha: {} - formatoFecha: {}", fecha, formatoFecha);
+				  log.debug("Exception BS, BI isFecha fecha: {} - formatoFecha: {}", fecha, formatoFecha);
 					throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
 							ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
 							ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
@@ -282,7 +282,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 				formatoFecha = new ArrayList<>();
 				formatoFecha.add(mascaraFecha);
 				if (!UtilsString.isFecha(fecha, formatoFecha)) {
-				  log.debug("Exception isFecha fecha: {} - formatoFecha: {}", fecha, formatoFecha);
+				  log.debug("Exception TH, VG isFecha fecha: {} - formatoFecha: {}", fecha, formatoFecha);
 					throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
 							ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
 							ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
@@ -301,7 +301,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 				formatoFecha = new ArrayList<>();
 				formatoFecha.add(mascaraFecha);
 				if (!UtilsString.isFecha(fecha, formatoFecha)) {
-				  log.debug("Exception isFecha fecha: {} - formatoFecha: {}", fecha, formatoFecha);
+				  log.debug("Exception SC isFecha fecha: {} - formatoFecha: {}", fecha, formatoFecha);
 					throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
 							ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
 							ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
