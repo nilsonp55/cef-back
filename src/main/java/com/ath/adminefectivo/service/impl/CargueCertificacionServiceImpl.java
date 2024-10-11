@@ -73,7 +73,7 @@ public class CargueCertificacionServiceImpl implements ICargueCertificacionServi
 		  log.debug("Archivo: {} en estado futuro", nombreArchivo);
 			this.validacionArchivo.setIdArchivo((long) 0);
 		}
-		log.debug("procesarArchivo2 inicio");
+		log.debug("procesarArchivo2 fin");
 		return ValidacionArchivoDTO.conversionRespuesta(this.validacionArchivo);
 
 	}
