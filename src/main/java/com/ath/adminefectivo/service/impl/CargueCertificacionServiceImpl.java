@@ -117,14 +117,18 @@ public class CargueCertificacionServiceImpl implements ICargueCertificacionServi
 		this.validacionArchivo.setFechaArchivo(fechaArchivo);
 
 		if (fechaArchivo.compareTo(fechaAnteriorHabil) <= 0) {
+		  log.debug("if fechaAnteriorHabil");
 			if (this.validarCantidadRegistros(maestroDefinicion, this.validacionArchivo.getNumeroRegistros())) {
-				this.validacionArchivo = validacionArchivoService.validar(maestroDefinicion, contenido,
+			  log.debug("if validarCantidadRegistros");
+			  this.validacionArchivo = validacionArchivoService.validar(maestroDefinicion, contenido,
 						validacionArchivo);
 			}
 			if (fechaArchivo.compareTo(fechaAnteriorHabil2) <= 0 || alcance) {
+			  log.debug("if fechaAnteriorHabil2");
 				this.validacionArchivo.setEstadoValidacion(Dominios.ESTADO_VALIDACION_REPROCESO);
 			}
 		} else {
+		  log.debug("if else fechaAnteriorHabil");
 			this.validacionArchivo.setEstadoValidacion(Dominios.ESTADO_VALIDACION_FUTURO);
 			this.validacionArchivo.setDescripcionErrorEstructura("Archivo con fecha futura, no se procesa");
 		}
