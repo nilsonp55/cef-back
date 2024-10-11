@@ -232,7 +232,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 	 */
 	@Override
 	public boolean validarNombreArchivo(MaestrosDefinicionArchivoDTO maestroDefinicion, String nombreArchivo) {
-	  log.debug("maestroDefinicion: {} - nombreArchivo: {}", maestroDefinicion, nombreArchivo);
+	  log.debug("validarNombreArchivo inicio - maestroDefinicion: {} - nombreArchivo: {}", maestroDefinicion, nombreArchivo);
 		if (maestroDefinicion.getAgrupador().equals("CERTI")) {
 			String[] arregloNombre = nombreArchivo.split(Constantes.EXPRESION_REGULAR_PUNTO);
 			String inicioNombre = arregloNombre[0].substring(0, 2);
@@ -322,6 +322,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 					.replace(Constantes.SEPARADOR_FECHA_ARCHIVO, Constantes.SEPARADOR_EXTENSION_ARCHIVO)
 					.split(Constantes.EXPRESION_REGULAR_PUNTO);
 			maestroDefinicion.getMascaraArch().split(Constantes.SEPARADOR_FECHA_ARCHIVO);
+			log.debug("else: nombreArchivo: {}", nombreArchivo);
 			if (!StringUtils.equalsIgnoreCase(arregloNombre[2], maestroDefinicion.getExtension())) {
               log.debug("arregloNombre[2]: {} - maestroDefinicion.getExtension()", arregloNombre[2],
                   maestroDefinicion.getExtension());
@@ -330,6 +331,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 						ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
 			}
 		}
+		log.debug("validarNombreArchivo fin");
 		return true;
 	}
 
@@ -394,6 +396,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 					ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getDescription(),
 					ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getHttpStatus());
 		}
+		log.debug("validarFechaArchivoBetween fin - fechaArchivo: {}", fechaArchivo.toString());
 		return fechaArchivo;
 	}
 
