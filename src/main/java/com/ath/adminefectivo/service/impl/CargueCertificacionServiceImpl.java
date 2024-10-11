@@ -21,8 +21,10 @@ import com.ath.adminefectivo.service.ILecturaArchivoService;
 import com.ath.adminefectivo.service.IMaestroDefinicionArchivoService;
 import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.IValidacionArchivoService;
+import lombok.extern.log4j.Log4j2;
 
 @Service
+@Log4j2
 public class CargueCertificacionServiceImpl implements ICargueCertificacionService {
 
 	@Autowired
@@ -49,11 +51,15 @@ public class CargueCertificacionServiceImpl implements ICargueCertificacionServi
 	@Transactional
 	public ValidacionArchivoDTO procesarArchivo2(String idMaestroDefinicion, String nombreArchivo, boolean alcance,
 			Date fechaActual, Date fechaAnteriorHabil, Date fechaAnteriorHabil2) {
-
+	  log.debug(
+          "procesarArchivo2 inicio -  idMaestroDefinicion: {} - nombreArchivo: {} - alcance:{} - fechaActual: {} - fechaAnteriorHabil: {} fechaAnteriorHabil2: {}",
+          idMaestroDefinicion, nombreArchivo, alcance, fechaActual, fechaAnteriorHabil,
+          fechaAnteriorHabil2);
 		this.validacionesAchivoCargado(idMaestroDefinicion, nombreArchivo, alcance, fechaActual, fechaAnteriorHabil,
 				fechaAnteriorHabil2);
 		if (!Objects.equals(this.validacionArchivo.getEstadoValidacion(), Dominios.ESTADO_VALIDACION_FUTURO)) {
 			Long idArchivo = archivosCargadosService.persistirDetalleArchivoCargado(validacionArchivo, false, alcance);
+			log.debug("Detalles archivo: {} persistido en tabla", nombreArchivo);
 			this.validacionArchivo.setIdArchivo(idArchivo);
 			String urlDestino = (Objects.equals(this.validacionArchivo.getEstadoValidacion(),
 					Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO))
@@ -64,8 +70,10 @@ public class CargueCertificacionServiceImpl implements ICargueCertificacionServi
 					this.validacionArchivo.getMaestroDefinicion().getUbicacion().concat(urlDestino),
 					this.validacionArchivo.getNombreArchivo(), idArchivo.toString());
 		} else {
+		  log.debug("Archivo: {} en estado futuro", nombreArchivo);
 			this.validacionArchivo.setIdArchivo((long) 0);
 		}
+		log.debug("procesarArchivo2 inicio");
 		return ValidacionArchivoDTO.conversionRespuesta(this.validacionArchivo);
 
 	}
@@ -82,11 +90,16 @@ public class CargueCertificacionServiceImpl implements ICargueCertificacionServi
 	@Override
 	public ValidacionArchivoDTO validacionesAchivoCargado(String idMaestroDefinicion, String nombreArchivo, boolean alcance,
 			Date fechaActual, Date fechaAnteriorHabil, Date fechaAnteriorHabil2) {
+      log.debug(
+          "validacionesAchivoCargado inicio - idMaestroDefinicion: {} - nombreArchivo: {} - alcance:{} - fechaActual: {} - fechaAnteriorHabil: {} fechaAnteriorHabil2: {}",
+          idMaestroDefinicion, nombreArchivo, alcance, fechaActual, fechaAnteriorHabil,
+          fechaAnteriorHabil2);
 		this.validacionArchivo = new ValidacionArchivoDTO();
 		// Validaciones del archivo
 		var maestroDefinicion = maestroDefinicionArchivoService.consultarDefinicionArchivoById(idMaestroDefinicion);
-		var urlPendinetes = parametrosService.valorParametro(Parametros.RUTA_ARCHIVOS_PENDIENTES);
-		var url = maestroDefinicion.getUbicacion().concat(urlPendinetes).concat(nombreArchivo);
+		var urlPendientes = parametrosService.valorParametro(Parametros.RUTA_ARCHIVOS_PENDIENTES);
+		var url = maestroDefinicion.getUbicacion().concat(urlPendientes).concat(nombreArchivo);
+		log.debug("maestroDefinicion: {} - urlPendientes: {} - url: {}", maestroDefinicion, urlPendientes, url);
 		validacionArchivoService.validarNombreArchivo(maestroDefinicion, nombreArchivo);
 		var dowloadFile = filesService.downloadFile(DownloadDTO.builder().url(url).build());
 
@@ -115,6 +128,7 @@ public class CargueCertificacionServiceImpl implements ICargueCertificacionServi
 			this.validacionArchivo.setEstadoValidacion(Dominios.ESTADO_VALIDACION_FUTURO);
 			this.validacionArchivo.setDescripcionErrorEstructura("Archivo con fecha futura, no se procesa");
 		}
+		log.debug("validacionesAchivoCargado fin");
 		return this.validacionArchivo;
 	}
 
