@@ -119,7 +119,7 @@ public class FilesServiceImpl implements IFilesService {
 				// Realiza operaciones de lectura del archivo usando inputStream
 				download.setFile(inputStream);
 			}
-			
+			log.debug("descarga archivo desde URL: {}", path);
 		} catch (IOException e) {
 			log.error("downloadFile: {}", e.getMessage());
 			throw new NegocioException(ApiResponseCode.ERROR_ARCHIVOS_NO_EXISTE_BD.getCode(),

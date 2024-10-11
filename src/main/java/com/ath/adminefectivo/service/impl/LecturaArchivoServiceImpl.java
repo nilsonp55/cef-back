@@ -44,7 +44,7 @@ public class LecturaArchivoServiceImpl implements ILecturaArchivoService {
 		if (Objects.isNull(maestroDefinicion.getDelimitadorBase())
 				|| (Objects.equals(maestroDefinicion.getDelimitadorBase(), Constantes.DELIMITADOR_OTROS)
 						&& Objects.isNull(maestroDefinicion.getDelimitadorOtro()))) {
-
+		  log.debug("maestroDefinicion: {} - delimitador: {}", maestroDefinicion, ApiResponseCode.ERROR_DELIMITADOR_VACIO.getDescription());
 			throw new AplicationException(ApiResponseCode.ERROR_DELIMITADOR_VACIO.getCode(),
 					ApiResponseCode.ERROR_DELIMITADOR_VACIO.getDescription(),
 					ApiResponseCode.ERROR_DELIMITADOR_VACIO.getHttpStatus());
@@ -56,7 +56,7 @@ public class LecturaArchivoServiceImpl implements ILecturaArchivoService {
 			delimitador = dominioService.valorTextoDominio(Constantes.DOMINIO_DELIMITADOR,
 					maestroDefinicion.getDelimitadorBase());
 		}
-
+		log.debug("maestroDefinicion: {} - delimitador: {}", maestroDefinicion, delimitador);
 		return delimitador;
 	}
 
@@ -64,7 +64,7 @@ public class LecturaArchivoServiceImpl implements ILecturaArchivoService {
 	public List<String[]> leerArchivo(InputStream archivo, String delimitador, MaestrosDefinicionArchivoDTO maestroDefinicion) {
 
 		String algoritmoEncriptado = this.validarEncriptado(maestroDefinicion.getTipoDeEncriptado());
-		
+		log.debug("maestroDefinicion: {} - delimitador: {} - algoritmoEncriptado: {}", maestroDefinicion, delimitador, algoritmoEncriptado);
 		if(algoritmoEncriptado.equals(dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_ENCRIPTADO, Dominios.TIPO_ENCRIPTADO_NA))) {
 			
 			CSVParser parser = new CSVParserBuilder().withSeparator(delimitador.charAt(0)).withIgnoreQuotations(true).build();
@@ -80,7 +80,7 @@ public class LecturaArchivoServiceImpl implements ILecturaArchivoService {
 				
 				List<String[]> resultadoSinValidar = csvReader.readAll();
 					resultadoSinValidar.forEach(linea ->{
-					log.debug("csvReader.readAll(); "+ linea.length);
+					
 					if(linea.length > 2) {
 						resultadoValidado.add(linea);
 					}}

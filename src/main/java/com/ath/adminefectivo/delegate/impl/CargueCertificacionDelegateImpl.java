@@ -127,7 +127,10 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	 */
 	private ValidacionArchivoDTO procesarArchivoSinExcep(String idMaestroDefinicion, String nombreArchivo, boolean alcance,
 														 Date fechaActual, Date fechaAnteriorHabil, Date fechaAnteriorHabil2) {
-
+      log.debug(
+          "procesarArchivoSinExcep inicio - idMaestroDefinicion: {} - nombreArchivo: {} - alcance:{} - fechaActual: {} - fechaAnteriorHabil: {} fechaAnteriorHabil2: {}",
+          idMaestroDefinicion, nombreArchivo, alcance, fechaActual, fechaAnteriorHabil,
+          fechaAnteriorHabil2);
 		try {
 			return cargueCertificacionService.procesarArchivo2(idMaestroDefinicion, nombreArchivo, alcance, fechaActual, fechaAnteriorHabil, fechaAnteriorHabil2);
 		} catch (Exception e) {
@@ -136,6 +139,7 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 			this.validacionArchivo.setEstadoValidacion("FALLIDO");
 			this.validacionArchivo.setDescripcionErrorEstructura("Error validando nombre o fecha de archivo" + e.getMessage().substring(200));
 		}
+		log.debug("procesarArchivoSinExcep fin - validacionArchivo: {}", validacionArchivo.toString());
 		return validacionArchivo;
 	}
 
@@ -196,10 +200,7 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 		});
 		listArchivosCargados.sort(Comparator.comparing(ArchivosCargadosDTO::getFechaArchivo,
 				Comparator.nullsLast(Comparator.naturalOrder())));
-		
-		archivos = filesService.obtenerContenidoCarpeta(url);
-		log.info("Archivos, posterior a procesar, encontrados en directorio Pendientes: url:{} - cantidad:{}",urlPendientes, archivos.size());
-		
+		log.info("Archivos agregados a lista de procesar: {}", listArchivosCargados.size());		
 		return listArchivosCargados;
 	}
 
@@ -217,15 +218,18 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	 * @author cesar.castano
 	 */
 	private boolean esProcesoDiarioCerrado() {
-		var log = logProcesoDiarioService.obtenerEntidadLogProcesoDiario(
+	  log.debug("Validar estado cerrado en el log de procesos diarios");
+		var logProceso = logProcesoDiarioService.obtenerEntidadLogProcesoDiario(
 				Dominios.CODIGO_PROCESO_LOG_CERTIFICACION);
-		if (Objects.isNull(log)) {
+		if (Objects.isNull(logProceso)) {
+		  log.debug("Log de procesos diarios lanza Null");
 			throw new NegocioException(ApiResponseCode.ERROR_CODIGO_PROCESO_NO_EXISTE.getCode(),
 					ApiResponseCode.ERROR_CODIGO_PROCESO_NO_EXISTE.getDescription(),
 					ApiResponseCode.ERROR_CODIGO_PROCESO_NO_EXISTE.getHttpStatus());
 		}
 		else {
-			return log.getEstadoProceso().equals(Dominios.ESTADO_PROCESO_DIA_COMPLETO);
+		    log.debug("Log de procesos diarios Cerrado");
+			return logProceso.getEstadoProceso().equals(Dominios.ESTADO_PROCESO_DIA_COMPLETO);
 		}
 	}
 
@@ -238,13 +242,16 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	 */
 	@Scheduled(cron = "0 5/15 7-17 * * *")
 	public void certificacionesProgramadas() {
-
+	  log.debug("Procesar certificacion inicio");
 		// crea el registro en bitacora de automaticos
 		Date fechaActual = parametrosService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
 		Date fechaAnteriorHabil = festivosNacionalesService.consultarAnteriorHabil(fechaActual);
 		Date fechaAnteriorHabil2 = festivosNacionalesService.consultarAnteriorHabil(fechaAnteriorHabil);
 		boolean alcance = esProcesoDiarioCerrado();
-		log.info("Procesar archivos de Certificacion, fecha: {}", fechaActual.toString());
+        log.info(
+            "Procesar archivos de Certificacion, fechaActual: {} - fechaAnteriorHabil: {} - fechaAnteriorHabil2: {} - alcance: {}",
+            fechaActual.toString(), fechaAnteriorHabil.toString(), fechaAnteriorHabil2.toString(),
+            alcance);
 
 		BitacoraAutomaticosDTO bitacoraDTO = BitacoraAutomaticosDTO.builder()
 				.codigoProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION).fechaSistema(fechaActual)
@@ -257,15 +264,14 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 								this.procesarArchivoSinExcep(archivoCerti.getIdModeloArchivo(), archivoCerti.getNombreArchivo(),
 										alcance, fechaActual,fechaAnteriorHabil,fechaAnteriorHabil2))
 				);
-		log.info("Archivos procesados: {}", validacionesArchivos.size());
-
 		this.procesarValidacionRealizada(bitacoraDTO, validacionesArchivos);
 		
-		log.info("Finaliza procesar certificacion: {}",  fechaActual.toString());
+		log.info("Finaliza procesar certificacion: {} - archivos validados: {}",  fechaActual.toString(), validacionesArchivos.size());
 	}
 
 	private BitacoraAutomaticosDTO procesarValidacionRealizada(BitacoraAutomaticosDTO bitacoraDTO,
 															   List<ValidacionArchivoDTO> validacionesArchivos) {
+	  log.debug("procesarValidacionRealizada inicio");
 		List<DetallesProcesoAutomaticoDTO> listadoDetallesProcesos = new ArrayList<>();
 
 		validacionesArchivos.forEach(validacion -> {
@@ -277,7 +283,7 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 			listadoDetallesProcesos.add(detalleProcesoAuto);
 		});
 		bitacoraDTO.setDetallesProcesosAutomaticosDTO(listadoDetallesProcesos);
-
+		log.debug("procesarValidacionRealizada fin");
 		return bitacoraDTO;
 	}
 }
