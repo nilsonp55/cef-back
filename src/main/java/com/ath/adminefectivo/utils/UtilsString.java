@@ -352,4 +352,8 @@ public class UtilsString {
 			return null;
 		}
 	}
+
+	public static double calcularDiferenciaAbsoluta(double valor1, double valor2) {
+		return Math.abs(valor1 - valor2);
+	}
 }
