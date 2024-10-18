@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.constantes.Constantes;
+import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.delegate.IArchivosCargadosDelegate;
 import com.ath.adminefectivo.delegate.IArchivosLiquidacionDelegate;
 import com.ath.adminefectivo.delegate.IGestionArchivosLiquidacionDelegate;
@@ -58,9 +59,9 @@ public class GestionArchivosLiquidacionDelegateImpl implements IGestionArchivosL
 		 
 		Set<String> estadoConciliacion = new HashSet<>();
 		estadoConciliacion.add(Constantes.ESTADO_CARGUE_ERROR);
-		estadoConciliacion.add(Constantes.ESTADO_CARGUE_VALIDO);
+		estadoConciliacion.add(Dominios.ESTADO_VALIDACION_EN_CONCILIACION);
 		
-		// Obtener archivos cargados con estado ERRADO y OK
+		// Obtener archivos cargados con estado ERRADO y EN_CONCILIACION
 	    Page<ArchivosCargadosDTO> archivosCargadosPage = archivosCargadosService.getAllByAgrupadorAndEstadoCargue(agrupador, estadoConciliacion, page);
 	    
 	    // Crear una lista para almacenar los archivos de liquidación
@@ -78,7 +79,8 @@ public class GestionArchivosLiquidacionDelegateImpl implements IGestionArchivosL
 	        dtoResponseList.add(archivoLiquidacionDTO);
 	    });
 
-		return archivosLiquidacion.getAll(0, 0, false, "", Optional.of(dtoResponseList));
+		return new PageImpl<>(archivosLiquidacion.getAll(0, 0, false, "", Optional.of(dtoResponseList)).getContent(),
+				archivosCargadosPage.getPageable(), archivosCargadosPage.getTotalElements());
 	}
 	
 	
