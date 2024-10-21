@@ -15,6 +15,7 @@ import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.exception.AplicationException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Clase que contiene los servicios utilitarios de los Strings
@@ -22,6 +23,7 @@ import lombok.NoArgsConstructor;
  * @author CamiloBenavides
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Log4j2
 public class UtilsString {
 
 	/**
@@ -111,15 +113,18 @@ public class UtilsString {
 	public static boolean isFecha(String str, List<String> listFormato) {
 		String[] strArray = new String[listFormato.size()];
 		strArray = listFormato.toArray(strArray);
-		
+		log.debug("str: {} - listFormato: {}", str, listFormato.toString());
 		if(Objects.isNull(str)) {
+		  log.debug("str isNull return");
 			return false;
 		}
 		
 		try {
-			DateUtils.parseDate(str, strArray);
+			Date fechaConvertida = DateUtils.parseDate(str, strArray);
+			log.debug("str parseDate return - parseDate: {}", fechaConvertida.toString());
 			return true;
 		} catch (Exception e) {
+		  log.debug("parseDate Exception return - str: {} - ex: {}", str, e.getMessage());
 			return false;
 		}
 
@@ -346,5 +351,9 @@ public class UtilsString {
 		} catch (Exception e) {
 			return null;
 		}
+	}
+
+	public static double calcularDiferenciaAbsoluta(double valor1, double valor2) {
+		return Math.abs(valor1 - valor2);
 	}
 }

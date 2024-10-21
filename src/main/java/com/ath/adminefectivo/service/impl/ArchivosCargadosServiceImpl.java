@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -96,9 +97,9 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 	 */
 	@Override
 	public Page<ArchivosCargadosDTO> getAllByAgrupador(String agrupador, Pageable page) {
-
-		Page<ArchivosCargados> archivosCargados = archivosCargadosRepository.getArchivosByAgrupador(agrupador, "ACT",
-				page);
+		Date fechaProceso = parametrosService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
+		Page<ArchivosCargados> archivosCargados = archivosCargadosRepository
+				.getArchivosByAgrupadorAndFechaArchivo(agrupador, "ACT", fechaProceso, page);
 		return new PageImpl<>(archivosCargados.getContent().stream().map(ArchivosCargadosDTO.CONVERTER_DTO).toList(),
 				archivosCargados.getPageable(), archivosCargados.getTotalElements());
 
@@ -118,6 +119,19 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 					ApiResponseCode.ERROR_ARCHIVOS_NO_EXISTE_BD.getDescription(),
 					ApiResponseCode.ERROR_ARCHIVOS_NO_EXISTE_BD.getHttpStatus());
 		}
+
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Page<ArchivosCargadosDTO> getAllByAgrupadorAndEstadoCargue(String agrupador, Set<String> estadosCargue, Pageable page) {
+
+		Page<ArchivosCargados> archivosCargados = archivosCargadosRepository.getArchivosByAgrupadorAndEstadoCargue(agrupador, "ACT", estadosCargue,
+				page);
+		return new PageImpl<>(archivosCargados.getContent().stream().map(ArchivosCargadosDTO.CONVERTER_DTO).toList(),
+				archivosCargados.getPageable(), archivosCargados.getTotalElements());
 
 	}
 	

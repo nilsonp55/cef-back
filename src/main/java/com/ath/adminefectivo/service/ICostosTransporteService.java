@@ -71,4 +71,7 @@ public interface ICostosTransporteService {
 
 	List<RegistroOperacionConciliacionDTO> reintegrarLiquidadasTransporte(RegistrosConciliacionListDTO registros);
 
+	List<CostosTransporte> getByIdArchivoCargado(Long idArchivo);
+	
+	void aceptarConciliacionRegistro(Long idArchivoCargado);
 }

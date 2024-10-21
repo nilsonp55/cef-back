@@ -8,6 +8,8 @@ import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -54,7 +56,7 @@ public class ArchivosLiquidacionController {
             @RequestParam(name = "end", defaultValue = "5") int end,
             @RequestParam(name = "content", defaultValue = "false") boolean content,
             @RequestParam(name = "fileName", required = false, defaultValue = "") String fileName) {
-        var consulta = archivosLiquidacionDelegate.getAll(start, end, content, fileName);
+        var consulta = archivosLiquidacionDelegate.getAll(start, end, content, fileName, Optional.empty());
         
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())

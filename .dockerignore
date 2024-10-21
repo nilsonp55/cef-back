@@ -1,0 +1,17 @@
+# Exclude build directories
+target/
+build/
+
+# Exclude IDE and editor directories and files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Exclude version control system files and directories
+.git/
+.gitignore
+
+# Exclude logs and temporary files
+*.log
+tmp/

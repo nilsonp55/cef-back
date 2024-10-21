@@ -81,7 +81,8 @@ public class ValoresLiquidadosFlatEntity {
 	@Column(name = "CLASIFICACION_MONEDA")
 	private Double clasificacionMonedaFlat;
 	
-	@OneToOne(mappedBy = "valoresLiquidadosFlatEntity", cascade = CascadeType.MERGE)
+	//@OneToOne(mappedBy = "valoresLiquidadosFlatEntity", cascade = CascadeType.REMOVE)
+	@OneToOne(mappedBy = "valoresLiquidadosFlatEntity", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     @JoinColumn(name = "ID_LIQUIDACION")
 	private ParametrosLiquidacionCostoFlat parametrosLiquidacionCostoFlat;
 }

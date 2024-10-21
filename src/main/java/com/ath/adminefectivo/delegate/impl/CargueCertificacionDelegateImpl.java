@@ -6,12 +6,10 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.constantes.Parametros;
@@ -21,7 +19,6 @@ import com.ath.adminefectivo.dto.BitacoraAutomaticosDTO;
 import com.ath.adminefectivo.dto.DetallesProcesoAutomaticoDTO;
 import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
-import com.ath.adminefectivo.entities.MaestroDefinicionArchivo;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.service.IArchivosCargadosService;
 import com.ath.adminefectivo.service.IBitacoraAutomaticosService;
@@ -33,7 +30,6 @@ import com.ath.adminefectivo.service.ILogProcesoDiarioService;
 import com.ath.adminefectivo.service.IMaestroDefinicionArchivoService;
 import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.IValidacionArchivoService;
-
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -131,7 +127,10 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	 */
 	private ValidacionArchivoDTO procesarArchivoSinExcep(String idMaestroDefinicion, String nombreArchivo, boolean alcance,
 														 Date fechaActual, Date fechaAnteriorHabil, Date fechaAnteriorHabil2) {
-
+      log.debug(
+          "procesarArchivoSinExcep inicio - idMaestroDefinicion: {} - nombreArchivo: {} - alcance:{} - fechaActual: {} - fechaAnteriorHabil: {} fechaAnteriorHabil2: {}",
+          idMaestroDefinicion, nombreArchivo, alcance, fechaActual, fechaAnteriorHabil,
+          fechaAnteriorHabil2);
 		try {
 			return cargueCertificacionService.procesarArchivo2(idMaestroDefinicion, nombreArchivo, alcance, fechaActual, fechaAnteriorHabil, fechaAnteriorHabil2);
 		} catch (Exception e) {
@@ -140,6 +139,7 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 			this.validacionArchivo.setEstadoValidacion("FALLIDO");
 			this.validacionArchivo.setDescripcionErrorEstructura("Error validando nombre o fecha de archivo" + e.getMessage().substring(200));
 		}
+		log.debug("procesarArchivoSinExcep fin - validacionArchivo: {}", validacionArchivo.toString());
 		return validacionArchivo;
 	}
 
@@ -180,25 +180,27 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 		List<ArchivosCargadosDTO> listArchivosCargados = new ArrayList<>();
 		var maestrosDefinicion = maestroDefinicionArchivoService.consultarDefinicionArchivoByAgrupador(estado, agrupador);
 		var maestro = maestrosDefinicion.get(0);
-		var urlPendinetes = filesService.consultarPathArchivos(estado);
-		var url = maestro.getUbicacion().concat(urlPendinetes);
+		var urlPendientes = filesService.consultarPathArchivos(estado);
+		var url = maestro.getUbicacion().concat(urlPendientes);
 		var archivos = filesService.obtenerContenidoCarpeta(url);
-		log.info("Archivos en directorio Pendientes: url:{} - cantidad:{}",urlPendinetes, archivos.size());
+		log.info("Archivos, previo a procesar, encontrados en directorio Pendientes: url:{} - cantidad:{}",urlPendientes, archivos.size());
 		archivos.forEach(x -> {
-			log.debug("Nombre archivo: {}", x);
+			log.debug("Validar archivo: {}", x);
 			String nombreArchivo;
 			nombreArchivo = x.split("_")[0];
 			String inicialMascara = nombreArchivo.substring(0, 2);
-			MaestroDefinicionArchivo maestroDefinicion = maestroDefinicionArchivoService
-					.consultarInicialMascara(inicialMascara);
-			if (Objects.nonNull(maestroDefinicion)) {
-				listArchivosCargados.add(organizarDatosArchivo(x, estado,
-						maestroDefinicion.getIdMaestroDefinicionArchivo(), maestroDefinicion.getMascaraArch()));
-			}
+			
+			maestrosDefinicion.stream().filter( f -> f.getMascaraArch().startsWith(inicialMascara) )
+			.findFirst().ifPresent(t -> {
+              listArchivosCargados.add(organizarDatosArchivo(x, estado,
+                  t.getIdMaestroDefinicionArchivo(), t.getMascaraArch()));
+              log.debug("Archivo agregado a lista de procesar: {}", x);
+            });
+			
 		});
 		listArchivosCargados.sort(Comparator.comparing(ArchivosCargadosDTO::getFechaArchivo,
 				Comparator.nullsLast(Comparator.naturalOrder())));
-
+		log.info("Archivos agregados a lista de procesar: {}", listArchivosCargados.size());		
 		return listArchivosCargados;
 	}
 
@@ -216,15 +218,18 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	 * @author cesar.castano
 	 */
 	private boolean esProcesoDiarioCerrado() {
-		var log = logProcesoDiarioService.obtenerEntidadLogProcesoDiario(
+	  log.debug("Validar estado cerrado en el log de procesos diarios");
+		var logProceso = logProcesoDiarioService.obtenerEntidadLogProcesoDiario(
 				Dominios.CODIGO_PROCESO_LOG_CERTIFICACION);
-		if (Objects.isNull(log)) {
+		if (Objects.isNull(logProceso)) {
+		  log.debug("Log de procesos diarios lanza Null");
 			throw new NegocioException(ApiResponseCode.ERROR_CODIGO_PROCESO_NO_EXISTE.getCode(),
 					ApiResponseCode.ERROR_CODIGO_PROCESO_NO_EXISTE.getDescription(),
 					ApiResponseCode.ERROR_CODIGO_PROCESO_NO_EXISTE.getHttpStatus());
 		}
 		else {
-			return log.getEstadoProceso().equals(Dominios.ESTADO_PROCESO_DIA_COMPLETO);
+		    log.debug("Log de procesos diarios Cerrado");
+			return logProceso.getEstadoProceso().equals(Dominios.ESTADO_PROCESO_DIA_COMPLETO);
 		}
 	}
 
@@ -237,13 +242,16 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	 */
 	@Scheduled(cron = "0 5/15 7-17 * * *")
 	public void certificacionesProgramadas() {
-
+	  log.debug("Procesar certificacion inicio");
 		// crea el registro en bitacora de automaticos
 		Date fechaActual = parametrosService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
 		Date fechaAnteriorHabil = festivosNacionalesService.consultarAnteriorHabil(fechaActual);
 		Date fechaAnteriorHabil2 = festivosNacionalesService.consultarAnteriorHabil(fechaAnteriorHabil);
 		boolean alcance = esProcesoDiarioCerrado();
-		log.info("Procesar archivos de Certificacion, fecha: {}", fechaActual.toString());
+        log.info(
+            "Procesar archivos de Certificacion, fechaActual: {} - fechaAnteriorHabil: {} - fechaAnteriorHabil2: {} - alcance: {}",
+            fechaActual.toString(), fechaAnteriorHabil.toString(), fechaAnteriorHabil2.toString(),
+            alcance);
 
 		BitacoraAutomaticosDTO bitacoraDTO = BitacoraAutomaticosDTO.builder()
 				.codigoProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION).fechaSistema(fechaActual)
@@ -256,16 +264,14 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 								this.procesarArchivoSinExcep(archivoCerti.getIdModeloArchivo(), archivoCerti.getNombreArchivo(),
 										alcance, fechaActual,fechaAnteriorHabil,fechaAnteriorHabil2))
 				);
-		log.info("Archivos procesados: {}", validacionesArchivos.size());
-
 		this.procesarValidacionRealizada(bitacoraDTO, validacionesArchivos);
-		bitacoraDTO.setFechaHoraFinal(new Date());
-		bitacoraAutomaicosService.guardarBitacoraAutomaticos(bitacoraDTO);
-		log.info("Finaliza procesar certificacion: {}", bitacoraDTO.getFechaHoraFinal().toString());
+		
+		log.info("Finaliza procesar certificacion: {} - archivos validados: {}",  fechaActual.toString(), validacionesArchivos.size());
 	}
 
 	private BitacoraAutomaticosDTO procesarValidacionRealizada(BitacoraAutomaticosDTO bitacoraDTO,
 															   List<ValidacionArchivoDTO> validacionesArchivos) {
+	  log.debug("procesarValidacionRealizada inicio");
 		List<DetallesProcesoAutomaticoDTO> listadoDetallesProcesos = new ArrayList<>();
 
 		validacionesArchivos.forEach(validacion -> {
@@ -277,7 +283,7 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 			listadoDetallesProcesos.add(detalleProcesoAuto);
 		});
 		bitacoraDTO.setDetallesProcesosAutomaticosDTO(listadoDetallesProcesos);
-
+		log.debug("procesarValidacionRealizada fin");
 		return bitacoraDTO;
 	}
 }

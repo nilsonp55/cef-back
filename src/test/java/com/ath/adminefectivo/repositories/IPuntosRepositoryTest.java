@@ -2,6 +2,7 @@ package com.ath.adminefectivo.repositories;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.field;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.List;
@@ -13,7 +14,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
+import org.springframework.dao.EmptyResultDataAccessException;
 import com.ath.adminefectivo.entities.Puntos;
 
 import lombok.extern.log4j.Log4j2;
@@ -196,5 +197,14 @@ class IPuntosRepositoryTest {
 		assertThat(puntosFind).isEmpty();
 		log.info("testIPuntosDelete - id: {}", puntosSearch.getCodigoPunto());
 	}
+	
+    @Test
+    void testPuntoDeleteDoesNotExist() {
+      Integer codigoPuntoDoesNotExists = Instancio.create(Integer.class);
+
+      assertThrows(EmptyResultDataAccessException.class,
+          () -> puntosRepository.deleteById(codigoPuntoDoesNotExists));
+      log.info("testPuntoDeleteDoesNotExist - id: {}", codigoPuntoDoesNotExists);
+    }
 
 }

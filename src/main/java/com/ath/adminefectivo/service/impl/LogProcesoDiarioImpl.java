@@ -21,6 +21,7 @@ import com.ath.adminefectivo.service.IAuditoriaProcesosService;
 import com.ath.adminefectivo.service.ILogProcesoDiarioService;
 import com.ath.adminefectivo.service.IParametroService;
 import com.querydsl.core.types.Predicate;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Servicios responsables de exponer los metodos referentes a los procesos 
@@ -29,6 +30,7 @@ import com.querydsl.core.types.Predicate;
  */
 
 @Service
+@Log4j2
 public class LogProcesoDiarioImpl implements ILogProcesoDiarioService {
 
 	@Autowired
@@ -154,8 +156,10 @@ public class LogProcesoDiarioImpl implements ILogProcesoDiarioService {
 	@Override
 	public LogProcesoDiario obtenerEntidadLogProcesoDiario(String codigoProceso) {
 		Date fecha = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
+		log.debug("valor fecha dia proceso: {}", fecha.toString());
 		var logProcesoDiario = logProcesoDiarioRepository.findByCodigoProcesoAndFechaCreacion(codigoProceso, fecha);
 		if(Objects.isNull(logProcesoDiario)) {
+		  log.debug("Log proceso diario no encontrado para fecha de proceso: {}", fecha.toString());
 			auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION, 
 					fecha, 
 					Constantes.ESTADO_PROCESO_PROCESADO, 
@@ -164,6 +168,7 @@ public class LogProcesoDiarioImpl implements ILogProcesoDiarioService {
 					ApiResponseCode.ERROR_LOGPROCESODIARIO_NO_ENCONTRADO.getDescription(),
 					ApiResponseCode.ERROR_LOGPROCESODIARIO_NO_ENCONTRADO.getHttpStatus());
 		}
+		log.debug("Log proceos diario encontrado para fecha de proceso: {}", fecha.toString());
 		return logProcesoDiario;
 	}
 	

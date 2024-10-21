@@ -153,5 +153,15 @@ public class CostosProcesamientoServiceImpl implements ICostosProcesamientoServi
 																			Dominios.ESTADO_VALIDACION_ACEPTADO);
 	}
 
+	public List<CostosProcesamiento> getByIdArchivoCargado(Long idArchivo)
+	{
+		return costosprocesamientoRepository.findByIdArchivoCargado(idArchivo);
+	}
+	
+	
+	public void aceptarConciliacionRegistro(Long idArchivoCargado)
+	{
+		costosprocesamientoRepository.actualizarEstadoByIdArchivoCargado(idArchivoCargado, Constantes.ESTADO_CONCILIACION_ACEPTADO);
+	}
 
 }
