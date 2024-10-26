@@ -247,11 +247,4 @@ public final class Dominios {
 	
 	//Dominios para Auditoria Procesos
 	public static final String AUDITORIA_CIERRE_CERTI = "24";
-	
-	
-	public static final String TIPO_OPERACION_TERMINA_CCE = "CCE";
-	public static final boolean VERDADERO = true;
-	public static final boolean FALSO = false;
-	
-	
 }

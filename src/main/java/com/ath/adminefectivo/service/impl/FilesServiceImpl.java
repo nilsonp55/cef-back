@@ -306,7 +306,6 @@ public class FilesServiceImpl implements IFilesService {
     nombreArchivo = arregloNombre[0].concat("-" + postfijo);
     Path destinoPath =
         FileSystems.getDefault().getPath(urlDestino, nombreArchivo.concat("." + arregloNombre[1]));
-    log.debug("origenPath: {} - arregloNombre:{} - nombreArchivo: {} - destinoPath: {}", origenPath, arregloNombre, nombreArchivo, destinoPath);
     try {
       if (Boolean.TRUE.equals(s3Bucket)) {
         s3Util.moverObjeto(origenPath.toString(), destinoPath.toString());
@@ -402,4 +401,5 @@ public class FilesServiceImpl implements IFilesService {
       throw new IllegalArgumentException();
     }
   }
+
 }
