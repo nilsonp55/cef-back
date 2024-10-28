@@ -52,7 +52,7 @@ public class PuntosCodigoTDV {
 	private Bancos bancos;
 	
 	@Column(name = "ciudad_fondo", nullable = true)
-	private String ciudadFondo;
+	private String ciudadCodigo;
 	
 	
 	@Column(name = "ESTADO", nullable = true)
