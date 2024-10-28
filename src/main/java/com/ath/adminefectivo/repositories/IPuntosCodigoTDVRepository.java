@@ -43,6 +43,6 @@ public interface IPuntosCodigoTDVRepository
 	 * @param codigoPropioTdv
 	 * @return
 	 */
-	public PuntosCodigoTDV findByCodigoPropioTDVAndCodigoTDVAndBancosAndCiudadFondo(String codigoPropioTdv, String codigoTdv, Bancos banco, String ciudadFondo);
+	public PuntosCodigoTDV findByCodigoPropioTDVAndCodigoTDVAndBancosAndCiudadCodigo(String codigoPropioTdv, String codigoTdv, Bancos banco, String ciudadCodigo);
 
 }
