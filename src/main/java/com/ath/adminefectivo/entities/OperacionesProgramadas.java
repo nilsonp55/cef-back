@@ -175,12 +175,6 @@ public class OperacionesProgramadas {
 
   @Column(name = "TIPO_PUNTO_DESTINO")
   private String tipoPuntoDestino;
-  
-  /*
-  * HU006 Determina si se liquida costo para la operacion
-  */
-  @Column(name = "LIQUIDA_COSTO")
- private boolean liquidaCosto;
 
   @Transient
   private String nombreBanco;
