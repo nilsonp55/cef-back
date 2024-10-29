@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   db:
     image: postgres:14.6
@@ -17,21 +15,17 @@ services:
       - backnet
 
   app:
-    build: 
-      context: . 
-      dockerfile: Dockerfile
+    image: cef-backend-dev:latest
     profiles: ["app", "cef"]
     ports:
       - "8080:8080"
-    depends_on:
-      - db
     environment:
-      url: ${URL}
-      user: ${USER}
-      pass: ${PASS}
-      schema: ${SCHEMA}
-      bucket: ${BUCKET}
-      region: ${REGION}
+      url: jdbc:postgresql://db:5432/ctrefc
+      user: controlefect
+      pass: 123456
+      schema: controlefect
+      bucket: awue1athcef-dev
+      region: us-east-1
     networks:
       - backnet
 

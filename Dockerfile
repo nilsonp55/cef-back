@@ -20,17 +20,8 @@ COPY --from=build /app/target/*.jar app.jar
 # Expose port 8080 for the application
 EXPOSE 8080
 
-ARG ENV_URL
-ARG ENV_USER
-ARG ENV_PASS
-ARG ENV_SCHEMA
-ARG ENV_BUCKET
-ARG ENV_REGION
-
-
 RUN addgroup --system javauser && adduser -S -s /usr/sbin/nologin -G javauser javauser
 USER javauser
-
 
 ENV url=${ENV_URL}
 ENV user=${ENV_USER}
@@ -39,4 +30,4 @@ ENV schema=${ENV_SCHEMA}
 ENV bucket=${ENV_BUCKET}
 ENV region=${ENV_REGION}
 
-ENTRYPOINT ["java", "-jar","/app.jar"]
+ENTRYPOINT ["java", "-Xmx2g", "-Xms1g", "-XX:MaxMetaspaceSize=256m", "-jar", "app.jar"]
