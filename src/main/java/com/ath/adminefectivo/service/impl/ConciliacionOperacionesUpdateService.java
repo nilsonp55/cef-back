@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.constantes.Constantes;
+import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.UpdateEstadoOperacionesDTO;
 import com.ath.adminefectivo.repositories.IOperacionesCertificadasRepository;
 import com.ath.adminefectivo.repositories.IOperacionesProgramadasRepository;
@@ -38,10 +39,16 @@ public class ConciliacionOperacionesUpdateService implements IConciliacionOperac
 			operacionesProgramadasRepository.findById(opDTO.getIdOperacion()).ifPresentOrElse(opEntity -> {
 				log.debug("Estado actual operacion programada entity id: {} estado: {}", opEntity.getIdOperacion(),
 						opEntity.getEstadoConciliacion());
-				opEntity.setEstadoConciliacion(opDTO.getEstado());
-				operacionesProgramadasRepository.save(opEntity);
-				opDTO.setUpdateExitoso(true);
-				log.info("Operacion programada entity actualizada correctamente: {}", opEntity.getIdOperacion());
+				if(opEntity.getEstadoConciliacion().equals(Dominios.ESTADO_CONCILIACION_CONCILIADO)) {
+				  opDTO.setUpdateExitoso(false);
+                  opDTO.setResultadoFallido(Constantes.OPERACION_EN_ESTADO_CONCILIADO);
+                  log.info(Constantes.OPERACION_EN_ESTADO_CONCILIADO + " - Id: {}", opDTO.getIdOperacion());
+				} else {
+				  opEntity.setEstadoConciliacion(opDTO.getEstado());
+				  operacionesProgramadasRepository.save(opEntity);
+                  opDTO.setUpdateExitoso(true);
+                  log.info("Operacion programada entity actualizada correctamente: {}", opEntity.getIdOperacion());
+				}
 			}, () -> {
 				opDTO.setUpdateExitoso(false);
 				opDTO.setResultadoFallido(Constantes.REGISTRO_NO_ENCONTRADO);
@@ -67,10 +74,16 @@ public class ConciliacionOperacionesUpdateService implements IConciliacionOperac
 			operacionesCertificadasRepository.findById(opDTO.getIdOperacion()).ifPresentOrElse(opEntity -> {
 				log.debug("Estado actual operacion certificada entity id: {} estado: {}", opEntity.getIdCertificacion(),
 						opEntity.getEstadoConciliacion());
-				opEntity.setEstadoConciliacion(opDTO.getEstado());
-				operacionesCertificadasRepository.save(opEntity);
-				opDTO.setUpdateExitoso(true);
-				log.info("Operacion certificada entity actualizada correctamente: {}", opEntity.getIdCertificacion());
+				if(opEntity.getEstadoConciliacion().equals(Dominios.ESTADO_CONCILIACION_CONCILIADO)) {
+                  opDTO.setUpdateExitoso(false);
+                  opDTO.setResultadoFallido(Constantes.OPERACION_EN_ESTADO_CONCILIADO);
+                  log.info(Constantes.OPERACION_EN_ESTADO_CONCILIADO + " - Id: {}", opDTO.getIdOperacion());
+                } else {
+    				opEntity.setEstadoConciliacion(opDTO.getEstado());
+    				operacionesCertificadasRepository.save(opEntity);
+    				opDTO.setUpdateExitoso(true);
+    				log.info("Operacion certificada entity actualizada correctamente: {}", opEntity.getIdCertificacion());
+                }
 			}, () -> {
 				opDTO.setUpdateExitoso(false);
 				opDTO.setResultadoFallido(Constantes.REGISTRO_NO_ENCONTRADO);
