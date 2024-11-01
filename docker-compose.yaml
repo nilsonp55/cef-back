@@ -13,6 +13,21 @@ services:
       - "5432:5432"
     networks:
       - backnet
+  
+  db-i2:
+      image: postgres:16.4
+      profiles: ["db-i2"]
+      environment:
+        POSTGRES_USER: controlefect
+        POSTGRES_PASSWORD: 123456
+        POSTGRES_DB: ctrefc
+        POSTGRES_SCHEMA: controlefect
+      volumes:
+        - db-data-qa:/var/lib/postgresql/data
+      ports:
+        - "5433:5432"
+      networks:
+        - backnet
 
   app:
     image: cef-backend-dev:latest
@@ -31,6 +46,7 @@ services:
 
 volumes:
   db-data:
+  db-data-qa:
 
 networks:
   backnet:
