@@ -752,4 +752,6 @@ public static final String DELETE_SEPARADORES = "";
 	 * Estados Archivos
 	 */
 	public static final String ESTADO_NO_CONCILIADO = "NO CONCILIADO";
+	
+	public static final String OPERACION_EN_ESTADO_CONCILIADO = "Operacion en estado CONCILIADA, no se puede actualizar";
 }
