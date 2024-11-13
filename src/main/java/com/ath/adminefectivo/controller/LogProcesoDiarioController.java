@@ -7,6 +7,8 @@ import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -45,4 +47,20 @@ public class LogProcesoDiarioController {
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
+	
+	/**
+	 * 
+	 * @param logProcesoDiario registro LogProceso a actualizar 
+	 * @return Registro de LogProceso actualizado
+	 * @author prv_nparra
+	 */
+    @PostMapping(value = "${endpoints.ProcesoDiario.guardar}")
+    public ResponseEntity<ApiResponseADE<LogProcesoDiarioDTO>> updateLogProcesoDiario(
+        @RequestBody LogProcesoDiarioDTO logProcesoDiario) {
+      LogProcesoDiarioDTO actualizado =  procesoDiarioService.actualizarLogProcesoDiario(logProcesoDiario);
+      
+      return ResponseEntity.status(HttpStatus.OK)
+          .body(new ApiResponseADE<>(actualizado, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+                  .description(ApiResponseCode.SUCCESS.getDescription()).build()));
+    }
 }
