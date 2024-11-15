@@ -47,9 +47,8 @@ public class LogProcesoDiarioImpl implements ILogProcesoDiarioService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<LogProcesoDiarioDTO> getLogsProcesosDierios(Predicate predicate) {
-		Date fecha = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
-		var logProcesoDiarios = logProcesoDiarioRepository.findByFechaCreacion(fecha);
+	public List<LogProcesoDiarioDTO> getLogsProcesosDiarios(Predicate predicate) {
+		var logProcesoDiarios = logProcesoDiarioRepository.findAll(predicate);
 		
 		List<LogProcesoDiarioDTO> listLogProcesoDiarioDto = new ArrayList<>();
 		logProcesoDiarios.forEach(entity -> 
@@ -185,6 +184,23 @@ public class LogProcesoDiarioImpl implements ILogProcesoDiarioService {
 		}else {
 			return LogProcesoDiarioDTO.CONVERTER_DTO.apply(logProcesoDiario);
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<LogProcesoDiarioDTO> getFechaProcesoVigente() {
+		Date fecha = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
+		return this.getLogsProcesosDiariosByFechaProceso(fecha);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<Date> getLogProcesoDiarioFechasProcesadas() {
+		return logProcesoDiarioRepository.findFechasProcesadas();
 	}
 
 }
