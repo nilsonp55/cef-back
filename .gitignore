@@ -166,3 +166,5 @@ archivos/
 
 .env*
 
+.aider*
+.env

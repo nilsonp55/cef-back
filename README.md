@@ -67,18 +67,16 @@ En el archivo ``Dockerfile`` se encuentran definidas las variable requeridas par
 - ENV_REGION 
 - JAR_FILE 
 
-Se hace uso del archivo ``build-docker.sh`` para asignar estas variables y realizar el proceso de construcicon de la imagen docker.
-
 ###### 1) Configurar base de datos local 
 
 En el archivo ``docker-compose.yaml`` asignar valores para las variables de ambiente en el servicio 'db' de base datos y en el servicio 'app'.
 
 ###### 1) Construir imagen docker
 
-Actualizar variables en archivo ``build-docker.sh`` 
+Para el nombre de la imagen docker en local, se sugiere ``cef-backend-dev`` este es usado en ``docker-compose.yaml``.
 
 ```shell
-sh build-docker.sh 
+docker build -f Dockerfile -t cef-backend-dev .
 ```
 
 ###### 3) Ejecutar docker-compose
