@@ -118,8 +118,22 @@ public class AuditoriaProcesosServiceImpl implements IAuditoriaProcesosService {
 		);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<Date> consultarFechasProcesadas() {
+		return auditoriaProcesosRepository.AuditoriaProcesosFechasProcesadas();
+	}
 	
-	
-	
-	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public AuditoriaProcesosDTO crearAuditoriaProceso(AuditoriaProcesosDTO auditoriaProcesosDTO) {
+		log.debug("crear auditoriaProcesos: {} - ",auditoriaProcesosDTO.toString());
+		return AuditoriaProcesosDTO.CONVERTER_DTO.apply(
+				auditoriaProcesosRepository.save(AuditoriaProcesosDTO.CONVERTER_ENTITY.apply(auditoriaProcesosDTO)));
+	}
+	 
 }

@@ -19,6 +19,6 @@ import com.ath.adminefectivo.entities.id.AuditoriaProcesosPK;
 public interface IAuditoriaProcesosRepository
 		extends JpaRepository<AuditoriaProcesos, AuditoriaProcesosPK>, QuerydslPredicateExecutor<AuditoriaProcesos> {
 
-	@Query("SELECT ap FROM AuditoriaProcesos ap GROUP BY ap.fechaCreacion ORDER BY ap.fechaCreacion")
+	@Query("SELECT ap.fechaCreacion FROM AuditoriaProcesos ap GROUP BY ap.fechaCreacion ORDER BY ap.fechaCreacion")
 	List<Date> AuditoriaProcesosFechasProcesadas();
 }
