@@ -17,8 +17,8 @@ public class GestionRetencionArchivosDelegateImpl implements IGestionRetencionAr
 	
 	@Override
 	@Scheduled(cron = "0 0 18 * * *")
-	public boolean EliminarArchivosPorRetencion(){	
-		return gestionRetencionArchivos.EliminarArchivosPorRetencion();		
+	public boolean eliminarArchivosPorRetencion(){	
+		return gestionRetencionArchivos.eliminarArchivosPorRetencion();		
 	}
 	
 	

@@ -26,6 +26,7 @@ import com.ath.adminefectivo.dto.DetallesDefinicionArchivoDTO;
 import com.ath.adminefectivo.dto.FechasConciliacionDTO;
 import com.ath.adminefectivo.dto.LogProcesoDiarioDTO;
 import com.ath.adminefectivo.dto.MaestrosDefinicionArchivoDTO;
+import com.ath.adminefectivo.dto.OperacionesCertificadasDTO;
 import com.ath.adminefectivo.dto.OperacionesProgramadasDTO;
 import com.ath.adminefectivo.dto.PuntosDTO;
 import com.ath.adminefectivo.dto.RegistrosCargadosDTO;
@@ -2009,6 +2010,10 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
             .equals(Constantes.CAMPO_DETALLE_ARCHIVO_VALOR))
         .findFirst().orElse(null).getId().getNumeroCampo() - 1].trim();
   }
-
+  
+  @Override
+  public void saveAll(List<OperacionesProgramadas> OperacionesCertificadasDTOList) {	 
+	  operacionesProgramadasRepository.saveAll(OperacionesCertificadasDTOList);
+  }	
 
 }

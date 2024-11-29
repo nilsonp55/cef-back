@@ -1064,5 +1064,10 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
   public String procesarArchivosAlcance() {
     return operacionesCertificadasRepository.procesarArchivosAlcance();
   }
+  
+  @Override
+  public List<OperacionesCertificadasDTO> findOpCertificadasNotInOpProgramadas(Date fechaCreacion) {	 
+	return  operacionesCertificadasRepository.findOpCertificadasNotInOpProgramadas(fechaCreacion);
+  }	
 
 }

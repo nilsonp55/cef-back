@@ -101,6 +101,9 @@ public class PuntosDelegateImpl implements IPuntosDelegate {
         oficina.setRefagillado(createPuntosDTO.getRefagillado());
         oficina.setTarifaRuteo(createPuntosDTO.getTarifaRuteo());
         oficina.setTarifaVerificacion(createPuntosDTO.getTarifaVerificacion());
+        oficina.setProgramaTransporte(createPuntosDTO.getProgramaTransporte() != null 
+                ? createPuntosDTO.getProgramaTransporte() 
+                : true);
 
         puntoResponse = puntosService.guardarPuntoOficina(punto, oficina);
       }
@@ -145,7 +148,10 @@ public class PuntosDelegateImpl implements IPuntosDelegate {
         punto.getOficinas().setFajado(createPuntosDTO.getFajado());
         punto.getOficinas().setRefagillado(createPuntosDTO.getRefagillado());
         punto.getOficinas().setTarifaRuteo(createPuntosDTO.getTarifaRuteo());
-        punto.getOficinas().setTarifaVerificacion(createPuntosDTO.getTarifaVerificacion());
+        punto.getOficinas().setTarifaVerificacion(createPuntosDTO.getTarifaVerificacion());        
+        punto.getOficinas().setProgramaTransporte(createPuntosDTO.getProgramaTransporte() != null 
+                ? createPuntosDTO.getProgramaTransporte() 
+                : true);
       }
       // se actualizan datos del punto
       puntoResponse = puntosService.crearPunto(punto);

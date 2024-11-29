@@ -125,4 +125,6 @@ public interface IOperacionesProgramadasService {
 	 */
 	String reabrirCierrePorAgrupador(String agrupador);
 
+	void saveAll(List<OperacionesProgramadas> OperacionesCertificadasDTOList);
+
 }

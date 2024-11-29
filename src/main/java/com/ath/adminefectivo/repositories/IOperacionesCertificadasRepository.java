@@ -9,7 +9,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
+import org.springframework.data.repository.query.Param;
 
+import com.ath.adminefectivo.dto.OperacionesCertificadasDTO;
 import com.ath.adminefectivo.entities.OperacionesCertificadas;
 
 /**
@@ -148,5 +150,63 @@ public interface IOperacionesCertificadasRepository
 	public boolean validarnoconciliables();
 
 	@Procedure(procedureName = "compara_archivos_alcance_certi")
-	public String procesarArchivosAlcance();													  
+	public String procesarArchivosAlcance();	
+	
+	@Query("SELECT new com.ath.adminefectivo.dto.OperacionesCertificadasDTO(" +
+		       "    oc.codigoFondoTDV, " +
+		       "    oc.codigoPuntoOrigen, " +
+		       "    oc.codigoPuntoDestino, " +
+		       "    oc.fechaEjecucion, " +
+		       "    oc.tipoOperacion, " +
+		       "    oc.tipoServicio, " +
+		       "    oc.estadoConciliacion, " +
+		       "    oc.conciliable, " +
+		       "    oc.valorTotal, " +
+		       "    oc.valorFaltante, " +
+		       "    oc.valorSobrante, " +
+		       "    oc.fallidaOficina, " +
+		       "    oc.usuarioCreacion, " +
+		       "    oc.usuarioModificacion, " +
+		       "    oc.fechaCreacion, " +
+		       "    oc.fechaModificacion, " +
+		       "    oc.codigoServicioTdv, " +
+		       "    oc.entradaSalida, " +
+		       "    oc.idArchivoCargado, " +
+		       "    oc.tdv, " +
+		       "    oc.bancoAVAL, " +
+		       "    oc.tipoPuntoOrigen, " +
+		       "    oc.tipoPuntoDestino, " +
+		       "    oc.codigoPropioTDV, " +
+		       "    oc.moneda, " +
+		       "    oc.codigoOperacion, " +
+		       "    oc.consecutivoRegistro) " +
+		       "FROM OperacionesCertificadas oc " +
+		       "LEFT JOIN OperacionesProgramadas op ON " +
+		       "    op.codigoFondoTDV = oc.codigoFondoTDV " +
+		       "    AND op.codigoPuntoDestino = oc.codigoPuntoDestino " +
+		       "    AND op.codigoPuntoOrigen = oc.codigoPuntoOrigen " +
+		       "    AND op.entradaSalida = oc.entradaSalida " +
+		       "    AND op.estadoConciliacion = oc.estadoConciliacion " +
+		       "    AND CAST(op.fechaCreacion AS date) = CAST(oc.fechaCreacion AS date) " +
+		       "    AND CAST(op.fechaDestino AS date) = CAST(oc.fechaEjecucion AS date) " +
+		       "    AND CAST(op.fechaModificacion AS date) = CAST(oc.fechaModificacion AS date) " +
+		       "    AND op.tipoOperacion = oc.tipoOperacion " +
+		       "    AND op.tipoServicio = oc.tipoServicio " +
+		       "    AND op.valorTotal = oc.valorTotal " +
+		       "    AND op.idServicio = oc.codigoServicioTdv " +
+		       "    AND op.tipoPuntoDestino = oc.tipoPuntoDestino " +
+		       "    AND op.tipoPuntoOrigen = oc.tipoPuntoOrigen " +
+		       "    AND op.codigoMoneda = oc.moneda " +
+		       "    AND op.bancoAVAL = oc.bancoAVAL " +
+		       "    AND op.tdv = oc.tdv " +
+		       "    AND op.esCambio = false " +
+		       "    AND op.estadoOperacion = 'EJECUTADA' " +
+		       "WHERE op.idOperacion IS NULL " +
+		       "    AND CAST(oc.fechaCreacion AS date) = :fechaCreacion " +
+		       "    AND EXISTS (SELECT 1 FROM Oficinas o " +
+		       "               WHERE o.programaTransporte = false " +
+		       "               AND (o.codigoPunto = oc.codigoPuntoDestino " +
+		       "                    OR o.codigoPunto = oc.codigoPuntoOrigen))")
+		List<OperacionesCertificadasDTO> findOpCertificadasNotInOpProgramadas(
+		    @Param("fechaCreacion") Date fechaCreacion);
 }

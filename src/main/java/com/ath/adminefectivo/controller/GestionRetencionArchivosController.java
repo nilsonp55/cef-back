@@ -31,7 +31,7 @@ public class GestionRetencionArchivosController {
 	
 	@GetMapping(value = "${endpoints.GestionRetencionArchivos.eliminar}")
 	public ResponseEntity<ApiResponseADE<Boolean>> eliminarRetencionArchivo() {
-		var archivosEliminados = gestionRetencionArchivos.EliminarArchivosPorRetencion();
+		var archivosEliminados = gestionRetencionArchivos.eliminarArchivosPorRetencion();
 		return ResponseEntity.status(HttpStatus.OK).body(
 				new ApiResponseADE<>(archivosEliminados, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));

@@ -55,6 +55,8 @@ public final class Constantes {
 	public static final Integer ESTADO_REGISTRO_ACTIVO = 1;
 	public static final Integer ESTADO_REGISTRO_INACTIVO = 2;
 	public static final Integer TIPO_MONEDA_BRINKS = 3;
+	public static final Integer PAGINA_DEFAULT = 0;
+	public static final Integer TAMANO_PAGINA = 20;
 
 
 	/**
@@ -334,6 +336,11 @@ public final class Constantes {
 	 * Caracter separador de las fechas de los archivos
 	 */
 	public static final String SEPARADOR_FECHA_ARCHIVO = "_";
+	
+	/**
+	 * Caracter serparador de directorios slash(unix)
+	 */
+	public static final String SEPARADOR_DIRECTORIO_UNIX = "/";
 	
 	/**
 	 * Variable que determina que una operacion esta conciliable
@@ -633,7 +640,9 @@ public final class Constantes {
 	 */
 	public static final String CAMPO_DETALLE_ARCHIVO_NOMBREPUNTO_TIPO_5 = "NOMBREPUNTO";
 	
-public static final String DELETE_SEPARADORES = "";
+	public static final String DELETE_SEPARADORES = "";
+	
+	public static final String CADENA_VACIA = "";
 	
 	/**
 	 * Nombre de archivos generados xls 
@@ -746,4 +755,10 @@ public static final String DELETE_SEPARADORES = "";
 	 * Estados Archivos
 	 */
 	public static final String ESTADO_NO_CONCILIADO = "NO CONCILIADO";
+	
+	/**
+	 * ESTADO OPERACION
+	 * Establecer el estado de operación como ejecutada en operaciones programadas
+	 */
+	public static final String ESTADO_OPERACION_EJECUTADA = "EJECUTADA";
 }

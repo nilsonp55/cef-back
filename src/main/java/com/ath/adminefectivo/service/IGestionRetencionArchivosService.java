@@ -6,7 +6,7 @@ import com.ath.adminefectivo.entities.ParametrosRetencion;
 
 public interface IGestionRetencionArchivosService {
 
-	boolean EliminarArchivosPorRetencion();
+	boolean eliminarArchivosPorRetencion();
 
 	List<ParametrosRetencion> obtenerParametrosPorActivo(boolean activo);
 

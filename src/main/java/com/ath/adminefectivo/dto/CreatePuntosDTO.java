@@ -1,4 +1,5 @@
 package com.ath.adminefectivo.dto;
+import org.springframework.lang.Nullable;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -57,5 +58,7 @@ public class CreatePuntosDTO {
 	//Cajeros
 	private Integer codigoATM;
 	
+	@Nullable
+    private Boolean programaTransporte;
 	
 }

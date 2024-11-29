@@ -1,5 +1,6 @@
 package com.ath.adminefectivo.delegate.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -12,15 +13,20 @@ import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.delegate.ICertificacionesDelegate;
 import com.ath.adminefectivo.dto.DetallesDefinicionArchivoDTO;
 import com.ath.adminefectivo.dto.LogProcesoDiarioDTO;
+import com.ath.adminefectivo.dto.OperacionesCertificadasDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.ArchivosCargados;
+import com.ath.adminefectivo.entities.OperacionesProgramadas;
 import com.ath.adminefectivo.exception.NegocioException;
+import com.ath.adminefectivo.repositories.IOperacionesCertificadasRepository;
 import com.ath.adminefectivo.service.IArchivosCargadosService;
 import com.ath.adminefectivo.service.IAuditoriaProcesosService;
 import com.ath.adminefectivo.service.IDetalleDefinicionArchivoService;
 import com.ath.adminefectivo.service.IDominioService;
+import com.ath.adminefectivo.service.IFestivosNacionalesService;
 import com.ath.adminefectivo.service.ILogProcesoDiarioService;
 import com.ath.adminefectivo.service.IOperacionesCertificadasService;
+import com.ath.adminefectivo.service.IOperacionesProgramadasService;
 import com.ath.adminefectivo.service.IParametroService;
 
 @Service
@@ -46,13 +52,18 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 
 	@Autowired
 	IDetalleDefinicionArchivoService detalleDefinicionArchivoService;
-
+	
+	@Autowired
+	IFestivosNacionalesService festivosNacionalesService;
+	
+	@Autowired
+	IOperacionesProgramadasService OperacionesProgramadasService;
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public Boolean procesarCertificaciones(String agrupador) {
-
 		Date fechaProceso = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
 		auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION, 
 				fechaProceso, Constantes.ESTADO_PROCESO_INICIO, Constantes.ESTADO_PROCESO_INICIO);
@@ -71,6 +82,8 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 			validarExistenciaArchivos(archivosCargados.size(), fechaProceso);
 			this.procesarArchivosCertificaciones(archivosCargados);
 			
+			certificarProgramaTransporte(fechaProceso);
+			
 			// siguiente l�nea, incluye conciliaci�n autom�tica (en procedimientos de BD)
 			operacionesCertificadasService.validarNoConciliables();
 			
@@ -82,6 +95,46 @@ public class CertificacionesDelegateImpl implements ICertificacionesDelegate {
 		}
 	}
 	
+	private void certificarProgramaTransporte(Date fechaProceso) {
+		Date fechaAnteriorHabil = festivosNacionalesService.consultarAnteriorHabil(fechaProceso);
+		List<OperacionesCertificadasDTO> operacionesCertificadasList = operacionesCertificadasService.findOpCertificadasNotInOpProgramadas(fechaAnteriorHabil);		
+		List<OperacionesProgramadas> operacionesProgramadasList = new ArrayList<OperacionesProgramadas>();
+		if(!operacionesCertificadasList.isEmpty()) {
+			for(OperacionesCertificadasDTO operacionesCertificadas : operacionesCertificadasList) {
+				operacionesProgramadasList.add(setOpProgramadasFromOpCertificadas(operacionesCertificadas));
+			}			
+			OperacionesProgramadasService.saveAll(operacionesProgramadasList);
+		}
+	}
+
+	private OperacionesProgramadas setOpProgramadasFromOpCertificadas(
+			OperacionesCertificadasDTO operacionesCertificadas) {	
+		OperacionesProgramadas operacionesProgramadas = new OperacionesProgramadas();			
+		operacionesProgramadas.setCodigoFondoTDV(operacionesCertificadas.getCodigoFondoTDV());
+		operacionesProgramadas.setCodigoPuntoDestino(operacionesCertificadas.getCodigoPuntoDestino());
+		operacionesProgramadas.setCodigoPuntoOrigen(operacionesCertificadas.getCodigoPuntoOrigen());
+		operacionesProgramadas.setEntradaSalida(operacionesCertificadas.getEntradaSalida());
+		operacionesProgramadas.setEstadoConciliacion(operacionesCertificadas.getEstadoConciliacion());
+		operacionesProgramadas.setFechaCreacion(operacionesCertificadas.getFechaCreacion());
+		operacionesProgramadas.setFechaDestino(operacionesCertificadas.getFechaEjecucion());
+		operacionesProgramadas.setFechaModificacion(operacionesCertificadas.getFechaModificacion());
+		operacionesProgramadas.setIdArchivoCargado(operacionesCertificadas.getIdArchivoCargado().intValue());
+		operacionesProgramadas.setTipoOperacion(operacionesCertificadas.getTipoOperacion());
+		operacionesProgramadas.setUsuarioCreacion(operacionesCertificadas.getUsuarioCreacion());
+		operacionesProgramadas.setUsuarioModificacion(operacionesCertificadas.getUsuarioModificacion());					
+		operacionesProgramadas.setTipoServicio(operacionesCertificadas.getTipoServicio());			
+		operacionesProgramadas.setValorTotal(operacionesCertificadas.getValorTotal());
+		operacionesProgramadas.setCodigoServicioTdv(operacionesCertificadas.getCodigoServicioTdv());
+		operacionesProgramadas.setTipoPuntoDestino(operacionesCertificadas.getTipoPuntoDestino());
+		operacionesProgramadas.setTipoPuntoOrigen(operacionesCertificadas.getTipoPuntoOrigen());
+		operacionesProgramadas.setCodigoMoneda(operacionesCertificadas.getMoneda());
+		operacionesProgramadas.setBancoAVAL(operacionesCertificadas.getBancoAVAL());
+		operacionesProgramadas.setTdv(operacionesCertificadas.getTdv());
+		operacionesProgramadas.setEsCambio(false);
+		operacionesProgramadas.setEstadoOperacion(Constantes.ESTADO_OPERACION_EJECUTADA);
+		return operacionesProgramadas;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
