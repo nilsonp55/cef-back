@@ -109,7 +109,16 @@ public interface IOperacionesCertificadasRepository
 			(Integer codigoFondoTDV, Integer codigoPuntoOrigen,Integer codigoPuntoDestino, String codigoServicio, String entradaSalida, 
 					Date fechaEjecucion, String codigoPropioTDV, Long idArchivoCargado);
 	
-	
+	/**
+     * Retorna la entidad operaciones certificadas segun el codigo del servicio tdv, codigo propio tdv y codigoOperacion
+     * @param codigoServicio
+     * @return OperacionesCertificadas
+     * @author prv_nparra
+     */
+	OperacionesCertificadas 
+    findByCodigoFondoTDVAndCodigoPuntoOrigenAndCodigoPuntoDestinoAndCodigoServicioTdvAndEntradaSalidaAndFechaEjecucionAndCodigoPropioTDVAndIdArchivoCargadoAndCodigoOperacion
+            (Integer codigoFondoTDV, Integer codigoPuntoOrigen,Integer codigoPuntoDestino, String codigoServicio, String entradaSalida, 
+                    Date fechaEjecucion, String codigoPropioTDV, Long idArchivoCargado, String codigoOperacion);
 
 	/**
 	 * Retorna el objeto OperacionesCertificadas con las operaciones candidatas a conciliacion automatica

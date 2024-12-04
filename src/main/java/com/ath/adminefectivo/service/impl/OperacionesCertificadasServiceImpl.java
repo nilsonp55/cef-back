@@ -375,17 +375,22 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
     CodigoPuntoOrigenDestinoDTO codigoPuntoOrigenDestino;
     Integer longitud = 0;
     String entradaSal = asignarEntradaSalida(entradaSalida);
-    codigoPuntoOrigenDestino = obtenerCodigoPuntoOrigenDestino(entradaSal, registro, codigoPropio,
-        codigoServicio, elemento.getIdArchivo());
-    certificadas = codigoPuntoOrigenDestino.getCertificadas();
+    
+    
     if ((elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_ITVCS))
         || (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IATCS))
         || (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IPRCS))
         || (elemento.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IVGLS))) {
       longitud = fila.length;
+      codigoPuntoOrigenDestino = obtenerCodigoPuntoOrigenDestino(entradaSal, registro, codigoPropio,
+          codigoServicio, elemento.getIdArchivo(), null);
     } else {
       longitud = fila.length - 1;
+      codigoPuntoOrigenDestino = obtenerCodigoPuntoOrigenDestino(entradaSal, registro, codigoPropio,
+          codigoServicio, elemento.getIdArchivo(), codigoOperacion);
     }
+    
+    certificadas = codigoPuntoOrigenDestino.getCertificadas();
     if (Objects.isNull(certificadas)) {
       var operaciones = new OperacionesCertificadasDTO();
 
@@ -462,23 +467,30 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
    */
   private CodigoPuntoOrigenDestinoDTO obtenerCodigoPuntoOrigenDestino(String entradaSalida,
       RegistroTipo1ArchivosFondosDTO registro, String codigoPropio, String codigoServicio,
-      Long idArchivo) {
+      Long idArchivo, String codigoOperacion) {
 
     var codigoPuntoOrigenDestino = new CodigoPuntoOrigenDestinoDTO();
     Integer codigoPuntoOrigen = 0;
     Integer codigoPuntoDestino = 0;
     OperacionesCertificadas certificadas = null;
 
-
+    //TODO
     if (entradaSalida.equals(Constantes.NOMBRE_ENTRADA)) {
       codigoPuntoDestino = registro.getCodigoPunto();
       codigoPuntoOrigen = puntosCodigoTdvService.getCodigoPunto(codigoPropio, registro.getTdv(),
           registro.getBancoAval(), registro.getCodigoDane());
       if (!codigoServicio.equals(SIN_CODIGO_SERVICIO)) {
-        certificadas = operacionesCertificadasRepository
+        if (StringUtils.isEmpty(codigoOperacion)) {
+          certificadas = operacionesCertificadasRepository
             .findByCodigoFondoTDVAndCodigoPuntoOrigenAndCodigoPuntoDestinoAndCodigoServicioTdvAndEntradaSalidaAndFechaEjecucionAndCodigoPropioTDVAndIdArchivoCargado(
                 codigoPuntoDestino, codigoPuntoOrigen, codigoPuntoDestino, codigoServicio,
                 Constantes.NOMBRE_ENTRADA, registro.getFechaEjecucion(), codigoPropio, idArchivo);
+        } else {
+          certificadas = operacionesCertificadasRepository
+              .findByCodigoFondoTDVAndCodigoPuntoOrigenAndCodigoPuntoDestinoAndCodigoServicioTdvAndEntradaSalidaAndFechaEjecucionAndCodigoPropioTDVAndIdArchivoCargadoAndCodigoOperacion(
+                  codigoPuntoDestino, codigoPuntoOrigen, codigoPuntoDestino, codigoServicio,
+                  Constantes.NOMBRE_ENTRADA, registro.getFechaEjecucion(), codigoPropio, idArchivo, codigoOperacion);
+        }
       }
 
     } else {
@@ -488,10 +500,17 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
           registro.getBancoAval(), registro.getCodigoDane());
 
       if (!codigoServicio.equals(SIN_CODIGO_SERVICIO)) {
-        certificadas = operacionesCertificadasRepository
+        if(StringUtils.isEmpty(codigoOperacion)) {
+          certificadas = operacionesCertificadasRepository
             .findByCodigoFondoTDVAndCodigoPuntoOrigenAndCodigoPuntoDestinoAndCodigoServicioTdvAndEntradaSalidaAndFechaEjecucionAndCodigoPropioTDVAndIdArchivoCargado(
                 codigoPuntoOrigen, codigoPuntoDestino, codigoPuntoOrigen, codigoServicio,
                 Constantes.NOMBRE_SALIDA, registro.getFechaEjecucion(), codigoPropio, idArchivo);
+        } else {
+          certificadas = operacionesCertificadasRepository
+              .findByCodigoFondoTDVAndCodigoPuntoOrigenAndCodigoPuntoDestinoAndCodigoServicioTdvAndEntradaSalidaAndFechaEjecucionAndCodigoPropioTDVAndIdArchivoCargadoAndCodigoOperacion(
+                  codigoPuntoDestino, codigoPuntoOrigen, codigoPuntoDestino, codigoServicio,
+                  Constantes.NOMBRE_ENTRADA, registro.getFechaEjecucion(), codigoPropio, idArchivo, codigoOperacion);
+        }
       }
 
     }
