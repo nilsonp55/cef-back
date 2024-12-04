@@ -49,9 +49,6 @@ public class Oficinas {
 	@Column(name = "TARIFA_VERIFICACION")
 	private Double tarifaVerificacion;
 	
-	@Column(name = "PROGRAMA_TRANSPORTE")
-	private Boolean programaTransporte;
-	
 	@OneToOne
 	@JoinColumn(name = "CODIGO_PUNTO", nullable = false)
 	private Puntos puntos;

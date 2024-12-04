@@ -17,6 +17,7 @@ public final class Constantes {
 	public static final String FECHA_PATTERN_NO_GUION = "ddMMyyyy";
 	public static final String FECHA_HORA_PATTERN = "dd-MM-yyyy hh:mm:ss a";
 	public static final String FORMATO_FECHA_ARCHIVOS = "ddMMyyyyhhmmss";
+	public static final String FORMATO_FECHA_ARCHIVOS_MS = "ddMMyyyyhhmmssSSS";
 	public static final String ESTADO_MAESTRO_DEFINICION_ACTIVO = "ACTIVO";
 	public static final String REGISTRO_ACTIVO = "ACT";
 	public static final String REGISTRO_INACTIVO = "INA";
@@ -55,8 +56,6 @@ public final class Constantes {
 	public static final Integer ESTADO_REGISTRO_ACTIVO = 1;
 	public static final Integer ESTADO_REGISTRO_INACTIVO = 2;
 	public static final Integer TIPO_MONEDA_BRINKS = 3;
-	public static final Integer PAGINA_DEFAULT = 0;
-	public static final Integer TAMANO_PAGINA = 20;
 
 
 	/**
@@ -640,7 +639,7 @@ public final class Constantes {
 	 */
 	public static final String CAMPO_DETALLE_ARCHIVO_NOMBREPUNTO_TIPO_5 = "NOMBREPUNTO";
 	
-	public static final String DELETE_SEPARADORES = "";
+public static final String DELETE_SEPARADORES = "";
 	
 	public static final String CADENA_VACIA = "";
 	
@@ -755,10 +754,4 @@ public final class Constantes {
 	 * Estados Archivos
 	 */
 	public static final String ESTADO_NO_CONCILIADO = "NO CONCILIADO";
-	
-	/**
-	 * ESTADO OPERACION
-	 * Establecer el estado de operación como ejecutada en operaciones programadas
-	 */
-	public static final String ESTADO_OPERACION_EJECUTADA = "EJECUTADA";
 }

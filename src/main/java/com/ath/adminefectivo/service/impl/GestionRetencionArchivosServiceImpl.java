@@ -362,9 +362,9 @@ public class GestionRetencionArchivosServiceImpl implements IGestionRetencionArc
 			String rutaBase = pathFileS3.substring(0, pathFileS3.lastIndexOf("/"));
 			LocalDateTime now = LocalDateTime.now();
 			String nombreArchivoLog = String.format("log_archivo_depurados_%s.txt",
-					now.format(DateTimeFormatter.ofPattern(Constantes.FORMATO_FECHA_ARCHIVOS))); // Agregar hora,
+					now.format(DateTimeFormatter.ofPattern(Constantes.FORMATO_FECHA_ARCHIVOS_MS))); // Agregar hora,
 																									// minutos y
-																									// segundos
+																									// segundos, milisegundos
 			String rutaArchivoLog = rutaBase + "/" + nombreArchivoLog;
 
 			String headers = "fecha_depuracion,ubicacion\n";
