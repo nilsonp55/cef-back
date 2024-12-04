@@ -17,6 +17,7 @@ public final class Constantes {
 	public static final String FECHA_PATTERN_NO_GUION = "ddMMyyyy";
 	public static final String FECHA_HORA_PATTERN = "dd-MM-yyyy hh:mm:ss a";
 	public static final String FORMATO_FECHA_ARCHIVOS = "ddMMyyyyhhmmss";
+	public static final String FORMATO_FECHA_ARCHIVOS_MS = "ddMMyyyyhhmmssSSS";
 	public static final String ESTADO_MAESTRO_DEFINICION_ACTIVO = "ACTIVO";
 	public static final String REGISTRO_ACTIVO = "ACT";
 	public static final String REGISTRO_INACTIVO = "INA";
@@ -336,6 +337,11 @@ public final class Constantes {
 	public static final String SEPARADOR_FECHA_ARCHIVO = "_";
 	
 	/**
+	 * Caracter serparador de directorios slash(unix)
+	 */
+	public static final String SEPARADOR_DIRECTORIO_UNIX = "/";
+	
+	/**
 	 * Variable que determina que una operacion esta conciliable
 	 */
 	public static final String CONCILIABLE_SI = "SI";
@@ -634,6 +640,8 @@ public final class Constantes {
 	public static final String CAMPO_DETALLE_ARCHIVO_NOMBREPUNTO_TIPO_5 = "NOMBREPUNTO";
 	
 public static final String DELETE_SEPARADORES = "";
+	
+	public static final String CADENA_VACIA = "";
 	
 	/**
 	 * Nombre de archivos generados xls 

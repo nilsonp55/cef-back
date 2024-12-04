@@ -745,6 +745,12 @@ public enum ApiResponseCode {
 	 * Error al obtener el contenido de un archivo en un repositorio local
 	 */
 	ERROR_CONTENIDO_ARCHIVO_ZIP ("E980", "Ocurrió un error al intentar comprimir los archivos. No se pudo crear el archivo .zip. Por favor, consulta con el administrador.",
+			HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Error al obtener parametros de DB o no se encuentran activos
+	 */
+	ERROR_OBTENER_PARAMETROS_ACTIVOS ("E981", "No se encontraron parametros o no se encuentran activos",
 			HttpStatus.PRECONDITION_FAILED);
 	
 	/**

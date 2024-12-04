@@ -23,8 +23,11 @@ import com.amazonaws.AmazonServiceException;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.ListObjectsV2Request;
 import com.amazonaws.services.s3.model.ListObjectsV2Result;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.ath.adminefectivo.constantes.Constantes;
@@ -342,4 +345,27 @@ public class S3Utils {
 	  
 	  return s3ObjectSummaries;
   }
+
+  	//Obtiene un objeto en S3 con el path mas el archivo
+	public S3Object getS3Client(String path) {		
+		S3Object s3Object = null;
+		try {
+			GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, path);
+			s3Object = s3.getObject(getObjectRequest);
+		  } catch (Exception e) {	    
+			  log.error("Error al obtener el archivo desde S3.");
+		  }		
+		return s3Object;		
+	}
+	
+  	//Actualiza un objeto en S3
+	public void putS3Objets(String path, InputStream fileInput, ObjectMetadata metadata) {
+		PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, path, fileInput,metadata);
+		try {
+			s3.putObject(putObjectRequest);
+		  } catch (Exception e) {	    
+			  log.error("Error al actualizar el archivo desde S3.");
+		  }		
+		
+	}
 }

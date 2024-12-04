@@ -576,23 +576,10 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 	
 	private boolean desconciliarParametroLiquidacionCosto(String estadoTransporte, Integer tipoEstado, Long idLiquidacion)
 	{
-		
-		var paso = false;
-		
+	
 		//Validar si estado es conciliado manual
 		//Validar si tipo es 1= eliminar el registro de la tabla parametrosLiquidacionCostos
-		if (estadoTransporte.equals(Dominios.ESTADO_VALIDACION_CONCILIACION_MANUAL) && tipoEstado.equals(1)
-			)
-		{
-			var parametroLiquidacion = 
-				parametrosLiquidacionCostosService.getParametrosLiquidacionCostosByIdFlat(idLiquidacion);
-			
-			if (Objects.nonNull(parametroLiquidacion))
-			{
-				parametrosLiquidacionCostosService.f2eliminarParametrosLiquidacionCostos(parametroLiquidacion);
-			}
-			paso = true;
-		}
+		var paso = validarEstadoTransporteManual(estadoTransporte, tipoEstado, idLiquidacion);
 		
 		//Validar si estado es conciliado manual
 		//Validar si tipo es 2= actualizar valores antiguos de la tabla parametrosLiquidacionCostos
@@ -618,8 +605,6 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 						parametrosLiquidacionCostosService.f2actualizarParametrosLiquidacionCostos(parametroLiquidacionCostoTransprote);
 					}
 
-					paso = true;
-
 					if (Objects.nonNull(valoresLiquidadosFlat))
 					{
 						valoresLiquidadosFlatService.f2actualizarvaloresLiquidadosRepository(valoresLiquidadosFlat);
@@ -640,6 +625,25 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 		return paso;
 		
 	}
+	
+	private boolean validarEstadoTransporteManual(String estadoTransporte, Integer tipoEstado, Long idLiquidacion)
+	{
+		//Validar si estado es conciliado manual
+		//Validar si tipo es 1= eliminar el registro de la tabla parametrosLiquidacionCostos
+		if (estadoTransporte.equals(Dominios.ESTADO_VALIDACION_CONCILIACION_MANUAL) && tipoEstado.equals(1))
+		{
+			var parametroLiquidacion = 
+				parametrosLiquidacionCostosService.getParametrosLiquidacionCostosByIdFlat(idLiquidacion);
+					
+				if (Objects.nonNull(parametroLiquidacion))
+				{
+					parametrosLiquidacionCostosService.f2eliminarParametrosLiquidacionCostos(parametroLiquidacion);
+				}
+				return true;
+		}
+		return false;
+	}
+	
 	
 	private Long aceptarParametroLiquidacionCosto(CostosTransporte costoTransport)
 	{
@@ -854,7 +858,7 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 			
 			if (Objects.nonNull(costosTransporteDif)) {
 								
-				if (operacionEstadoStr.toUpperCase().equals(Constantes.OPERACION_ACEPTAR))
+				if (operacionEstadoStr.equalsIgnoreCase(Constantes.OPERACION_ACEPTAR))
 				{
 					Long idLiquidacionTransporteDif = f.getIdLiquidacion();
 
