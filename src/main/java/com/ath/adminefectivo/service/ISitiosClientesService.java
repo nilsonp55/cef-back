@@ -23,4 +23,13 @@ public interface ISitiosClientesService {
 	 * @author cesar.castano
 	 */
 	SitiosClientes getCodigoPuntoSitio(Integer codigoPunto);
+
+	/**
+	 * Metodo que retorna el codigo Punto del Sitio segun el codigo del cliente
+	 * Este servicio consume una optimizacion mediante JDBC
+	 * 
+	 * @param codigoCliente
+	 * @return Integer
+	 */
+	SitiosClientes getCodigoPuntoSitioJdbc(Integer codigoPunto);
 }

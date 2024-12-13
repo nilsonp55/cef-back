@@ -1,5 +1,6 @@
 package com.ath.adminefectivo.service.impl;
 
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -29,6 +30,7 @@ import com.ath.adminefectivo.entities.RegistrosCargados;
 import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.IOperacionesCertificadasRepository;
+import com.ath.adminefectivo.repositories.jdbc.IOperacionesCertificadasJdbcRepository;
 import com.ath.adminefectivo.service.IArchivosCargadosService;
 import com.ath.adminefectivo.service.IAuditoriaProcesosService;
 import com.ath.adminefectivo.service.IBancosService;
@@ -91,6 +93,9 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 
   @Autowired
   IAuditoriaProcesosService auditoriaProcesosService;
+  
+  @Autowired
+  IOperacionesCertificadasJdbcRepository operacionesCertificadasJdbcRepository;
 
   private List<SobrantesFaltantesDTO> listaAjustesValor = new ArrayList<>();
   private static final String USER1 = "user1";
@@ -469,10 +474,10 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
       codigoPuntoOrigen = puntosCodigoTdvService.getCodigoPunto(codigoPropio, registro.getTdv(),
           registro.getBancoAval(), registro.getCodigoDane());
       if (!codigoServicio.equals(SIN_CODIGO_SERVICIO)) {
-        certificadas = operacionesCertificadasRepository
-            .findByCodigoFondoTDVAndCodigoPuntoOrigenAndCodigoPuntoDestinoAndCodigoServicioTdvAndEntradaSalidaAndFechaEjecucionAndCodigoPropioTDVAndIdArchivoCargado(
-                codigoPuntoDestino, codigoPuntoOrigen, codigoPuntoDestino, codigoServicio,
-                Constantes.NOMBRE_ENTRADA, registro.getFechaEjecucion(), codigoPropio, idArchivo);
+		 certificadas = operacionesCertificadasJdbcRepository
+	            .findOperacionCertificadaByParametros(
+	                codigoPuntoDestino, codigoPuntoOrigen, codigoPuntoDestino, codigoServicio,
+	                Constantes.NOMBRE_ENTRADA, registro.getFechaEjecucion(), codigoPropio, idArchivo);
       }
 
     } else {
@@ -482,10 +487,10 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
           registro.getBancoAval(), registro.getCodigoDane());
 
       if (!codigoServicio.equals(SIN_CODIGO_SERVICIO)) {
-        certificadas = operacionesCertificadasRepository
-            .findByCodigoFondoTDVAndCodigoPuntoOrigenAndCodigoPuntoDestinoAndCodigoServicioTdvAndEntradaSalidaAndFechaEjecucionAndCodigoPropioTDVAndIdArchivoCargado(
-                codigoPuntoOrigen, codigoPuntoDestino, codigoPuntoOrigen, codigoServicio,
-                Constantes.NOMBRE_SALIDA, registro.getFechaEjecucion(), codigoPropio, idArchivo);
+      certificadas = operacionesCertificadasJdbcRepository
+                .findOperacionCertificadaByParametros(
+                    codigoPuntoDestino, codigoPuntoOrigen, codigoPuntoDestino, codigoServicio,
+                    Constantes.NOMBRE_SALIDA, registro.getFechaEjecucion(), codigoPropio, idArchivo);
       }
 
     }
@@ -524,7 +529,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
     if (transportadora.equals("SEG")) {
       transportadora = "TVS";
     }
-    var fondo = fondosService.getCodigoFondoCertificacion(transportadora, nit, ciudad);
+    var fondo = fondosService.getCodigoFondoCertificacionJdbc(transportadora, nit, ciudad);
     if (Objects.isNull(fondo)) {
 
       auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
@@ -594,7 +599,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 
   private String procesarOperacionOtros(Integer codigoPunto) {
     var tipoOperacion = "";
-    var punto = puntosService.getPuntoById(codigoPunto);
+    var punto = puntosService.getPuntoByIdJdbc(codigoPunto);
     if (!Objects.isNull(punto) && "BANCO".equals(punto.getTipoPunto())) {
       tipoOperacion = dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_OPERACION,
           Dominios.TIPO_OPERA_VENTA);
@@ -614,9 +619,9 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
    */
   private String procesarProvisiones(Integer codigoPunto) {
     var tipoOperacion = "";
-    if (oficinaService.getCodigoPuntoOficina(codigoPunto)
-        || clientesCorporativosService.getCodigoPuntoCliente(codigoPunto)
-        || cajerosService.getCodigoPuntoCajero(codigoPunto)) {
+    if (oficinaService.getCodigoPuntoOficinaJdbc(codigoPunto)
+        || clientesCorporativosService.getCodigoPuntoClienteJdbc(codigoPunto)
+        || cajerosService.getCodigoPuntoCajeroJdbc(codigoPunto)) {
       tipoOperacion = dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_OPERACION,
           Dominios.TIPO_OPERA_PROVISION);
     }
@@ -632,9 +637,9 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
    */
   private String procesarRecolleciones(Integer codigoPunto) {
     var tipoOperacion = "";
-    if (oficinaService.getCodigoPuntoOficina(codigoPunto)
-        || clientesCorporativosService.getCodigoPuntoCliente(codigoPunto)
-        || cajerosService.getCodigoPuntoCajero(codigoPunto)) {
+    if (oficinaService.getCodigoPuntoOficinaJdbc(codigoPunto)
+        || clientesCorporativosService.getCodigoPuntoClienteJdbc(codigoPunto)
+        || cajerosService.getCodigoPuntoCajeroJdbc(codigoPunto)) {
       tipoOperacion = dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_OPERACION,
           Dominios.TIPO_OPERA_RECOLECCION);
     }
@@ -650,7 +655,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
    */
   private String procesarConsignaciones(Integer codigoPunto) {
     var tipoOperacion = "";
-    if (puntosService.getEntidadPuntoBanrep(dominioService.valorTextoDominio(
+    if (puntosService.getEntidadPuntoBanrepJdbc(dominioService.valorTextoDominio(
         Constantes.DOMINIO_TIPOS_PUNTO, Dominios.TIPOS_PUNTO_BAN_REP), codigoPunto)) {
       tipoOperacion = dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_OPERACION,
           Dominios.TIPO_OPERA_CONSIGNACION);
@@ -667,7 +672,7 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
    */
   private String procesarRetiros(Integer codigoPunto) {
     var tipoOperacion = "";
-    if (puntosService.getEntidadPuntoBanrep(dominioService.valorTextoDominio(
+    if (puntosService.getEntidadPuntoBanrepJdbc(dominioService.valorTextoDominio(
         Constantes.DOMINIO_TIPOS_PUNTO, Dominios.TIPOS_PUNTO_BAN_REP), codigoPunto)) {
       tipoOperacion = dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_OPERACION,
           Dominios.TIPO_OPERA_RETIRO);

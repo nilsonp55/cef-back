@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.dto.ClientesCorporativosDTO;
 import com.ath.adminefectivo.repositories.IClientesCorporativosRepository;
+import com.ath.adminefectivo.repositories.jdbc.IClientesCorporativosJdbcRepository;
 import com.ath.adminefectivo.service.IClientesCorporativosService;
 import com.ath.adminefectivo.service.ISitiosClientesService;
 import com.querydsl.core.types.Predicate;
@@ -21,6 +22,9 @@ public class ClientesCorporativosServiceImpl implements IClientesCorporativosSer
 
 	@Autowired
 	IClientesCorporativosRepository clientesCorporativosRepository;
+	
+	@Autowired
+	IClientesCorporativosJdbcRepository clientesCorporativosJdbcRepository;
 	
 	@Autowired
 	ISitiosClientesService sitiosClientesService;
@@ -66,5 +70,17 @@ public class ClientesCorporativosServiceImpl implements IClientesCorporativosSer
 			estado = false;
 		}
 		return estado;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Boolean getCodigoPuntoClienteJdbc(Integer codigoPunto) {
+		var sitiosCliente = sitiosClientesService.getCodigoPuntoSitioJdbc(codigoPunto);
+		if(Objects.isNull(sitiosCliente)) {
+			return false;
+		}
+		return clientesCorporativosJdbcRepository.existsByCodigoCliente(sitiosCliente.getCodigoCliente());
 	}
 }
