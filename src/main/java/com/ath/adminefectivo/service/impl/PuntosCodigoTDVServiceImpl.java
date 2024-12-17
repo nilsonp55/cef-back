@@ -22,6 +22,7 @@ import com.ath.adminefectivo.repositories.jdbc.IPuntosCodigoTDVJdbcRepository;
 import com.ath.adminefectivo.service.IBancosService;
 import com.ath.adminefectivo.service.IPuntosCodigoTdvService;
 import com.ath.adminefectivo.service.IPuntosService;
+import com.ath.adminefectivo.utils.UtilsString;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import lombok.extern.log4j.Log4j2;
@@ -79,12 +80,12 @@ public class PuntosCodigoTDVServiceImpl implements IPuntosCodigoTdvService {
 	 */
     @Override
 	public Integer getCodigoPunto(String codigoPuntoTdv, String codigoTdv, Integer bancoAval, String codigoDane) {
-      log.debug("getCodigoPunto - codigoPuntoTdv: {} - codigoTdv: {} - bancoAval: {} - codigoDane: {}", codigoPuntoTdv, codigoTdv, bancoAval, codigoDane);  
-      // Sanitize inputs to prevent injection
-      codigoPuntoTdv = sanitizeInput(codigoPuntoTdv);
-      codigoTdv = sanitizeInput(codigoTdv);
-      codigoDane = sanitizeInput(codigoDane);
-      
+		// Sanitize inputs to prevent injection
+     	codigoPuntoTdv = UtilsString.sanitizeInput(codigoPuntoTdv);
+      	codigoTdv = UtilsString.sanitizeInput(codigoTdv);
+      	codigoDane = UtilsString.sanitizeInput(codigoDane);
+		log.debug("getCodigoPunto - codigoPuntoTdv: {} - codigoTdv: {} - bancoAval: {} - codigoDane: {}", codigoPuntoTdv, codigoTdv, bancoAval, codigoDane);  
+            
       BancosDTO bancoAvalDTO = bancoService.findBancoByCodigoPuntoJdbc(bancoAval);
       var puntosCodigoTDV = puntosCodigoTDVJdbcRepository.findByCodigoPropioTDVAndCodigoTDVAndBancosAndCiudadCodigo(
          	codigoPuntoTdv.trim(), codigoTdv, bancoAvalDTO.getCodigoPunto(), codigoDane);
@@ -163,22 +164,9 @@ public class PuntosCodigoTDVServiceImpl implements IPuntosCodigoTdvService {
 		PuntosCodigoTDV puntosCodigoTdvEntity = puntosCodigoTDVRepository.findById(idPuntoCodigoTdv).get();
 		
 		puntosCodigoTdvEntity.setEstado(Dominios.ESTADO_GENERAL_ELIMINADO);
-		PuntosCodigoTDV puntosCodigoTDVActualizado = puntosCodigoTDVRepository.save(puntosCodigoTdvEntity);
+		puntosCodigoTDVRepository.save(puntosCodigoTdvEntity);
 		
-		if(!Objects.isNull(puntosCodigoTDVActualizado)) {
-			return (puntosCodigoTdvEntity.getEstado() == Dominios.ESTADO_GENERAL_ELIMINADO);
-		}else {
-			return false;
-		}
+		return (puntosCodigoTdvEntity.getEstado() == Dominios.ESTADO_GENERAL_ELIMINADO);
 	}
 
-	// Helper method to sanitize input using Apache Commons Lang
-	private String sanitizeInput(String input) {
-		if (input == null) {
-			return "";
-		}
-		// Remove accents and check if the string is alphanumeric
-		String sanitized = StringUtils.stripAccents(input);
-		return StringUtils.isAlphanumeric(sanitized) ? sanitized : "";
-	}
 }
