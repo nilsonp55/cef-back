@@ -3,12 +3,12 @@ package com.ath.adminefectivo.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.BancosDTO;
 import com.ath.adminefectivo.dto.PuntosCodigoTdvDTO;
@@ -49,7 +49,7 @@ public class PuntosCodigoTDVServiceImpl implements IPuntosCodigoTdvService {
 	public Page<PuntosCodigoTdvDTO> getPuntosCodigoTDV(Predicate predicate, Pageable page, String busqueda) {
 		BooleanBuilder builder = new BooleanBuilder();
 		builder.and(predicate);
-		if(StringUtils.hasText(busqueda)) {
+		if(StringUtils.isNoneEmpty(busqueda)) {
 			builder.and(QPuntosCodigoTDV.puntosCodigoTDV.codigoPropioTDV.containsIgnoreCase(busqueda));
 		}
 		Page<PuntosCodigoTDV> puntosCodigoTDV = puntosCodigoTDVRepository
@@ -80,6 +80,11 @@ public class PuntosCodigoTDVServiceImpl implements IPuntosCodigoTdvService {
     @Override
 	public Integer getCodigoPunto(String codigoPuntoTdv, String codigoTdv, Integer bancoAval, String codigoDane) {
       log.debug("getCodigoPunto - codigoPuntoTdv: {} - codigoTdv: {} - bancoAval: {} - codigoDane: {}", codigoPuntoTdv, codigoTdv, bancoAval, codigoDane);  
+      // Sanitize inputs to prevent injection
+      codigoPuntoTdv = sanitizeInput(codigoPuntoTdv);
+      codigoTdv = sanitizeInput(codigoTdv);
+      codigoDane = sanitizeInput(codigoDane);
+      
       BancosDTO bancoAvalDTO = bancoService.findBancoByCodigoPuntoJdbc(bancoAval);
       var puntosCodigoTDV = puntosCodigoTDVJdbcRepository.findByCodigoPropioTDVAndCodigoTDVAndBancosAndCiudadCodigo(
          	codigoPuntoTdv.trim(), codigoTdv, bancoAvalDTO.getCodigoPunto(), codigoDane);
@@ -167,4 +172,13 @@ public class PuntosCodigoTDVServiceImpl implements IPuntosCodigoTdvService {
 		}
 	}
 
+	// Helper method to sanitize input using Apache Commons Lang
+	private String sanitizeInput(String input) {
+		if (input == null) {
+			return "";
+		}
+		// Remove accents and check if the string is alphanumeric
+		String sanitized = StringUtils.stripAccents(input);
+		return StringUtils.isAlphanumeric(sanitized) ? sanitized : "";
+	}
 }
