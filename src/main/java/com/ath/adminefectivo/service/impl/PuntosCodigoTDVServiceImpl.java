@@ -18,6 +18,7 @@ import com.ath.adminefectivo.entities.QPuntosCodigoTDV;
 import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.IPuntosCodigoTDVRepository;
+import com.ath.adminefectivo.repositories.jdbc.IPuntosCodigoTDVJdbcRepository;
 import com.ath.adminefectivo.service.IBancosService;
 import com.ath.adminefectivo.service.IPuntosCodigoTdvService;
 import com.ath.adminefectivo.service.IPuntosService;
@@ -37,6 +38,9 @@ public class PuntosCodigoTDVServiceImpl implements IPuntosCodigoTdvService {
 	
 	@Autowired
 	IBancosService bancoService;
+	
+	@Autowired
+	IPuntosCodigoTDVJdbcRepository puntosCodigoTDVJdbcRepository;
 	
 	/**
 	 * {@inheritDoc}
@@ -76,27 +80,28 @@ public class PuntosCodigoTDVServiceImpl implements IPuntosCodigoTdvService {
     @Override
 	public Integer getCodigoPunto(String codigoPuntoTdv, String codigoTdv, Integer bancoAval, String codigoDane) {
       log.debug("getCodigoPunto - codigoPuntoTdv: {} - codigoTdv: {} - bancoAval: {} - codigoDane: {}", codigoPuntoTdv, codigoTdv, bancoAval, codigoDane);  
-      BancosDTO bancoAvalDTO = bancoService.findBancoByCodigoPunto(bancoAval);
-        var puntosCodigoTDV = puntosCodigoTDVRepository.findByCodigoPropioTDVAndCodigoTDVAndBancosAndCiudadFondo(
-                codigoPuntoTdv.trim(), codigoTdv, BancosDTO.CONVERTER_ENTITY.apply(bancoAvalDTO), codigoDane);
+      BancosDTO bancoAvalDTO = bancoService.findBancoByCodigoPuntoJdbc(bancoAval);
+      var puntosCodigoTDV = puntosCodigoTDVJdbcRepository.findByCodigoPropioTDVAndCodigoTDVAndBancosAndCiudadCodigo(
+         	codigoPuntoTdv.trim(), codigoTdv, bancoAvalDTO.getCodigoPunto(), codigoDane);
+
         if (Objects.isNull(puntosCodigoTDV)) {
-            List<PuntosCodigoTDV> puntosCodigoTDVList = puntosCodigoTDVRepository.findByCodigoPropioTDVAndCodigoTDVAndBancos(
-                    codigoPuntoTdv.trim(), codigoTdv, BancosDTO.CONVERTER_ENTITY.apply(bancoAvalDTO));
+            List<PuntosCodigoTDV> puntosCodigoTDVList = puntosCodigoTDVJdbcRepository.findByCodigoPropioTDVAndCodigoTDVAndBancos(
+           		codigoPuntoTdv.trim(), codigoTdv, bancoAvalDTO.getCodigoPunto());
             if (!Objects.isNull(puntosCodigoTDVList) ) {
                 if (puntosCodigoTDVList.size() > 1 ) {
                     log.debug("Codigo Punto TDV se encuentra mas de una vez. "+codigoPuntoTdv.trim() +" - "+ codigoTdv);
-                    return puntosService.getEntidadPunto(bancoAval).getCodigoPunto();
+                    return puntosService.getCodigoPuntoJdbc(bancoAval).getCodigoPunto();
                 }else {
                     if (puntosCodigoTDVList.size() == 1) {
                         return puntosCodigoTDVList.get(0).getCodigoPunto();
                     }
                     else {
-                        return puntosService.getEntidadPunto(bancoAval).getCodigoPunto();
+                    	return puntosService.getCodigoPuntoJdbc(bancoAval).getCodigoPunto();
                     }
                 }
             }
             else {
-                return puntosService.getEntidadPunto(bancoAval).getCodigoPunto();
+            	return puntosService.getCodigoPuntoJdbc(bancoAval).getCodigoPunto();
             }
         } 
         return puntosCodigoTDV.getCodigoPunto();

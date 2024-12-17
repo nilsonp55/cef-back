@@ -16,6 +16,7 @@ import com.ath.adminefectivo.entities.Ciudades;
 import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.ICiudadesRepository;
+import com.ath.adminefectivo.repositories.jdbc.ICiudadesJdbcRepository;
 import com.ath.adminefectivo.service.IAuditoriaProcesosService;
 import com.ath.adminefectivo.service.ICiudadesService;
 import com.ath.adminefectivo.service.IParametroService;
@@ -35,6 +36,9 @@ public class CiudadServiceImpl implements ICiudadesService {
 
 	@Autowired
 	IParametroService parametroService;
+	
+	@Autowired
+	ICiudadesJdbcRepository ciudadesJdbcRepository;
 
 	/**
 	 * {@inheritDoc}
@@ -91,11 +95,11 @@ public class CiudadServiceImpl implements ICiudadesService {
 	}
 
 	@Override
-	public CiudadesDTO getCiudadPorCodigoDaneOrCodigoBrinks(String codigo) {
+	public Ciudades getCiudadPorCodigoDaneOrCodigoBrinks(String codigo) { //TODO:VERIFICAR DATA PRODUCIDA
 		Date fechaProceso = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
-		Ciudades ciudadOpt = ciudadesRepository.findBycodigoDANE(codigo);
+		Ciudades ciudadOpt = ciudadesJdbcRepository.findCiudadByCodigoDane(codigo);
 		if (Objects.isNull(ciudadOpt)) {
-			Ciudades ciudadBrinks = ciudadesRepository.findByCodigoBrinks(Integer.parseInt(codigo));
+			Ciudades ciudadBrinks = ciudadesJdbcRepository.findCiudadByCodigoBrinks(Integer.parseInt(codigo));
 			if (Objects.isNull(ciudadBrinks)) {
 				auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION,
 						fechaProceso, Constantes.ESTADO_PROCESO_ERROR,
@@ -106,10 +110,10 @@ public class CiudadServiceImpl implements ICiudadesService {
 								+ "No existe Ciudad con codigoDane o CodigoBrinks = " + codigo,
 						ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getHttpStatus());
 			} else {
-				return CiudadesDTO.CONVERTER_DTO.apply(ciudadBrinks);
+				return ciudadBrinks;
 			}
 		} else {
-			return CiudadesDTO.CONVERTER_DTO.apply(ciudadOpt);
+			return ciudadOpt;
 		}
 	}
 

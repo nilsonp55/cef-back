@@ -105,4 +105,16 @@ public interface IFondosService {
 	 * @author duvan.naranjo
 	 */
 	List<FondosDTO> getFondoByTdvAndBanco(String transportadora, int bancoAval);
+
+	/**
+	 * Servicio encargado de consultar el codigo del Fondo.
+	 * Este servicio consume una optimizacion mediante JDBC
+	 * 
+	 * @param codigoTransportadora
+	 * @param tipoPuntoBanco
+	 * @param nombreBanco
+	 * @param codigoCiudad
+	 * @return Fondos
+	 */
+	Fondos getCodigoFondoCertificacionJdbc(String codigoTransportadora, String numeroNit, String codigoCiudad);
 }

@@ -47,7 +47,7 @@ public class GestionRetencionArchivosServiceImpl implements IGestionRetencionArc
 	
 	private String logPathFile;
 	
-	private List<String> registrosEliminados;
+	private List<String> registrosEliminados = new ArrayList<>();
 
 	@Override
 	public boolean eliminarArchivosPorRetencion() {
