@@ -98,6 +98,11 @@ public class OperacionesProgramadasDTO {
 	
 	private String tipoPuntoDestino;
 	
+	/*
+	 * HU006 Determina si se liquida costo para la operacion
+	 */
+	private boolean liquidaCosto;
+	
 	/**
 	 * Funcion que convierte el archivo DTO ProgramadasNoConciliadasDTO a Entity OperacionesProgramadas
 	 * @author cesar.castano
