@@ -53,7 +53,8 @@ public class BancosJdbcRepositoryImpl implements IBancosJdbcRepository {
             }
         } catch (SQLException e) {
             log.error("Error consultando banco con código: {}", codigoPunto, e);
-            throw new RuntimeException("Error consultando banco", e);
+			throw new NegocioException(ApiResponseCode.GENERIC_ERROR.getCode(), ApiResponseCode.GENERIC_ERROR.getDescription(),
+					ApiResponseCode.GENERIC_ERROR.getHttpStatus());
         }
     }
     

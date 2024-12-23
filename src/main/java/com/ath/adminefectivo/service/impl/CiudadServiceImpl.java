@@ -95,7 +95,7 @@ public class CiudadServiceImpl implements ICiudadesService {
 	}
 
 	@Override
-	public Ciudades getCiudadPorCodigoDaneOrCodigoBrinks(String codigo) { //TODO:VERIFICAR DATA PRODUCIDA
+	public Ciudades getCiudadPorCodigoDaneOrCodigoBrinks(String codigo) { 
 		Date fechaProceso = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
 		Ciudades ciudadOpt = ciudadesJdbcRepository.findCiudadByCodigoDane(codigo);
 		if (Objects.isNull(ciudadOpt)) {

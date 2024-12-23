@@ -9,7 +9,9 @@ import javax.sql.DataSource;
 
 import org.springframework.stereotype.Repository;
 
+import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.Ciudades;
+import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.jdbc.ICiudadesJdbcRepository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -55,8 +57,7 @@ public class CiudadesJdbcRepositoryImpl implements ICiudadesJdbcRepository{
             
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    Ciudades ciudad = mapResultSetToEntity(rs);
-                    return ciudad;
+                    return mapResultSetToEntity(rs);
                 }
                 
                 log.debug("No encontrada la ciudad para codigo DANE: {}", codigoDane);
@@ -65,7 +66,9 @@ public class CiudadesJdbcRepositoryImpl implements ICiudadesJdbcRepository{
             
         } catch (SQLException e) {
             log.error("Error al consultar ciudad con codigo DANE: {}", codigoDane, e);
-            throw new RuntimeException("Error al consultar ciudad", e);
+			throw new NegocioException(ApiResponseCode.GENERIC_ERROR.getCode(),
+					ApiResponseCode.GENERIC_ERROR.getDescription(),
+					ApiResponseCode.GENERIC_ERROR.getHttpStatus());
         }
     }
     
@@ -79,8 +82,7 @@ public class CiudadesJdbcRepositoryImpl implements ICiudadesJdbcRepository{
             
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    Ciudades ciudad = mapResultSetToEntity(rs);
-                    return ciudad;
+                    return mapResultSetToEntity(rs);
                 }
                 
                 log.debug("Ciudad no encontrada para codigo Brinks: {}", codigoBrinks);
@@ -89,7 +91,8 @@ public class CiudadesJdbcRepositoryImpl implements ICiudadesJdbcRepository{
             
         } catch (SQLException e) {
             log.error("Error al consultar ciudad con codigo Brinks: {}", codigoBrinks, e);
-            throw new RuntimeException("Error consultado ciudad por codigo Brinks", e);
+			throw new NegocioException(ApiResponseCode.GENERIC_ERROR.getCode(), ApiResponseCode.GENERIC_ERROR.getDescription(),
+					ApiResponseCode.GENERIC_ERROR.getHttpStatus());
         }
     }
 

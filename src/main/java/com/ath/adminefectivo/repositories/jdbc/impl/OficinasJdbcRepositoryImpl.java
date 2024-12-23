@@ -9,6 +9,8 @@ import javax.sql.DataSource;
 
 import org.springframework.stereotype.Repository;
 
+import com.ath.adminefectivo.dto.response.ApiResponseCode;
+import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.jdbc.IOficinasJdbcRepository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -40,14 +42,14 @@ public class OficinasJdbcRepositoryImpl implements IOficinasJdbcRepository {
             stmt.setInt(1, codigoPunto);
             
             try (ResultSet rs = stmt.executeQuery()) {
-                boolean exists = rs.next() && rs.getBoolean(1);
-                return exists;
+                return rs.next() && rs.getBoolean(1);
             }
             
         } catch (SQLException e) {
             log.error("Error chequeando la existencia de oficina con odigo_punto: {}", 
                      codigoPunto, e);
-            throw new RuntimeException("Error al verificar la existencia de Oficina", e);
+			throw new NegocioException(ApiResponseCode.GENERIC_ERROR.getCode(), ApiResponseCode.GENERIC_ERROR.getDescription(),
+					ApiResponseCode.GENERIC_ERROR.getHttpStatus());
         }
     }
 

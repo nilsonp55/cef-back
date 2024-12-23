@@ -467,17 +467,23 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
     Integer codigoPuntoOrigen = 0;
     Integer codigoPuntoDestino = 0;
     OperacionesCertificadas certificadas = null;
+    OperacionesCertificadas certificadasObj = new OperacionesCertificadas();
 
+    certificadasObj.setCodigoServicioTdv(codigoServicio);
+    certificadasObj.setCodigoPropioTDV(codigoPropio);
+    certificadasObj.setIdArchivoCargado(idArchivo);
+    certificadasObj.setFechaEjecucion(registro.getFechaEjecucion());
+    
 
-    if (entradaSalida.equals(Constantes.NOMBRE_ENTRADA)) {
+    if (entradaSalida.equals(Constantes.NOMBRE_ENTRADA)) {      
       codigoPuntoDestino = registro.getCodigoPunto();
       codigoPuntoOrigen = puntosCodigoTdvService.getCodigoPunto(codigoPropio, registro.getTdv(),
           registro.getBancoAval(), registro.getCodigoDane());
       if (!codigoServicio.equals(SIN_CODIGO_SERVICIO)) {
+    	  certificadasObj.setEntradaSalida(Constantes.NOMBRE_ENTRADA);
 		 certificadas = operacionesCertificadasJdbcRepository
 	            .findOperacionCertificadaByParametros(
-	                codigoPuntoDestino, codigoPuntoOrigen, codigoPuntoDestino, codigoServicio,
-	                Constantes.NOMBRE_ENTRADA, registro.getFechaEjecucion(), codigoPropio, idArchivo);
+	                codigoPuntoDestino, codigoPuntoOrigen, codigoPuntoDestino, certificadasObj);		 
       }
 
     } else {
@@ -487,10 +493,10 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
           registro.getBancoAval(), registro.getCodigoDane());
 
       if (!codigoServicio.equals(SIN_CODIGO_SERVICIO)) {
-      certificadas = operacionesCertificadasJdbcRepository
-                .findOperacionCertificadaByParametros(
-                    codigoPuntoDestino, codigoPuntoOrigen, codigoPuntoDestino, codigoServicio,
-                    Constantes.NOMBRE_SALIDA, registro.getFechaEjecucion(), codigoPropio, idArchivo);
+    	  certificadasObj.setEntradaSalida(Constantes.NOMBRE_SALIDA);
+	      certificadas = operacionesCertificadasJdbcRepository
+	                .findOperacionCertificadaByParametros(
+	                    codigoPuntoDestino, codigoPuntoOrigen, codigoPuntoDestino, certificadasObj);
       }
 
     }

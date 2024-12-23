@@ -24,10 +24,6 @@ public interface IOperacionesCertificadasJdbcRepository {
         Integer codigoFondoTDV,
         Integer codigoPuntoOrigen,
         Integer codigoPuntoDestino,
-        String codigoServicioTdv,
-        String entradaSalida,
-        Date fechaEjecucion,
-        String codigoPropioTDV,
-        Long idArchivoCargado
+        OperacionesCertificadas operacionesCertificadasObj
     );
 }

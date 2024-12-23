@@ -10,7 +10,9 @@ import javax.sql.DataSource;
 import org.springframework.stereotype.Repository;
 import lombok.extern.slf4j.Slf4j;
 
+import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.SitiosClientes;
+import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.jdbc.ISitiosClientesJdbcRepository;
 
 @Slf4j
@@ -42,15 +44,16 @@ public class SitiosClientesJdbcRepositoryImpl implements ISitiosClientesJdbcRepo
             
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    SitiosClientes sitioCliente = mapResultSetToEntity(rs);
-                    return sitioCliente;
+                    return mapResultSetToEntity(rs);
                 }
                 return null;
             }
             
         } catch (SQLException e) {
             log.error("Error al consultar SitiosClientes con codigo_punto: {}", codigoPunto, e);
-            throw new RuntimeException("Error al consultar SitiosClientes", e);
+			throw new NegocioException(ApiResponseCode.GENERIC_ERROR.getCode(),
+					ApiResponseCode.GENERIC_ERROR.getDescription(),
+					ApiResponseCode.GENERIC_ERROR.getHttpStatus());
         }
     }
 

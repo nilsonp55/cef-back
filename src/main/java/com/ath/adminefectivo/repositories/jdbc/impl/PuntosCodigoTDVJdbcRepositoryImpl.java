@@ -11,7 +11,9 @@ import javax.sql.DataSource;
 
 import org.springframework.stereotype.Repository;
 
+import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.PuntosCodigoTDV;
+import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.jdbc.IPuntosCodigoTDVJdbcRepository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -70,14 +72,15 @@ public class PuntosCodigoTDVJdbcRepositoryImpl implements IPuntosCodigoTDVJdbcRe
             stmt.setString(4, codigoDane);
             
             try (ResultSet rs = stmt.executeQuery()) {
-                PuntosCodigoTDV result = rs.next() ? mapResultSetToEntity(rs) : null;
-                return result;
+                return rs.next() ? mapResultSetToEntity(rs) : null;
             }
             
         } catch (SQLException e) {
             log.error("Error consultando PuntoTDV: codigoPropioTDV={}, codigoTDV={}, codigoBanco={}", 
                       codigoPropioTDV, codigoTDV, codigoBanco, e);
-            throw new RuntimeException("Error consultando PuntoTDV", e);
+			throw new NegocioException(ApiResponseCode.GENERIC_ERROR.getCode(),
+					ApiResponseCode.GENERIC_ERROR.getDescription(),
+					ApiResponseCode.GENERIC_ERROR.getHttpStatus());
         }
     }
     
@@ -106,7 +109,8 @@ public class PuntosCodigoTDVJdbcRepositoryImpl implements IPuntosCodigoTDVJdbcRe
         } catch (SQLException e) {
             log.error("Error consultando lista de PuntosTDV para el codigoTDV: {}, banco: {}", 
                      codigoTDV, codigoBanco, e);
-            throw new RuntimeException("Error consultando lista de PuntosTDV", e);
+			throw new NegocioException(ApiResponseCode.GENERIC_ERROR.getCode(), ApiResponseCode.GENERIC_ERROR.getDescription(),
+					ApiResponseCode.GENERIC_ERROR.getHttpStatus());
         }
     }
 
