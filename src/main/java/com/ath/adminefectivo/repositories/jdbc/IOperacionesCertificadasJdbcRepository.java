@@ -1,7 +1,5 @@
 package com.ath.adminefectivo.repositories.jdbc;
 
-import java.util.Date;
-
 import com.ath.adminefectivo.entities.OperacionesCertificadas;
 
 public interface IOperacionesCertificadasJdbcRepository {
