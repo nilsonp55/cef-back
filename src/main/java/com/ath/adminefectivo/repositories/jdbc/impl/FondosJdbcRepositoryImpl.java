@@ -10,7 +10,9 @@ import javax.sql.DataSource;
 import org.springframework.stereotype.Repository;
 import lombok.extern.slf4j.Slf4j;
 
+import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.Fondos;
+import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.jdbc.IFondosJdbcRepository;
 
 @Slf4j
@@ -66,7 +68,8 @@ public class FondosJdbcRepositoryImpl  implements IFondosJdbcRepository {
         } catch (SQLException e) {
             log.error("Error consultando fondo - Transportadora: {}, NIT: {}", 
                      codigoTransportadora, numeroNit, e);
-            throw new RuntimeException("Error consultando fondo", e);
+			throw new NegocioException(ApiResponseCode.GENERIC_ERROR.getCode(), ApiResponseCode.GENERIC_ERROR.getDescription(),
+					ApiResponseCode.GENERIC_ERROR.getHttpStatus());
         }
     }
 

@@ -10,6 +10,8 @@ import javax.sql.DataSource;
 import org.springframework.stereotype.Repository;
 import lombok.extern.slf4j.Slf4j;
 
+import com.ath.adminefectivo.dto.response.ApiResponseCode;
+import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.jdbc.IClientesCorporativosJdbcRepository;
 
 
@@ -39,15 +41,14 @@ public class ClientesCorporativosJdbcRepositoryImpl implements IClientesCorporat
             stmt.setInt(1, codigoCliente);
             
             try (ResultSet rs = stmt.executeQuery()) {
-                boolean exists = rs.next() && rs.getBoolean(1);
-                         
-                return exists;
+                return rs.next() && rs.getBoolean(1);
             }
             
         } catch (SQLException e) {
             log.error("Error verificando existencia de cliente corporativo con código: {}", 
                      codigoCliente, e);
-            throw new RuntimeException("Error verificando existencia de cliente corporativo", e);
+			throw new NegocioException(ApiResponseCode.GENERIC_ERROR.getCode(), ApiResponseCode.GENERIC_ERROR.getDescription(),
+					ApiResponseCode.GENERIC_ERROR.getHttpStatus());
         }
     }
 }

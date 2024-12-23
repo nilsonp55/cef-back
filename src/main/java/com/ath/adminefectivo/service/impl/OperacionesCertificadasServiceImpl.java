@@ -477,18 +477,24 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
     Integer codigoPuntoOrigen = 0;
     Integer codigoPuntoDestino = 0;
     OperacionesCertificadas certificadas = null;
+    OperacionesCertificadas certificadasObj = new OperacionesCertificadas();
 
-    //TODO
-    if (entradaSalida.equals(Constantes.NOMBRE_ENTRADA)) {
+    certificadasObj.setCodigoServicioTdv(codigoServicio);
+    certificadasObj.setCodigoPropioTDV(codigoPropio);
+    certificadasObj.setIdArchivoCargado(idArchivo);
+    certificadasObj.setFechaEjecucion(registro.getFechaEjecucion());
+    
+
+    if (entradaSalida.equals(Constantes.NOMBRE_ENTRADA)) {      
       codigoPuntoDestino = registro.getCodigoPunto();
       codigoPuntoOrigen = puntosCodigoTdvService.getCodigoPunto(codigoPropio, registro.getTdv(),
           registro.getBancoAval(), registro.getCodigoDane());
       if (!codigoServicio.equals(SIN_CODIGO_SERVICIO)) {
         if (StringUtils.isEmpty(codigoOperacion)) {
-        	certificadas = operacionesCertificadasJdbcRepository
-    	            .findOperacionCertificadaByParametros(
-    	                codigoPuntoDestino, codigoPuntoOrigen, codigoPuntoDestino, codigoServicio,
-    	                Constantes.NOMBRE_ENTRADA, registro.getFechaEjecucion(), codigoPropio, idArchivo);
+        	certificadasObj.setEntradaSalida(Constantes.NOMBRE_ENTRADA);
+   		 	certificadas = operacionesCertificadasJdbcRepository
+   	            .findOperacionCertificadaByParametros(
+   	                codigoPuntoDestino, codigoPuntoOrigen, codigoPuntoDestino, certificadasObj);
         } else {
           certificadas = operacionesCertificadasRepository
               .findByCodigoFondoTDVAndCodigoPuntoOrigenAndCodigoPuntoDestinoAndCodigoServicioTdvAndEntradaSalidaAndFechaEjecucionAndCodigoPropioTDVAndIdArchivoCargadoAndCodigoOperacion(
@@ -504,10 +510,10 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
 
       if (!codigoServicio.equals(SIN_CODIGO_SERVICIO)) {
         if(StringUtils.isEmpty(codigoOperacion)) {
-        	certificadas = operacionesCertificadasJdbcRepository
-                    .findOperacionCertificadaByParametros(
-                        codigoPuntoDestino, codigoPuntoOrigen, codigoPuntoDestino, codigoServicio,
-                        Constantes.NOMBRE_SALIDA, registro.getFechaEjecucion(), codigoPropio, idArchivo);
+        	certificadasObj.setEntradaSalida(Constantes.NOMBRE_SALIDA);
+  	      	certificadas = operacionesCertificadasJdbcRepository
+  	                .findOperacionCertificadaByParametros(
+  	                    codigoPuntoDestino, codigoPuntoOrigen, codigoPuntoDestino, certificadasObj);
         } else {
           certificadas = operacionesCertificadasRepository
               .findByCodigoFondoTDVAndCodigoPuntoOrigenAndCodigoPuntoDestinoAndCodigoServicioTdvAndEntradaSalidaAndFechaEjecucionAndCodigoPropioTDVAndIdArchivoCargadoAndCodigoOperacion(

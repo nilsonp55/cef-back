@@ -12,7 +12,9 @@ import javax.sql.DataSource;
 import org.springframework.stereotype.Repository;
 import lombok.extern.slf4j.Slf4j;
 
+import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.OperacionesCertificadas;
+import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.jdbc.IOperacionesCertificadasJdbcRepository;
 
 @Slf4j
@@ -74,11 +76,7 @@ public class OperacionesCertificadasJdbcRepositoryImpl implements IOperacionesCe
             Integer codigoFondoTDV,
             Integer codigoPuntoOrigen,
             Integer codigoPuntoDestino,
-            String codigoServicioTdv,
-            String entradaSalida,
-            Date fechaEjecucion,
-            String codigoPropioTDV,
-            Long idArchivoCargado) {
+            OperacionesCertificadas operacionesCertificadasObj) {
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(FIND_OPERACION_CERTIFICADA_SQL)) {
@@ -86,24 +84,25 @@ public class OperacionesCertificadasJdbcRepositoryImpl implements IOperacionesCe
             stmt.setInt(1, codigoFondoTDV);
             stmt.setInt(2, codigoPuntoOrigen);
             stmt.setInt(3, codigoPuntoDestino);
-            stmt.setString(4, codigoServicioTdv);
-            stmt.setString(5, entradaSalida);
-            stmt.setTimestamp(6, new Timestamp(fechaEjecucion.getTime()));
-            stmt.setString(7, codigoPropioTDV);
-            stmt.setLong(8, idArchivoCargado);
+            stmt.setString(4, operacionesCertificadasObj.getCodigoServicioTdv());
+            stmt.setString(5, operacionesCertificadasObj.getEntradaSalida());
+            stmt.setTimestamp(6, new Timestamp(operacionesCertificadasObj.getFechaEjecucion().getTime()));
+            stmt.setString(7, operacionesCertificadasObj.getCodigoPropioTDV());
+            stmt.setLong(8, operacionesCertificadasObj.getIdArchivoCargado());
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    OperacionesCertificadas operacion = mapResultSetToEntity(rs);
-                    return operacion;
+                   return mapResultSetToEntity(rs);
                 }
                 return null;
             }
 
         } catch (SQLException e) {
             log.error("Error consultando Operaciones Certificada: fondoTDV={}, puntoOrigen={}", 
-                    codigoFondoTDV, codigoPuntoOrigen, e);
-            throw new RuntimeException("Error consultanto Operaciones Certificada", e);
+                    codigoFondoTDV, codigoPuntoOrigen, e);          
+			throw new NegocioException(ApiResponseCode.GENERIC_ERROR.getCode(),
+					ApiResponseCode.GENERIC_ERROR.getDescription(),
+					ApiResponseCode.GENERIC_ERROR.getHttpStatus());
         }
     }
 
