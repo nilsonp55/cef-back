@@ -33,6 +33,7 @@ import com.ath.adminefectivo.repositories.IFondosRepository;
 import com.ath.adminefectivo.repositories.IOficinasRepository;
 import com.ath.adminefectivo.repositories.IPuntosRepository;
 import com.ath.adminefectivo.repositories.ISitiosClientesRepository;
+import com.ath.adminefectivo.repositories.jdbc.IPuntosJdbcRepository;
 import com.ath.adminefectivo.service.IPuntosService;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
@@ -60,7 +61,9 @@ public class PuntosServiceImpl implements IPuntosService {
 
   @Autowired
   IFondosRepository fondosRepository;
-
+  
+  @Autowired
+  IPuntosJdbcRepository puntosJdbcRepository;
   /**
    * {@inheritDoc}
    */
@@ -151,6 +154,19 @@ public class PuntosServiceImpl implements IPuntosService {
           ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
     }
     return puntosOpt.getCodigoPunto();
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Puntos getCodigoPuntoJdbc(Integer codigoBancoAval) {
+    Puntos puntos = puntosJdbcRepository.findPuntoByCodigoAval(codigoBancoAval);
+    if (Objects.isNull(puntos)) {
+      throw new NegocioException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
+          ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription(), ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
+    }
+    return puntos;
   }
 
   @Override
@@ -280,6 +296,19 @@ public class PuntosServiceImpl implements IPuntosService {
     }
 
   }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Puntos getPuntoByIdJdbc(Integer idPunto) {
+    try {
+    	return puntosJdbcRepository.findByCodigoPunto(idPunto);
+    } catch (Exception e) {
+      throw new AplicationException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
+          ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription(), ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
+    }
+  }
 
   /**
    * {@inheritDoc}
@@ -288,6 +317,14 @@ public class PuntosServiceImpl implements IPuntosService {
   public Boolean getEntidadPuntoBanrep(String tipoPunto, Integer codigoPunto) {
     var puntosOpt = puntosRepository.findByCodigoPuntoAndTipoPunto(codigoPunto, tipoPunto);
     return !Objects.isNull(puntosOpt);
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Boolean getEntidadPuntoBanrepJdbc(String tipoPunto, Integer codigoPunto) {
+    return puntosJdbcRepository.existsByTipoPuntoAndCodigoPunto(tipoPunto, codigoPunto);
   }
 
   /**

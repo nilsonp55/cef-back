@@ -12,6 +12,7 @@ import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.Fondos;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.IFondosRepository;
+import com.ath.adminefectivo.repositories.jdbc.IFondosJdbcRepository;
 import com.ath.adminefectivo.service.IFondosService;
 import com.ath.adminefectivo.service.IPuntosCodigoTdvService;
 import com.querydsl.core.types.Predicate;
@@ -24,7 +25,10 @@ public class FondosServiceImpl implements IFondosService {
 
 	@Autowired
 	IPuntosCodigoTdvService puntosCodigoTdvService;
-
+	
+	@Autowired
+	IFondosJdbcRepository fondosJdbcRepository;
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -96,6 +100,16 @@ public class FondosServiceImpl implements IFondosService {
 			throw new NegocioException(ApiResponseCode.ERROR_MAS_DE_UN_FONDO.getCode(),
 					ApiResponseCode.ERROR_MAS_DE_UN_FONDO.getDescription()+ " con codigoTransportadora = "+codigoTransportadora+", numeroNit = "+numeroNit+", codigoCiudad = "+codigoCiudad,
 					ApiResponseCode.ERROR_MAS_DE_UN_FONDO.getHttpStatus());
+		} 
+	}
+	
+	@Override
+	public Fondos getCodigoFondoCertificacionJdbc(String codigoTransportadora, String numeroNit, String codigoCiudad){
+		try {
+			return fondosJdbcRepository.findFondoByTransportadoraAndNitAndCiudad(codigoTransportadora, numeroNit, codigoCiudad);
+		} catch (Exception e) {
+			throw new NegocioException(ApiResponseCode.ERROR_MAS_DE_UN_FONDO.getCode(),
+					ApiResponseCode.ERROR_MAS_DE_UN_FONDO.getDescription(), ApiResponseCode.ERROR_MAS_DE_UN_FONDO.getHttpStatus());
 		} 
 	}
 	
