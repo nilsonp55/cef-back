@@ -47,7 +47,7 @@ public class GestionRetencionArchivosServiceImpl implements IGestionRetencionArc
 	
 	private String logPathFile;
 	
-	private List<String> registrosEliminados;
+	private List<String> registrosEliminados = new ArrayList<>();
 
 	@Override
 	public boolean eliminarArchivosPorRetencion() {
@@ -367,14 +367,16 @@ public class GestionRetencionArchivosServiceImpl implements IGestionRetencionArc
 																									// segundos, milisegundos
 			String rutaArchivoLog = rutaBase + "/" + nombreArchivoLog;
 
-			String headers = "fecha_depuracion,ubicacion\n";
-			StringBuilder contenidoFinal = new StringBuilder(headers);
+			String headers = "fecha_depuracion,ubicacion";
+			StringBuilder contenidoFinal = new StringBuilder(headers).append(System.lineSeparator());
 
 			// Agregar cada registro al contenido
 			for (String registro : registros) {
-				contenidoFinal.append(String.format("%s,%s%n",
-						now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")), registro));
-			}
+	            contenidoFinal.append(now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+	                         .append(",")
+	                         .append(registro)
+	                         .append(System.lineSeparator());
+	        }
 
 			// Configura metadatos del archivo
 			ObjectMetadata metadata = new ObjectMetadata();
