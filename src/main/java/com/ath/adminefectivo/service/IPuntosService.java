@@ -13,6 +13,7 @@ import com.ath.adminefectivo.entities.Fondos;
 import com.ath.adminefectivo.entities.Oficinas;
 import com.ath.adminefectivo.entities.Puntos;
 import com.ath.adminefectivo.entities.SitiosClientes;
+import com.ath.adminefectivo.exception.NegocioException;
 import com.querydsl.core.types.Predicate;
 
 public interface IPuntosService {
@@ -217,7 +218,7 @@ public interface IPuntosService {
    * @return void
    * @author prv_nparra
    */
-  void eliminarPunto(Integer codigoPunto) throws Exception;
+  void eliminarPunto(Integer codigoPunto) throws NegocioException;
 
 	/**
 	 * 

@@ -271,13 +271,13 @@ public class ValoresLiquidadosServicioImpl implements IValoresLiquidadosService 
 
   private Double calcularTotalLiquidado(ValorLiquidadoDTO valoresLiquidados) {
 
-    double total = valoresLiquidados.getClasificacionFajado()
+    return valoresLiquidados.getClasificacionFajado()
         + valoresLiquidados.getClasificacionNoFajado() + valoresLiquidados.getCostoCharter()
         + valoresLiquidados.getCostoEmisario() + valoresLiquidados.getCostoFijoParada()
         + valoresLiquidados.getCostoMoneda() + valoresLiquidados.getCostoPaqueteo()
         + valoresLiquidados.getMilajePorRuteo() + valoresLiquidados.getMilajeVerificacion()
         + valoresLiquidados.getModenaResiduo() + valoresLiquidados.getTasaAeroportuaria();
-    return total;
+    
   }
   
 }
