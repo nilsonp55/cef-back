@@ -62,9 +62,9 @@ public class PuntosServiceImpl implements IPuntosService {
   @Autowired
   IFondosRepository fondosRepository;
   
-  private final static String TIPO_PUNTO = "tipoPunto: ";
-  private final static String CODIGO_PUNTO = "codigoPunto: ";
-  private final static String NOMBRE_PUNTO = "nombrePunto: ";
+  private static final String TIPO_PUNTO = "tipoPunto: ";
+  private static final String CODIGO_PUNTO = "codigoPunto: ";
+  private static final String NOMBRE_PUNTO = "nombrePunto: ";
 
   @Autowired
   IPuntosJdbcRepository puntosJdbcRepository;
