@@ -437,10 +437,10 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
   private Page<CertificadasNoConciliadasDTO> consultarCertificadasNoConciliadas(
       Page<OperacionesCertificadas> operacionesCertificadas, Pageable page) {
 
-    return new PageImpl<>(operacionesCertificadas.getContent().stream().map(entity -> {
-      return CertificadasNoConciliadasDTO.CONVERTER_DTO
-          .apply(this.obtenerNombresCertificadasNoConciliadas(entity));
-    }).collect(Collectors.<CertificadasNoConciliadasDTO>toList()), page,
+    return new PageImpl<>(operacionesCertificadas.getContent().stream().map(entity -> 
+      CertificadasNoConciliadasDTO.CONVERTER_DTO
+          .apply(this.obtenerNombresCertificadasNoConciliadas(entity))
+    ).collect(Collectors.<CertificadasNoConciliadasDTO>toList()), page,
         operacionesCertificadas.getTotalElements());
   }
 
