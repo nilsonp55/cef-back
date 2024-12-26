@@ -18,6 +18,7 @@ import com.ath.adminefectivo.entities.ClientesCorporativos;
 import com.ath.adminefectivo.entities.QClientesCorporativos;
 import com.ath.adminefectivo.exception.NotFoundException;
 import com.ath.adminefectivo.repositories.IClientesCorporativosRepository;
+import com.ath.adminefectivo.repositories.jdbc.IClientesCorporativosJdbcRepository;
 import com.ath.adminefectivo.service.IClientesCorporativosService;
 import com.ath.adminefectivo.service.ISitiosClientesService;
 import com.querydsl.core.BooleanBuilder;
@@ -32,11 +33,17 @@ public class ClientesCorporativosServiceImpl implements IClientesCorporativosSer
 	private final IClientesCorporativosRepository clientesCorporativosRepository;	
 	private final ISitiosClientesService sitiosClientesService;
 	
+
 	public ClientesCorporativosServiceImpl(@Autowired IClientesCorporativosRepository clientesCorporativosRepository,
 			@Autowired ISitiosClientesService sitiosClientesService) {
 		this.clientesCorporativosRepository = clientesCorporativosRepository;
 		this.sitiosClientesService = sitiosClientesService;
 	}
+
+
+	@Autowired
+	IClientesCorporativosJdbcRepository clientesCorporativosJdbcRepository;
+	
 
 	/**
 	 * {@inheritDoc}
@@ -80,6 +87,7 @@ public class ClientesCorporativosServiceImpl implements IClientesCorporativosSer
 		}
 		return estado;
 	}
+
 	
     /**
      * {@inheritDoc}
@@ -162,6 +170,20 @@ public class ClientesCorporativosServiceImpl implements IClientesCorporativosSer
 			log.debug("eliminarClientesCorporativos - delete error: {}", codigoCliente);
 			throw new NotFoundException(ClientesCorporativosServiceImpl.class.getName(), codigoCliente.toString());
 		});
+	}
+
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Boolean getCodigoPuntoClienteJdbc(Integer codigoPunto) {
+		var sitiosCliente = sitiosClientesService.getCodigoPuntoSitioJdbc(codigoPunto);
+		if(Objects.isNull(sitiosCliente)) {
+			return false;
+		}
+		return clientesCorporativosJdbcRepository.existsByCodigoCliente(sitiosCliente.getCodigoCliente());
 	}
 
 }

@@ -159,6 +159,16 @@ public interface IPuntosService {
   Boolean getEntidadPuntoBanrep(String tipoPunto, Integer codigoPunto);
 
   /**
+   * Servicio con optimización JDBC encargado de consultar el objeto Punto por codigo y tipo.
+   * Este servicio lanza un error en caso de que la ciudad no exista
+   * 
+   * @param codigoPunto
+   * @param tipoPunto
+   * @return Boolean
+   */
+  Boolean getEntidadPuntoBanrepJdbc(String tipoPunto, Integer codigoPunto);
+
+  /**
    * Servicio encargado de consultar el objeto Puntos
    * 
    * @param codigo_banco_aval
@@ -166,6 +176,14 @@ public interface IPuntosService {
    * @author cesar.castano
    */
   Puntos getEntidadPunto(Integer codigoBancoAval);
+  
+  /**
+   * Servicio encargado de consultar el objeto Puntos de la implementación de JDBC optimizado
+   * 
+   * @param codigo_banco_aval
+   * @return Puntos
+   */
+  Puntos getCodigoPuntoJdbc(Integer codigoBancoAval);
 
   Puntos crearPunto(Puntos punto);
 
@@ -201,5 +219,11 @@ public interface IPuntosService {
    * @author prv_nparra
    */
   void eliminarPunto(Integer codigoPunto) throws NegocioException;
-  
+
+	/**
+	 * 
+	 * @return Puntos
+	 */
+	Puntos getPuntoByIdJdbc(Integer idPunto);
+
 }

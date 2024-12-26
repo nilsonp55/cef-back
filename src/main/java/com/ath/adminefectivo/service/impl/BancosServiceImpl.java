@@ -14,6 +14,7 @@ import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.Bancos;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.IBancosRepository;
+import com.ath.adminefectivo.repositories.jdbc.IBancosJdbcRepository;
 import com.ath.adminefectivo.service.IBancosService;
 import com.ath.adminefectivo.service.IDominioService;
 import com.ath.adminefectivo.service.IPuntosService;
@@ -30,6 +31,9 @@ public class BancosServiceImpl implements IBancosService {
 	
 	@Autowired
 	IPuntosService puntoService;
+	
+	@Autowired
+	IBancosJdbcRepository bancosJdbcRepository;
 		
 	/**
 	 * {@inheritDoc}
@@ -95,6 +99,16 @@ public class BancosServiceImpl implements IBancosService {
 					ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getDescription() +" Banco no encontrado para codigo = "+codigoPunto,
 					ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getHttpStatus());
 		}
+	}
+	
+	@Override
+	public BancosDTO findBancoByCodigoPuntoJdbc(int codPunto) {	
+		BancosDTO bancoDto = bancosJdbcRepository.findBancoByCodigoPunto(codPunto);
+		if (Objects.isNull(bancoDto)) {
+			throw new NegocioException(ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getCode(), ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getDescription(),
+					ApiResponseCode.ERROR_BANCOS_NO_ENCONTRADO.getHttpStatus());
+		}		
+		return bancoDto;
 	}
 	
 	/**
