@@ -54,6 +54,7 @@ public class S3Utils {
   @Value("${aws.s3.region}")
   private String awsRegion;
 
+
   /**
    * upload file
    * 
@@ -266,10 +267,13 @@ public class S3Utils {
   public void convertAndSaveArchivoEnBytes(MultipartFile archivo, String key,
       String nombreArchivo) {
     log.info("file to convert: {}", nombreArchivo);
-    try (FileOutputStream fos = new FileOutputStream(new File(key + nombreArchivo))) {
+    FileOutputStream fos = null;
+    try {
+
       String pathArchivo = key + nombreArchivo;
       File file = new File(pathArchivo);
       file.createNewFile();
+      fos = new FileOutputStream(new File(pathArchivo));
       byte[] bytearr = archivo.getBytes();
       log.debug("byte length: {} - Size: {}", bytearr.length, archivo.getSize());
       fos.write(archivo.getBytes());
@@ -279,6 +283,14 @@ public class S3Utils {
       throw new NegocioException(ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getCode(),
           ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getDescription(),
           ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getHttpStatus());
+    } finally {
+      if (fos != null) {
+        try {
+          fos.close();
+        } catch (IOException e) {
+          log.error("closed file: {}", e.getMessage());
+        }
+      }
     }
   }
   
