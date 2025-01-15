@@ -80,11 +80,11 @@ public class PuntosCodigoTDVServiceImpl implements IPuntosCodigoTdvService {
 	 */
     @Override
 	public Integer getCodigoPunto(String codigoPuntoTdv, String codigoTdv, Integer bancoAval, String codigoDane) {
-		// Sanitize inputs to prevent injection
-     	codigoPuntoTdv = UtilsString.sanitizeInput(codigoPuntoTdv);
-      	codigoTdv = UtilsString.sanitizeInput(codigoTdv);
-      	codigoDane = UtilsString.sanitizeInput(codigoDane);
-		log.debug("getCodigoPunto - codigoPuntoTdv: {} - codigoTdv: {} - bancoAval: {} - codigoDane: {}", codigoPuntoTdv, codigoTdv, bancoAval, codigoDane);  
+      // Sanitize inputs to prevent injection
+      String sanCodigoPuntoTdv = UtilsString.sanitizeInput(codigoPuntoTdv);
+      String sanCodigoTdv = UtilsString.sanitizeInput(codigoTdv);
+      String sanCodigoDane = UtilsString.sanitizeInput(codigoDane);
+      log.debug("getCodigoPunto - codigoPuntoTdv: {} - codigoTdv: {} - bancoAval: {} - codigoDane: {}", sanCodigoPuntoTdv, sanCodigoTdv, bancoAval, sanCodigoDane);  
             
       BancosDTO bancoAvalDTO = bancoService.findBancoByCodigoPuntoJdbc(bancoAval);
       var puntosCodigoTDV = puntosCodigoTDVJdbcRepository.findByCodigoPropioTDVAndCodigoTDVAndBancosAndCiudadCodigo(
