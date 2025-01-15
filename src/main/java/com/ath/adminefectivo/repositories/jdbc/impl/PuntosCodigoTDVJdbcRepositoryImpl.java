@@ -15,7 +15,7 @@ import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.PuntosCodigoTDV;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.jdbc.IPuntosCodigoTDVJdbcRepository;
-
+import com.ath.adminefectivo.utils.UtilsString;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -108,7 +108,7 @@ public class PuntosCodigoTDVJdbcRepositoryImpl implements IPuntosCodigoTDVJdbcRe
             
         } catch (SQLException e) {
             log.error("Error consultando lista de PuntosTDV para el codigoTDV: {}, banco: {}", 
-                     codigoTDV, codigoBanco, e);
+                UtilsString.sanitizeInput(codigoTDV), codigoBanco, e);
 			throw new NegocioException(ApiResponseCode.GENERIC_ERROR.getCode(), ApiResponseCode.GENERIC_ERROR.getDescription(),
 					ApiResponseCode.GENERIC_ERROR.getHttpStatus());
         }

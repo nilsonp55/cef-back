@@ -81,11 +81,11 @@ public class PuntosCodigoTDVServiceImpl implements IPuntosCodigoTdvService {
     @Override
 	public Integer getCodigoPunto(String codigoPuntoTdv, String codigoTdv, Integer bancoAval, String codigoDane) {
       // Sanitize inputs to prevent injection
-      String sanCodigoPuntoTdv = UtilsString.sanitizeInput(codigoPuntoTdv);
-      String sanCodigoTdv = UtilsString.sanitizeInput(codigoTdv);
-      String sanCodigoDane = UtilsString.sanitizeInput(codigoDane);
-      log.debug("getCodigoPunto - codigoPuntoTdv: {} - codigoTdv: {} - bancoAval: {} - codigoDane: {}", sanCodigoPuntoTdv, sanCodigoTdv, bancoAval, sanCodigoDane);  
-            
+      log.debug(
+          "getCodigoPunto - codigoPuntoTdv: {} - codigoTdv: {} - bancoAval: {} - codigoDane: {}",
+          UtilsString.sanitizeInput(codigoPuntoTdv), UtilsString.sanitizeInput(codigoTdv),
+          bancoAval, UtilsString.sanitizeInput(codigoDane));
+    
       BancosDTO bancoAvalDTO = bancoService.findBancoByCodigoPuntoJdbc(bancoAval);
       var puntosCodigoTDV = puntosCodigoTDVJdbcRepository.findByCodigoPropioTDVAndCodigoTDVAndBancosAndCiudadCodigo(
          	codigoPuntoTdv.trim(), codigoTdv, bancoAvalDTO.getCodigoPunto(), codigoDane);
@@ -95,7 +95,8 @@ public class PuntosCodigoTDVServiceImpl implements IPuntosCodigoTdvService {
            		codigoPuntoTdv.trim(), codigoTdv, bancoAvalDTO.getCodigoPunto());
             if (!Objects.isNull(puntosCodigoTDVList) ) {
                 if (puntosCodigoTDVList.size() > 1 ) {
-                    log.debug("Codigo Punto TDV se encuentra mas de una vez. "+codigoPuntoTdv.trim() +" - "+ codigoTdv);
+                    log.debug("Codigo Punto TDV se encuentra mas de una vez. codigoPuntoTdv: {} - codigoTdv: {}", 
+                        UtilsString.sanitizeInput(codigoPuntoTdv.trim()), UtilsString.sanitizeInput(codigoTdv));
                     return puntosService.getCodigoPuntoJdbc(bancoAval).getCodigoPunto();
                 }else {
                     if (puntosCodigoTDVList.size() == 1) {
