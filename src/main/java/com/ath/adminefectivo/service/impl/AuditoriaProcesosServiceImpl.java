@@ -123,7 +123,7 @@ public class AuditoriaProcesosServiceImpl implements IAuditoriaProcesosService {
 	 */
 	@Override
 	public List<Date> consultarFechasProcesadas() {
-		return auditoriaProcesosRepository.AuditoriaProcesosFechasProcesadas();
+		return auditoriaProcesosRepository.auditoriaProcesosFechasProcesadas();
 	}
 	
 	/**
@@ -135,5 +135,16 @@ public class AuditoriaProcesosServiceImpl implements IAuditoriaProcesosService {
 		return AuditoriaProcesosDTO.CONVERTER_DTO.apply(
 				auditoriaProcesosRepository.save(AuditoriaProcesosDTO.CONVERTER_ENTITY.apply(auditoriaProcesosDTO)));
 	}
-	 
+	
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<AuditoriaProcesosDTO> consultarPorFechaProceso(Date fechaProceso) {
+      log.debug("Auditoria procesos por fecha de proceso: {}", fechaProceso);
+
+      return auditoriaProcesosRepository.findByFechaProceso(fechaProceso).stream()
+          .map(entity -> AuditoriaProcesosDTO.CONVERTER_DTO.apply(entity)).toList();
+
+    }
 }

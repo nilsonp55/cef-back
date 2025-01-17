@@ -356,4 +356,14 @@ public class UtilsString {
 	public static double calcularDiferenciaAbsoluta(double valor1, double valor2) {
 		return Math.abs(valor1 - valor2);
 	}
+
+	// Helper method to sanitize input using Apache Commons Lang
+	public static String sanitizeInput(String input) {
+		if (input == null) {
+			return "";
+		}
+		// Remove accents and check if the string is alphanumeric
+		String sanitized = StringUtils.stripAccents(input);
+		return StringUtils.isAlphanumeric(sanitized) ? sanitized : "";
+	}
 }

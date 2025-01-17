@@ -20,5 +20,8 @@ public interface IAuditoriaProcesosRepository
 		extends JpaRepository<AuditoriaProcesos, AuditoriaProcesosPK>, QuerydslPredicateExecutor<AuditoriaProcesos> {
 
 	@Query("SELECT ap.fechaCreacion FROM AuditoriaProcesos ap GROUP BY ap.fechaCreacion ORDER BY ap.fechaCreacion")
-	List<Date> AuditoriaProcesosFechasProcesadas();
+	List<Date> auditoriaProcesosFechasProcesadas();
+	
+	@Query("SELECT ap FROM AuditoriaProcesos ap WHERE ap.id.fechaProceso = :fechaProceso")
+	List<AuditoriaProcesos> findByFechaProceso(Date fechaProceso);
 }
