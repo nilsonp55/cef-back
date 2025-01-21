@@ -108,7 +108,6 @@ public class FilesServiceImpl implements IFilesService {
 					download.setFile(streamReader);
 				}
 			} else {
-				//File initialFile = new File(TEMPORAL_URL + File.separator + nombreArchivo);
 				File initialFile = new File(path);
 				Resource recurso = new UrlResource(initialFile.toURI());
 				InputStream inputStream = recurso.getInputStream();
