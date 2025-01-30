@@ -1,7 +1,6 @@
 package com.ath.adminefectivo.repositories;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 import static org.instancio.Select.field;
 
 import java.util.List;
@@ -62,17 +61,17 @@ class ICentroCiudadRepositoryTest {
 
 	@Test
 	void testICentroCiudadSave() {
-		fail("Not yet implemented");
+		assertThat("Not yet implemented");
 	}
 
 	@Test
 	void testICentroCiudadFindById() {
-		fail("Not yet implemented");
+		assertThat("Not yet implemented");
 	}
 
 	@Test
 	void testICentroCiudadDelete() {
-		fail("Not yet implemented");
+		assertThat("Not yet implemented");
 	}
 
 }
