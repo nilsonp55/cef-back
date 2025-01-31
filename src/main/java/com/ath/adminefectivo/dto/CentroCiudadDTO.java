@@ -4,7 +4,9 @@ import java.util.function.Function;
 
 import com.ath.adminefectivo.entities.Bancos;
 import com.ath.adminefectivo.entities.CentroCiudad;
+import com.ath.adminefectivo.entities.CentroCiudadPpal;
 import com.ath.adminefectivo.entities.Ciudades;
+import com.ath.adminefectivo.utils.UtilsObjects;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -71,6 +73,29 @@ public class CentroCiudadDTO {
 		
 		centroCiudadDTO.setCodigoCentro(t.getCodigoCentro());
 		
+		return centroCiudadDTO;
+	};
+	
+	/**
+	 * Convierte una instancia Entity en una instancia DTO para CentroCiudadPpal
+	 * @author prv_nparra
+	 */
+	public static final Function<CentroCiudadDTO, CentroCiudadPpal> CONVERTER_ENTITY_PPAL = (CentroCiudadDTO dto) -> {
+		var centroCiudadPpal = new CentroCiudadPpal();
+		UtilsObjects.copiarPropiedades(dto, centroCiudadPpal);
+		return centroCiudadPpal;
+	};
+	
+	/**
+	 * Convierte una instancia DTO en una instancia Entity para CentroCiudadPpal
+	 * @author prv_nparra
+	 */
+	public static final Function<CentroCiudadPpal, CentroCiudadDTO> CONVERTER_DTO_PPAL = (CentroCiudadPpal entity) -> {
+		var centroCiudadDTO = new CentroCiudadDTO();
+		centroCiudadDTO.setIdCentroCiudad(entity.getIdCentroCiudadPpal());
+		centroCiudadDTO.setBancoAval(BancosDTO.CONVERTER_DTO.apply(entity.getBancoAval()));
+		centroCiudadDTO.setCiudadDane(CiudadesDTO.CONVERTER_DTO.apply(entity.getCodigoDane()));
+		UtilsObjects.copiarPropiedades(entity, centroCiudadDTO);
 		return centroCiudadDTO;
 	};
 }

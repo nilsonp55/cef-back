@@ -19,6 +19,8 @@ import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
 import com.ath.adminefectivo.entities.CentroCiudad;
+import com.ath.adminefectivo.entities.CentroCiudadPpal;
+import com.ath.adminefectivo.service.ICentroCiudadPpalService;
 import com.ath.adminefectivo.service.ICentroCiudadService;
 import com.querydsl.core.types.Predicate;
 
@@ -33,6 +35,8 @@ public class CentroCiudadController {
 
 	@Autowired
 	ICentroCiudadService centroCiudadService;
+	@Autowired
+	ICentroCiudadPpalService centroCiudadPpalService;
 
 	/**
 	 * Servicio encargado de retornar la consulta de todos los CentroCiudad
@@ -93,6 +97,23 @@ public class CentroCiudadController {
 				.body(new ApiResponseADE<CentroCiudadDTO>(centroCiudadService.putCentroCiudad(centroCiudadDTO),
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
+
+	}
+	
+	/**
+	 * Servicio encargado de retornar la consulta de todos los CentroCiudad Ppal
+	 * 
+	 * @return ResponseEntity<ApiResponseADE<List<CentroCiudadDTO>>>
+	 * @author prv_nparra
+	 */
+	@GetMapping(value = "${endpoints.CentroCiudad.consultarPpal}")
+	public ResponseEntity<ApiResponseADE<List<CentroCiudadDTO>>> getCentroCiudadPpal(
+			@QuerydslPredicate(root = CentroCiudadPpal.class) Predicate predicate) {
+
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ApiResponseADE<>(centroCiudadPpalService.listCentroCiudad(predicate),
+						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+								.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 
 	}
 	
