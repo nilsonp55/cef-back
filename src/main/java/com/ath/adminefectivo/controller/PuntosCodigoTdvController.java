@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -106,8 +107,8 @@ public class PuntosCodigoTdvController {
 	 * @return ResponseEntity<ApiResponseADE<List<boolean>>>
 	 * @author duvan.naranjo
 	 */
-	@DeleteMapping(value = "${endpoints.PuntosCodigoTdv.eliminar}/{id}")
-	public ResponseEntity<ApiResponseADE<Boolean>> eliminar(@RequestParam("id") Integer idPuntoCodigoTdv) {
+	@DeleteMapping(value = "${endpoints.PuntosCodigoTdv.eliminar}")
+	public ResponseEntity<ApiResponseADE<Boolean>> eliminar(@PathVariable("id") Integer idPuntoCodigoTdv) {
 		boolean consulta = puntosCodigoTdvService.eliminarPuntosCodigoTdv(idPuntoCodigoTdv);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
