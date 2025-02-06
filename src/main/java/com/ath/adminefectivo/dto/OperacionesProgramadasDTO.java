@@ -114,10 +114,10 @@ public class OperacionesProgramadasDTO {
 		UtilsObjects.copiarPropiedades(t, operacionesProgramadas);
 
 		if(!Objects.isNull(t.getDetalleOperacionesProgramadasDTO())) {
-			if(StringUtils.isEmpty(t.getTipoPuntoOrigen())) 
-				t.setTipoPuntoOrigen("");
-			if(StringUtils.isEmpty(t.getTipoPuntoDestino())) 
-				t.setTipoPuntoDestino("");
+			if(StringUtils.isEmpty(operacionesProgramadas.getTipoPuntoOrigen())) 
+				operacionesProgramadas.setTipoPuntoOrigen("");
+			if(StringUtils.isEmpty(operacionesProgramadas.getTipoPuntoDestino())) 
+				operacionesProgramadas.setTipoPuntoDestino("");
 			
 			List<DetalleOperacionesProgramadas> listDetalleOperaciones = new ArrayList<>();
 			t.getDetalleOperacionesProgramadasDTO().forEach(detalle -> 
