@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.ath.adminefectivo.dto.compuestos.DetalleOperacionesDTO;
 import com.ath.adminefectivo.entities.ConciliacionServicios;
 import com.ath.adminefectivo.entities.DetalleOperacionesProgramadas;
@@ -112,6 +114,11 @@ public class OperacionesProgramadasDTO {
 		UtilsObjects.copiarPropiedades(t, operacionesProgramadas);
 
 		if(!Objects.isNull(t.getDetalleOperacionesProgramadasDTO())) {
+			if(StringUtils.isEmpty(t.getTipoPuntoOrigen())) 
+				t.setTipoPuntoOrigen("");
+			if(StringUtils.isEmpty(t.getTipoPuntoDestino())) 
+				t.setTipoPuntoDestino("");
+			
 			List<DetalleOperacionesProgramadas> listDetalleOperaciones = new ArrayList<>();
 			t.getDetalleOperacionesProgramadasDTO().forEach(detalle -> 
 				listDetalleOperaciones.add(DetalleOperacionesDTO.CONVERTER_ENTITY.apply(detalle))
