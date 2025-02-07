@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -175,7 +175,8 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
 
     programadaNoConciliadaNombre.setOficina("");
     // TipoPuntoOrigen es OFICINA
-    if (programadaNoConciliadaNombre.getTipoPuntoOrigen().equals(Constantes.PUNTO_OFICINA)) {
+    if (StringUtils.isNotEmpty(programadaNoConciliadaNombre.getTipoPuntoOrigen()) && 
+        programadaNoConciliadaNombre.getTipoPuntoOrigen().equals(Constantes.PUNTO_OFICINA)) {
       // Es Entrada, se toma codigoPuntoOrigen
       if (programadaNoConciliadaNombre.getEntradaSalida().equals(Constantes.VALOR_ENTRADA)) {
         programadaNoConciliadaNombre.setOficina(
