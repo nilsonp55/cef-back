@@ -5,15 +5,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.ath.adminefectivo.dto.compuestos.DetalleOperacionesDTO;
 import com.ath.adminefectivo.entities.ConciliacionServicios;
 import com.ath.adminefectivo.entities.DetalleOperacionesProgramadas;
 import com.ath.adminefectivo.entities.OperacionesProgramadas;
 import com.ath.adminefectivo.utils.UtilsObjects;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -114,10 +110,6 @@ public class OperacionesProgramadasDTO {
 		UtilsObjects.copiarPropiedades(t, operacionesProgramadas);
 
 		if(!Objects.isNull(t.getDetalleOperacionesProgramadasDTO())) {
-			if(StringUtils.isEmpty(operacionesProgramadas.getTipoPuntoOrigen())) 
-				operacionesProgramadas.setTipoPuntoOrigen("");
-			if(StringUtils.isEmpty(operacionesProgramadas.getTipoPuntoDestino())) 
-				operacionesProgramadas.setTipoPuntoDestino("");
 			
 			List<DetalleOperacionesProgramadas> listDetalleOperaciones = new ArrayList<>();
 			t.getDetalleOperacionesProgramadasDTO().forEach(detalle -> 
