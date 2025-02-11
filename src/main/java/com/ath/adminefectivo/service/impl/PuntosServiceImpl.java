@@ -33,6 +33,7 @@ import com.ath.adminefectivo.repositories.IFondosRepository;
 import com.ath.adminefectivo.repositories.IOficinasRepository;
 import com.ath.adminefectivo.repositories.IPuntosRepository;
 import com.ath.adminefectivo.repositories.ISitiosClientesRepository;
+import com.ath.adminefectivo.repositories.jdbc.IPuntosJdbcRepository;
 import com.ath.adminefectivo.service.IPuntosService;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
@@ -60,6 +61,13 @@ public class PuntosServiceImpl implements IPuntosService {
 
   @Autowired
   IFondosRepository fondosRepository;
+  
+  private static final String TIPO_PUNTO = "tipoPunto: ";
+  private static final String CODIGO_PUNTO = "codigoPunto: ";
+  private static final String NOMBRE_PUNTO = "nombrePunto: ";
+
+  @Autowired
+  IPuntosJdbcRepository puntosJdbcRepository;
 
   /**
    * {@inheritDoc}
@@ -100,8 +108,8 @@ public class PuntosServiceImpl implements IPuntosService {
     var puntosOpt = puntosRepository.findByCodigoPuntoAndTipoPunto(codigoPunto, tipoPunto);
     if (Objects.isNull(puntosOpt)) {
       throw new AplicationException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
-          ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription() + " tipoPunto = " + tipoPunto
-              + " codigoPunto = " + codigoPunto,
+          ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription() + TIPO_PUNTO + tipoPunto
+              + CODIGO_PUNTO + codigoPunto,
           ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
     }
     return puntosOpt;
@@ -116,8 +124,8 @@ public class PuntosServiceImpl implements IPuntosService {
     var puntosOpt = puntosRepository.findByCodigoPuntoAndTipoPunto(codigoPunto, tipoPunto);
     if (Objects.isNull(puntosOpt)) {
       throw new AplicationException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
-          ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription() + " tipoPunto = " + tipoPunto
-              + " codigoPunto = " + codigoPunto,
+          ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription() + TIPO_PUNTO + tipoPunto
+              + CODIGO_PUNTO + codigoPunto,
           ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
     }
     return puntosOpt.getNombrePunto();
@@ -131,7 +139,7 @@ public class PuntosServiceImpl implements IPuntosService {
     var puntosOpt = puntosRepository.findByCodigoPunto(codigoPunto);
     if (Objects.isNull(puntosOpt)) {
       throw new AplicationException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
-          ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription() + " codigoPunto = "
+          ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription() + CODIGO_PUNTO
               + codigoPunto,
           ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
     }
@@ -146,11 +154,24 @@ public class PuntosServiceImpl implements IPuntosService {
     var puntosOpt = puntosRepository.findByTipoPuntoAndNombrePunto(tipoPunto, nombrePunto);
     if (Objects.isNull(puntosOpt)) {
       throw new AplicationException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
-          ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription() + " tipoPunto = " + tipoPunto
-              + " nombrePunto = " + nombrePunto,
+          ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription() + TIPO_PUNTO + tipoPunto
+              + NOMBRE_PUNTO + nombrePunto,
           ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
     }
     return puntosOpt.getCodigoPunto();
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Puntos getCodigoPuntoJdbc(Integer codigoBancoAval) {
+    Puntos puntos = puntosJdbcRepository.findPuntoByCodigoAval(codigoBancoAval);
+    if (Objects.isNull(puntos)) {
+      throw new NegocioException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
+          ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription(), ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
+    }
+    return puntos;
   }
 
   @Override
@@ -280,6 +301,19 @@ public class PuntosServiceImpl implements IPuntosService {
     }
 
   }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Puntos getPuntoByIdJdbc(Integer idPunto) {
+    try {
+    	return puntosJdbcRepository.findByCodigoPunto(idPunto);
+    } catch (Exception e) {
+      throw new AplicationException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
+          ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription(), ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
+    }
+  }
 
   /**
    * {@inheritDoc}
@@ -288,6 +322,14 @@ public class PuntosServiceImpl implements IPuntosService {
   public Boolean getEntidadPuntoBanrep(String tipoPunto, Integer codigoPunto) {
     var puntosOpt = puntosRepository.findByCodigoPuntoAndTipoPunto(codigoPunto, tipoPunto);
     return !Objects.isNull(puntosOpt);
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Boolean getEntidadPuntoBanrepJdbc(String tipoPunto, Integer codigoPunto) {
+    return puntosJdbcRepository.existsByTipoPuntoAndCodigoPunto(tipoPunto, codigoPunto);
   }
 
   /**
@@ -344,7 +386,7 @@ public class PuntosServiceImpl implements IPuntosService {
   }
 
   @Override
-  public void eliminarPunto(Integer codigoPunto) throws Exception {
+  public void eliminarPunto(Integer codigoPunto) throws NegocioException {
     log.debug("Eliminar punto: {}", codigoPunto);
     puntosRepository.deleteById(codigoPunto);
     log.debug("Punto Eliminado: {}", codigoPunto);

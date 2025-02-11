@@ -191,7 +191,7 @@ public interface ITransaccionesContablesRepository extends JpaRepository<Transac
 			+ "CASE WHEN tc.valor IS NULL THEN '' ELSE CAST(tc.valor AS VARCHAR) end||','|| "
 			+ "    '' ||','|| "
 			+ "    CASE WHEN tc.codigo_centro  IS NOT NULL AND (trim(tc.cuenta_contable) like '5%') THEN trim(tc.codigo_centro) ELSE '' END||','|| "
-			+ "    CASE WHEN tc.codigo_centro  IS NOT NULL AND (trim(tc.cuenta_contable) like '4%') THEN trim(tc.codigo_centro) ELSE '' END||','|| "
+			+ "    CASE WHEN tc.codigo_centro  IS NOT NULL AND (trim(tc.cuenta_contable) not like '5%') THEN trim(tc.codigo_centro) ELSE '' END||','|| "
 			+ "    '' ||','|| "
 			+ "    '' ||','|| "
 			+ "    '' ||','|| "

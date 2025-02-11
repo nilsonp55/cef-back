@@ -31,4 +31,13 @@ public interface IOficinasService {
 	 */
 	Boolean getCodigoPuntoOficina(Integer codigoPunto);
 
+	/**
+	 * Servicio encargado de consultar el codigo de Punto en la entidad Oficinas
+	 * Este servicio consume una optimizacion mediante JDBC
+	 * 
+	 * @param codigoPunto
+	 * @return Oficinas
+	 */
+	Boolean getCodigoPuntoOficinaJdbc(Integer codigoPunto);
+
 }

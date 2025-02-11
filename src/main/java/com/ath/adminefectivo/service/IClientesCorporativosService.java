@@ -86,4 +86,14 @@ public interface IClientesCorporativosService {
      * @author prv_nparra
      */
     void eliminarClientesCorporativos(Integer codigoCliente) throws NotFoundException;
+
+	/**
+	 * Servicio encargado de consultar si existe el codigo punto del cliente
+	 * Este servicio consume una optimizacion mediante JDBC
+	 * 
+	 * @param codigoPunto
+	 * @return Boolean
+	 */
+	Boolean getCodigoPuntoClienteJdbc(Integer codigoPunto);
+
 }

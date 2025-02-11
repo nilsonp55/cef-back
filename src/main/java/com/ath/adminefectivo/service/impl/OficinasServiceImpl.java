@@ -11,6 +11,7 @@ import com.ath.adminefectivo.dto.OficinasDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.repositories.IOficinasRepository;
+import com.ath.adminefectivo.repositories.jdbc.IOficinasJdbcRepository;
 import com.ath.adminefectivo.service.IOficinasService;
 import com.querydsl.core.types.Predicate;
 
@@ -19,6 +20,10 @@ public class OficinasServiceImpl implements IOficinasService {
 
 	@Autowired
 	IOficinasRepository oficinasRepository;
+	
+	@Autowired
+	IOficinasJdbcRepository oficinasJdbcRepository;
+	
 	
 	/**
 	 * {@inheritDoc}
@@ -57,5 +62,13 @@ public class OficinasServiceImpl implements IOficinasService {
 			estado = false;
 		}
 		return estado;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Boolean getCodigoPuntoOficinaJdbc(Integer codigoPunto) {
+		return oficinasJdbcRepository.existsByCodigoPunto(codigoPunto);
 	}
 }

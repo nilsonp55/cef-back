@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.ath.adminefectivo.dto.SitiosClientesDTO;
 import com.ath.adminefectivo.entities.SitiosClientes;
 import com.ath.adminefectivo.repositories.ISitiosClientesRepository;
+import com.ath.adminefectivo.repositories.jdbc.ISitiosClientesJdbcRepository;
 import com.ath.adminefectivo.service.ISitiosClientesService;
 import com.querydsl.core.types.Predicate;
 
@@ -17,6 +18,9 @@ public class SitiosClientesServiceImpl implements ISitiosClientesService{
 
 	@Autowired
 	ISitiosClientesRepository sitiosClientesRepository;
+	
+	@Autowired
+	ISitiosClientesJdbcRepository sitiosClientesJdbcRepository;
 	
 	/**
 	 * {@inheritDoc}
@@ -37,6 +41,14 @@ public class SitiosClientesServiceImpl implements ISitiosClientesService{
 		
 		return sitiosClientesRepository.findByCodigoPunto(codigoPunto);
 
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public SitiosClientes getCodigoPuntoSitioJdbc(Integer codigoPunto) {		
+		return sitiosClientesJdbcRepository.findByCodigoPunto(codigoPunto);
 	}
 
 }

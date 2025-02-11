@@ -54,4 +54,11 @@ public interface IAuditoriaProcesosService {
 	 */
 	AuditoriaProcesosDTO crearAuditoriaProceso(AuditoriaProcesosDTO auditoriaProcesosDTO);
 
+	/**
+	 * Consultar tabla auditoriaProceso por fecha de proceso, para obtener registros con fecha dada.
+	 * @param fechaProceso
+	 * @return lista de auditoriaProceso de la fecha dada en fechaProceso
+	 * @author prv_nparra
+	 */
+	List<AuditoriaProcesosDTO> consultarPorFechaProceso(Date fechaProceso);
 }

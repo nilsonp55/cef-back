@@ -108,12 +108,7 @@ public class FilesServiceImpl implements IFilesService {
 					download.setFile(streamReader);
 				}
 			} else {
-				// Divide la cadena de la ruta en segmentos usando el carácter "/"
-				String[] segmentos = path.split("/");
-				// Tomar el último segmento como el nombre del archivo
-				String nombreArchivo = segmentos[segmentos.length - 1];
-
-				File initialFile = new File(TEMPORAL_URL + File.separator + nombreArchivo);
+				File initialFile = new File(path);
 				Resource recurso = new UrlResource(initialFile.toURI());
 				InputStream inputStream = recurso.getInputStream();
 				// Realiza operaciones de lectura del archivo usando inputStream
@@ -306,6 +301,7 @@ public class FilesServiceImpl implements IFilesService {
     nombreArchivo = arregloNombre[0].concat("-" + postfijo);
     Path destinoPath =
         FileSystems.getDefault().getPath(urlDestino, nombreArchivo.concat("." + arregloNombre[1]));
+    log.debug("origenPath: {} - arregloNombre:{} - nombreArchivo: {} - destinoPath: {}", origenPath, arregloNombre, nombreArchivo, destinoPath);
     try {
       if (Boolean.TRUE.equals(s3Bucket)) {
         s3Util.moverObjeto(origenPath.toString(), destinoPath.toString());
@@ -401,5 +397,4 @@ public class FilesServiceImpl implements IFilesService {
       throw new IllegalArgumentException();
     }
   }
-
 }
