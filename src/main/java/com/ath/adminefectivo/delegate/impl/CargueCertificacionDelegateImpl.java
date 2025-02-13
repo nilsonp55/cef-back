@@ -240,7 +240,8 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	 *
 	 * @author duvan.naranjo
 	 */
-	@Scheduled(cron = "0 5/15 7-17 * * *")
+	@Override
+	@Scheduled(cron = "0 5/1 7-17 * * *")
 	public void certificacionesProgramadas() {
 	  log.debug("Procesar certificacion inicio");
 		// crea el registro en bitacora de automaticos

@@ -21,10 +21,10 @@ import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
-
 import lombok.extern.log4j.Log4j2;
 
 /**
+ * 
  * Controlador responsable de exponer los metodos referentes al proceso de carga
  * de certificaciones
  * @author cesar.castano
@@ -146,4 +146,17 @@ public class CargueCertificacionController {
 								.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
 
+	/**
+	 * Endpoint to manually trigger the scheduled certificacionesProgramadas method.
+	 *
+	 * @return ResponseEntity<ApiResponseADE<Boolean>>
+	 * @author duvan.naranjo
+	 */
+	@PostMapping(value = "${endpoints.CargueCertificacion.procesarFecha}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ApiResponseADE<Boolean>> ejecutarCertificacionesProgramadas() {
+		cargueCertificacionDelegate.certificacionesProgramadas();
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ApiResponseADE<>(true, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
+	}
 }
