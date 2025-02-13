@@ -67,4 +67,6 @@ public interface ICargueCertificacionDelegate {
 	 */
 	List<ArchivosCargadosDTO> consultarArchivos(String estado, String agrupador);
 	
+	void certificacionesProgramadas();
+	
 }
