@@ -26,7 +26,22 @@ public interface ICentroCiudadPpalService {
      * 
      * @param centroCiudadDTO DTO con los datos a persistir
      * @return CentroCiudadDTO con los datos del registro creado
-     * @author [your-name]
+     * @author prv_nparra
      */
     CentroCiudadDTO create(CentroCiudadDTO centroCiudadDTO);
+
+    /**
+     * Actualiza un registro en CentroCiudadPpal
+     * @param centroCiudadDTO datos de CentroCiudadPpal para actualizar en Entity
+     * @return DTO con los datos actualizados en el registro
+     * @author prv_nparra
+     */
+	CentroCiudadDTO update(CentroCiudadDTO centroCiudadDTO);
+
+	/**
+	 * Elimina registro de CentroCiudadPpal si existe
+	 * @param idCentroCiudad Id de centroCiudadPpal a eliminar
+	 * @author prv_nparra 
+	 */
+	void delete(Integer idCentroCiudad);
 }
