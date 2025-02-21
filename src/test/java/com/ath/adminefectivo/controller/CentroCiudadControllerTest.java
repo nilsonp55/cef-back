@@ -1,0 +1,77 @@
+package com.ath.adminefectivo.controller;
+
+import static org.instancio.Select.field;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.List;
+
+import org.instancio.Instancio;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+
+import com.ath.adminefectivo.dto.BancosDTO;
+import com.ath.adminefectivo.dto.CentroCiudadDTO;
+import com.ath.adminefectivo.dto.CiudadesDTO;
+import com.ath.adminefectivo.service.ICentroCiudadPpalService;
+import com.ath.adminefectivo.service.ICentroCiudadService;
+import com.querydsl.core.types.Predicate;
+
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
+@WebMvcTest(CentroCiudadController.class)
+@TestPropertySource("classpath:endpoint.properties")
+public class CentroCiudadControllerTest {
+	
+	@Autowired
+	private MockMvc mockMvc;
+
+	
+	@MockBean
+	private ICentroCiudadPpalService centroCiudadPpalService;
+	
+	@MockBean
+	private ICentroCiudadService centroCiudadService;
+
+	
+	private List<CentroCiudadDTO> listCentroCiudad;
+	
+	@BeforeEach
+	void setUp() throws Exception {
+		
+		BancosDTO banco = Instancio.of(BancosDTO.class).create();
+		CiudadesDTO ciudad = Instancio.of(CiudadesDTO.class).create();
+		this.listCentroCiudad = Instancio.ofList(CentroCiudadDTO.class).size(11)
+				.set(field(CentroCiudadDTO::getBancoAval), banco).set(field(CentroCiudadDTO::getCiudadDane), ciudad)
+				.create();
+	}
+	
+	@Test
+	void testListGetCentroCiudadPpal() throws Exception {
+
+		when(this.centroCiudadPpalService.listCentroCiudad(any(Predicate.class))).thenReturn(this.listCentroCiudad);
+		MvcResult result = mockMvc.perform(get("/v1.0.1/ade/centro-ciudad/ppal")
+				.param("page", "0")
+				.param("size", "10"))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("data").exists())
+				.andExpect(jsonPath("response").exists())
+				.andReturn();
+
+		log.info("testListGetCentroCiudadPpal status: {}", result.getResponse().getStatus());
+	}
+
+}

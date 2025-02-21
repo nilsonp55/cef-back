@@ -26,11 +26,13 @@ import com.ath.adminefectivo.service.ICentroCiudadPpalService;
 import com.ath.adminefectivo.service.ICentroCiudadService;
 import com.querydsl.core.types.Predicate;
 
+import lombok.extern.log4j.Log4j2;
+
 /**
  * Controller para gestionar los CentroCiudad
  * @author cesar.castano
  */
-
+@Log4j2
 @RestController
 @RequestMapping("${endpoints.CentroCiudad}")
 public class CentroCiudadController {
@@ -111,7 +113,7 @@ public class CentroCiudadController {
 	@GetMapping(value = "${endpoints.CentroCiudad.centroCiudadPpal}")
 	public ResponseEntity<ApiResponseADE<List<CentroCiudadDTO>>> getCentroCiudadPpal(
 			@QuerydslPredicate(root = CentroCiudadPpal.class) Predicate predicate) {
-
+		log.info("Get list CentroCiudadPrincipal: {}", predicate);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(centroCiudadPpalService.listCentroCiudad(predicate),
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
@@ -125,12 +127,14 @@ public class CentroCiudadController {
 	 * @author prv_nparra
 	 */
 	@PostMapping(value = "${endpoints.CentroCiudad.centroCiudadPpal}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponseADE<CentroCiudadDTO>> postCentroCiudadPpal(@RequestBody CentroCiudadDTO centroCiudadDTO) {
-
+	public ResponseEntity<ApiResponseADE<CentroCiudadDTO>> postCentroCiudadPpal(
+			@RequestBody CentroCiudadDTO centroCiudadDTO) {
+		log.info("Post CentroCiudadPpal: {}", centroCiudadDTO);
+		CentroCiudadDTO createdCentroCiudadDTO = centroCiudadPpalService.create(centroCiudadDTO);
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ApiResponseADE<CentroCiudadDTO>(centroCiudadPpalService.create(centroCiudadDTO),
+				.body(new ApiResponseADE<CentroCiudadDTO>(createdCentroCiudadDTO,
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
-						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
+								.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
 
 	/**
@@ -140,12 +144,13 @@ public class CentroCiudadController {
 	 * @author prv_nparra
 	 */
 	@PutMapping(value = "${endpoints.CentroCiudad.centroCiudadPpal}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponseADE<CentroCiudadDTO>> putCentroCiudadPpal(@RequestBody CentroCiudadDTO centroCiudadDTO) {
-
+	public ResponseEntity<ApiResponseADE<CentroCiudadDTO>> putCentroCiudadPpal(
+			@RequestBody CentroCiudadDTO centroCiudadDTO) {
+		log.info("Put CentroCiudadPpal: {}", centroCiudadDTO);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<CentroCiudadDTO>(centroCiudadPpalService.update(centroCiudadDTO),
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
-						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
+								.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
 
 	/**
@@ -156,8 +161,9 @@ public class CentroCiudadController {
 	 */
 	@DeleteMapping(value = "${endpoints.CentroCiudad.centroCiudadPpal}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<Void>> deleteCentroCiudadPpal(@RequestParam Integer idCentroCiudad) {
-
+		log.info("Delete CentroCiudadPpal ID: {}", idCentroCiudad);
 		centroCiudadPpalService.delete(idCentroCiudad);
+		log.info("CentroCiudadPpal deleted ID: {}", idCentroCiudad);
 		return ResponseEntity.status(HttpStatus.NO_CONTENT)
 				.body(new ApiResponseADE<Void>(null,
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
