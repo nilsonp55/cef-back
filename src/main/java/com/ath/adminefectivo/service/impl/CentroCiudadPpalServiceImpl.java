@@ -4,20 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.dto.CentroCiudadDTO;
-import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.ICentroCiudadPpalRepository;
 import com.ath.adminefectivo.service.ICentroCiudadPpalService;
 import com.querydsl.core.types.Predicate;
+
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Clase Servicios para gestionar los CentroCiudadPpal
  * 
  * @author prv_nparra
  */
+@Log4j2
 @Service
 public class CentroCiudadPpalServiceImpl implements ICentroCiudadPpalService {
 
@@ -29,53 +30,38 @@ public class CentroCiudadPpalServiceImpl implements ICentroCiudadPpalService {
 
 	@Override
 	public List<CentroCiudadDTO> listCentroCiudad(Predicate predicate) {
-		try {
-			List<CentroCiudadDTO> listDto = new ArrayList<>();
-			centroCiudadPpalRepository.findAll(predicate)
-					.forEach(entity -> listDto.add(CentroCiudadDTO.CONVERTER_DTO_PPAL.apply(entity)));
-			return listDto;
-		} catch (Exception e) {
-			throw new NegocioException("CC-002", "Error al listar los centros ciudad principal",
-					HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-		}
+		log.debug("Listar CentroCiudadPpal: {}", predicate);
+		List<CentroCiudadDTO> listDto = new ArrayList<>();
+		centroCiudadPpalRepository.findAll(predicate)
+				.forEach(entity -> listDto.add(CentroCiudadDTO.CONVERTER_DTO_PPAL.apply(entity)));
+		log.debug("CentroCiudadPpal listar size: {}", listDto.size());
+		return listDto;
 	}
 
 	@Override
 	public CentroCiudadDTO create(CentroCiudadDTO centroCiudadDTO) {
-		try {
-			var entity = CentroCiudadDTO.CONVERTER_ENTITY_PPAL.apply(centroCiudadDTO);
-			var entitySaved = centroCiudadPpalRepository.save(entity);
-			return CentroCiudadDTO.CONVERTER_DTO_PPAL.apply(entitySaved);
-		} catch (Exception e) {
-			throw new NegocioException("CC-001", "Error al crear el centro ciudad principal",
-					HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-		}
+		log.debug("CentroCiudadPpal crear: {}", centroCiudadDTO);		
+		var entity = CentroCiudadDTO.CONVERTER_ENTITY_PPAL.apply(centroCiudadDTO);
+		var entitySaved = centroCiudadPpalRepository.save(entity);
+		log.debug("CentroCiudadPpal creado ID: {}", entitySaved.getIdCentroCiudadPpal());
+		return CentroCiudadDTO.CONVERTER_DTO_PPAL.apply(entitySaved);
 	}
 
 	@Override
 	public CentroCiudadDTO update(CentroCiudadDTO centroCiudadDTO) {
-		try {
-			centroCiudadPpalRepository.findById(centroCiudadDTO.getIdCentroCiudad()).orElseThrow(() -> {
-				throw new NegocioException("CC-003", "Centro Ciudad Principal no encontrado", HttpStatus.NOT_FOUND,
-						null);
-			});
+		log.debug("CentroCiudadPpal Update ID: {}", centroCiudadDTO.getIdCentroCiudad());
+		var entity = centroCiudadPpalRepository.findById(centroCiudadDTO.getIdCentroCiudad()).orElseThrow();
 
-			var entitySaved = centroCiudadPpalRepository
-					.save(CentroCiudadDTO.CONVERTER_ENTITY_PPAL.apply(centroCiudadDTO));
-			return CentroCiudadDTO.CONVERTER_DTO_PPAL.apply(entitySaved);
-		} catch (Exception e) {
-			throw new NegocioException("CC-004", "Error al actualizar el centro ciudad principal",
-					HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-		}
+		entity = CentroCiudadDTO.CONVERTER_ENTITY_PPAL.apply(centroCiudadDTO);
+		entity.setIdCentroCiudadPpal(centroCiudadDTO.getIdCentroCiudad());
+		var entitySaved = centroCiudadPpalRepository.save(entity);
+		log.debug("CentroCiudadPpal Updated ID: {}", entitySaved.getIdCentroCiudadPpal());
+		return CentroCiudadDTO.CONVERTER_DTO_PPAL.apply(entitySaved);
 	}
 	
 	@Override
 	public void delete(Integer idCentroCiudad) {
-		try {
-			centroCiudadPpalRepository.deleteById(idCentroCiudad);
-		} catch (Exception e) {
-			throw new NegocioException("CC-005", "Error al eliminar el centro ciudad principal",
-					HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-		}
+		log.debug("Eliminar CentroCiudadPpal ID: {}", idCentroCiudad);
+		centroCiudadPpalRepository.deleteById(idCentroCiudad);
 	}
 }
