@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,21 +86,6 @@ public class GestionRetencionArchivosServiceImpl implements IGestionRetencionArc
 	    }
 	    return true;
 	}
-	
-	private boolean validarArchivoExtensionAndFecha(String pathfileS3, String extension, String agrupador, String mascaraArch) {
-		if (!validarExtensionArchivo(pathfileS3, extension)) {
-			return false;
-		}
-		String nombreArchivoS3 = pathfileS3.substring(pathfileS3.lastIndexOf("/") + 1,
-				pathfileS3.lastIndexOf("."));
-
-		Date fechaArchivoS3 = extraerFechaPorAgrupador(agrupador, nombreArchivoS3, mascaraArch);
-		if ( Objects.isNull(fechaArchivoS3) ) {
-			log.error("[Política de Retención] Archivo no contiene una fecha valida o no se extrajo correctamente {} ", pathfileS3);
-			return false;
-		}
-		return true;
-	}
 
 	private String validarBackSlash(String path) {
 		char ultimoCaracterUbicacion = path.charAt(path.length() - 1);
@@ -129,6 +115,8 @@ public class GestionRetencionArchivosServiceImpl implements IGestionRetencionArc
 			} else if (agrupador.equals("DEFIN") || agrupador.equals("IPP")) {
 				String[] estructuraProgramacion = mascaraArch.split(Constantes.SEPARADOR_FECHA_ARCHIVO);
 				return estructuraProgramacion[0];
+			} else if (agrupador.equals("CONTA")) {	         
+	                return mascaraArch.substring(0, 13);
 			} else {
 				return "";
 			}
@@ -164,17 +152,12 @@ public class GestionRetencionArchivosServiceImpl implements IGestionRetencionArc
 		for (ParametrosRetencion parametroRetencion : parametrosRetencionActivos) {
 			if (validaParametroRetencion(parametroRetencion))
 			{
-				String agrupador = parametroRetencion.getAgrupador();
-				String extension = parametroRetencion.getExtension();
-				String mascaraArch = parametroRetencion.getMarcaraArch();
-				int periodoRetencion = parametroRetencion.getPeriodoRetencion();
-				
 				String path = validarBackSlash(parametroRetencion.getUbicacion());
 				logPathFile = path;
-				path = path + obtenerPrefix(agrupador, mascaraArch);
+				path = path + obtenerPrefix(parametroRetencion.getAgrupador(), parametroRetencion.getMarcaraArch());
 				var objectsSummary = s3Utils.getObjectsSummaryFromPathS3(path);
 				
-				validarObjectSummary(objectsSummary, extension, agrupador, mascaraArch, periodoRetencion, logPathFile);
+				validarObjectSummary(objectsSummary, parametroRetencion, logPathFile);
 			}
 		}
 		
@@ -197,13 +180,14 @@ public class GestionRetencionArchivosServiceImpl implements IGestionRetencionArc
 		return true;
 	}
 	
-	private boolean validarObjectSummary(List<S3ObjectSummary> objectsSummary, 
-															String extension, 
-															String agrupador, 
-															String mascaraArch, 
-															int periodoRetencion,
+	private boolean validarObjectSummary(List<S3ObjectSummary> objectsSummary, ParametrosRetencion parametroRetencion,
 															String logPathFile)
-	{
+	{	    
+	    String extension = parametroRetencion.getExtension();
+        String agrupador =  parametroRetencion.getAgrupador();
+        String mascaraArch = parametroRetencion.getMarcaraArch();
+        int periodoRetencion = parametroRetencion.getPeriodoRetencion();
+        Boolean sufijo = parametroRetencion.getSufijo();
 		this.registrosEliminados = new ArrayList<>();
 		if (Objects.isNull(objectsSummary) || objectsSummary.isEmpty()) {
 			log.info("[Política de Retención] No hay archivos por procesar para política de retencion");
@@ -212,20 +196,26 @@ public class GestionRetencionArchivosServiceImpl implements IGestionRetencionArc
 		
 		for (S3ObjectSummary objectSummary : objectsSummary) {
 			String pathfileS3 = objectSummary.getKey();
-
-			if (!validarArchivoExtensionAndFecha(pathfileS3, extension, agrupador, mascaraArch )) {
-				continue;
+			
+			if (!validarExtensionArchivo(pathfileS3, extension)) continue;
+			
+			if(agrupador.equals("CONTA")){			    
+			    ejecutarRetencion(objectSummary.getLastModified(), periodoRetencion, pathfileS3);
+			    continue;
 			}
 			
-			String nombreArchivoS3 = pathfileS3.substring(pathfileS3.lastIndexOf("/") + 1,
-					pathfileS3.lastIndexOf("."));
-
+			String nombreArchivoS3 = extraerNombreArchivo(pathfileS3, sufijo);
+			
+			if(Objects.isNull(nombreArchivoS3)) continue;
+			
 			Date fechaArchivoS3 = extraerFechaPorAgrupador(agrupador, nombreArchivoS3, mascaraArch);
-
-			if (validarPeriodoRetencion(fechaArchivoS3, periodoRetencion)) {
-				s3Utils.deleteObjectBucket(pathfileS3);
-				this.registrosEliminados.add(pathfileS3);
-			}
+			
+			if (Objects.isNull(fechaArchivoS3)) {
+	            log.error("[Política de Retención] Archivo no contiene una fecha valida o no se extrajo correctamente {} ", pathfileS3);
+	            continue;
+	        } 
+			
+			ejecutarRetencion(fechaArchivoS3, periodoRetencion, pathfileS3);
 		}
 		
 		if (!this.registrosEliminados.isEmpty()) {
@@ -237,7 +227,14 @@ public class GestionRetencionArchivosServiceImpl implements IGestionRetencionArc
 		return true;
 	}
 
-	@Override
+	private void ejecutarRetencion(Date fechaArchivoS3, int periodoRetencion, String pathfileS3 ) {
+	    if (validarPeriodoRetencion(fechaArchivoS3, periodoRetencion)) {
+            s3Utils.deleteObjectBucket(pathfileS3);
+            this.registrosEliminados.add(pathfileS3);
+        }        
+    }
+
+    @Override
 	public List<ParametrosRetencion> obtenerParametrosPorActivo(boolean activo) {
 		return parametrosRetencionRepo.findConfParametrosRetencionByActivo(activo);
 	}
@@ -325,9 +322,9 @@ public class GestionRetencionArchivosServiceImpl implements IGestionRetencionArc
 
 	private boolean validarPeriodoRetencion(Date fechaArchivoS3, Integer periodoRetencion) {
 		LocalDate fechaArchivoLocal = fechaArchivoS3.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-		LocalDate fechaActual = LocalDate.now();
-		long diasDiferencia = ChronoUnit.DAYS.between(fechaArchivoLocal, fechaActual);
-		return diasDiferencia <= periodoRetencion;
+		LocalDate fechaProceso = parametrosService.valorParametroDate(Constantes.FECHA_DIA_PROCESO).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		long diasDiferencia = ChronoUnit.DAYS.between(fechaArchivoLocal, fechaProceso);
+		return diasDiferencia >= periodoRetencion;
 	}
 	
 	private String getStringFileCertiTH(String nombreArchivoS3) {
@@ -349,6 +346,32 @@ public class GestionRetencionArchivosServiceImpl implements IGestionRetencionArc
 		}
 		return fecha;
 	}
+	
+	private String extraerNombreArchivo (String pathfileS3, Boolean sufijo) {
+	   try {
+	       String nombreArchivoS3 = pathfileS3.substring(pathfileS3.lastIndexOf("/") + 1,
+	                pathfileS3.lastIndexOf(".")); 
+	       if(sufijo) {
+	           nombreArchivoS3 = extraerNombreArchivoSufijo(nombreArchivoS3);
+	       }
+	       return nombreArchivoS3;
+	   }
+	   catch(Exception e) {
+	       log.error("[Política de Retención] Error al extraer Nombre de archivo del pathfile: " + pathfileS3, e);
+	   }
+       return null; 
+	}
+	
+	private String extraerNombreArchivoSufijo (String nombreArchivoS3) {   
+        String sufijo = nombreArchivoS3.substring(nombreArchivoS3.lastIndexOf("-")+1,nombreArchivoS3.length());
+        Boolean patterIsOk = Pattern.compile("^\\d+$").matcher(sufijo).matches();
+        if(!patterIsOk) {
+            log.error("[Política de Retención] El patron del sufijo no ajusta para el archivo con nombre: " + nombreArchivoS3);
+            return null;
+        }
+        return nombreArchivoS3.substring(0,nombreArchivoS3.lastIndexOf("-")); 
+	}
+	
 
 	private void registrarLogEliminacion(List<String> registros, String pathFileS3) {
 		
@@ -368,14 +391,15 @@ public class GestionRetencionArchivosServiceImpl implements IGestionRetencionArc
 			String rutaArchivoLog = rutaBase + "/" + nombreArchivoLog;
 
 			String headers = "fecha_depuracion,ubicacion";
-			StringBuilder contenidoFinal = new StringBuilder(headers).append(System.lineSeparator());
-
+			final String LINE_ENDING = "\r\n";
+			StringBuilder contenidoFinal = new StringBuilder(headers).append(LINE_ENDING);
+			
 			// Agregar cada registro al contenido
 			for (String registro : registros) {
 	            contenidoFinal.append(now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
 	                         .append(",")
 	                         .append(registro)
-	                         .append(System.lineSeparator());
+	                         .append(LINE_ENDING);
 	        }
 
 			// Configura metadatos del archivo
@@ -390,7 +414,7 @@ public class GestionRetencionArchivosServiceImpl implements IGestionRetencionArc
 				log.info("[Política de Retención] Log de eliminación registrado exitosamente en: {}", rutaArchivoLog);
 			}
 		} catch (Exception e) {
-			log.error("[Política de Retención] Error al registrar log de eliminación para los registros en: " + pathFileS3, e);
+			log.error("[Política de Retención] Error al registrar log de eliminación para los registros en: " + pathFileS3);
 		}
 	}
 
