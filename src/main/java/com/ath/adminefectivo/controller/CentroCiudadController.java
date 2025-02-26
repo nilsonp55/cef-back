@@ -103,6 +103,25 @@ public class CentroCiudadController {
 	}
 	
 	/**
+	 * Servicio para eliminar un registro de centro ciudad en la tabla 
+	 * @param idCentroCiudad
+	 * @return 
+	 * @author prv_nparra
+	 */
+	@DeleteMapping(value = "${endpoints.CentroCiudad.eliminar}/{idCentroCiudad}")
+	public ResponseEntity<ApiResponseADE<Void>> deleteCentroCiudad(@PathVariable Integer idCentroCiudad) {
+	  log.info("Delete CentroCiudad ID: {}", idCentroCiudad);
+	  centroCiudadService.deleteCentroCiudad(idCentroCiudad);
+	  log.info("CentroCiudad deleted ID: {}", idCentroCiudad);
+	  
+	  return ResponseEntity.status(HttpStatus.NO_CONTENT)
+          .body(new ApiResponseADE<Void>(null,
+              ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+                  .description(ApiResponseCode.SUCCESS.getDescription()).build()));
+	}
+	
+	
+	/**
 	 * Servicio encargado de retornar la consulta de todos los CentroCiudad Ppal
 	 * 
 	 * @return ResponseEntity<ApiResponseADE<List<CentroCiudadDTO>>>
@@ -157,8 +176,7 @@ public class CentroCiudadController {
 	 * @return
 	 * @author prv_nparra
 	 */
-    @DeleteMapping(value = "${endpoints.CentroCiudad.centroCiudadPpal}/{idCentroCiudad}",
-        produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "${endpoints.CentroCiudad.centroCiudadPpal}/{idCentroCiudad}")
     public ResponseEntity<ApiResponseADE<Void>> deleteCentroCiudadPpal(
         @PathVariable Integer idCentroCiudad) {
       log.info("Delete CentroCiudadPpal ID: {}", idCentroCiudad);
