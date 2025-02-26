@@ -1,7 +1,6 @@
 package com.ath.adminefectivo.controller;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.HttpStatus;
@@ -9,13 +8,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.ath.adminefectivo.dto.CentroCiudadDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
@@ -25,7 +24,6 @@ import com.ath.adminefectivo.entities.CentroCiudadPpal;
 import com.ath.adminefectivo.service.ICentroCiudadPpalService;
 import com.ath.adminefectivo.service.ICentroCiudadService;
 import com.querydsl.core.types.Predicate;
-
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -159,15 +157,17 @@ public class CentroCiudadController {
 	 * @return
 	 * @author prv_nparra
 	 */
-	@DeleteMapping(value = "${endpoints.CentroCiudad.centroCiudadPpal}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponseADE<Void>> deleteCentroCiudadPpal(@RequestParam Integer idCentroCiudad) {
-		log.info("Delete CentroCiudadPpal ID: {}", idCentroCiudad);
-		centroCiudadPpalService.delete(idCentroCiudad);
-		log.info("CentroCiudadPpal deleted ID: {}", idCentroCiudad);
-		return ResponseEntity.status(HttpStatus.NO_CONTENT)
-				.body(new ApiResponseADE<Void>(null,
-						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
-						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
-	}
+    @DeleteMapping(value = "${endpoints.CentroCiudad.centroCiudadPpal}/{idCentroCiudad}",
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ApiResponseADE<Void>> deleteCentroCiudadPpal(
+        @PathVariable Integer idCentroCiudad) {
+      log.info("Delete CentroCiudadPpal ID: {}", idCentroCiudad);
+      centroCiudadPpalService.delete(idCentroCiudad);
+      log.info("CentroCiudadPpal deleted ID: {}", idCentroCiudad);
+      return ResponseEntity.status(HttpStatus.NO_CONTENT)
+          .body(new ApiResponseADE<Void>(null,
+              ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+                  .description(ApiResponseCode.SUCCESS.getDescription()).build()));
+    }
 	
 }

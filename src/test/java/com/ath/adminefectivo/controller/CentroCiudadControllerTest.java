@@ -210,7 +210,7 @@ public class CentroCiudadControllerTest {
     doNothing().when(centroCiudadPpalService).delete(anyInt());
 
     MvcResult result = mockMvc
-        .perform(delete("/v1.0.1/ade/centro-ciudad/ppal").param("idCentroCiudad", "1")
+        .perform(delete("/v1.0.1/ade/centro-ciudad/ppal/1")
             .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().is2xxSuccessful()).andReturn();
 
@@ -226,7 +226,7 @@ public class CentroCiudadControllerTest {
                 .when(centroCiudadPpalService).delete(anyInt());
 
     MvcResult result = mockMvc
-        .perform(delete("/v1.0.1/ade/centro-ciudad/ppal").contentType(MediaType.APPLICATION_JSON))
+        .perform(delete("/v1.0.1/ade/centro-ciudad/ppal/1").contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().is4xxClientError()).andReturn();
 
     log.info("testDeleteCentroCiudadPpalDataException status: {}",
