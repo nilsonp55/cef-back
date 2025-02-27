@@ -102,23 +102,7 @@ public class CentroCiudadController {
 
 	}
 	
-	/**
-	 * Servicio para eliminar un registro de centro ciudad en la tabla 
-	 * @param idCentroCiudad
-	 * @return 
-	 * @author prv_nparra
-	 */
-	@DeleteMapping(value = "${endpoints.CentroCiudad.eliminar}/{idCentroCiudad}")
-	public ResponseEntity<ApiResponseADE<Void>> deleteCentroCiudad(@PathVariable Integer idCentroCiudad) {
-	  log.info("Delete CentroCiudad ID: {}", idCentroCiudad);
-	  centroCiudadService.deleteCentroCiudad(idCentroCiudad);
-	  log.info("CentroCiudad deleted ID: {}", idCentroCiudad);
-	  
-	  return ResponseEntity.status(HttpStatus.NO_CONTENT)
-          .body(new ApiResponseADE<Void>(null,
-              ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
-                  .description(ApiResponseCode.SUCCESS.getDescription()).build()));
-	}
+	
 	
 	
 	/**
@@ -171,7 +155,7 @@ public class CentroCiudadController {
 	}
 
 	/**
-	 * 
+	 * Servicio para eliminar un registro de centro ciudad en la tabla centros_ciudad_ppal
 	 * @param idCentroCiudad
 	 * @return
 	 * @author prv_nparra
@@ -182,6 +166,25 @@ public class CentroCiudadController {
       log.info("Delete CentroCiudadPpal ID: {}", idCentroCiudad);
       centroCiudadPpalService.delete(idCentroCiudad);
       log.info("CentroCiudadPpal deleted ID: {}", idCentroCiudad);
+      return ResponseEntity.status(HttpStatus.NO_CONTENT)
+          .body(new ApiResponseADE<Void>(null,
+              ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+                  .description(ApiResponseCode.SUCCESS.getDescription()).build()));
+    }
+    
+    /**
+     * Servicio para eliminar un registro de centro ciudad en la tabla centros_ciudad
+     * @param idCentroCiudad
+     * @return
+     * @author prv_nparra
+     */
+    @DeleteMapping(value = "${endpoints.CentroCiudad.eliminar}/{idCentroCiudad}")
+    public ResponseEntity<ApiResponseADE<Void>> deleteCentroCiudad(
+        @PathVariable Integer idCentroCiudad) {
+      log.info("Delete CentroCiudadPpal ID: {}", idCentroCiudad);
+      centroCiudadService.deleteCentroCiudad(idCentroCiudad);
+      log.info("CentroCiudadPpal deleted ID: {}", idCentroCiudad);
+      
       return ResponseEntity.status(HttpStatus.NO_CONTENT)
           .body(new ApiResponseADE<Void>(null,
               ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
