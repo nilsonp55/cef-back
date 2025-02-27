@@ -210,14 +210,12 @@ public class CentroCiudadControllerTest {
     doNothing().when(centroCiudadPpalService).delete(anyInt());
 
     MvcResult result = mockMvc
-        .perform(delete("/v1.0.1/ade/centro-ciudad/ppal/1")
-            .contentType(MediaType.APPLICATION_JSON))
+        .perform(delete("/v1.0.1/ade/centro-ciudad/ppal/1").contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().is2xxSuccessful()).andReturn();
 
-    log.info("testPutUpdateCentroCiudadPpalDataAccessException status: {}",
-        result.getResponse().getStatus());
+    log.info("testDeleteCentroCiudadPpal status: {}", result.getResponse().getStatus());
   }
-  
+
   @Test
   void testDeleteCentroCiudadPpalDataException() throws Exception {
     doThrow(
@@ -231,5 +229,16 @@ public class CentroCiudadControllerTest {
 
     log.info("testDeleteCentroCiudadPpalDataException status: {}",
         result.getResponse().getStatus());
+  }
+
+  @Test
+  void testDeleteCentroCiudad() throws Exception {
+    doNothing().when(centroCiudadService).deleteCentroCiudad(anyInt());
+
+    MvcResult result = mockMvc
+        .perform(delete("/v1.0.1/ade/centro-ciudad/eliminar/1").contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().is2xxSuccessful()).andReturn();
+
+    log.info("testDeleteCentroCiudad status: {}", result.getResponse().getStatus());
   }
 }
