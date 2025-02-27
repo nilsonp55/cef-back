@@ -196,28 +196,21 @@ public class GestionRetencionArchivosServiceImpl implements IGestionRetencionArc
 		
 		for (S3ObjectSummary objectSummary : objectsSummary) {
 			String pathfileS3 = objectSummary.getKey();
-			
-			if (!validarExtensionArchivo(pathfileS3, extension)) continue;
-			
-			if(agrupador.equals("CONTA")){			    
+			boolean esExtensionValida = validarExtensionArchivo(pathfileS3, extension);			
+			if (esExtensionValida && agrupador.equals("CONTA")) {
 			    ejecutarRetencion(objectSummary.getLastModified(), periodoRetencion, pathfileS3);
-			    continue;
+			} else if (esExtensionValida){
+			    String nombreArchivoS3 = extraerNombreArchivo(pathfileS3, sufijo);			    
+                if(!Objects.isNull(nombreArchivoS3)) {
+                    Date fechaArchivoS3 = extraerFechaPorAgrupador(agrupador, nombreArchivoS3, mascaraArch);
+                    if (!Objects.isNull(fechaArchivoS3)) {
+                        ejecutarRetencion(fechaArchivoS3, periodoRetencion, pathfileS3);
+                    }else {
+                        log.error("[Política de Retención] Archivo no contiene una fecha valida o no se extrajo correctamente {} ", pathfileS3);
+                    }
+                }                
 			}
-			
-			String nombreArchivoS3 = extraerNombreArchivo(pathfileS3, sufijo);
-			
-			if(Objects.isNull(nombreArchivoS3)) continue;
-			
-			Date fechaArchivoS3 = extraerFechaPorAgrupador(agrupador, nombreArchivoS3, mascaraArch);
-			
-			if (Objects.isNull(fechaArchivoS3)) {
-	            log.error("[Política de Retención] Archivo no contiene una fecha valida o no se extrajo correctamente {} ", pathfileS3);
-	            continue;
-	        } 
-			
-			ejecutarRetencion(fechaArchivoS3, periodoRetencion, pathfileS3);
 		}
-		
 		if (!this.registrosEliminados.isEmpty()) {
             registrarLogEliminacion(this.registrosEliminados, logPathFile);
             this.registrosEliminados.clear();
@@ -347,7 +340,7 @@ public class GestionRetencionArchivosServiceImpl implements IGestionRetencionArc
 		return fecha;
 	}
 	
-	private String extraerNombreArchivo (String pathfileS3, Boolean sufijo) {
+	private String extraerNombreArchivo (String pathfileS3, boolean sufijo) {
 	   try {
 	       String nombreArchivoS3 = pathfileS3.substring(pathfileS3.lastIndexOf("/") + 1,
 	                pathfileS3.lastIndexOf(".")); 
@@ -364,7 +357,7 @@ public class GestionRetencionArchivosServiceImpl implements IGestionRetencionArc
 	
 	private String extraerNombreArchivoSufijo (String nombreArchivoS3) {   
         String sufijo = nombreArchivoS3.substring(nombreArchivoS3.lastIndexOf("-")+1,nombreArchivoS3.length());
-        Boolean patterIsOk = Pattern.compile("^\\d+$").matcher(sufijo).matches();
+        boolean patterIsOk = Pattern.compile("^\\d+$").matcher(sufijo).matches();
         if(!patterIsOk) {
             log.error("[Política de Retención] El patron del sufijo no ajusta para el archivo con nombre: " + nombreArchivoS3);
             return null;
