@@ -2,15 +2,12 @@ package com.ath.adminefectivo.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.ath.adminefectivo.dto.CentroCiudadDTO;
 import com.ath.adminefectivo.repositories.ICentroCiudadPpalRepository;
 import com.ath.adminefectivo.service.ICentroCiudadPpalService;
 import com.querydsl.core.types.Predicate;
-
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -50,9 +47,9 @@ public class CentroCiudadPpalServiceImpl implements ICentroCiudadPpalService {
 	@Override
 	public CentroCiudadDTO update(CentroCiudadDTO centroCiudadDTO) {
 		log.debug("CentroCiudadPpal Update ID: {}", centroCiudadDTO.getIdCentroCiudad());
-		var entity = centroCiudadPpalRepository.findById(centroCiudadDTO.getIdCentroCiudad()).orElseThrow();
+		centroCiudadPpalRepository.findById(centroCiudadDTO.getIdCentroCiudad()).orElseThrow();
 
-		entity = CentroCiudadDTO.CONVERTER_ENTITY_PPAL.apply(centroCiudadDTO);
+		var entity = CentroCiudadDTO.CONVERTER_ENTITY_PPAL.apply(centroCiudadDTO);
 		entity.setIdCentroCiudadPpal(centroCiudadDTO.getIdCentroCiudad());
 		var entitySaved = centroCiudadPpalRepository.save(entity);
 		log.debug("CentroCiudadPpal Updated ID: {}", entitySaved.getIdCentroCiudadPpal());
