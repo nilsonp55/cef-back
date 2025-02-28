@@ -98,10 +98,10 @@ public interface ITransaccionesContablesRepository extends JpaRepository<Transac
 			+ " tc.CUENTA_CONTABLE = cp.CUENTA_CONTABLE AND "
 			+ " tc.naturaleza in('C','D') AND "
 			+ " cp.nombre_cuenta <> 'Transitoria%' AND "
-			+ " ti.estado = 3 AND "
-			+ " tc.id_transacciones_internas = ti.id_transacciones_internas) AND "
-			+ " tc.fecha = ?1 AND ti.tipo_proceso = ?2)",nativeQuery=true)
-	List<RespuestaContableDTO> erroresContablesAllbanco(Date fecha,String tipoContabilidad);
+			+ " ti.estado = ?3 AND "
+			+ " tc.id_transacciones_internas = ti.id_transacciones_internas AND "
+			+ " tc.fecha = ?1 AND ti.tipo_proceso = ?2",nativeQuery=true)
+	List<RespuestaContableDTO> erroresContablesAllbanco(Date fecha,String tipoContabilidad, Integer estado);
 	
 	/**
 	 * Retorna proceso contable AM o PM
@@ -197,7 +197,7 @@ public interface ITransaccionesContablesRepository extends JpaRepository<Transac
 			+ "    '' ||','|| "
 			+ " CASE WHEN tc.descripcion IS NULL THEN '' ELSE trim(tc.descripcion) END||','|| "
 			+ "CASE WHEN tc.id_tercero IS NULL THEN '' ELSE CAST(tc.id_tercero AS VARCHAR) END||','||  "
-			+ "CASE WHEN tc.nombre_tercero IS NULL THEN '' ELSE trim(tc.nombre_tercero) END AS texto	"
+			+ "CASE WHEN tc.nombre_tercero IS NULL THEN '' ELSE trim(tc.nombre_tercero) END AS texto " 
 			+ "FROM "
 			+ "transacciones_contables tc, "
 			+ "cuentas_puc cp, "

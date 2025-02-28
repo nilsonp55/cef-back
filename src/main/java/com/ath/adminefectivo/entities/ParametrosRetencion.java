@@ -47,4 +47,7 @@ public class ParametrosRetencion {
 	@Column(name = "ACTIVO")
 	private Boolean activo;
 	
+	@Column(name = "SUFIJO")
+    private Boolean sufijo;
+	
 }
