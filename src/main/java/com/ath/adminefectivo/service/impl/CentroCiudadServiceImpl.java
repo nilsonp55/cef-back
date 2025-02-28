@@ -3,10 +3,8 @@ package com.ath.adminefectivo.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.ath.adminefectivo.dto.CentroCiudadDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.CentroCiudad;
@@ -71,5 +69,10 @@ public class CentroCiudadServiceImpl implements ICentroCiudadService {
 		
 		return CentroCiudadDTO.CONVERTER_DTO.apply(tipoCuentas);
 	}
+	
+    @Override
+    public void deleteCentroCiudad(Integer idCentroCiudad) {
+      centroCiudadRepository.deleteById(idCentroCiudad);
+    }
 
 }

@@ -82,6 +82,12 @@ public class CentroCiudadDTO {
 	 */
 	public static final Function<CentroCiudadDTO, CentroCiudadPpal> CONVERTER_ENTITY_PPAL = (CentroCiudadDTO dto) -> {
 		var centroCiudadPpal = new CentroCiudadPpal();
+		Bancos banco = new Bancos();
+		banco.setCodigoPunto(dto.getBancoAval().getCodigoPunto());
+		centroCiudadPpal.setBancoAval(banco);
+		Ciudades ciudad = new Ciudades();
+		ciudad.setCodigoDANE(dto.getCiudadDane().getCodigoDANE());
+		centroCiudadPpal.setCodigoDane(ciudad);
 		UtilsObjects.copiarPropiedades(dto, centroCiudadPpal);
 		return centroCiudadPpal;
 	};

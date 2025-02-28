@@ -1,5 +1,8 @@
 package com.ath.adminefectivo.exception;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -32,6 +35,8 @@ public class NegocioException extends RuntimeException {
 	private final HttpStatus status;
 
 	private final String message;
+	
+	private final List<String> errors = new ArrayList<>();
 
 	/**
 	 * Constructor
@@ -62,6 +67,7 @@ public class NegocioException extends RuntimeException {
 		this.code = code;
 		this.message = message;
 		this.status = status;
+		this.errors.add(error);
 	}
 
 }
