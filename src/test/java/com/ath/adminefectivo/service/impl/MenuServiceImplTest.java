@@ -5,6 +5,8 @@ import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import java.sql.SQLException;
 import java.util.List;
@@ -85,6 +87,8 @@ public class MenuServiceImplTest {
 		
 		// then 
 		assertThat(itemsMenu.get(0).getIdMenu()).isNull();
+		
+		log.info("testGetAllMenusReturnEntitieWithNull: {}", itemsMenu.size());
 	}
 	
 	@Test
@@ -122,4 +126,27 @@ public class MenuServiceImplTest {
       log.info("testCreateMenuExceptionData msg: {}", exception.getMessage());
     }
 
+    @Test
+    void testDeleteMenu() {
+      doNothing().when(this.menuRepository).deleteById(any());
+      this.menuService.deleteMenu(any());
+
+      log.info("testDeleteMenu");
+    }
+
+    @Test
+    void testDeleteMenuException() {
+      var throwedExceptionData = new DataIntegrityViolationException(
+          "test deleted DataIntegrityException", new SQLException("test deleted SQLException"));
+
+      doThrow(throwedExceptionData).when(this.menuRepository).deleteById(any());
+      Exception exception = assertThrows(DataAccessException.class, () -> {
+        this.menuService.deleteMenu(any());
+      });
+      assertThat(exception.getMessage()).contains(throwedExceptionData.getMessage());
+      assertThat(exception.getCause().getMessage())
+          .contains(throwedExceptionData.getCause().getMessage());
+
+      log.info("testDeleteMenuException msg: {}", exception.getMessage());
+    }
 }

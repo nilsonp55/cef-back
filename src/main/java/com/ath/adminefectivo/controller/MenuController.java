@@ -31,7 +31,6 @@ public class MenuController {
 	private final IMenuService menuService;
 
 	public MenuController(@Autowired IMenuService menuService) {
-		super();
 		this.menuService = menuService;
 	}
 
@@ -67,7 +66,7 @@ public class MenuController {
               .description(ApiResponseCode.SUCCESS.getDescription()).build()));
     }
     
-    @DeleteMapping(value = "${endpoints.Menu.crud}/{idMenu}")
+    @DeleteMapping(value = "${endpoints.Menu.crud}{idMenu}")
     public ResponseEntity<ApiResponseADE<Void>> deleteMenu(@PathVariable String idMenu) {
       log.info("Delete Menu Id: {}", idMenu);
       menuService.deleteMenu(idMenu);
