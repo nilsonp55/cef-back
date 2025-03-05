@@ -2,10 +2,8 @@ package com.ath.adminefectivo.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.ath.adminefectivo.dto.SitiosClientesDTO;
 import com.ath.adminefectivo.entities.SitiosClientes;
 import com.ath.adminefectivo.repositories.ISitiosClientesRepository;
@@ -50,5 +48,35 @@ public class SitiosClientesServiceImpl implements ISitiosClientesService{
 	public SitiosClientes getCodigoPuntoSitioJdbc(Integer codigoPunto) {		
 		return sitiosClientesJdbcRepository.findByCodigoPunto(codigoPunto);
 	}
+	
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public SitiosClientesDTO createSitioCliente(SitiosClientesDTO sitioCliente) {
+      SitiosClientes entity =
+          sitiosClientesRepository.save(SitiosClientesDTO.CONVERTER_ENTITY.apply(sitioCliente));
+      return SitiosClientesDTO.CONVERTER_DTO.apply(entity);
+    }
+	
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public SitiosClientesDTO updateSitioCliente(SitiosClientesDTO sitioCliente) {
+      sitiosClientesRepository.findById(sitioCliente.getCodigoPunto()).orElseThrow();
+
+      SitiosClientes entity =
+          sitiosClientesRepository.save(SitiosClientesDTO.CONVERTER_ENTITY.apply(sitioCliente));
+      return SitiosClientesDTO.CONVERTER_DTO.apply(entity);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+	public void deteleSitioCliente(Integer codigoPunto) {
+      sitiosClientesRepository.deleteById(codigoPunto);
+    }
 
 }
