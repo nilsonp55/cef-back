@@ -2,6 +2,7 @@ package com.ath.adminefectivo.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -9,6 +10,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import java.sql.SQLException;
 import java.util.List;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
@@ -130,5 +133,18 @@ public class MenuControllerTest {
       MvcResult result = resultAction.andExpect(status().isNoContent()).andReturn();
 
       log.info("testDeleteMenu - status: {}", result.getResponse().getStatus());
+    }
+    
+    @Test
+    void testDeleteMenuException() throws Exception {
+      doThrow(new DataIntegrityViolationException("test deleted Menu DataIntegrityException",
+          new SQLException("SQL Exception Menu test DataIntegrityException")))
+              .when(this.menuService).deleteMenu(any());
+
+      ResultActions resultAction =
+          mockMvc.perform(delete(this.endpointMenu.concat(this.crudMapping.concat("1"))));
+      MvcResult result = resultAction.andExpect(status().is4xxClientError()).andReturn();
+
+      log.info("testDeleteMenuException - status: {}", result.getResponse().getStatus());
     }
 }
