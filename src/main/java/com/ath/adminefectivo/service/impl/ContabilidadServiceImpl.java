@@ -3,11 +3,9 @@ package com.ath.adminefectivo.service.impl;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.BancosDTO;
@@ -90,12 +88,8 @@ public class ContabilidadServiceImpl implements IContabilidadService {
   @Override
   public int generarMovimientosContables(Date fechaInicio, Date fechaFin, String tipoContabilidad,
       int estadoContabilidadGenerado) {
-    boolean result = transaccionesInternasService.generarMovimientosContables(fechaInicio, fechaFin,
-        tipoContabilidad, estadoContabilidadGenerado);
-    if (result) {
-      return 1;
-    }
-    return 0;
+    return transaccionesInternasService.generarMovimientosContables(fechaInicio, fechaFin,
+        tipoContabilidad, estadoContabilidadGenerado) ? 1 : 0;
   }
 
   /**
