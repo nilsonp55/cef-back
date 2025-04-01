@@ -233,7 +233,7 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 
     TransaccionesInternasDTO operacionIntradia13 =
         generarTransaccionInternaIntradia(tipoContabilidad, "P", operacionIntradia, fechaSistema);
-    operacionIntradia13.setCodigoComision(null);
+
     operacionIntradia13.setMedioPago(Dominios.MEDIOS_PAGO_DESCUENTO);
     transaccionesInternasService.saveTransaccionesInternasById(operacionIntradia13);
 
