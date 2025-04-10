@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ath.adminefectivo.dto.MenuDTO;
-import com.ath.adminefectivo.entities.Menu;
 import com.ath.adminefectivo.repositories.MenuRepository;
 import com.ath.adminefectivo.service.IMenuService;
 import com.querydsl.core.types.Predicate;
@@ -21,15 +20,16 @@ public class MenuServiceImpl implements IMenuService {
 		this.menuRepository = menuRepository;
 	}
 
-	@Override
-	public List<MenuDTO> getMenuByPredicate(Predicate predicate) {
+    @Override
+    public List<MenuDTO> getMenuByPredicate(Predicate predicate) {
 
-		Iterable<Menu> itemsMenu = menuRepository.findAll(predicate);
-		List<MenuDTO> listMenuDTO = new ArrayList<>();
-		itemsMenu.iterator().forEachRemaining(t -> listMenuDTO.add(MenuDTO.CONVERTER_DTO.apply(t)));
-		log.debug("List Menu size: ", listMenuDTO.size());
-		return listMenuDTO;
-	}
+      List<MenuDTO> listMenuDTO = new ArrayList<>();
+      menuRepository.findAll(predicate)
+          .forEach(t -> listMenuDTO.add(MenuDTO.CONVERTER_DTO.apply(t)));
+      log.debug("List Menu size: ", listMenuDTO.size());
+
+      return listMenuDTO;
+    }
 
     @Override
     public MenuDTO createMenu(MenuDTO menu) {
