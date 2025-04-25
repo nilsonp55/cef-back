@@ -3,6 +3,7 @@ package com.ath.adminefectivo.service;
 import java.util.List;
 
 import com.ath.adminefectivo.entities.Usuario;
+import com.ath.adminefectivo.exception.NotFoundException;
 import com.querydsl.core.types.Predicate;
 
 public interface IUsuarioService {
@@ -29,7 +30,7 @@ public interface IUsuarioService {
 	 * @return
 	 * @author bayron.perez
 	 */
-	Usuario postUsuario(Usuario usuario);
+	Usuario postUsuario(Usuario usuario) throws NotFoundException;
 	
 	/**
 	 * Metodo encargado de actualizar un usaurio 
@@ -37,7 +38,7 @@ public interface IUsuarioService {
 	 * @return
 	 * @author bayron.perez
 	 */
-	Usuario putUsuario(Usuario usuario);
+	Usuario putUsuario(Usuario usuario) throws NotFoundException;
 	
 	/**
 	 * Metodo encargado de eliminar un usaurio 
