@@ -1,7 +1,6 @@
 package com.ath.adminefectivo.dto.response;
 
 import org.springframework.http.HttpStatus;
-
 import lombok.AllArgsConstructor;
 
 /**
@@ -751,7 +750,11 @@ public enum ApiResponseCode {
 	 * Error al obtener parametros de DB o no se encuentran activos
 	 */
 	ERROR_OBTENER_PARAMETROS_ACTIVOS ("E981", "No se encontraron parametros o no se encuentran activos",
-			HttpStatus.PRECONDITION_FAILED);
+			HttpStatus.PRECONDITION_FAILED),
+  
+  ERROR_CLIENTE_CORPORATIVO_BANCO_AVAL("E982",
+      "Codigo BancoAVAL no corresponde con banco en ClientesCorporativos.",
+      HttpStatus.PRECONDITION_FAILED);
 	
 	/**
 	 * Código asociado a la respuesta
