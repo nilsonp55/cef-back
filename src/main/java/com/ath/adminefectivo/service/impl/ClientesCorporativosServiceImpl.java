@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,10 +12,11 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-
 import com.ath.adminefectivo.dto.ClientesCorporativosDTO;
+import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.ClientesCorporativos;
 import com.ath.adminefectivo.entities.QClientesCorporativos;
+import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.exception.NotFoundException;
 import com.ath.adminefectivo.repositories.IClientesCorporativosRepository;
 import com.ath.adminefectivo.repositories.jdbc.IClientesCorporativosJdbcRepository;
@@ -23,7 +24,6 @@ import com.ath.adminefectivo.service.IClientesCorporativosService;
 import com.ath.adminefectivo.service.ISitiosClientesService;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
-
 import lombok.extern.log4j.Log4j2;
 
 @Service
@@ -185,5 +185,21 @@ public class ClientesCorporativosServiceImpl implements IClientesCorporativosSer
 		}
 		return clientesCorporativosJdbcRepository.existsByCodigoCliente(sitiosCliente.getCodigoCliente());
 	}
+	
+	/**
+     * {@inheritDoc}
+     */
+	@Override
+    public void validateClienteBancoAval(Integer codigoBancoAval, Integer codigoCliente) {
+
+      clientesCorporativosRepository.findById(codigoCliente).ifPresentOrElse(cliente -> {
+        if (BooleanUtils.isFalse(cliente.getCodigoBancoAval().equals(codigoBancoAval))) {
+          throw new NegocioException(ApiResponseCode.ERROR_CLIENTE_CORPORATIVO_BANCO_AVAL.getCode(),
+              ApiResponseCode.ERROR_CLIENTE_CORPORATIVO_BANCO_AVAL.getDescription(),
+              ApiResponseCode.ERROR_CLIENTE_CORPORATIVO_BANCO_AVAL.getHttpStatus());
+        }
+      }, () -> new NotFoundException(ClientesCorporativosServiceImpl.class.getName(),
+          codigoCliente.toString()));
+    }
 
 }
