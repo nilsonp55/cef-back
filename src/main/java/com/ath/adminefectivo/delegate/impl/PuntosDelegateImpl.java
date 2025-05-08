@@ -50,7 +50,8 @@ public class PuntosDelegateImpl implements IPuntosDelegate {
       
       // Debe ser igual el bancoAval del ClienteCorporativo con el bancoAval del Punto a crear
       // en caso de no cumplir la validacion, se retorna error
-      clientesServices.validateClienteBancoAval(createPuntosDTO.getBancoAVAL(), createPuntosDTO.getCodigoCliente());
+      if (createPuntosDTO.getTipoPunto().equals(Constantes.PUNTO_SITIO_CLIENTE))
+        clientesServices.validateClienteBancoAval(createPuntosDTO.getBancoAVAL(), createPuntosDTO.getCodigoCliente());
       
       punto = new Puntos();
       punto.setTipoPunto(createPuntosDTO.getTipoPunto());
@@ -176,5 +177,14 @@ public class PuntosDelegateImpl implements IPuntosDelegate {
   @Override
   public PuntosDTO getPuntoById(Integer idPunto) {
     return PuntosDTO.CONVERTER_DTO.apply(puntosService.getPuntoById(idPunto));
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  @Transactional
+  public void eliminarPunto(Integer idPunto) {
+    puntosService.eliminarPunto(idPunto);
   }
 }
