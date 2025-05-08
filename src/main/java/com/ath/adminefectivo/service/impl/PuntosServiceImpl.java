@@ -13,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.dto.PuntosDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
@@ -27,6 +26,7 @@ import com.ath.adminefectivo.entities.SitiosClientes;
 import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.exception.ConflictException;
 import com.ath.adminefectivo.exception.NegocioException;
+import com.ath.adminefectivo.exception.NotFoundException;
 import com.ath.adminefectivo.repositories.CajerosATMRepository;
 import com.ath.adminefectivo.repositories.IBancosRepository;
 import com.ath.adminefectivo.repositories.IFondosRepository;
@@ -37,7 +37,6 @@ import com.ath.adminefectivo.repositories.jdbc.IPuntosJdbcRepository;
 import com.ath.adminefectivo.service.IPuntosService;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
-
 import lombok.extern.log4j.Log4j2;
 
 @Service
@@ -388,8 +387,13 @@ public class PuntosServiceImpl implements IPuntosService {
   @Override
   public void eliminarPunto(Integer codigoPunto) throws NegocioException {
     log.debug("Eliminar punto: {}", codigoPunto);
-    puntosRepository.deleteById(codigoPunto);
-    log.debug("Punto Eliminado: {}", codigoPunto);
+    puntosRepository.findById(codigoPunto).ifPresentOrElse(punto -> {
+      puntosRepository.deleteById(codigoPunto);
+      log.debug("Punto Eliminado: {}", codigoPunto);
+    }, () -> {
+      throw new NotFoundException(PuntosServiceImpl.class.getName(), codigoPunto.toString());
+    });
+    
   }
   
 }
