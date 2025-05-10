@@ -3,8 +3,11 @@ package com.ath.adminefectivo.service.impl;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Service;
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.DetallesDefinicionArchivoDTO;
+import com.ath.adminefectivo.dto.ListaDetalleDTO;
 import com.ath.adminefectivo.dto.MaestrosDefinicionArchivoDTO;
 import com.ath.adminefectivo.dto.compuestos.ErroresCamposDTO;
 import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoDTO;
@@ -99,7 +103,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 			for (int i = 0; i < validacionArchivo.getValidacionLineas().size(); i++) {
 				ValidacionLineasDTO lineaDTO = validacionArchivo.getValidacionLineas().get(i);
 				List<ErroresCamposDTO> erroresCampos = this.validarLineaReglas(lineaDTO,
-						maestroDefinicion.getIdMaestroDefinicionArchivo());
+						maestroDefinicion.getIdMaestroDefinicionArchivo(), validacionArchivo);
 				if (!erroresCampos.isEmpty()) {
 					lineaDTO.setCampos(erroresCampos);
 					lineaDTO.setEstado(Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO);
@@ -125,15 +129,22 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 	 * @return List<ErroresCamposDTO>
 	 * @author duvan.naranjo
 	 */
-	private List<ErroresCamposDTO> validarLineaReglas(ValidacionLineasDTO lineaDTO, String idMaestroDefinicionArchivo) {
+	private List<ErroresCamposDTO> validarLineaReglas(ValidacionLineasDTO lineaDTO, String idMaestroDefinicionArchivo,
+			ValidacionArchivoDTO validacionArchivo) {
 		List<ErroresCamposDTO> erroresCamposDTO = new ArrayList<>();
 		List<String> contenido = lineaDTO.getContenido();
+
+		ValidacionArchivoDTO validacionArchivoCopy = validacionArchivo.toBuilder().validacionLineas(List.of(lineaDTO))
+				.build();
+
+		Map<String, ListaDetalleDTO> detalleDefinicionMap = listaDetalleMap(contenido, listaDetalleDefinicion);
 
 		for (int i = 0; i < contenido.size(); i++) {
 			DetallesDefinicionArchivoDTO detalle = obtenerListaDetalleFiltrada(idMaestroDefinicionArchivo, i + 1,
 					lineaDTO.getTipo());
 
-			ValidacionMotorDTO validacionMotorDTO = this.validarReglas(detalle, contenido.get(i));
+			ValidacionMotorDTO validacionMotorDTO = this.validarReglas(detalle, contenido.get(i), validacionArchivoCopy,
+					i, detalleDefinicionMap);
 			if (Objects.nonNull(validacionMotorDTO) && !validacionMotorDTO.isValida()) {
 
 				var mensajeErrores = validacionMotorDTO.getMensajesError();
@@ -144,7 +155,6 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 			}
 		}
 		return erroresCamposDTO;
-
 	}
 
 	/**
@@ -156,22 +166,24 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 	 * @return ValidacionMotorDTO
 	 * @author duvan.naranjo
 	 */
-	private ValidacionMotorDTO validarReglas(DetallesDefinicionArchivoDTO detalle, String valorCampo) {
+	private ValidacionMotorDTO validarReglas(DetallesDefinicionArchivoDTO detalle, String valorCampo,
+			ValidacionArchivoDTO validacionArchivo, int index, Map<String, ListaDetalleDTO> detalleDefinicionMap) {
 		if (detalle.isValidarReglas() && Objects.nonNull(detalle.getExpresionRegla())) {
 			if (detalle.isMultiplesReglas()) {
 				if (!Objects.isNull(detalle.getExpresionRegla())) {
-					return motorReglasService.evaluarReglaMultiple(detalle.getExpresionRegla(), valorCampo);
+					return motorReglasService.evaluarReglaMultiple(detalle.getExpresionRegla(), valorCampo,
+							validacionArchivo, index, detalleDefinicionMap);
 				}
 			} else {
 				if (!Objects.isNull(detalle.getExpresionRegla())) {
-					return motorReglasService.evaluarReglaSimple(detalle.getExpresionRegla(), valorCampo);
+					return motorReglasService.evaluarReglaSimple(detalle.getExpresionRegla(), valorCampo,
+							validacionArchivo, index, detalleDefinicionMap);
 				}
 
 			}
 		}
 		return null;
 	}
-	
 
 	/**
 	 * metodo encargado de realizar las acciones previas a validar estructura y
@@ -796,6 +808,32 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 						&& detalleDefinicion.getId().getIdArchivo().equals(idMaestro)
 						&& numeroCampo == detalleDefinicion.getId().getNumeroCampo())
 				.findFirst().orElse(null);
+	}
+	
+	
+	/**
+	 * 
+	 * @param contenido
+	 * @param listaDetalleDefinicion
+	 * @return Map<String, ListaDetalleDTO> 
+	 */
+	private Map<String, ListaDetalleDTO> listaDetalleMap(List<String> contenido,
+			List<DetallesDefinicionArchivoDTO> listaDetalleDefinicion) {
+
+		// Ordenar ascendentemente por numeroCampo
+		listaDetalleDefinicion.sort(Comparator.comparing(d -> d.getId().getNumeroCampo()));
+
+		Map<String, ListaDetalleDTO> mapa = new LinkedHashMap<>();
+		for (int i = 0; i < listaDetalleDefinicion.size(); i++) {
+			DetallesDefinicionArchivoDTO detalle = listaDetalleDefinicion.get(i);
+
+			ListaDetalleDTO campo = ListaDetalleDTO.builder().nombreCampo(detalle.getNombreCampo())
+					.tipoDato(detalle.getTipoDato()).valor(contenido.get(i)).build();
+
+			mapa.put(detalle.getNombreCampo(), campo);
+		}
+
+		return mapa;
 	}
 
 }

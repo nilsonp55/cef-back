@@ -5,8 +5,9 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
-
+import org.springframework.data.repository.query.Param;
 import com.ath.adminefectivo.entities.Puntos;
+import com.ath.adminefectivo.service.IPuntoInterno;
 
 /**
  * Repository encargado de manejar la logica de la entidad Puntos
@@ -86,5 +87,42 @@ public interface IPuntosRepository
    * @author prv_nparra
    */
   public List<Puntos> findByTipoPunto(String tipoPunto);
+  
+      @Query(value = """
+          SELECT p.codigo_punto AS codigoPunto, p.tipo_punto AS tipoPunto
+          FROM controlefect.puntos_codigo_tdv pct 
+          INNER JOIN bancos b ON pct.codigo_banco = b.codigo_punto
+          INNER JOIN puntos p ON pct.codigo_punto = p.codigo_punto
+          WHERE pct.codigo_propio_tdv = CONCAT(:códigoPuntoCargo, :nombrePuntoCargo)
+          AND pct.codigo_tdv = :codigoTdv
+          AND b.abreviatura = :entidad LIMIT 1
+          """, nativeQuery = true)
+          IPuntoInterno findPuntoInterno(
+          @Param("códigoPuntoCargo") String códigoPuntoCargo,
+          @Param("nombrePuntoCargo") String nombrePuntoCargo,
+          @Param("codigoTdv") String codigoTdv,
+          @Param("entidad") String entidad
+      );
+      
+      @Query(value = """
+    		    SELECT p.codigo_punto
+    		    FROM controlefect.bancos b
+    		    INNER JOIN controlefect.fondos f ON b.codigo_punto = f.banco_aval
+    		    INNER JOIN controlefect.puntos p ON f.codigo_punto = p.codigo_punto
+    		    WHERE b.abreviatura = :entidad
+    		      AND p.tipo_punto = :tipoPunto
+    		      AND p.codigo_ciudad = :codigoCiiuFondo
+    		      AND f.tdv = :codigoTdv
+    		      AND p.nombre_punto = CONCAT(:entidad, '-',:nomCiudadFondo,'-',:nombreTdv)
+    		    LIMIT 1
+    		    """, nativeQuery = true)
+    		Integer findPuntoFondo(
+    		    @Param("entidad") String entidad,
+    		    @Param("tipoPunto") String tipoPunto,
+    		    @Param("codigoCiiuFondo") String codigoCiiuFondo,
+    		    @Param("codigoTdv") String codigoTdv,
+    		    @Param("nombreTdv") String nombreTdv,
+    		    @Param("nomCiudadFondo") String nomCiudadFondo
+    		);
 
 }

@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,7 +29,6 @@ import com.ath.adminefectivo.service.ICargueCertificacionService;
 import com.ath.adminefectivo.service.IFestivosNacionalesService;
 import com.ath.adminefectivo.service.IFilesService;
 import com.ath.adminefectivo.service.ILecturaArchivoService;
-import com.ath.adminefectivo.service.ILockService;
 import com.ath.adminefectivo.service.ILogProcesoDiarioService;
 import com.ath.adminefectivo.service.IMaestroDefinicionArchivoService;
 import com.ath.adminefectivo.service.IParametroService;
@@ -46,9 +44,6 @@ import lombok.extern.log4j.Log4j2;
 @Service
 @Log4j2
 public class CargueCertificacionDelegateImpl implements ICargueCertificacionDelegate {
-    
-    @Value("${id.lock.db}")
-    private long idLockDb;
 
 	@Autowired
 	IArchivosCargadosService archivosCargadosService;
@@ -81,9 +76,6 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	
 	@Autowired
 	ICargueCertificacionService cargueCertificacionService;
-
-	@Autowired
-	ILockService lockService;	
 
 	/**
 	 * {@inheritDoc}
@@ -246,41 +238,30 @@ public class CargueCertificacionDelegateImpl implements ICargueCertificacionDele
 	@Scheduled(cron = "0 5/15 7-17 * * *")
 	public void certificacionesProgramadas() {
 
-		if (!lockService.tryAcquireLock(idLockDb)) {
-			log.info("Otro proceso ya está ejecutando Scheduled");
-			return;
-		}		
+		// crea el registro en bitacora de automaticos
+		Date fechaActual = parametrosService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
+		Date fechaAnteriorHabil = festivosNacionalesService.consultarAnteriorHabil(fechaActual);
+		Date fechaAnteriorHabil2 = festivosNacionalesService.consultarAnteriorHabil(fechaAnteriorHabil);
+		boolean alcance = esProcesoDiarioCerrado();
+		log.info("Procesar archivos de Certificacion, fecha: {}", fechaActual.toString());
 
-		try {
-			// crea el registro en bitacora de automaticos
-			Date fechaActual = parametrosService.valorParametroDate(Parametros.FECHA_DIA_ACTUAL_PROCESO);
-			Date fechaAnteriorHabil = festivosNacionalesService.consultarAnteriorHabil(fechaActual);
-			Date fechaAnteriorHabil2 = festivosNacionalesService.consultarAnteriorHabil(fechaAnteriorHabil);
-			boolean alcance = esProcesoDiarioCerrado();
-			log.info("Procesar archivos de Certificacion, fecha: {}", fechaActual.toString());
+		BitacoraAutomaticosDTO bitacoraDTO = BitacoraAutomaticosDTO.builder()
+				.codigoProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION).fechaSistema(fechaActual)
+				.fechaHoraInicio(new Date()).build();
 
-			BitacoraAutomaticosDTO bitacoraDTO = BitacoraAutomaticosDTO.builder()
-					.codigoProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION).fechaSistema(fechaActual)
-					.fechaHoraInicio(new Date()).build();
+		List<ValidacionArchivoDTO> validacionesArchivos = new ArrayList<>();
+		this.consultarArchivos(Constantes.ESTADO_CARGUE_PENDIENTE, Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_CERTIFICACION)
+				.forEach(archivoCerti ->
+						validacionesArchivos.add(
+								this.procesarArchivoSinExcep(archivoCerti.getIdModeloArchivo(), archivoCerti.getNombreArchivo(),
+										alcance, fechaActual,fechaAnteriorHabil,fechaAnteriorHabil2))
+				);
+		log.info("Archivos procesados: {}", validacionesArchivos.size());
 
-			List<ValidacionArchivoDTO> validacionesArchivos = new ArrayList<>();
-			this.consultarArchivos(Constantes.ESTADO_CARGUE_PENDIENTE, Dominios.AGRUPADOR_DEFINICION_ARCHIVOS_CERTIFICACION)
-					.forEach(archivoCerti ->
-							validacionesArchivos.add(
-									this.procesarArchivoSinExcep(archivoCerti.getIdModeloArchivo(), archivoCerti.getNombreArchivo(),
-											alcance, fechaActual,fechaAnteriorHabil,fechaAnteriorHabil2))
-					);
-			log.info("Archivos procesados: {}", validacionesArchivos.size());
-
-			this.procesarValidacionRealizada(bitacoraDTO, validacionesArchivos);
-			bitacoraDTO.setFechaHoraFinal(new Date());
-			bitacoraAutomaicosService.guardarBitacoraAutomaticos(bitacoraDTO);
-			log.info("Finaliza procesar certificacion: {}", bitacoraDTO.getFechaHoraFinal().toString());
-		}
-		finally {
-		    lockService.releaseLock(idLockDb);
-		    log.info("Lock liberado en Scheduled");
-	    }
+		this.procesarValidacionRealizada(bitacoraDTO, validacionesArchivos);
+		bitacoraDTO.setFechaHoraFinal(new Date());
+		bitacoraAutomaicosService.guardarBitacoraAutomaticos(bitacoraDTO);
+		log.info("Finaliza procesar certificacion: {}", bitacoraDTO.getFechaHoraFinal().toString());
 	}
 
 	private BitacoraAutomaticosDTO procesarValidacionRealizada(BitacoraAutomaticosDTO bitacoraDTO,

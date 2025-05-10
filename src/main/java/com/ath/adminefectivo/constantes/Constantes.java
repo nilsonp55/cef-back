@@ -675,6 +675,17 @@ public static final String DELETE_SEPARADORES = "";
 	public static final String COMISION_APLICAR_CLASIFICACION_FAJADO = "CLASIFICACION FAJADO";
 	public static final String COMISION_APLICAR_CLASIFICACION_MONEDA = "CLASIFICACION MONEDA";
 	
+	public static final String TIPO_OPERACION_CONSOLIDACION_FAJADA = "CONSOLIDACION FAJADA";
+	public static final String TIPO_OPERACION_CONSOLIDACION_NO_FAJADA = "CONSOLIDACION NO FAJADA";
+	public static final String TIPO_OPERACION_VERIFICACION_BILLETE = "VERIFICACION BILLETE";
+	public static final String TIPO_OPERACION_VERIFICACION_MONEDA = "VERIFICACION MONEDA";
+	public static final String TIPO_OPERACION_CLASIFICACION_BILLETE = "CLASIFICACION BILLETE";
+	public static final String TIPO_OPERACION_CLASIFICACION_MONEDA = "CLASIFICACION MONEDA";
+	public static final String TIPO_OPERACION_COSTO_PAQUETEO = "COSTO PAQUETEO";
+	
+	public static final String FACTOR_BILLETE = "BILLETE";
+	public static final String FACTOR_MONEDA = "MONEDA";
+	
 	
 	//////////////////////////////////////// MENSAJES ///////////////////////////////////////////
 	/**
@@ -754,4 +765,13 @@ public static final String DELETE_SEPARADORES = "";
 	 * Estados Archivos
 	 */
 	public static final String ESTADO_NO_CONCILIADO = "NO CONCILIADO";
+	
+	/**
+	 * Listas de Conciliacion
+	 */
+	
+	public static final String LISTA_CONCILIACION_IDLIQUIDACIONAPP = "ID_LIQUIDACION_APP";
+	public static final String LISTA_CONCILIACION_IDLIQUIDACIONTDV = "ID_LIQUIDACION_TDV";
+	public static final String LISTA_CONCILIACION_CONSECUTIVO = "CONSEUTIVO_REGISTRO";
+	 
 }

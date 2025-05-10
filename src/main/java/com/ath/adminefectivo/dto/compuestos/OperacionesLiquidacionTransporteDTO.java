@@ -79,6 +79,10 @@ public class OperacionesLiquidacionTransporteDTO {
 	private BigDecimal valorTotalTransportado;
 	@JsonProperty("valor_total_transportado_tdv")
 	private BigDecimal valorTotalTransportadoTdv;
+	@JsonProperty("numero_fajos")
+	private BigDecimal numeroFajos;
+	@JsonProperty("numero_fajos_tdv")
+	private BigDecimal numeroFajosTdv;
 	@JsonProperty("numero_bolsas")
 	private BigDecimal numeroBolsas;
 	@JsonProperty("numero_bolsas_tdv")
@@ -119,11 +123,6 @@ public class OperacionesLiquidacionTransporteDTO {
 	private BigDecimal valorTotal;
 	private String estado;
 	private String modulo;
-	
-	
-	
-	
-	
 
 	/**
 	 * Funcion que convierte la entity  a archivo DTO  
