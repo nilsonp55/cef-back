@@ -1,6 +1,5 @@
 package com.ath.adminefectivo.service.impl;
 
-import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Timestamp;
@@ -12,7 +11,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,7 +18,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.ParametrosFiltroCostoTransporteDTO;
@@ -32,10 +29,8 @@ import com.ath.adminefectivo.dto.compuestos.RegistrosAceptarRechazarListDTO;
 import com.ath.adminefectivo.dto.compuestos.RegistrosConciliacionListDTO;
 import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoDTO;
 import com.ath.adminefectivo.dto.compuestos.ValidacionLineasDTO;
-
 import com.ath.adminefectivo.entities.CostosTransporte;
 import com.ath.adminefectivo.entities.DetallesLiquidacionCostoFlatEntity;
-import com.ath.adminefectivo.service.IDetalleLiquidacionProcesamiento;
 import com.ath.adminefectivo.entities.EstadoConciliacionParametrosLiquidacion;
 import com.ath.adminefectivo.entities.OperacionesLiquidacionTransporteEntity;
 import com.ath.adminefectivo.entities.ParametrosLiquidacionCosto;
@@ -48,6 +43,7 @@ import com.ath.adminefectivo.repositories.MaestroLlavesCostosRepository;
 import com.ath.adminefectivo.service.IArchivosLiquidacionService;
 import com.ath.adminefectivo.service.IBancosService;
 import com.ath.adminefectivo.service.ICostosTransporteService;
+import com.ath.adminefectivo.service.IDetalleLiquidacionProcesamiento;
 import com.ath.adminefectivo.service.IDetalleLiquidacionTransporte;
 import com.ath.adminefectivo.service.IDetallesLiquidacionCostoService;
 import com.ath.adminefectivo.service.IEstadoConciliacionParametrosLiquidacionService;
@@ -57,8 +53,6 @@ import com.ath.adminefectivo.service.ITransportadorasService;
 import com.ath.adminefectivo.service.IValoresLiquidadosFlatService;
 import com.ath.adminefectivo.utils.UtilsParsing;
 import com.ath.adminefectivo.utils.UtilsString;
-import java.util.function.Consumer;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -1257,7 +1251,7 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 	    } else if (valorApp instanceof Float) {
 	        return (T) Float.valueOf((float) resultado);
 	    } else if (valorApp instanceof BigDecimal) {
-	        return (T) new BigDecimal(resultado);
+	        return (T) BigDecimal.valueOf(resultado);
 	    } else if (valorApp instanceof BigInteger) {
 	        return (T) BigInteger.valueOf((long) resultado);
 	    } else {
