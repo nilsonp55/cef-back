@@ -3,7 +3,6 @@ package com.ath.adminefectivo.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +15,7 @@ import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoDTO;
 import com.ath.adminefectivo.dto.compuestos.ValidacionLineasDTO;
 import com.ath.adminefectivo.entities.CostosProcesamiento;
 import com.ath.adminefectivo.entities.CostosTransporte;
+import com.ath.adminefectivo.repositories.MaestroLlavesCostosRepository;
 import com.ath.adminefectivo.service.IArchivosLiquidacionService;
 import com.ath.adminefectivo.service.ICostosProcesamientoService;
 import com.ath.adminefectivo.service.ICostosTransporteService;
@@ -246,6 +246,39 @@ public class ArchivosLiquidacionServiceImpl implements IArchivosLiquidacionServi
   	   
 	}
 
+	/**
+	 * Metodo encargado de calcular si es una ENTRADA o SALIDA para costos TDV
+	 * 
+	 * @param tipoServicio
+	 * @param idMaestroDefinicionArchivo
+	 * @author jchaparro
+	 */	
+	public String getEntradaSalida(String tipoServicio, String idMaestroDefinicion) {
+		
+		tipoServicio = tipoServicio.toUpperCase();
 
+        switch (tipoServicio) {
+            case Dominios.TIPO_OPERA_RECOLECCION:
+            case Dominios.TIPO_OPERA_RETIRO:
+                return Constantes.NOMBRE_ENTRADA;
 
+            case Dominios.TIPO_OPERA_PROVISION:
+            case Dominios.TIPO_OPERA_CONSIGNACION:
+                return Constantes.NOMBRE_SALIDA;
+
+            case Dominios.TIPO_OPERA_TRASLADO:
+                if (Constantes.MAESTRO_ARCHIVO_PROCESAMIENTO.equals(idMaestroDefinicion)) {
+                    return Constantes.NOMBRE_ENTRADA;
+                } else if (Constantes.MAESTRO_ARCHIVO_TRANSPORTE.equals(idMaestroDefinicion)) {
+                    return Constantes.NOMBRE_SALIDA;
+                }
+                break;
+
+            case Dominios.TIPO_OPERA_VENTA:
+
+                return Constantes.NOMBRE_ENTRADA;
+        }
+
+        return null;
+	}
 }
