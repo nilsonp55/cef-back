@@ -182,5 +182,20 @@ public class CostosTransporte {
 
 	@Column(name = "CODIGO_TDV")
 	private String codigoTdvTransportadora;
+	
+	@Column(name = "CODIGO_PUNTO_INTERNO")
+	private Integer codigoPuntoInternoTransporte;
+
+	@Column(name = "TIPO_PUNTO")
+	private String tipoPuntoTransporte;
+
+	@Column(name = "CODIGO_PUNTO_FONDO")
+	private Integer codigoPuntoFondoTransporte;
+
+	@Column(name = "NOMBRE_FONDO")
+	private String nombreFondoTransporte;
+	
+	@Column(name = "ENTRADA_SALIDA")
+	private String entradaSalidaTransporte;
 
 }

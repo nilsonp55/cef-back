@@ -8,6 +8,7 @@ import com.ath.adminefectivo.dto.ParametrosFiltroCostoProcesamientoDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionesLiquidacionProcesamientoDTO;
 import com.ath.adminefectivo.dto.compuestos.RegistrosAceptarRechazarListDTO;
 import com.ath.adminefectivo.dto.compuestos.RegistrosConciliacionListDTO;
+import com.ath.adminefectivo.entities.CostosProcesamiento;
 
 public interface IConciliacionOperacionesProcesamientoService {
 	
@@ -31,4 +32,9 @@ public interface IConciliacionOperacionesProcesamientoService {
 
 	List<RegistroOperacionConciliacionDTO> reintegrarLiquidadasTransporte(RegistrosConciliacionListDTO registros);
 	
+	List<IDetalleLiquidacionProcesamiento> obtenerDetalleLiquidacionProcesamiento(String modulo, Long idLlave);
+	
+	List<CostosProcesamiento> obtenerCostoProcesamientoList(String operacion, Long idRegistro);
+	
+	CostosProcesamiento calcularDiferenciasCostosProcesamiento(List<IDetalleLiquidacionProcesamiento> detalles, CostosProcesamiento costoProcesamiento);
 }

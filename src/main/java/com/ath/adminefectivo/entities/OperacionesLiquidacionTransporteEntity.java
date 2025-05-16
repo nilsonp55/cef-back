@@ -100,6 +100,12 @@ public class OperacionesLiquidacionTransporteEntity {
 
     @Named(value = "VALOR_TOTAL_TRANSPORTADO_TDV")
     private BigDecimal valorTotalTransportadoTdv;
+    
+    @Named(value = "NUMERO_FAJOS")
+    private BigDecimal numeroFajos;
+
+    @Named(value = "NUMERO_FAJOS_TDV")
+    private BigDecimal numeroFajosTdv;
 
     @Named(value = "NUMERO_BOLSAS")
     private BigDecimal numeroBolsas;
