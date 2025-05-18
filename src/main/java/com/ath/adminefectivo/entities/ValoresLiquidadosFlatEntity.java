@@ -1,11 +1,14 @@
 package com.ath.adminefectivo.entities;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -78,4 +81,7 @@ public class ValoresLiquidadosFlatEntity {
 	@Column(name = "CLASIFICACION_MONEDA")
 	private Double clasificacionMonedaFlat;
 	
+	@OneToOne(mappedBy = "valoresLiquidadosFlatEntity", cascade = CascadeType.MERGE)
+    @JoinColumn(name = "ID_LIQUIDACION")
+	private ParametrosLiquidacionCostoFlat parametrosLiquidacionCostoFlat;
 }

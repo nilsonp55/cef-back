@@ -112,7 +112,7 @@ public class PuntosDelegateImpl implements IPuntosDelegate {
           createPuntosDTO.getTipoPunto());
 
       punto.setNombrePunto(createPuntosDTO.getNombrePunto());
-      punto.setCodigoCiudad(createPuntosDTO.getCodigoCiudad());
+      punto.setCodigoCiudad(createPuntosDTO.getCodigoDANE());
       punto.setEstado(createPuntosDTO.getEstado());
 
       // lógica para decidir qué tipo de punto se actualiza

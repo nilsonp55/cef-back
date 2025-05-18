@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class OperacionesLiquidacionTransporteEntity {
 
-	@Id
+    @Id
     @Named(value = "CONSECUTIVO_REGISTRO")
     private Integer consecutivoRegistro;
 
@@ -33,7 +33,7 @@ public class OperacionesLiquidacionTransporteEntity {
     private Integer idRegistro;
 
     @Named(value = "ID_LIQUIDACION")
-    private Long idLiquidacion; // Se asume que ID_LIQUIDACION es INT8 en la tabla
+    private Integer idLiquidacion;
 
     @Named(value = "TIPO_TRANSACCION")
     private Integer tipoTransaccion;
@@ -84,55 +84,55 @@ public class OperacionesLiquidacionTransporteEntity {
     private String escalaTdv;
 
     @Named(value = "VALOR_TRANSPORTADO_BILLETES")
-    private Double valorTransportadoBilletes;
+    private BigDecimal valorTransportadoBilletes;
 
     @Named(value = "VALOR_TRANSPORTADO_BILLETES_TDV")
     private BigDecimal valorTransportadoBilletesTdv;
 
     @Named(value = "VALOR_TRANSPORTADO_MONEDAS")
-    private Double valorTransportadoMonedas;
+    private BigDecimal valorTransportadoMonedas;
 
     @Named(value = "VALOR_TRANSPORTADO_MONEDAS_TDV")
     private BigDecimal valorTransportadoMonedasTdv;
 
     @Named(value = "VALOR_TOTAL_TRANSPORTADO")
-    private Double valorTotalTransportado;
+    private BigDecimal valorTotalTransportado;
 
     @Named(value = "VALOR_TOTAL_TRANSPORTADO_TDV")
     private BigDecimal valorTotalTransportadoTdv;
 
     @Named(value = "NUMERO_BOLSAS")
-    private Integer numeroBolsas;
+    private BigDecimal numeroBolsas;
 
     @Named(value = "NUMERO_BOLSAS_TDV")
     private BigDecimal numeroBolsasTdv;
 
     @Named(value = "COSTO_FIJO")
-    private Double costoFijo;
+    private Integer costoFijo;
 
     @Named(value = "COSTO_FIJO_TDV")
     private Integer costoFijoTdv;
 
     @Named(value = "COSTO_MILAJE")
-    private Double costoMilaje;
+    private BigDecimal costoMilaje;
 
     @Named(value = "COSTO_MILAJE_TDV")
     private BigDecimal costoMilajeTdv;
 
     @Named(value = "COSTO_BOLSA")
-    private Double costoBolsa;
+    private BigDecimal costoBolsa;
 
     @Named(value = "COSTO_BOLSA_TDV")
     private BigDecimal costoBolsaTdv;
 
     @Named(value = "COSTO_FLETE")
-    private Double costoFlete;
+    private Integer costoFlete;
 
     @Named(value = "COSTO_FLETE_TDV")
     private Integer costoFleteTdv;
 
     @Named(value = "COSTO_EMISARIO")
-    private Double costoEmisario;
+    private Integer costoEmisario;
 
     @Named(value = "COSTO_EMISARIO_TDV")
     private Integer costoEmisarioTdv;
@@ -153,7 +153,7 @@ public class OperacionesLiquidacionTransporteEntity {
     private Integer otros5;
 
     @Named(value = "SUBTOTAL")
-    private Double subtotal;
+    private BigDecimal subtotal;
 
     @Named(value = "SUBTOTAL_TDV")
     private BigDecimal subtotalTdv;

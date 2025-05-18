@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
+import com.ath.adminefectivo.dto.ArchivosLiquidacionDTO;
 import com.ath.adminefectivo.dto.MaestrosDefinicionArchivoDTO;
 import com.ath.adminefectivo.dto.compuestos.ErroresCamposDTO;
 import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoDTO;
@@ -34,17 +35,17 @@ public class ArchivosLiquidacionServiceImpl implements IArchivosLiquidacionServi
 	ICostosProcesamientoService costosProcesamientoService;
 
 	@Override
-	public Long persistirCostos(ValidacionArchivoDTO validacionArchivo) {
+	public Long persistirCostos(ValidacionArchivoDTO validacionArchivo, ArchivosLiquidacionDTO archivoProcesar) {
 		
 		String idMaestroArchivo = validacionArchivo.getMaestroDefinicion().getIdMaestroDefinicionArchivo();
 		
 		switch (idMaestroArchivo) 
 		{
 			case "LIQTP":
-				this.persistirCostoTransporte(validacionArchivo);
+				this.persistirCostoTransporte(validacionArchivo, archivoProcesar);
 				break;
 			case "LIQPR":
-				this.persistirCostoProcesamiento(validacionArchivo);
+				this.persistirCostoProcesamiento(validacionArchivo, archivoProcesar);
 				break;
 		
 			default:
@@ -55,15 +56,17 @@ public class ArchivosLiquidacionServiceImpl implements IArchivosLiquidacionServi
 	}
 	
 	
-	public Long persistirCostoTransporte(ValidacionArchivoDTO validacionArchivo)
+	public Long persistirCostoTransporte(ValidacionArchivoDTO validacionArchivo, ArchivosLiquidacionDTO archivoProcesar)
 	{
+		validacionArchivo.setDescripcion(archivoProcesar.getTdv());
 		return costosTransporteService.persistir(validacionArchivo);
 	}
 	
 	
 	
-	public Long persistirCostoProcesamiento(ValidacionArchivoDTO validacionArchivo)
+	public Long persistirCostoProcesamiento(ValidacionArchivoDTO validacionArchivo, ArchivosLiquidacionDTO archivoProcesar)
 	{
+		validacionArchivo.setDescripcion(archivoProcesar.getTdv());
 		return costosProcesamientoService.persistir(validacionArchivo);
 	}
 	

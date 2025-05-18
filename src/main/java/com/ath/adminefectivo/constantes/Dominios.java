@@ -178,6 +178,7 @@ public final class Dominios {
 	public static final String TIPO_ARCHIVO_IBMCS = "IBMCS";
 	public static final String TIPO_ARCHIVO_IATCS = "IATCS";
 	public static final String TIPO_ARCHIVO_IPRCS = "IPRCS";
+	public static final String TIPO_ARCHIVO_IVGLS = "IVGLS";
 	
 	/**
 	 * Codigo Proceso diario

@@ -18,13 +18,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ath.adminefectivo.delegate.IConciliacionCostosTransporteDelegate;
 import com.ath.adminefectivo.dto.ParametrosFiltroCostoTransporteDTO;
+import com.ath.adminefectivo.dto.RegistroAceptarRechazarDTO;
 import com.ath.adminefectivo.dto.RegistroOperacionConciliacionDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionesLiquidacionTransporteDTO;
+import com.ath.adminefectivo.dto.compuestos.RegistrosAceptarRechazarListDTO;
 import com.ath.adminefectivo.dto.compuestos.RegistrosConciliacionListDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
-import com.ath.adminefectivo.utils.UtilsString;
 
 /**
  * Controlador responsable de exponer los metodos referentes al proceso de
@@ -97,6 +98,30 @@ public class ConciliacionCostosTransporteController {
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
 
+	@GetMapping(value = "${endpoints.conciliacion.transporte.eliminadas}",  produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ApiResponseADE<Page<OperacionesLiquidacionTransporteDTO>>> getEliminadasTransporte(
+			@RequestParam(required = false) String entidad,
+			@RequestParam(required = true) Date fechaServicioTransporte,
+			@RequestParam(required = true) Date fechaServicioTransporteFinal,
+			@RequestParam(required = false) String identificacionCliente,
+			@RequestParam(required = false) String razonSocial,
+			@RequestParam(required = false) String codigoPuntoCargo,
+			@RequestParam(required = false) String nombrePuntoCargo,
+			@RequestParam(required = false) String ciudadFondo,
+			@RequestParam(required = false) String nombreTipoServicio,
+			@RequestParam(required = false) String monedaDivisa, @RequestParam(required = false) String estado,
+			Pageable page) {
+
+		var filtrosEliminadasTr = ParametrosFiltroCostoTransporteDTO.create(entidad, fechaServicioTransporte, fechaServicioTransporteFinal, identificacionCliente, razonSocial,
+                codigoPuntoCargo, nombrePuntoCargo, ciudadFondo, nombreTipoServicio, monedaDivisa, estado, page);
+
+
+		var consulta = conciliacionCostosTransporteDelegate.getEliminadasTransporte(filtrosEliminadasTr);
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
+	}
+
 	
 	
 	
@@ -152,8 +177,8 @@ public class ConciliacionCostosTransporteController {
 	
 	/**
 	 * Método encargado de Desconciliar los registros conciliados manualmente
-	 * @param registrosDesconciliar
-	 * @return ResponseEntity<ApiResponseADE<ValidacionArchivoDTO>>
+	 * @param RegistrosConciliacionListDTO
+	 * @return List<RegistroOperacionConciliacionDTO>
 	 * @author hector.mercado
 	 */
 	@PutMapping(value = "${endpoints.conciliacion.transporte.desconciliar}")
@@ -169,9 +194,8 @@ public class ConciliacionCostosTransporteController {
 	
 	/**
 	 * Método encargado de Aceptar los registros remitidos por la transportadora
-	 * @param idMaestroDefinicion
-	 * @param nombreArchivo
-	 * @return ResponseEntity<ApiResponseADE<ValidacionArchivoDTO>>
+	 * @param RegistrosConciliacionListDTO
+	 * @return List<RegistroOperacionConciliacionDTO>
 	 * @author hector.mercado
 	 */
 	@PutMapping(value = "${endpoints.conciliacion.transporte.remitidas-aceptar-rechazar}")
@@ -184,6 +208,55 @@ public class ConciliacionCostosTransporteController {
 				.body(new ApiResponseADE<>(respuesta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
+	/**
+	 * Método encargado de Aceptar los registros remitidos por la transportadora
+	 * @param RegistrosConciliacionListDTO
+	 * @return List<RegistroOperacionConciliacionDTO>
+	 * @author hector.mercado
+	 */
+	@PutMapping(value = "${endpoints.conciliacion.transporte.liquidadas-eliminar-rechazar}")
+	public ResponseEntity<ApiResponseADE<List<RegistroOperacionConciliacionDTO>>> liquidadasEliminarRechazar(
+			@RequestBody RegistrosConciliacionListDTO registrosEliminar) {
+
+		var respuesta = conciliacionCostosTransporteDelegate.liquidadasEliminarRechazar(registrosEliminar);
+
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ApiResponseADE<>(respuesta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
+	}
 	
+	/**
+	 * Método encargado de Aceptar y rechazar los registros remitidos por la transportadora
+	 * @param RegistrosAceptarRechazarListDTO
+	 * @return List<RegistroAceptarRechazarDTO>
+	 * @author jose.pabon
+	 */
+	@PutMapping(value = "${endpoints.conciliacion.transporte.identificadas-con-diferencia-aceptar-rechazar}")
+	public ResponseEntity<ApiResponseADE<List<RegistroAceptarRechazarDTO>>> identificadasConDiferenciaAceptarRechazar(
+			@RequestBody RegistrosAceptarRechazarListDTO registrosAceptar) {
+
+		var respuesta = conciliacionCostosTransporteDelegate.identificadasConDiferenciaAceptarRechazar(registrosAceptar);
+
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ApiResponseADE<>(respuesta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
+	}
+
+	/**
+	 * Método encargado de reintegrar registros liquidados eliminados
+	 * @param RegistrosConciliacionListDTO
+	 * @return List<RegistroOperacionConciliacionDTO>
+	 * @author jose.pabon
+	 */
+	@PutMapping(value = "${endpoints.conciliacion.transporte.liquidadas-reintegrar}")
+	public ResponseEntity<ApiResponseADE<List<RegistroOperacionConciliacionDTO>>> reintegrarLiquidadas(
+			@RequestBody RegistrosConciliacionListDTO registrosConciliacion) {
+
+		var respuesta = conciliacionCostosTransporteDelegate.reintegrarLiquidadasTransporte(registrosConciliacion);
+
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ApiResponseADE<>(respuesta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
+	}
 	
 }

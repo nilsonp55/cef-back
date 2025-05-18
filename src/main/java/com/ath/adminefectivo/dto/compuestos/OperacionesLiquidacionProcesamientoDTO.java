@@ -27,7 +27,7 @@ public class OperacionesLiquidacionProcesamientoDTO {
 	@JsonProperty("id_registro")	
 	private Integer recordId;
 	@JsonProperty("id_liquidacion")
-	private Long settlementId;
+	private Integer settlementId;
 	@JsonProperty("tipo_trasaccion")
 	private Integer transactionType;	
 	@JsonProperty("entidad")
@@ -53,25 +53,25 @@ public class OperacionesLiquidacionProcesamientoDTO {
 	@JsonProperty("tdv")
 	private Integer stdv;
 	@JsonProperty("valor_procesado_billete")
-	private Double processedBillValue;
+	private BigDecimal processedBillname;
 	@JsonProperty("valor_procesado_billete_tdv")
-	private BigDecimal processedBillValueTdv;
+	private BigDecimal processedBillnameTdv;
 	@JsonProperty("valor_procesado_moneda")
-	private Double processedCoinValue;
+	private BigDecimal processedCoinname;
 	@JsonProperty("valor_procesado_moneda_tdv")
-	private BigDecimal processedCoinValueTdv;
+	private BigDecimal processedCoinnameTdv;
 	@JsonProperty("valor_total_procesado")
-	private Double totalProcessedValue;
+	private BigDecimal totalProcessedname;
 	@JsonProperty("valor_total_procesado_tdv")
-	private BigDecimal totalProcessedValueTdv;
+	private BigDecimal totalProcessednameTdv;
 	@JsonProperty("subtotal")
-	private Double processSubtotal;
+	private BigDecimal processSubtotal;
 	@JsonProperty("subtotalTdv")
 	private BigDecimal processSubtotalTdv;
 	@JsonProperty("iva")
 	private BigDecimal tax;
 	@JsonProperty("valor_total")
-	private BigDecimal totalValue;
+	private BigDecimal totalname;
 	@JsonProperty("estado")
 	private String state;
 	@JsonProperty("modulo")

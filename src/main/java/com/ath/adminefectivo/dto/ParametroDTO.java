@@ -3,6 +3,8 @@ package com.ath.adminefectivo.dto;
 import java.util.Date;
 import java.util.function.Function;
 
+import javax.validation.constraints.NotBlank;
+
 import com.ath.adminefectivo.entities.Parametro;
 import com.ath.adminefectivo.utils.UtilsObjects;
 
@@ -22,12 +24,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ParametroDTO {
 
+	@NotBlank
 	private String codigo;
 
 	private String descripcion;
 
 	private String areaAplicativo;
 
+	@NotBlank
 	private String valor;
 
 	private String estado;

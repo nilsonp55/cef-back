@@ -193,5 +193,12 @@ public interface IPuntosService {
    * @author prv_nparra
    */
   HashMap<Integer, Puntos> getAllPuntos();
-
+  
+  /**
+   * Eliminar un punto por Id Punto
+   * @return void
+   * @author prv_nparra
+   */
+  void eliminarPunto(Integer codigoPunto) throws Exception;
+  
 }

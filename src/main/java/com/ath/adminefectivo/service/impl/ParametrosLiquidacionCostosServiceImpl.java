@@ -1,9 +1,6 @@
 package com.ath.adminefectivo.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,7 +8,10 @@ import org.springframework.stereotype.Service;
 import com.ath.adminefectivo.dto.ParametrosLiquidacionCostoDTO;
 import com.ath.adminefectivo.dto.compuestos.EstimadoClasificacionCostosDTO;
 import com.ath.adminefectivo.entities.ParametrosLiquidacionCosto;
+import com.ath.adminefectivo.entities.ParametrosLiquidacionCostoFlat;
+import com.ath.adminefectivo.repositories.IDetallesLiquidacionCostoRepository;
 import com.ath.adminefectivo.repositories.IParametrosLiquidacionCostosRepository;
+import com.ath.adminefectivo.repositories.IParametrosLiquidacionCostosRepositoryFlat;
 import com.ath.adminefectivo.repositories.IValoresLiquidadosFlatRepository;
 import com.ath.adminefectivo.service.IParametrosLiquidacionCostosService;
 import com.ath.adminefectivo.service.IValoresLiquidadosService;
@@ -24,10 +24,15 @@ public class ParametrosLiquidacionCostosServiceImpl implements IParametrosLiquid
 
 	@Autowired
 	IParametrosLiquidacionCostosRepository parametrosLiquidacionCostosRepository;
+
+	@Autowired
+	IParametrosLiquidacionCostosRepositoryFlat parametrosLiquidacionCostosRepositoryFlat;
 	
 	@Autowired
 	IValoresLiquidadosFlatRepository valoresLiquidadosFlatRepository;
-	
+
+	@Autowired
+	IDetallesLiquidacionCostoRepository detallesLiquidacionCostoRepository;
 	
 
 	/**
@@ -59,21 +64,31 @@ public class ParametrosLiquidacionCostosServiceImpl implements IParametrosLiquid
 	}
 
 	@Override
-	public ParametrosLiquidacionCosto getParametrosLiquidacionCostosById(Long idLiquidacion) {
-		return parametrosLiquidacionCostosRepository.findById(idLiquidacion).orElse(null); 
+	public Optional<ParametrosLiquidacionCosto> getParametrosLiquidacionCostosById(Long idLiquidacion) {
+		return parametrosLiquidacionCostosRepository.findById(idLiquidacion);
 	}
 
 	@Override
-	public ParametrosLiquidacionCosto f2eliminarParametrosLiquidacionCostos(ParametrosLiquidacionCosto eliminar) {
+	public ParametrosLiquidacionCostoFlat getParametrosLiquidacionCostosByIdFlat(Long idLiquidacion) {
+		return parametrosLiquidacionCostosRepositoryFlat.findById(idLiquidacion).orElse(null); 
+	}
+
+	@Override
+	public ParametrosLiquidacionCostoFlat f2eliminarParametrosLiquidacionCostos(ParametrosLiquidacionCostoFlat eliminar) {
 		
-		var valorLiq =  valoresLiquidadosFlatRepository.consultarPorIdLiquidacion(eliminar.getIdLiquidacion());
-		
+		var valorLiq =  valoresLiquidadosFlatRepository.consultarPorIdLiquidacion(eliminar.getIdLiquidacionFlat());
 		if (Objects.nonNull(valorLiq))
-		{
+		{	
 			valoresLiquidadosFlatRepository.delete(valorLiq);
 		}
 		
-		parametrosLiquidacionCostosRepository.delete(eliminar);
+		var detallesLiq =  detallesLiquidacionCostoRepository.consultarPorIdLiquidacion(eliminar.getIdLiquidacionFlat());
+		if (Objects.nonNull(detallesLiq) && !detallesLiq.isEmpty())
+		{
+			detallesLiquidacionCostoRepository.deleteAll(detallesLiq);
+		}
+		
+		parametrosLiquidacionCostosRepositoryFlat.delete(eliminar);
 		
 		return eliminar;
 		
@@ -86,5 +101,10 @@ public class ParametrosLiquidacionCostosServiceImpl implements IParametrosLiquid
 		
 	}
 
-	
+	@Override
+	public ParametrosLiquidacionCostoFlat f2actualizarParametrosLiquidacionCostosFlat (ParametrosLiquidacionCostoFlat actualizar) {
+		
+		return parametrosLiquidacionCostosRepositoryFlat.save(actualizar);
+		
+	}	
 }

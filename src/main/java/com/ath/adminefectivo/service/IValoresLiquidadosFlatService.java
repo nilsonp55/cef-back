@@ -12,4 +12,15 @@ public interface IValoresLiquidadosFlatService {
 	 * @author hector.mercado
 	 */
 	ValoresLiquidadosFlatEntity f2actualizarvaloresLiquidadosRepository(ValoresLiquidadosFlatEntity actualizar);
+	
+	ValoresLiquidadosFlatEntity consultarPorIdLiquidacion(Long idLiquidacion);
+	
+	/**
+	 * Metodo encargado de realizar la consulta de parametros valores liquidados por idLiquidacion
+	 * 
+	 * @param idLiquidacion
+	 * @return ValoresLiquidadosFlatEntity
+	 * @author jose.pabon
+	 */
+	ValoresLiquidadosFlatEntity getParametrosValoresLiquidadosByIdLiquidacion(Long idLiquidacion);
 }

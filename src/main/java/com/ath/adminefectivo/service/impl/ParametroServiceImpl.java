@@ -3,6 +3,7 @@ package com.ath.adminefectivo.service.impl;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -113,19 +114,32 @@ public class ParametroServiceImpl implements IParametroService {
 		}
 
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean actualizarValorParametro(String codigo, String valor) {
+		ParametroDTO parametro = ParametroDTO.builder()
+				.codigo(codigo)
+				.valor(valor)
+				.build();
+		this.actualizarValorParametro(parametro);
+		return true;
+	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean actualizarValorParametro( String codigo, String valor) {
-		var parametroOpt = parametroRepository.findById(codigo);
+	public ParametroDTO actualizarValorParametro(ParametroDTO parametro) {
+		var parametroOpt = parametroRepository.findById(parametro.getCodigo());
 
 		if (parametroOpt.isPresent()) {
 			var parametroEntity = parametroOpt.get();
-			parametroEntity.setValor(valor);
-			parametroRepository.save(parametroEntity);
-			return true;
+			parametroEntity.setValor(parametro.getValor());
+			parametroEntity.setFechaModificacion(Calendar.getInstance().getTime());
+			return ParametroDTO.CONVERTER_DTO.apply(parametroRepository.save(parametroEntity));
 		} else {
 			throw new AplicationException(ApiResponseCode.ERROR_PARAMETRO_NOT_FOUND.getCode(),
 					ApiResponseCode.ERROR_PARAMETRO_NOT_FOUND.getDescription(),

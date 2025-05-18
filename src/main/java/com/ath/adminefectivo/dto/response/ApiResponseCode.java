@@ -739,7 +739,13 @@ public enum ApiResponseCode {
      * Ocurrió un error al consultar la tabla de puntos, retorna mas de un registro
      */
     ERROR_PUNTOS_ENCONTRADOS_REPETIDOS("E980", "Al consultar puntos, retorna mas de un registro",
-          HttpStatus.PRECONDITION_FAILED);
+          HttpStatus.PRECONDITION_FAILED),
+	
+	/**
+	 * Error al obtener el contenido de un archivo en un repositorio local
+	 */
+	ERROR_CONTENIDO_ARCHIVO_ZIP ("E980", "Ocurrió un error al intentar comprimir los archivos. No se pudo crear el archivo .zip. Por favor, consulta con el administrador.",
+			HttpStatus.PRECONDITION_FAILED);
 	
 	/**
 	 * Código asociado a la respuesta

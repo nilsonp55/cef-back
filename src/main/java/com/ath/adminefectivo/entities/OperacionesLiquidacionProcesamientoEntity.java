@@ -37,7 +37,7 @@ public class OperacionesLiquidacionProcesamientoEntity {
     private Integer recordId;
 
     @Column(name = "ID_LIQUIDACION")
-    private Long settlementId;
+    private Integer settlementId;
 
     @Column(name = "TIPO_TRANSACCION")
     private Integer transactionType;
@@ -76,25 +76,25 @@ public class OperacionesLiquidacionProcesamientoEntity {
     private Integer stdv;
 
     @Column(name = "VALOR_PROCESADO_BILLETE")
-    private Double processedBillname;
+    private BigDecimal processedBillname;
 
     @Column(name = "VALOR_PROCESADO_BILLETE_TDV")
     private BigDecimal processedBillnameTdv;
 
     @Column(name = "VALOR_PROCESADO_MONEDA")
-    private Double processedCoinname;
+    private BigDecimal processedCoinname;
 
     @Column(name = "VALOR_PROCESADO_MONEDA_TDV")
     private BigDecimal processedCoinnameTdv;
 
     @Column(name = "VALOR_TOTAL_PROCESADO")
-    private Double totalProcessedname;
+    private BigDecimal totalProcessedname;
 
     @Column(name = "VALOR_TOTAL_PROCESADO_TDV")
     private BigDecimal totalProcessednameTdv;
 
     @Column(name = "SUBTOTAL")
-    private Double processSubtotal;
+    private BigDecimal processSubtotal;
 
     @Column(name = "SUBTOTAL_TDV")
     private BigDecimal processSubtotalTdv;
