@@ -89,4 +89,8 @@ public interface ICostosTransporteService {
 	<T> Long obtenerIdPorTipo(List<T> detalles, String tipo);
 	
 	List<CostosTransporte> obtenerCostoTransporteList(String operacion, Long idRegistro);
+	
+	List<IDetalleLiquidacionTransporte> obtenerDetalleTransportePorIdArchivo(Integer idArchivo);
+	
+	List<IDetalleLiquidacionTransporte> obtenerEstadoTransportePorLlave(BigInteger idLlave);
 }

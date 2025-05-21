@@ -1,6 +1,8 @@
 package com.ath.adminefectivo.repositories;
 
 import java.math.BigInteger;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -71,5 +73,11 @@ public interface MaestroLlavesCostosRepository extends JpaRepository<MaestroLlav
 			  AND mlca.id_llave IS NULL;
 						""", nativeQuery = true)
 	int insertarArchivosLlaves();
+	
+	@Modifying
+	@Transactional
+	@Query("UPDATE MaestroLlavesCostosEntity m SET m.estado = :estado WHERE m.idMaestroLlave IN :llaves")
+	int actualizarEstadoPorLlaves(@Param("llaves") List<BigInteger> llaves, @Param("estado") String estado);
+
 
 }

@@ -12,7 +12,7 @@ public interface IDetalleLiquidacionProcesamiento {
 	String getIdsLiquidacionTdv();
 	BigInteger getTipoTransaccion();
 	String getEntidad();
-	java.sql.Timestamp getFechaServicioTransporte();
+	java.util.Date getFechaServicioTransporte();
 	String getIdentificacionCliente();
 	String getRazonSocial();
 	String getCodigoPuntoCargo();

@@ -255,6 +255,10 @@ public class ArchivosLiquidacionServiceImpl implements IArchivosLiquidacionServi
 	 */	
 	public String getEntradaSalida(String tipoServicio, String idMaestroDefinicion) {
 		
+		if (tipoServicio == null) {
+		    return "UNDIFINED";
+		}
+		
 		tipoServicio = tipoServicio.toUpperCase();
 
         switch (tipoServicio) {

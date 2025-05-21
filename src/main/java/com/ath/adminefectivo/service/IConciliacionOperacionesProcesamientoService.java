@@ -1,5 +1,6 @@
 package com.ath.adminefectivo.service;
 
+import java.math.BigInteger;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import com.ath.adminefectivo.dto.RegistroAceptarRechazarDTO;
@@ -9,6 +10,7 @@ import com.ath.adminefectivo.dto.compuestos.OperacionesLiquidacionProcesamientoD
 import com.ath.adminefectivo.dto.compuestos.RegistrosAceptarRechazarListDTO;
 import com.ath.adminefectivo.dto.compuestos.RegistrosConciliacionListDTO;
 import com.ath.adminefectivo.entities.CostosProcesamiento;
+import com.ath.adminefectivo.entities.OperacionesLiquidacionProcesamientoEntity;
 
 public interface IConciliacionOperacionesProcesamientoService {
 	
@@ -37,4 +39,10 @@ public interface IConciliacionOperacionesProcesamientoService {
 	List<CostosProcesamiento> obtenerCostoProcesamientoList(String operacion, Long idRegistro);
 	
 	CostosProcesamiento calcularDiferenciasCostosProcesamiento(List<IDetalleLiquidacionProcesamiento> detalles, CostosProcesamiento costoProcesamiento);
+	
+	List<RegistroOperacionConciliacionDTO> reintegrarLiquidadasProcesamiento(RegistrosConciliacionListDTO registros);
+	
+	List<IDetalleLiquidacionProcesamiento> obtenerDetalleProcesamientoPorIdArchivo(Integer idArchivo);
+	
+	List<IDetalleLiquidacionProcesamiento> obtenerEstadoProcesamientoPorLlave(BigInteger idLlave);
 }

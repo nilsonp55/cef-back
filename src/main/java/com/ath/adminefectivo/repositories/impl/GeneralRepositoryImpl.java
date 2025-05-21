@@ -22,7 +22,6 @@ import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.Transportadoras;
 import com.ath.adminefectivo.exception.AplicationException;
-import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.IGeneralRepository;
 import com.ath.adminefectivo.repositories.IPuntosRepository;
 import com.ath.adminefectivo.repositories.ITransportadorasRepository;
@@ -257,17 +256,21 @@ public class GeneralRepositoryImpl implements IGeneralRepository{
 		Integer puntoFondo = puntosRepository.findPuntoFondo(entidad, Constantes.PUNTO_FONDO, codigoCiiuFondo,
 				codigoTdv, nombreTdv, validacionArchivo.getValidacionLineas().get(0).getContenido().get(10));
 
-		String tipoOperacion = costosProcesamientoService.getOperacionProcesamiento(puntoInterno.getTipoPunto());
+		String tipoOperacion = costosProcesamientoService.getOperacionProcesamiento(
+			    puntoInterno != null ? puntoInterno.getTipoPunto() : "UNDEFINED"
+			);
 
 		String codigoPunto1;
 		String codigoPunto2;
 
 		if ("RECOLECCION".equalsIgnoreCase(tipoOperacion) || "RETIRO".equalsIgnoreCase(tipoOperacion)) {
-			codigoPunto1 = puntoInterno.getCodigoPunto().toString();
-			codigoPunto2 = puntoFondo.toString();
+		    codigoPunto1 = (puntoInterno != null && puntoInterno.getCodigoPunto() != null)
+		                   ? puntoInterno.getCodigoPunto().toString() : "0";
+		    codigoPunto2 = (puntoFondo != null) ? puntoFondo.toString() : "0";
 		} else {
-			codigoPunto1 = puntoFondo.toString();
-			codigoPunto2 = puntoInterno.getCodigoPunto().toString();
+		    codigoPunto1 = (puntoFondo != null) ? puntoFondo.toString() : "0";
+		    codigoPunto2 = (puntoInterno != null && puntoInterno.getCodigoPunto() != null)
+		                   ? puntoInterno.getCodigoPunto().toString() : "0";
 		}
 
 		String entradaSalida = archivosLiquidacionService.getEntradaSalida(tipoOperacion,
@@ -328,9 +331,7 @@ public class GeneralRepositoryImpl implements IGeneralRepository{
 	
 	private Map<String, ListaDetalleDTO> getLlaveTransporte(ValidacionArchivoDTO validacionArchivo,
 			Map<String, ListaDetalleDTO> detalleDefinicionMap) {
-		
-		try {
-		
+
 		String entidad = validacionArchivo.getValidacionLineas().get(0).getContenido().get(0);
 		String agrupador = validacionArchivo.getMaestroDefinicion().getIdMaestroDefinicionArchivo();
 
@@ -339,7 +340,7 @@ public class GeneralRepositoryImpl implements IGeneralRepository{
 		LocalDate fecha = LocalDate.parse(fechaRaw, formatter);
 		String fechaFormated = fecha.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-		String codigoCiiuFondo = validacionArchivo.getValidacionLineas().get(0).getContenido().get(8);
+		String codigoCiiuFondo = validacionArchivo.getValidacionLineas().get(0).getContenido().get(10);
 		String file = validacionArchivo.getNombreArchivo();
 
 		List<Transportadoras> transportadorasProc = transportadorasRepository.findAll();
@@ -354,11 +355,11 @@ public class GeneralRepositoryImpl implements IGeneralRepository{
 				break;
 			}
 		}
-		
+
 		IPuntoInterno puntoInterno = puntosRepository.findPuntoInterno(
 				validacionArchivo.getValidacionLineas().get(0).getContenido().get(6),
 				validacionArchivo.getValidacionLineas().get(0).getContenido().get(7), codigoTdv, entidad);
-		
+
 		Integer puntoFondo = puntosRepository.findPuntoFondo(entidad, Constantes.PUNTO_FONDO, codigoCiiuFondo,
 				codigoTdv, nombreTdv, validacionArchivo.getValidacionLineas().get(0).getContenido().get(11));
 
@@ -371,11 +372,13 @@ public class GeneralRepositoryImpl implements IGeneralRepository{
 		String codigoPunto2;
 
 		if ("SALIDA".equalsIgnoreCase(entradaSalida)) {
-			codigoPunto1 = puntoFondo.toString();
-			codigoPunto2 = puntoInterno.getCodigoPunto().toString();
+		    codigoPunto1 = puntoFondo != null ? puntoFondo.toString() : "0";
+		    codigoPunto2 = (puntoInterno != null && puntoInterno.getCodigoPunto() != null)
+		                   ? puntoInterno.getCodigoPunto().toString() : "0";
 		} else {
-			codigoPunto1 = puntoInterno.getCodigoPunto().toString();
-			codigoPunto2 = puntoFondo.toString();
+		    codigoPunto1 = (puntoInterno != null && puntoInterno.getCodigoPunto() != null)
+		                   ? puntoInterno.getCodigoPunto().toString() : "0";
+		    codigoPunto2 = puntoFondo != null ? puntoFondo.toString() : "0";
 		}
 
 
@@ -428,12 +431,6 @@ public class GeneralRepositoryImpl implements IGeneralRepository{
 	        .build());
 
 	    return detalleDefinicionMap;
-	    
-		} catch (Exception e) {
-			log.error("tipoCargue: {} - Error: {}", e);
-			throw new NegocioException(ApiResponseCode.GENERIC_ERROR.getCode(),
-					ApiResponseCode.GENERIC_ERROR.getDescription(), ApiResponseCode.GENERIC_ERROR.getHttpStatus());
-		}
 	}
 
 }

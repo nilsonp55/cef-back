@@ -32,6 +32,8 @@ import com.ath.adminefectivo.entities.id.FallasRegistroPK;
 import com.ath.adminefectivo.entities.id.RegistrosCargadosPK;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.ArchivosCargadosRepository;
+import com.ath.adminefectivo.repositories.ICostosProcesamientoRepository;
+import com.ath.adminefectivo.repositories.ICostosTransporteRepository;
 import com.ath.adminefectivo.repositories.IRegistrosCargadosRepository;
 import com.ath.adminefectivo.service.IArchivosCargadosService;
 import com.ath.adminefectivo.service.IFilesService;
@@ -59,6 +61,12 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 	
 	@Autowired
     IMaestroDefinicionArchivoService maestroDefinicionArchivoService;
+	
+	@Autowired
+	ICostosTransporteRepository costosTransporteRepository;
+	
+	@Autowired
+	ICostosProcesamientoRepository costosprocesamientoRepository;
 
 	/**
 	 * {@inheritDoc}
@@ -442,6 +450,9 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 	 */
 	private void cambiarEstadoArchivoOK(ValidacionArchivoDTO validacionArchivo) {
 
+		boolean archivoAnterior = false;
+		String idMaestro = validacionArchivo.getMaestroDefinicion().getIdMaestroDefinicionArchivo();
+	    
 		if (validacionArchivo.getEstadoValidacion() == Dominios.ESTADO_VALIDACION_REPROCESO) {
 			List<ArchivosCargados> archivosCargados = archivosCargadosRepository
 					.getRegistrosCargadosPorEstadoCargueyNombreUpperyModelo(Dominios.ESTADO_VALIDACION_REPROCESO,
@@ -455,6 +466,8 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 					archivosCargadosRepository.save(archivoEntity);
 
 				});
+			}else {
+				archivoAnterior = true;
 			}
 		} else {
 			List<ArchivosCargados> archivosCargados = archivosCargadosRepository
@@ -468,8 +481,43 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 					archivoEntity.setEstadoCargue(Dominios.ESTADO_VALIDACION_REEMPLAZADO);
 					archivosCargadosRepository.save(archivoEntity);
 				});
+			} else {
+				archivoAnterior = true;
 			}
 		}
+		
+		if (!archivoAnterior) {
+
+			if (Constantes.MAESTRO_ARCHIVO_TRANSPORTE.equals(idMaestro)
+					|| Constantes.MAESTRO_ARCHIVO_PROCESAMIENTO.equals(idMaestro)) {
+
+				List<ArchivosCargados> archivosCargados = archivosCargadosRepository
+						.getRegistrosCargadosPorEstadoCargueyNombreUpperyModelo(
+								Dominios.ESTADO_VALIDACION_EN_CONCILIACION,
+								validacionArchivo.getNombreArchivo().toUpperCase(),
+								validacionArchivo.getMaestroDefinicion().getIdMaestroDefinicionArchivo());
+
+				if (!Objects.isNull(archivosCargados)) {
+					archivosCargados.forEach(arch -> {
+						var archivoEntity = arch;
+						archivoEntity.setEstadoCargue(Dominios.ESTADO_VALIDACION_REEMPLAZADO);
+						archivosCargadosRepository.save(archivoEntity);
+
+						if (Constantes.MAESTRO_ARCHIVO_TRANSPORTE
+								.equals(validacionArchivo.getMaestroDefinicion().getIdMaestroDefinicionArchivo())) {
+
+							costosTransporteRepository.eliminarPorIdArchivoCargado(archivoEntity.getIdArchivo());
+
+						} else {
+							costosprocesamientoRepository
+									.eliminarPorIdArchivoCargadoProcesamiento(archivoEntity.getIdArchivo());
+						}
+
+					});
+				}
+			}
+		}
+
 	}
 	
 	/**
