@@ -90,6 +90,7 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 		
 		var ldtFechaServicioTransporte = convertToLocalDateTime(filtros.getProcessServiceDate());
 		var ldtFechaServicioTransporteFinal = convertToLocalDateTime(filtros.getFinalProcessServiceDate());
+		costosProcesamientoService.persistirMaestroLlavesProcesamiento();
 		
 		var consulta = operacionesLiquidacion.conciliadasLiquidadasProcesamiento(filtros.getEntity(), 
 				ldtFechaServicioTransporte,
@@ -104,8 +105,6 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 				filtros.getStatus(),
 				Constantes.OPERACIONES_LIQUIDACION_CONCILIADAS, 
 				filtros.getPage());
-		
-		costosProcesamientoService.persistirMaestroLlavesProcesamiento();
 
 		return liquidacion(consulta, filtros.getPage());
 	}
@@ -116,6 +115,7 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 		
 		var ldtFechaServicioTransporte = convertToLocalDateTime(filtros.getProcessServiceDate());
 		var ldtFechaServicioTransporteFinal = convertToLocalDateTime(filtros.getFinalProcessServiceDate());
+		costosProcesamientoService.persistirMaestroLlavesProcesamiento();
 		
 		var consulta = operacionesLiquidacion.conciliadasLiquidadasProcesamiento(filtros.getEntity(), 
 				ldtFechaServicioTransporte,
@@ -130,8 +130,6 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 				filtros.getStatus(),
 				Constantes.OPERACIONES_LIQUIDACION_REMITIDAS_NO_IDENTIFICADAS, 
 				filtros.getPage());
-
-		costosProcesamientoService.persistirMaestroLlavesProcesamiento();
 		
 		return liquidacion(consulta, filtros.getPage());
 	}
@@ -141,6 +139,7 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 		
 		var ldtFechaServicioTransporte = convertToLocalDateTime(filtros.getProcessServiceDate());
 		var ldtFechaServicioTransporteFinal = convertToLocalDateTime(filtros.getFinalProcessServiceDate());
+		costosProcesamientoService.persistirMaestroLlavesProcesamiento();
 		
 		var consulta = operacionesLiquidacion.conciliadasLiquidadasProcesamiento(filtros.getEntity(), 
 				ldtFechaServicioTransporte,
@@ -155,8 +154,6 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 				filtros.getStatus(),
 				Constantes.OPERACIONES_LIQUIDACION_LIQUIDADAS_NO_COBRADAS, 
 				filtros.getPage());
-
-		costosProcesamientoService.persistirMaestroLlavesProcesamiento();
 	
 		return liquidacion(consulta, filtros.getPage());
 	}
@@ -166,6 +163,7 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 		
 		var ldtFechaServicioTransporte = convertToLocalDateTime(filtros.getProcessServiceDate());
 		var ldtFechaServicioTransporteFinal = convertToLocalDateTime(filtros.getFinalProcessServiceDate());
+		costosProcesamientoService.persistirMaestroLlavesProcesamiento();
 		
 		var consulta = operacionesLiquidacion.conciliadasLiquidadasProcesamiento(filtros.getEntity(), 
 				ldtFechaServicioTransporte,
@@ -180,8 +178,6 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 				filtros.getStatus(),
 				Constantes.OPERACIONES_LIQUIDACION_IDENTIFICADAS_CON_DIFERENCIAS, 
 				filtros.getPage());
-
-		costosProcesamientoService.persistirMaestroLlavesProcesamiento();
 		
 		return liquidacion(consulta, filtros.getPage());
 	}

@@ -349,7 +349,7 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 		
 		var ldtFechaServicioTransporte = transformToLocalDateTime(filtrosCostoTransporte.getFechaServicioTransporte());
 		var ldtFechaServicioTransporteFinal = transformToLocalDateTime(filtrosCostoTransporte.getFechaServicioTransporteFinal());
-		
+		costosProcesamientoService.persistirMaestroLlavesProcesamiento();
 		
 		var consulta = operacionesLiquidacionTransporte.conciliadasLiquidadasTransporte(filtrosCostoTransporte.getEntidad(),
 				ldtFechaServicioTransporte,
@@ -368,8 +368,6 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 		List<OperacionesLiquidacionTransporteDTO> operacionesLiquidacionTransporteDTO = new ArrayList<>();
 		consulta.forEach(entity -> operacionesLiquidacionTransporteDTO
 				.add(OperacionesLiquidacionTransporteDTO.CONVERTER_DTO.apply(entity)));
-
-		costosProcesamientoService.persistirMaestroLlavesProcesamiento();
 		
 		return liquidacionPage(consulta, filtrosCostoTransporte.getPage());
 	}
@@ -379,7 +377,7 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 		
 		var ldtFechaTransporteServicio = transformToLocalDateTime(filtrosTransporteCostos.getFechaServicioTransporte());
 		var ldtFechaFinalServicioTransporte = transformToLocalDateTime(filtrosTransporteCostos.getFechaServicioTransporteFinal());
-		
+		costosProcesamientoService.persistirMaestroLlavesProcesamiento();
 		
 		var consultaLiqTransporte = operacionesLiquidacionTransporte.conciliadasLiquidadasTransporte(filtrosTransporteCostos.getEntidad(),
 				ldtFechaTransporteServicio,
@@ -398,8 +396,6 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 		List<OperacionesLiquidacionTransporteDTO> operacionesTransporteLiquidacionDTO = new ArrayList<>();
 		consultaLiqTransporte.forEach(entity -> operacionesTransporteLiquidacionDTO
 				.add(OperacionesLiquidacionTransporteDTO.CONVERTER_DTO.apply(entity)));
-
-		costosProcesamientoService.persistirMaestroLlavesProcesamiento();
 		
 		return liquidacionPage(consultaLiqTransporte, filtrosTransporteCostos.getPage());
 	}
@@ -409,6 +405,7 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 		
 		var convertedFechaTransporteServicio = transformToLocalDateTime(filtrosCostoTransporte.getFechaServicioTransporte());
 		var convertedFechaFinalServicioTransporte = transformToLocalDateTime(filtrosCostoTransporte.getFechaServicioTransporteFinal());
+		costosProcesamientoService.persistirMaestroLlavesProcesamiento();
 		
 		var consultaLiquidacionTransporte = operacionesLiquidacionTransporte.conciliadasLiquidadasTransporte(filtrosCostoTransporte.getEntidad(),
 				convertedFechaTransporteServicio,
@@ -427,8 +424,6 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 		List<OperacionesLiquidacionTransporteDTO> listOperacionesLiquidacionTransporteDTO = new ArrayList<>();
 		consultaLiquidacionTransporte.forEach(entity -> listOperacionesLiquidacionTransporteDTO
 				.add(OperacionesLiquidacionTransporteDTO.CONVERTER_DTO.apply(entity)));
-
-		costosProcesamientoService.persistirMaestroLlavesProcesamiento();
 		
 		return liquidacionPage(consultaLiquidacionTransporte, filtrosCostoTransporte.getPage());
 	}
@@ -438,6 +433,7 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 		
 		var fechaServicioTransporteConverted = transformToLocalDateTime(filtrosParametrosTransporte.getFechaServicioTransporte());
 		var fechaServicioTransporteFinalConverted = transformToLocalDateTime(filtrosParametrosTransporte.getFechaServicioTransporteFinal());
+		costosProcesamientoService.persistirMaestroLlavesProcesamiento();
 		
 		var consultaOperacionesLiqTransporte = operacionesLiquidacionTransporte.conciliadasLiquidadasTransporte(filtrosParametrosTransporte.getEntidad(),
 				fechaServicioTransporteConverted,
@@ -456,8 +452,6 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 		List<OperacionesLiquidacionTransporteDTO> listOperacionesLiquidacionTransporte = new ArrayList<>();
 		consultaOperacionesLiqTransporte.forEach(entity -> listOperacionesLiquidacionTransporte
 				.add(OperacionesLiquidacionTransporteDTO.CONVERTER_DTO.apply(entity)));
-
-		costosProcesamientoService.persistirMaestroLlavesProcesamiento();
 		
 		return liquidacionPage(consultaOperacionesLiqTransporte, filtrosParametrosTransporte.getPage());
 	}
