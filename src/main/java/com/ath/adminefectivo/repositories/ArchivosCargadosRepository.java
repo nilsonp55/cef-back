@@ -166,13 +166,38 @@ public interface ArchivosCargadosRepository extends JpaRepository<ArchivosCargad
 	 * @return Page<ArchivosCargados>
 	 * @author johan.chaparro
 	 */
-	@Query("select ac from ArchivosCargados ac " +
-		       "where idModeloArchivo IN (" +
-		       "select idMaestroDefinicionArchivo from MaestroDefinicionArchivo " +
-		       "where agrupador = ?1) " +
-		       "and estado = ?2 " +
-		       "and estadoCargue IN ?3 " +
-		       "order by fechaArchivo desc, estadoCargue asc")
+//	@Query("select ac from ArchivosCargados ac " +
+//		       "where idModeloArchivo IN (" +
+//		       "select idMaestroDefinicionArchivo from MaestroDefinicionArchivo " +
+//		       "where agrupador = ?1) " +
+//		       "and estado = ?2 " +
+//		       "and estadoCargue IN ?3 " +
+//		       "order by fechaArchivo desc, estadoCargue asc")
+	
+	@Query("""
+			select ac from ArchivosCargados ac 
+			where ac.idModeloArchivo IN (
+			    select mda.idMaestroDefinicionArchivo from MaestroDefinicionArchivo mda 
+			    where mda.agrupador = ?1
+			)
+			and ac.estado = ?2 
+			and (
+			    ac.estadoCargue = 'ERRADO' 
+			    or (
+			        ac.estadoCargue = 'EN_CONCILIACION' and (
+			            exists (
+			                select 1 from CostosProcesamiento cp 
+			                where cp.idArchivoCargado = ac.idArchivo
+			            )
+			            or exists (
+			                select 1 from CostosTransporte ct 
+			                where ct.idArchivoCargadoTransporte = ac.idArchivo
+			            )
+			        )
+			    )
+			)
+			order by ac.fechaArchivo desc, ac.estadoCargue asc
+			""")
 	Page<ArchivosCargados> getArchivosByAgrupadorAndEstadoCargue(String agrupador, String estado, Set<String> estadoCargue, Pageable page);
 
 }

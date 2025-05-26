@@ -9,8 +9,13 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
+import java.math.BigInteger;
+import java.sql.Timestamp;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,10 +33,14 @@ import com.ath.adminefectivo.dto.compuestos.ArchivosLiquidacionListDTO;
 import com.ath.adminefectivo.entities.ArchivosCargados;
 import com.ath.adminefectivo.entities.CostosProcesamiento;
 import com.ath.adminefectivo.entities.CostosTransporte;
+import com.ath.adminefectivo.repositories.IOperacionesLiquidacionTransporte;
+import com.ath.adminefectivo.repositories.MaestroLlavesCostosRepository;
 import com.ath.adminefectivo.service.IArchivosCargadosService;
 import com.ath.adminefectivo.service.IConciliacionOperacionesProcesamientoService;
 import com.ath.adminefectivo.service.ICostosProcesamientoService;
 import com.ath.adminefectivo.service.ICostosTransporteService;
+import com.ath.adminefectivo.service.IDetalleLiquidacionProcesamiento;
+import com.ath.adminefectivo.service.IDetalleLiquidacionTransporte;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -53,6 +62,13 @@ public class GestionArchivosLiquidacionDelegateImpl implements IGestionArchivosL
 	
 	@Autowired
 	IConciliacionOperacionesProcesamientoService operacionesLiquidacion;
+	
+	@Autowired
+	ICostosTransporteService operacionesLiquidacionTransporte;
+	
+	@Autowired 
+	MaestroLlavesCostosRepository maestroLlavesCostosRepository;
+
 	
 	@Override
 	public Page<ArchivosLiquidacionDTO> getAll(String agrupador, Pageable page) {
@@ -139,72 +155,132 @@ public class GestionArchivosLiquidacionDelegateImpl implements IGestionArchivosL
 		
 	}
 	
-	private ArchivosLiquidacionDTO aceptarArchivoTransporte(ArchivosLiquidacionDTO archivoAceptar, ArchivosCargados archivoCargado)
-	{
+	private ArchivosLiquidacionDTO aceptarArchivoTransporte(ArchivosLiquidacionDTO archivoAceptar,
+			ArchivosCargados archivoCargado) {
 		var filtrosT = new ParametrosFiltroCostoTransporteDTO();
 		var codigoTransporteTDV = "";
 		var numRegistros = archivoCargado.getNumeroRegistros();
 		Pageable pr = PageRequest.of(1, 1);
-		
-		Long conciliados =0l ;
+
+		Long conciliados = 0l;
 		Date fechaServicioMin;
 		Date fechaServicioMax;
 		Integer totalTransporte = 0;
-		
-		//Validacion de transporte
-		var costosTransporte = costosTransporteService.getByIdArchivoCargado(archivoAceptar.getIdArchivo());
+		Set<Integer> idArchivosUnicos = new HashSet<>();
+		AtomicBoolean validacionConciliacion = new AtomicBoolean(true);
+		boolean llavesCoinciden = false;
+		boolean validacionConciliacionCompleta = false;
+
+		// Validacion de transporte
+		var costosTransporte = costosTransporteService
+				.obtenerDetalleTransportePorIdArchivo(archivoAceptar.getIdArchivo().intValue());
+
 		totalTransporte = costosTransporte.size();
-		
-		if (totalTransporte>0)
-		{
-			codigoTransporteTDV = costosTransporte.get(0).getCodigoPuntoCargoTransporte();// tiene que ser getCodigoTDV
+
+		if (totalTransporte > 0) {
+			codigoTransporteTDV = costosTransporte.get(0).getCodigoPuntoCargo();// tiene que ser getCodigoTDV
 			filtrosT.setCodigoPuntoCargo(codigoTransporteTDV);
 			filtrosT.setPage(pr);
-			
+
 			conciliados = costosTransporte.stream()
-                    .filter(c -> c.getEstadoConciliacionTransporte().equalsIgnoreCase(Constantes.ESTADO_CONCILIACION_MANUAL)||
-                    		     c.getEstadoConciliacionTransporte().equalsIgnoreCase(Constantes.ESTADO_CONCILIACION_AUTOMATICO) )
-                    .count();
+					.filter(c -> c.getModulo().equalsIgnoreCase(Constantes.OPERACIONES_LIQUIDACION_CONCILIADAS))
+					.count();
+
+			// Se recorre la lista de costosProcesamiento y se obtiene, por cada elemento no
+			// nulo,
+			// la lista de detalles mediante la llamada a
+			// 'obtenerEstadoProcesamientoPorLlave'.
+			// Por cada detalle recibido, se valida que:
+			// 1. El campo 'modulo' sea igual a "CONCILIADAS".
+			// 2. El campo 'idArchivoCargado' sea el mismo en todos los registros (solo se
+			// permite un valor único).
+			// Si alguna de estas condiciones no se cumple, se marca la variable
+			// 'validacionConciliacion' como false.
+		
+			for (IDetalleLiquidacionTransporte procesamiento : costosTransporte) {
+			    BigInteger llave = procesamiento.getIdLlavesMaestroTdv();
+			    if (llave == null) continue;
+
+			    List<IDetalleLiquidacionProcesamiento> detalles = operacionesLiquidacion.obtenerEstadoProcesamientoPorLlave(llave);
+			    
+			    if (detalles.isEmpty()) {
+			        validacionConciliacion.set(false);
+			        break;
+			    }
+			    
+			    for (IDetalleLiquidacionProcesamiento detalle : detalles) {
+			        if (!"CONCILIADAS".equals(detalle.getModulo())) {
+			            validacionConciliacion.set(false);
+			            break;
+			        }
+
+			        idArchivosUnicos.add(detalle.getIdArchivoCargado());
+
+			        if (idArchivosUnicos.size() > 1) {
+			            validacionConciliacion.set(false);
+			            break;
+			        }
+			    }
+
+			    if (!validacionConciliacion.get()) break;
+			}
+
+			validacionConciliacionCompleta = validacionConciliacion.get();
+			Integer idArchivoConciliado = (validacionConciliacion.get() && !idArchivosUnicos.isEmpty())
+				    ? idArchivosUnicos.iterator().next()
+				    : null;
+
+			//Consulta los registros del archivo que contiene la coincidencias de las llaves en transporte
+			//Para comparar que ambos archivos coincidan con el mismo numero y valor de llaves
+			if (validacionConciliacionCompleta) {
+				llavesCoinciden = validarCoincidenciaLlavesTransporteProcesamiento(costosTransporte,
+						idArchivoConciliado);
+			}
 			
 			fechaServicioMin = costosTransporte.stream()
-				      .map(CostosTransporte::getFechaServicioTransporte)
-				      .min(Date::compareTo)
-				      .get();
+				    .map(c -> c.getFechaServicioTransporte() != null ? new Timestamp(c.getFechaServicioTransporte().getTime()) : null)
+				    .filter(Objects::nonNull)
+				    .min(Timestamp::compareTo)
+				    .orElse(null);
 			
 			fechaServicioMax = costosTransporte.stream()
-				      .map(CostosTransporte::getFechaServicioTransporte)
-				      .max(Date::compareTo)
-				      .get();
+				    .map(c -> c.getFechaServicioTransporte() != null ? new Timestamp(c.getFechaServicioTransporte().getTime()) : null)
+				    .filter(Objects::nonNull)
+				    .max(Timestamp::compareTo)
+				    .orElse(null);
+
 
 			filtrosT.setFechaServicioTransporte(fechaServicioMin);
 			filtrosT.setFechaServicioTransporteFinal(fechaServicioMax);
 		}
-		
-		//Todos los registros se encuentran conciliados
-		if (totalTransporte.longValue()==conciliados && numRegistros.longValue()==conciliados)
-		{
+
+		// Validaciones necesarias para continuar con el proceso:
+		// 1. Todas las llaves del archivo de transporte deben estar en estado 'CONCILIADAS'.
+		// 2. Esas mismas llaves también deben existir en el archivo de procesamiento, y en estado 'CONCILIADAS'.
+		// 3. El archivo de procesamiento no debe contener llaves adicionales que no estén presentes en el archivo de transporte.
+		if (totalTransporte.longValue() == conciliados && validacionConciliacionCompleta && llavesCoinciden) {
 			var hayLiquidadasNoCobradas = costosTransporteService.getLiquidadasNoCobradasTransporte(filtrosT);
 			var lista = hayLiquidadasNoCobradas.getContent();
-			
-			if(lista.isEmpty())
-			{
-				//puede cerrar proceso
+
+			if (lista.isEmpty()) {
+				// puede cerrar proceso
 				archivoCargado.setEstado(Constantes.ESTADO_CONCILIACION_ACEPTADO);
 				archivosCargadosService.actualizarArchivosCargados(archivoCargado);
 				costosTransporteService.aceptarConciliacionRegistro(archivoAceptar.getIdArchivo());
 				archivoAceptar.setEstado("CONCILIADO");
-			}
-			else
-			{
+				
+				Set<BigInteger> llaves = obtenerLlavesDesdeTransporte(costosTransporte);
+				maestroLlavesCostosRepository.actualizarEstadoPorLlaves(new ArrayList<>(llaves),Constantes.ESTADO_CONCILIACION_ACEPTADO);
+				
+			} else {
 				archivoAceptar.setEstado(Constantes.ESTADO_NO_CONCILIADO);
 			}
-		
-	   }
-		
+
+		}
+
 		return archivoAceptar;
-	
+
 	}
-	
 	
 	private ArchivosLiquidacionDTO aceptarArchivoProcesamiento(ArchivosLiquidacionDTO archivoAceptar, ArchivosCargados archivoCargado)
 	{
@@ -216,9 +292,14 @@ public class GestionArchivosLiquidacionDelegateImpl implements IGestionArchivosL
 		Integer totalProcesamiento = 0;
 		Date fechaServicioMax;
 		Date fechaServicioMin;
+		Set<Integer> idArchivosUnicos = new HashSet<>();
+		AtomicBoolean validacionConciliacion = new AtomicBoolean(true);
+		boolean llavesCoinciden = false;
+		boolean validacionConciliacionCompleta = false;
 		
 		//Validacion de procesamiento
-		var costosProcesamiento = costosProcesamientoService.getByIdArchivoCargado(archivoAceptar.getIdArchivo());
+		var costosProcesamiento = operacionesLiquidacion
+				.obtenerDetalleProcesamientoPorIdArchivo(archivoAceptar.getIdArchivo().intValue());
 		totalProcesamiento = costosProcesamiento.size();
 		
 		if (totalProcesamiento>0)
@@ -227,26 +308,79 @@ public class GestionArchivosLiquidacionDelegateImpl implements IGestionArchivosL
 			filtrosP.setCargoPointCode(codigoProcesamientoTDV);
 			
 			conciliados = costosProcesamiento.stream()
-                    .filter(c -> c.getEstadoConciliacion().equalsIgnoreCase(Constantes.ESTADO_CONCILIACION_MANUAL)||
-                    		     c.getEstadoConciliacion().equalsIgnoreCase(Constantes.ESTADO_CONCILIACION_AUTOMATICO) )
+                    .filter(c -> c.getModulo().equalsIgnoreCase(Constantes.OPERACIONES_LIQUIDACION_CONCILIADAS))
                     .count();
 			
+			// Se recorre la lista de costosProcesamiento y se obtiene, por cada elemento no nulo,
+			// la lista de detalles mediante la llamada a 'obtenerEstadoProcesamientoPorLlave'.
+			// Por cada detalle recibido, se valida que:
+			// 1. El campo 'modulo' sea igual a "CONCILIADAS".
+			// 2. El campo 'idArchivoCargado' sea el mismo en todos los registros (solo se permite un valor único).
+			// Si alguna de estas condiciones no se cumple, se marca la variable 'validacionConciliacion' como false.
+			
+			for (IDetalleLiquidacionProcesamiento procesamiento : costosProcesamiento) {
+			    BigInteger llave = procesamiento.getIdLlavesMaestroTdv();
+			    if (llave == null) continue;
+
+			    List<IDetalleLiquidacionTransporte> detalles = operacionesLiquidacionTransporte.obtenerEstadoTransportePorLlave(llave);
+			    
+			    if (detalles.isEmpty()) {
+			        validacionConciliacion.set(false);
+			        break;
+			    }
+			    
+			    for (IDetalleLiquidacionTransporte detalle : detalles) {
+			        if (!"CONCILIADAS".equals(detalle.getModulo())) {
+			            validacionConciliacion.set(false);
+			            break;
+			        }
+
+			        idArchivosUnicos.add(detalle.getIdArchivoCargado());
+
+			        if (idArchivosUnicos.size() > 1) {
+			            validacionConciliacion.set(false);
+			            break;
+			        }
+			    }
+
+			    if (!validacionConciliacion.get()) break;
+			}
+			
+			// validacionConciliacionCompleta = true si las llaves en archivo de transporte
+			// Tambien existen y se encuentran CONCILIADAS
+			validacionConciliacionCompleta = validacionConciliacion.get();
+			Integer idArchivoConciliado = (validacionConciliacion.get() && !idArchivosUnicos.isEmpty())
+				    ? idArchivosUnicos.iterator().next()
+				    : null;
+			
+			//Consulta los registros del archivo que contiene la coincidencias de las llaves en transporte
+			//Para comparar que ambos archivos coincidan con el mismo numero y valor de llaves
+			if (validacionConciliacionCompleta) {
+				llavesCoinciden = validarCoincidenciaLlavesProcesamientoTransporte(costosProcesamiento,
+						idArchivoConciliado);
+			}
+			
 			fechaServicioMin = costosProcesamiento.stream()
-				      .map(CostosProcesamiento::getFechaServicioTransporte)
-				      .min(Date::compareTo)
-				      .get();
+				    .map(c -> c.getFechaServicioTransporte() != null ? new Timestamp(c.getFechaServicioTransporte().getTime()) : null)
+				    .filter(Objects::nonNull)
+				    .min(Timestamp::compareTo)
+				    .orElse(null);
 			
 			fechaServicioMax = costosProcesamiento.stream()
-				      .map(CostosProcesamiento::getFechaServicioTransporte)
-				      .max(Date::compareTo)
-				      .get();
+				    .map(c -> c.getFechaServicioTransporte() != null ? new Timestamp(c.getFechaServicioTransporte().getTime()) : null)
+				    .filter(Objects::nonNull)
+				    .max(Timestamp::compareTo)
+				    .orElse(null);
 
 			filtrosP.setProcessServiceDate(fechaServicioMin);
 			filtrosP.setFinalProcessServiceDate(fechaServicioMax);
 		}
 		
-		//Todos los registros se encuentran conciliados
-		if (totalProcesamiento.longValue()==conciliados && numRegistros.longValue()==conciliados)
+		// Validaciones necesarias para continuar con el proceso:
+		// 1. Todas las llaves del archivo de procesamiento deben estar en estado 'CONCILIADAS'.
+		// 2. Esas mismas llaves también deben existir en el archivo de transporte, y en estado 'CONCILIADAS'.
+		// 3. El archivo de transporte no debe contener llaves adicionales que no estén presentes en el archivo de procesamiento.
+		if (totalProcesamiento.longValue()==conciliados && validacionConciliacionCompleta && llavesCoinciden)
 		{
 			
 			var hayLiquidadasNoCobradas = operacionesLiquidacion.getLiquidadasNoCobradasProcesamiento(filtrosP);
@@ -259,6 +393,9 @@ public class GestionArchivosLiquidacionDelegateImpl implements IGestionArchivosL
 				archivosCargadosService.actualizarArchivosCargados(archivoCargado);
 				costosProcesamientoService.aceptarConciliacionRegistro(archivoAceptar.getIdArchivo());
 				archivoAceptar.setEstado("CONCILIADO");
+				
+				Set<BigInteger> llaves = obtenerLlavesDesdeProcesamiento(costosProcesamiento);
+				maestroLlavesCostosRepository.actualizarEstadoPorLlaves(new ArrayList<>(llaves),Constantes.ESTADO_CONCILIACION_ACEPTADO);
 			}
 			else
 			{
@@ -270,6 +407,49 @@ public class GestionArchivosLiquidacionDelegateImpl implements IGestionArchivosL
 		return archivoAceptar;
 	
 	}
+	
+	private boolean validarCoincidenciaLlavesProcesamientoTransporte(
+	        List<IDetalleLiquidacionProcesamiento> costosProcesamiento,
+	        Integer idArchivoConciliado) {
+
+	    Set<BigInteger> llavesProcesamiento = obtenerLlavesDesdeProcesamiento(costosProcesamiento);
+	    List<IDetalleLiquidacionTransporte> detallesTransporte =
+	            operacionesLiquidacionTransporte.obtenerDetalleTransportePorIdArchivo(idArchivoConciliado);
+	    Set<BigInteger> llavesTransporte = obtenerLlavesDesdeTransporte(detallesTransporte);
+
+	    return compararLlaves(llavesProcesamiento, llavesTransporte);
+	}
+	
+	private boolean validarCoincidenciaLlavesTransporteProcesamiento(
+	        List<IDetalleLiquidacionTransporte> transporte,
+	        Integer idArchivoConciliado) {
+
+	    Set<BigInteger> llavesTransporte = obtenerLlavesDesdeTransporte(transporte);
+	    List<IDetalleLiquidacionProcesamiento> detallesProcesamiento =
+	            operacionesLiquidacion.obtenerDetalleProcesamientoPorIdArchivo(idArchivoConciliado);
+	    Set<BigInteger> llavesProcesamiento = obtenerLlavesDesdeProcesamiento(detallesProcesamiento);
+
+	    return compararLlaves(llavesTransporte, llavesProcesamiento);
+	}
+	
+	private Set<BigInteger> obtenerLlavesDesdeProcesamiento(List<IDetalleLiquidacionProcesamiento> lista) {
+	    return lista.stream()
+	            .map(IDetalleLiquidacionProcesamiento::getIdLlavesMaestroTdv)
+	            .filter(Objects::nonNull)
+	            .collect(Collectors.toSet());
+	}
+
+	private Set<BigInteger> obtenerLlavesDesdeTransporte(List<IDetalleLiquidacionTransporte> lista) {
+	    return lista.stream()
+	            .map(IDetalleLiquidacionTransporte::getIdLlavesMaestroTdv)
+	            .filter(Objects::nonNull)
+	            .collect(Collectors.toSet());
+	}
+
+	private boolean compararLlaves(Set<BigInteger> origen, Set<BigInteger> destino) {
+	    return origen.equals(destino);
+	}
+
 	
 
 }
