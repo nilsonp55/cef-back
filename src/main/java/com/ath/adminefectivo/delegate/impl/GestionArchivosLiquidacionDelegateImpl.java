@@ -159,17 +159,16 @@ public class GestionArchivosLiquidacionDelegateImpl implements IGestionArchivosL
 			ArchivosCargados archivoCargado) {
 		var filtrosT = new ParametrosFiltroCostoTransporteDTO();
 		var codigoTransporteTDV = "";
-		var numRegistros = archivoCargado.getNumeroRegistros();
 		Pageable pr = PageRequest.of(1, 1);
 
 		Long conciliados = 0l;
 		Date fechaServicioMin;
 		Date fechaServicioMax;
 		Integer totalTransporte = 0;
-		Set<Integer> idArchivosUnicos = new HashSet<>();
-		AtomicBoolean validacionConciliacion = new AtomicBoolean(true);
+		Set<Integer> idArchivosProcesamientoUnicos = new HashSet<>();
+		AtomicBoolean validacionConcilProcesamiento = new AtomicBoolean(true);
 		boolean llavesCoinciden = false;
-		boolean validacionConciliacionCompleta = false;
+		boolean validacionConcilProcCompleta = false;
 
 		// Validacion de transporte
 		var costosTransporte = costosTransporteService
@@ -201,40 +200,40 @@ public class GestionArchivosLiquidacionDelegateImpl implements IGestionArchivosL
 			    BigInteger llave = procesamiento.getIdLlavesMaestroTdv();
 			    if (llave == null) continue;
 
-			    List<IDetalleLiquidacionProcesamiento> detalles = operacionesLiquidacion.obtenerEstadoProcesamientoPorLlave(llave);
+			    List<IDetalleLiquidacionProcesamiento> detallesProcesamiento = operacionesLiquidacion.obtenerEstadoProcesamientoPorLlave(llave);
 			    
-			    if (detalles.isEmpty()) {
-			        validacionConciliacion.set(false);
+			    if (detallesProcesamiento.isEmpty()) {
+			    	validacionConcilProcesamiento.set(false);
 			        break;
 			    }
 			    
-			    for (IDetalleLiquidacionProcesamiento detalle : detalles) {
-			        if (!"CONCILIADAS".equals(detalle.getModulo())) {
-			            validacionConciliacion.set(false);
+			    for (IDetalleLiquidacionProcesamiento detalleProcesamiento : detallesProcesamiento) {
+			        if (!Constantes.OPERACIONES_LIQUIDACION_CONCILIADAS.equals(detalleProcesamiento.getModulo())) {
+			        	validacionConcilProcesamiento.set(false);
 			            break;
 			        }
 
-			        idArchivosUnicos.add(detalle.getIdArchivoCargado());
+			        idArchivosProcesamientoUnicos.add(detalleProcesamiento.getIdArchivoCargado());
 
-			        if (idArchivosUnicos.size() > 1) {
-			            validacionConciliacion.set(false);
+			        if (idArchivosProcesamientoUnicos.size() > 1) {
+			        	validacionConcilProcesamiento.set(false);
 			            break;
 			        }
 			    }
 
-			    if (!validacionConciliacion.get()) break;
+			    if (!validacionConcilProcesamiento.get()) break;
 			}
 
-			validacionConciliacionCompleta = validacionConciliacion.get();
-			Integer idArchivoConciliado = (validacionConciliacion.get() && !idArchivosUnicos.isEmpty())
-				    ? idArchivosUnicos.iterator().next()
+			validacionConcilProcCompleta = validacionConcilProcesamiento.get();
+			Integer idArchivoProcesamientoConciliado = (validacionConcilProcesamiento.get() && !idArchivosProcesamientoUnicos.isEmpty())
+				    ? idArchivosProcesamientoUnicos.iterator().next()
 				    : null;
 
 			//Consulta los registros del archivo que contiene la coincidencias de las llaves en transporte
 			//Para comparar que ambos archivos coincidan con el mismo numero y valor de llaves
-			if (validacionConciliacionCompleta) {
+			if (validacionConcilProcCompleta) {
 				llavesCoinciden = validarCoincidenciaLlavesTransporteProcesamiento(costosTransporte,
-						idArchivoConciliado);
+						idArchivoProcesamientoConciliado);
 			}
 			
 			fechaServicioMin = costosTransporte.stream()
@@ -258,7 +257,7 @@ public class GestionArchivosLiquidacionDelegateImpl implements IGestionArchivosL
 		// 1. Todas las llaves del archivo de transporte deben estar en estado 'CONCILIADAS'.
 		// 2. Esas mismas llaves también deben existir en el archivo de procesamiento, y en estado 'CONCILIADAS'.
 		// 3. El archivo de procesamiento no debe contener llaves adicionales que no estén presentes en el archivo de transporte.
-		if (totalTransporte.longValue() == conciliados && validacionConciliacionCompleta && llavesCoinciden) {
+		if (totalTransporte.longValue() == conciliados && validacionConcilProcCompleta && llavesCoinciden) {
 			var hayLiquidadasNoCobradas = costosTransporteService.getLiquidadasNoCobradasTransporte(filtrosT);
 			var lista = hayLiquidadasNoCobradas.getContent();
 
@@ -285,7 +284,6 @@ public class GestionArchivosLiquidacionDelegateImpl implements IGestionArchivosL
 	private ArchivosLiquidacionDTO aceptarArchivoProcesamiento(ArchivosLiquidacionDTO archivoAceptar, ArchivosCargados archivoCargado)
 	{
 		var filtrosP = new ParametrosFiltroCostoProcesamientoDTO();
-		var numRegistros = archivoCargado.getNumeroRegistros();
 		var codigoProcesamientoTDV = "";
 		
 		Long conciliados =0l ;

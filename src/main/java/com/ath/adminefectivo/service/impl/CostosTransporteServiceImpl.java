@@ -1348,7 +1348,7 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 	    } else if (valorApp instanceof Float) {
 	        return (T) Float.valueOf((float) resultado);
 	    } else if (valorApp instanceof BigDecimal) {
-	        return (T) new BigDecimal(resultado);
+	        return (T) BigDecimal.valueOf(resultado);
 	    } else if (valorApp instanceof BigInteger) {
 	        return (T) BigInteger.valueOf((long) resultado);
 	    } else {
