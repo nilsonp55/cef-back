@@ -1,6 +1,7 @@
 package com.ath.adminefectivo.service.impl;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -16,6 +17,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.RegistroAceptarRechazarDTO;
@@ -36,6 +39,7 @@ import com.ath.adminefectivo.repositories.IConciliacionOperacionesProcesamientoR
 import com.ath.adminefectivo.repositories.ICostosProcesamientoRepository;
 import com.ath.adminefectivo.service.IBancosService;
 import com.ath.adminefectivo.service.IConciliacionOperacionesProcesamientoService;
+import com.ath.adminefectivo.service.ICostosProcesamientoService;
 import com.ath.adminefectivo.service.IDetalleLiquidacionProcesamiento;
 import com.ath.adminefectivo.service.IDetalleLiquidacionTransporte;
 import com.ath.adminefectivo.service.IEstadoConciliacionParametrosLiquidacionService;
@@ -78,11 +82,15 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 	@Autowired
 	IOtrosCostosFondoService otrosCostosFondo;
 	
+	@Autowired
+	ICostosProcesamientoService costosProcesamientoService;
+	
 	@Override
 	public Page<OperacionesLiquidacionProcesamientoDTO> getLiquidacionConciliadaProcesamiento(ParametrosFiltroCostoProcesamientoDTO filtros) {
 		
 		var ldtFechaServicioTransporte = convertToLocalDateTime(filtros.getProcessServiceDate());
 		var ldtFechaServicioTransporteFinal = convertToLocalDateTime(filtros.getFinalProcessServiceDate());
+		costosProcesamientoService.persistirMaestroLlavesProcesamiento();
 		
 		var consulta = operacionesLiquidacion.conciliadasLiquidadasProcesamiento(filtros.getEntity(), 
 				ldtFechaServicioTransporte,
@@ -107,6 +115,7 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 		
 		var ldtFechaServicioTransporte = convertToLocalDateTime(filtros.getProcessServiceDate());
 		var ldtFechaServicioTransporteFinal = convertToLocalDateTime(filtros.getFinalProcessServiceDate());
+		costosProcesamientoService.persistirMaestroLlavesProcesamiento();
 		
 		var consulta = operacionesLiquidacion.conciliadasLiquidadasProcesamiento(filtros.getEntity(), 
 				ldtFechaServicioTransporte,
@@ -121,7 +130,7 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 				filtros.getStatus(),
 				Constantes.OPERACIONES_LIQUIDACION_REMITIDAS_NO_IDENTIFICADAS, 
 				filtros.getPage());
-
+		
 		return liquidacion(consulta, filtros.getPage());
 	}
 
@@ -130,6 +139,7 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 		
 		var ldtFechaServicioTransporte = convertToLocalDateTime(filtros.getProcessServiceDate());
 		var ldtFechaServicioTransporteFinal = convertToLocalDateTime(filtros.getFinalProcessServiceDate());
+		costosProcesamientoService.persistirMaestroLlavesProcesamiento();
 		
 		var consulta = operacionesLiquidacion.conciliadasLiquidadasProcesamiento(filtros.getEntity(), 
 				ldtFechaServicioTransporte,
@@ -144,7 +154,7 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 				filtros.getStatus(),
 				Constantes.OPERACIONES_LIQUIDACION_LIQUIDADAS_NO_COBRADAS, 
 				filtros.getPage());
-
+	
 		return liquidacion(consulta, filtros.getPage());
 	}
 
@@ -153,6 +163,7 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 		
 		var ldtFechaServicioTransporte = convertToLocalDateTime(filtros.getProcessServiceDate());
 		var ldtFechaServicioTransporteFinal = convertToLocalDateTime(filtros.getFinalProcessServiceDate());
+		costosProcesamientoService.persistirMaestroLlavesProcesamiento();
 		
 		var consulta = operacionesLiquidacion.conciliadasLiquidadasProcesamiento(filtros.getEntity(), 
 				ldtFechaServicioTransporte,
@@ -167,7 +178,7 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 				filtros.getStatus(),
 				Constantes.OPERACIONES_LIQUIDACION_IDENTIFICADAS_CON_DIFERENCIAS, 
 				filtros.getPage());
-
+		
 		return liquidacion(consulta, filtros.getPage());
 	}
 
@@ -347,21 +358,25 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 			String operacion = f.getOperacionEstado();
 			String observacionATH = f.getObservacion();
 			
-			f.setOperacionEstado(Constantes.ESTADO_OPERACION_NO_REALIZADA);
+			List<IDetalleLiquidacionProcesamiento> detalles = obtenerDetalleLiquidacionProcesamiento(
+					Constantes.OPERACIONES_LIQUIDACION_LIQUIDADAS_NO_COBRADAS, id);
 			
-			if (operacion.equalsIgnoreCase("ELIMINAR"))
-			{
-				costosTransporteService.eliminarParametroLiquidacionCosto(id);
-				f.setOperacionEstado("ELIMINADA");
+			List<Long> idLiquidacionList = UtilsParsing.parseStringToList(detalles.get(0).getIdsLiquidacionApp());
+			
+			for (Long idLiquidacion : idLiquidacionList) {
+				f.setOperacionEstado(Constantes.ESTADO_OPERACION_NO_REALIZADA);
+
+				if (operacion.equalsIgnoreCase("ELIMINAR")) {
+					costosTransporteService.eliminarParametroLiquidacionCosto(idLiquidacion, Constantes.MAESTRO_ARCHIVO_PROCESAMIENTO);
+					f.setOperacionEstado("ELIMINADA");
+				}
+
+				if (operacion.equalsIgnoreCase(Constantes.OPERACION_RECHAZAR)) {
+					guardarCostoRechazado(idLiquidacion, observacionATH);
+					f.setOperacionEstado("RECHAZADA");
+
+				}
 			}
-				
-			if (operacion.equalsIgnoreCase(Constantes.OPERACION_RECHAZAR))
-			{
-				guardarCostoRechazado(id, observacionATH);
-				f.setOperacionEstado("RECHAZADA");
-				
-			}
-				
 			
 		});
 		
@@ -760,6 +775,61 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 		List<IDetalleLiquidacionProcesamiento> resultados = operacionesLiquidacion
 				.obtenerDetallesPorModuloProcesamiento(modulo, idLlave);
 		return resultados;
+	}
+	
+	@Override
+	public List<IDetalleLiquidacionProcesamiento> obtenerDetalleProcesamientoPorIdArchivo(Integer idArchivo) {
+
+		List<IDetalleLiquidacionProcesamiento> resultados = operacionesLiquidacion
+				.obtenerDetallesPorIdArchivoProcesamiento(idArchivo);
+		return resultados;
+	}
+	
+	@Override
+	public List<IDetalleLiquidacionProcesamiento> obtenerEstadoProcesamientoPorLlave(BigInteger idLlave) {
+
+		List<IDetalleLiquidacionProcesamiento> resultados = operacionesLiquidacion
+				.countConciliadasProcesamientoByLlave(idLlave);
+		return resultados;
+	}
+	
+	/**
+	 * Metodo encargado de reintegrar los registros eliminados de costos_transporte 
+	 * 
+	 * @param RegistrosConciliacionListDTO
+	 * @return List<RegistroOperacionConciliacionDTO>
+	 * @author jose.pabon
+	 */	
+	@Override
+	@Transactional
+	public List<RegistroOperacionConciliacionDTO> reintegrarLiquidadasProcesamiento(RegistrosConciliacionListDTO registros) {
+		
+		List<RegistroOperacionConciliacionDTO> registrosReintegrados = registros.getRegistroOperacion();
+		
+		registrosReintegrados.forEach(f->{
+			boolean continuar = false;
+			Long id = f.getIdRegistro();
+			String operacion = f.getOperacionEstado();
+			
+			f.setOperacionEstado("NO PUDO REALIZAR LA OPERACION");
+			
+			if (operacion.equalsIgnoreCase("REINTEGRAR"))
+			{
+				List<IDetalleLiquidacionProcesamiento> detalles = obtenerDetalleLiquidacionProcesamiento(
+						Constantes.OPERACIONES_LIQUIDACION_LIQUIDADAS_NO_COBRADAS_ELIMINADAS, id);
+				
+				List<Long> idLiquidacionList = UtilsParsing.parseStringToList(detalles.get(0).getIdsLiquidacionApp());
+				
+				for (Long idLiq : idLiquidacionList) {
+	                continuar = costosTransporteService.reintegrarRegistrosLiquidados(idLiq, continuar, Constantes.MAESTRO_ARCHIVO_PROCESAMIENTO);
+	                if (!continuar) break;
+	            }
+			}
+			if (continuar) {
+				f.setOperacionEstado("REINTEGRADA");
+			}
+		});
+		return registrosReintegrados;
 	}
 
 	@Override

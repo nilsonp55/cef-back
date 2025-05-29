@@ -22,7 +22,6 @@ import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.Transportadoras;
 import com.ath.adminefectivo.exception.AplicationException;
-import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.IGeneralRepository;
 import com.ath.adminefectivo.repositories.IPuntosRepository;
 import com.ath.adminefectivo.repositories.ITransportadorasRepository;
@@ -226,48 +225,52 @@ public class GeneralRepositoryImpl implements IGeneralRepository{
 	private Map<String, ListaDetalleDTO> getLlaveProcesamiento(ValidacionArchivoDTO validacionArchivo,
 			Map<String, ListaDetalleDTO> detalleDefinicionMap) {
 
-		String entidad = validacionArchivo.getValidacionLineas().get(0).getContenido().get(0);
-		String agrupador = validacionArchivo.getMaestroDefinicion().getIdMaestroDefinicionArchivo();
+		String entidadProcesamiento = validacionArchivo.getValidacionLineas().get(0).getContenido().get(0);
+		String agrupadorProcesamiento = validacionArchivo.getMaestroDefinicion().getIdMaestroDefinicionArchivo();
 
-		String fechaRaw = validacionArchivo.getValidacionLineas().get(0).getContenido().get(3);
+		String fechaRawProcesamiento = validacionArchivo.getValidacionLineas().get(0).getContenido().get(3);
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-		LocalDate fecha = LocalDate.parse(fechaRaw, formatter);
-		String fechaFormated = fecha.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		LocalDate fechaProcesamiento = LocalDate.parse(fechaRawProcesamiento, formatter);
+		String fechaFormated = fechaProcesamiento.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-		String codigoCiiuFondo = validacionArchivo.getValidacionLineas().get(0).getContenido().get(9);
-		String file = validacionArchivo.getNombreArchivo();
+		String codigoCiiuFondoProcesamiento = validacionArchivo.getValidacionLineas().get(0).getContenido().get(9);
+		String fileProcesamiento = validacionArchivo.getNombreArchivo();
 
-		List<Transportadoras> transportadorasProc = transportadorasRepository.findAll();
+		List<Transportadoras> transportadorasProcesamiento = transportadorasRepository.findAll();
 
-		String codigoTdv = null;
-		String nombreTdv = null;
+		String codigoTdvProcesamiento = null;
+		String nombreTdvProcesamiento = null;
 
-		for (Transportadoras t : transportadorasProc) {
-			if (file.contains(t.getNombreTransportadora())) {
-				codigoTdv = t.getAbreviatura();
-				nombreTdv = t.getNombreTransportadora();
+		for (Transportadoras t : transportadorasProcesamiento) {
+			if (fileProcesamiento.contains(t.getNombreTransportadora())) {
+				codigoTdvProcesamiento = t.getAbreviatura();
+				nombreTdvProcesamiento = t.getNombreTransportadora();
 				break;
 			}
 		}
 
-		IPuntoInterno puntoInterno = puntosRepository.findPuntoInterno(
+		IPuntoInterno puntoInternoProcesamiento = puntosRepository.findPuntoInterno(
 				validacionArchivo.getValidacionLineas().get(0).getContenido().get(7),
-				validacionArchivo.getValidacionLineas().get(0).getContenido().get(8), codigoTdv, entidad);
+				validacionArchivo.getValidacionLineas().get(0).getContenido().get(8), codigoTdvProcesamiento, entidadProcesamiento);
 
-		Integer puntoFondo = puntosRepository.findPuntoFondo(entidad, Constantes.PUNTO_FONDO, codigoCiiuFondo,
-				codigoTdv, nombreTdv, validacionArchivo.getValidacionLineas().get(0).getContenido().get(10));
+		Integer puntoFondoProcesamiento = puntosRepository.findPuntoFondo(entidadProcesamiento, Constantes.PUNTO_FONDO, codigoCiiuFondoProcesamiento,
+				codigoTdvProcesamiento, nombreTdvProcesamiento, validacionArchivo.getValidacionLineas().get(0).getContenido().get(10));
 
-		String tipoOperacion = costosProcesamientoService.getOperacionProcesamiento(puntoInterno.getTipoPunto());
+		String tipoOperacion = costosProcesamientoService.getOperacionProcesamiento(
+				puntoInternoProcesamiento != null ? puntoInternoProcesamiento.getTipoPunto() : "UNDEFINED"
+			);
 
 		String codigoPunto1;
 		String codigoPunto2;
 
 		if ("RECOLECCION".equalsIgnoreCase(tipoOperacion) || "RETIRO".equalsIgnoreCase(tipoOperacion)) {
-			codigoPunto1 = puntoInterno.getCodigoPunto().toString();
-			codigoPunto2 = puntoFondo.toString();
+		    codigoPunto1 = (puntoInternoProcesamiento != null && puntoInternoProcesamiento.getCodigoPunto() != null)
+		                   ? puntoInternoProcesamiento.getCodigoPunto().toString() : "0";
+		    codigoPunto2 = (puntoFondoProcesamiento != null) ? puntoFondoProcesamiento.toString() : "0";
 		} else {
-			codigoPunto1 = puntoFondo.toString();
-			codigoPunto2 = puntoInterno.getCodigoPunto().toString();
+		    codigoPunto1 = (puntoFondoProcesamiento != null) ? puntoFondoProcesamiento.toString() : "0";
+		    codigoPunto2 = (puntoInternoProcesamiento != null && puntoInternoProcesamiento.getCodigoPunto() != null)
+		                   ? puntoInternoProcesamiento.getCodigoPunto().toString() : "0";
 		}
 
 		String entradaSalida = archivosLiquidacionService.getEntradaSalida(tipoOperacion,
@@ -277,7 +280,7 @@ public class GeneralRepositoryImpl implements IGeneralRepository{
 	    detalleDefinicionMap.put("codigo_ciiu_fondo", ListaDetalleDTO.builder()
 	        .nombreCampo("codigo_ciiu_fondo")
 	        .tipoDato("T")
-	        .valor(codigoCiiuFondo)
+	        .valor(codigoCiiuFondoProcesamiento)
 	        .build());
 	    
 	    detalleDefinicionMap.put("fecha_servicio_transporte", ListaDetalleDTO.builder()
@@ -289,7 +292,7 @@ public class GeneralRepositoryImpl implements IGeneralRepository{
 	    detalleDefinicionMap.put("codigo_tdv", ListaDetalleDTO.builder()
 	        .nombreCampo("codigo_tdv")
 	        .tipoDato("T")
-	        .valor(codigoTdv)
+	        .valor(codigoTdvProcesamiento)
 	        .build());
 
 	    detalleDefinicionMap.put("codigoPunto1", ListaDetalleDTO.builder()
@@ -313,13 +316,13 @@ public class GeneralRepositoryImpl implements IGeneralRepository{
 	    detalleDefinicionMap.put("nombreArchivo", ListaDetalleDTO.builder()
 	        .nombreCampo("nombreArchivo")
 	        .tipoDato("T")
-	        .valor(file)
+	        .valor(fileProcesamiento)
 	        .build());
 
 	    detalleDefinicionMap.put("agrupador", ListaDetalleDTO.builder()
 	        .nombreCampo("agrupador")
 	        .tipoDato("T")
-	        .valor(agrupador)
+	        .valor(agrupadorProcesamiento)
 	        .build());
 
 	    return detalleDefinicionMap;
@@ -328,9 +331,7 @@ public class GeneralRepositoryImpl implements IGeneralRepository{
 	
 	private Map<String, ListaDetalleDTO> getLlaveTransporte(ValidacionArchivoDTO validacionArchivo,
 			Map<String, ListaDetalleDTO> detalleDefinicionMap) {
-		
-		try {
-		
+
 		String entidad = validacionArchivo.getValidacionLineas().get(0).getContenido().get(0);
 		String agrupador = validacionArchivo.getMaestroDefinicion().getIdMaestroDefinicionArchivo();
 
@@ -339,26 +340,26 @@ public class GeneralRepositoryImpl implements IGeneralRepository{
 		LocalDate fecha = LocalDate.parse(fechaRaw, formatter);
 		String fechaFormated = fecha.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-		String codigoCiiuFondo = validacionArchivo.getValidacionLineas().get(0).getContenido().get(8);
+		String codigoCiiuFondo = validacionArchivo.getValidacionLineas().get(0).getContenido().get(10);
 		String file = validacionArchivo.getNombreArchivo();
 
-		List<Transportadoras> transportadorasProc = transportadorasRepository.findAll();
+		List<Transportadoras> transportadorasTransporte = transportadorasRepository.findAll();
 
 		String codigoTdv = null;
 		String nombreTdv = null;
 
-		for (Transportadoras t : transportadorasProc) {
+		for (Transportadoras t : transportadorasTransporte) {
 			if (file.contains(t.getNombreTransportadora())) {
 				codigoTdv = t.getAbreviatura();
 				nombreTdv = t.getNombreTransportadora();
 				break;
 			}
 		}
-		
+
 		IPuntoInterno puntoInterno = puntosRepository.findPuntoInterno(
 				validacionArchivo.getValidacionLineas().get(0).getContenido().get(6),
 				validacionArchivo.getValidacionLineas().get(0).getContenido().get(7), codigoTdv, entidad);
-		
+
 		Integer puntoFondo = puntosRepository.findPuntoFondo(entidad, Constantes.PUNTO_FONDO, codigoCiiuFondo,
 				codigoTdv, nombreTdv, validacionArchivo.getValidacionLineas().get(0).getContenido().get(11));
 
@@ -371,11 +372,13 @@ public class GeneralRepositoryImpl implements IGeneralRepository{
 		String codigoPunto2;
 
 		if ("SALIDA".equalsIgnoreCase(entradaSalida)) {
-			codigoPunto1 = puntoFondo.toString();
-			codigoPunto2 = puntoInterno.getCodigoPunto().toString();
+		    codigoPunto1 = puntoFondo != null ? puntoFondo.toString() : "0";
+		    codigoPunto2 = (puntoInterno != null && puntoInterno.getCodigoPunto() != null)
+		                   ? puntoInterno.getCodigoPunto().toString() : "0";
 		} else {
-			codigoPunto1 = puntoInterno.getCodigoPunto().toString();
-			codigoPunto2 = puntoFondo.toString();
+		    codigoPunto1 = (puntoInterno != null && puntoInterno.getCodigoPunto() != null)
+		                   ? puntoInterno.getCodigoPunto().toString() : "0";
+		    codigoPunto2 = puntoFondo != null ? puntoFondo.toString() : "0";
 		}
 
 
@@ -428,12 +431,6 @@ public class GeneralRepositoryImpl implements IGeneralRepository{
 	        .build());
 
 	    return detalleDefinicionMap;
-	    
-		} catch (Exception e) {
-			log.error("tipoCargue: {} - Error: {}", e);
-			throw new NegocioException(ApiResponseCode.GENERIC_ERROR.getCode(),
-					ApiResponseCode.GENERIC_ERROR.getDescription(), ApiResponseCode.GENERIC_ERROR.getHttpStatus());
-		}
 	}
 
 }
