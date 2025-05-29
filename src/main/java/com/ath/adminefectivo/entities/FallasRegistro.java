@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -61,10 +62,10 @@ public class FallasRegistro {
 	private Date fechaModificacion;	
 	
 	@ManyToOne
-	@JoinColumn( name = "CONSECUTIVO_REGISTRO", columnDefinition = "consecutivoRegistro", 
-												insertable = false, updatable = false)	
-	@JoinColumn( name = "ID_ARCHIVO", columnDefinition = "idArchivo", insertable = false, 
-												updatable = false)
+	@JoinColumns({
+		@JoinColumn(name = "ID_ARCHIVO", referencedColumnName = "ID_ARCHIVO", insertable = false, updatable = false),
+		@JoinColumn(name = "CONSECUTIVO_REGISTRO", referencedColumnName = "CONSECUTIVO_REGISTRO", insertable = false, updatable = false)
+	})
 	private RegistrosCargados registrosCargados;
 
 }

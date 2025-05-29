@@ -18,7 +18,7 @@ public class UsuarioDTO {
 
 	private String apellidos;
 	
-	private String tipoUsario;
+	private String tipoUsuario;
 
 	private String estado;
 
@@ -32,7 +32,7 @@ public class UsuarioDTO {
 		usuarioDTO.setIdUsuario(t.getIdUsuario());
 		usuarioDTO.setNombres(t.getNombres());
 		usuarioDTO.setApellidos(t.getApellidos());
-		usuarioDTO.setTipoUsario(t.getTipoUsario());
+		usuarioDTO.setTipoUsuario(t.getTipoUsuario());
 		usuarioDTO.setEstado(t.getEstado());
 		
 		usuarioDTO.setRol(RolDTO.CONVERTER_DTO.apply(t.getRol()));
@@ -48,7 +48,7 @@ public class UsuarioDTO {
 		usuario.setIdUsuario(t.getIdUsuario());
 		usuario.setNombres(t.getNombres());
 		usuario.setApellidos(t.getApellidos());
-		usuario.setTipoUsario(t.getTipoUsario());
+		usuario.setTipoUsuario(t.getTipoUsuario());
 		usuario.setEstado(t.getEstado());
 		
 		Rol r = new Rol();

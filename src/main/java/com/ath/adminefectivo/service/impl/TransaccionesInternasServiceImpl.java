@@ -3,16 +3,13 @@ package com.ath.adminefectivo.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.ath.adminefectivo.dto.TransaccionesInternasDTO;
 import com.ath.adminefectivo.entities.TransaccionesInternas;
 import com.ath.adminefectivo.repositories.ITransaccionesInternasRepository;
 import com.ath.adminefectivo.service.IErroresContablesService;
 import com.ath.adminefectivo.service.ITransaccionesInternasService;
-
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -45,7 +42,7 @@ public class TransaccionesInternasServiceImpl implements ITransaccionesInternasS
 	 */
 	@Override
 	public TransaccionesInternasDTO getTransaccionesInternasById(Long idTransaccionesInternas) {
-		TransaccionesInternas transaccionInternaEntity = transaccionesInternasRepository.getById(idTransaccionesInternas);
+		TransaccionesInternas transaccionInternaEntity = transaccionesInternasRepository.getReferenceById(idTransaccionesInternas);
 		
 		return TransaccionesInternasDTO.CONVERTER_DTO.apply(transaccionInternaEntity);
 	}

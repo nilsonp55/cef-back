@@ -234,6 +234,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
       List<ArchivosCargadosDTO> archivos) {
     List<OperacionesProgramadasDTO> listadoOperacionesProgramadas = new ArrayList<>();
     archivos.forEach(archivo -> {
+    	
       List<OperacionesProgramadasDTO> listaOperacionesProgramadas =
           this.procesarRegistrosCargadosArchivo(archivo);
 
@@ -445,7 +446,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
   /**
    * Funcion encargada de obtener el tipo de operacion y llamar la función encargada de realizar
    * cada operacion
-   * 
+   * 2024-09-11 Actualizacion HU006 No liquida costos para banco de la republica (consignacion, retiro,cambio)
    * @param contenido
    * @param detalleArchivo
    * @param archivo
@@ -457,7 +458,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
     OperacionesProgramadasDTO operacionProgramada = null;
     String tipoServicio = contenido[this.obtenerNumeroCampoTipoServ(detalleArchivo)];
-
+    
     if (archivo.getIdModeloArchivo().equals(Dominios.TIPO_ARCHIVO_IPPSV)
         && tipoServicio.toUpperCase().trim().contains(Dominios.TIPO_OPERA_CONSIGNACION)) {
       operacionProgramada =
@@ -521,7 +522,9 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
         Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN);
     PuntosDTO puntoBancoDestino = this.consultarPuntoBanRepPorDetalle(contenido,
         detalleArchivo, Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO);
-
+    
+    String tipoOperacion = contenido[this.obtenerNumeroCampoTipoServ(detalleArchivo)];
+  
 	if (!Objects.isNull(puntoFondoOrigen)
 			&& !puntoFondoOrigen.getTipoPunto().toUpperCase().trim().equals(Constantes.PUNTO_FONDO)) {
 		throw new NegocioException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
@@ -547,9 +550,13 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 				.codigoFondoTDV(puntoFondoOrigen.getCodigoPunto()).entradaSalida(Constantes.VALOR_SALIDA)
 				.codigoPuntoOrigen(puntoFondoOrigen.getCodigoPunto())
 				.codigoPuntoDestino(puntoBancoDestino.getCodigoPunto())
-				.idArchivoCargado(Math.toIntExact(archivo.getIdArchivo())).build();
+				.idArchivoCargado(Math.toIntExact(archivo.getIdArchivo()))
+				.liquidaCosto(Dominios.VERDADERO)
+				.build();
 
 		operacionesProgramadasDTO.setTipoOperacion(Dominios.TIPO_OPERA_CONSIGNACION);
+		if (tipoOperacion.trim().endsWith(Dominios.TIPO_OPERACION_TERMINA_CCE))
+			operacionesProgramadasDTO.setLiquidaCosto(Dominios.FALSO);
 	}
     
     var operacionProgramadaEnt = operacionesProgramadasRepository
@@ -575,6 +582,8 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
     log.info("operacion retiro archivo: {}, esCambio: {}", archivo.getNombreArchivo(), esCambio);
     OperacionesProgramadasDTO operacionesProgramadasDTO = new OperacionesProgramadasDTO();
 
+    String tipoOperacion = contenido[this.obtenerNumeroCampoTipoServ(detalleArchivo)];
+    
     PuntosDTO puntoFondoDestino = this.consultarPuntoPorDetalle(contenido,
         detalleArchivo, Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO);
     PuntosDTO puntoBancoOrigen = this.consultarPuntoBanRepPorDetalle(contenido,
@@ -611,9 +620,13 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 				.codigoFondoTDV(puntoFondoDestino.getCodigoPunto()).entradaSalida(Constantes.VALOR_ENTRADA)
 				.codigoPuntoOrigen(puntoBancoOrigen.getCodigoPunto())
 				.codigoPuntoDestino(puntoFondoDestino.getCodigoPunto())
-				.idArchivoCargado(Math.toIntExact(archivo.getIdArchivo())).comisionBR(valorComisionBR).build();
+				.idArchivoCargado(Math.toIntExact(archivo.getIdArchivo())).comisionBR(valorComisionBR)
+				.liquidaCosto(Dominios.VERDADERO)
+				.build();
 
 		operacionesProgramadasDTO.setTipoOperacion(Dominios.TIPO_OPERA_RETIRO);
+		if (tipoOperacion.trim().endsWith(Dominios.TIPO_OPERACION_TERMINA_CCE))
+			operacionesProgramadasDTO.setLiquidaCosto(Dominios.FALSO);
 	}
     
     var operacionProgramadaEnt = operacionesProgramadasRepository
@@ -686,7 +699,9 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
             .codigoFondoTDV(puntoFondoDestino.getCodigoPunto())
             .entradaSalida(Constantes.VALOR_ENTRADA).codigoPuntoOrigen(bancoOrigen.getCodigoPunto())
             .codigoPuntoDestino(puntoFondoDestino.getCodigoPunto())
-            .idArchivoCargado(Math.toIntExact(archivo.getIdArchivo())).build();
+            .idArchivoCargado(Math.toIntExact(archivo.getIdArchivo()))
+            .liquidaCosto(Dominios.VERDADERO)
+            .build();
         operacionProgramadaEnt = operacionesProgramadasRepository.save(
             OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(this.completarOperacionesProgramadas(
                 operacionesProgramadasDTO, contenido, detalleArchivo)));
@@ -701,7 +716,9 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
           .codigoFondoTDV(puntoFondoOrigen.getCodigoPunto()).entradaSalida(Constantes.VALOR_SALIDA)
           .codigoPuntoOrigen(puntoFondoOrigen.getCodigoPunto())
           .codigoPuntoDestino(bancoDestino.getCodigoPunto())
-          .idArchivoCargado(Math.toIntExact(archivo.getIdArchivo())).build();
+          .idArchivoCargado(Math.toIntExact(archivo.getIdArchivo()))
+          .liquidaCosto(Dominios.VERDADERO)
+          .build();
       operacionProgramadaEnt = operacionesProgramadasRepository.save(
           OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(this.completarOperacionesProgramadas(
               operacionesProgramadasDTO, contenido, detalleArchivo)));
@@ -711,7 +728,9 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
           .codigoFondoTDV(puntoFondoOrigen.getCodigoPunto()).entradaSalida(Constantes.VALOR_SALIDA)
           .codigoPuntoOrigen(puntoFondoOrigen.getCodigoPunto())
           .codigoPuntoDestino(puntoFondoDestino.getCodigoPunto())
-          .idArchivoCargado(Math.toIntExact(archivo.getIdArchivo())).build();
+          .idArchivoCargado(Math.toIntExact(archivo.getIdArchivo()))
+          .liquidaCosto(Dominios.VERDADERO)
+          .build();
 
       OperacionesProgramadasDTO operacionesProgramadasEntradaDTO =
           OperacionesProgramadasDTO.builder().codigoFondoTDV(puntoFondoDestino.getCodigoPunto())
@@ -912,7 +931,9 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
         .codigoFondoTDV(puntoFondoOrigen.getCodigoPunto()).entradaSalida(Constantes.VALOR_SALIDA)
         .codigoPuntoOrigen(puntoFondoOrigen.getCodigoPunto())
         .codigoPuntoDestino(puntoFondoDestino.getCodigoPunto())
-        .idArchivoCargado(Math.toIntExact(archivo.getIdArchivo())).build();
+        .idArchivoCargado(Math.toIntExact(archivo.getIdArchivo()))
+        .liquidaCosto(Dominios.VERDADERO)
+        .build();
 
     return this.completarOperacionesProgramadas(operacionesProgramadasDTO, contenido,
         detallesArchivo);
@@ -942,7 +963,9 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
         .codigoFondoTDV(puntoFondoDestino.getCodigoPunto()).entradaSalida(Constantes.VALOR_ENTRADA)
         .codigoPuntoOrigen(puntoFondoOrigen.getCodigoPunto())
         .codigoPuntoDestino(puntoFondoDestino.getCodigoPunto())
-        .idArchivoCargado(Math.toIntExact(archivo.getIdArchivo())).build();
+        .idArchivoCargado(Math.toIntExact(archivo.getIdArchivo()))
+        .liquidaCosto(Dominios.VERDADERO)
+        .build();
 
     OperacionesProgramadas traslado = operacionesProgramadasRepository
         .save(OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(this.completarOperacionesProgramadas(
@@ -1000,7 +1023,9 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
     operacionesProgramadasDTO = OperacionesProgramadasDTO.builder()
         .codigoFondoTDV(puntoFondoOrigen.getCodigoPunto()).entradaSalida(Constantes.VALOR_SALIDA)
         .codigoPuntoOrigen(puntoFondoOrigen.getCodigoPunto()).codigoPuntoDestino(codigoPuntoDestino)
-        .idArchivoCargado(Math.toIntExact(archivo.getIdArchivo())).build();
+        .idArchivoCargado(Math.toIntExact(archivo.getIdArchivo()))
+        .liquidaCosto(Dominios.VERDADERO)
+        .build();
 
     return this.completarOperacionesProgramadas(operacionesProgramadasDTO, contenido,
         detallesArchivo);
@@ -1053,7 +1078,9 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
     operacionesProgramadasDTO = OperacionesProgramadasDTO.builder()
         .codigoFondoTDV(puntoFondoOrigen.getCodigoPunto()).entradaSalida(Constantes.VALOR_ENTRADA)
         .codigoPuntoOrigen(codigoPuntoOrigen).codigoPuntoDestino(codigoPuntoDestino)
-        .idArchivoCargado(Math.toIntExact(archivo.getIdArchivo())).build();
+        .idArchivoCargado(Math.toIntExact(archivo.getIdArchivo()))
+        .liquidaCosto(Dominios.VERDADERO)
+        .build();
 
     return this.completarOperacionesProgramadas(operacionesProgramadasDTO, contenido,
         detallesArchivo);
@@ -1090,7 +1117,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
   /**
    * Metodo encargado de realizar el llenado de campos de operaciones programadas provenientes del
    * archivo cargado
-   * 
+   * HU006 Cuando tipoOperacion contine "CCE" no debe liquidar costos liquidaCosto = false
    * @param operacionesProgramadasDTO
    * @param contenido
    * @param detalleArchivo
@@ -1146,8 +1173,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
         .setFechaOrigen(UtilsString.convertirFecha(fechaOrigen, listaDominioFecha));
     operacionesProgramadasDTO
         .setFechaDestino(UtilsString.convertirFecha(fechaDestino, listaDominioFecha));
-
-
+  
     operacionesProgramadasDTO.setTipoOperacion(this.obtenerTipoOperacion(tipoOperacion));
     operacionesProgramadasDTO.setValorTotal(valorTotal);
 
@@ -1373,6 +1399,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
         operaciones.setValorTotal(valor.doubleValue());
         operaciones.setIdServicio(orderId);
         operaciones.setEsCambio(false);
+        operaciones.setLiquidaCosto(Dominios.VERDADERO);
         operaciones = crearDetalleOperacionesProgramadas(contenido, detalleArchivo, valor.doubleValue());
         OperacionesProgramadas op = OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(operaciones);
 
@@ -1696,6 +1723,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
     op.setUsuarioModificacion("User1");
     op.setValorTotal(Double.parseDouble(determinarValor(contenido, detalleArchivo)));
     op.setIdServicio(determinarNumeroOrden(contenido, detalleArchivo));
+    op.setLiquidaCosto(Dominios.VERDADERO);
     operacionesProgramadasRepository
         .save(OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(operaciones));
     return op;

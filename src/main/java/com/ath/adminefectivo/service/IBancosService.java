@@ -48,6 +48,15 @@ public interface IBancosService {
 	 */
 	BancosDTO findBancoByCodigoPunto(int codigoPunto);
 	
+     /**
+ 	 * Servicio encargado de consultar el banco por codigo punto.
+ 	 * Este servicio consume una optimizacion mediante JDBC
+ 	 * 
+ 	 * @param codigoPunto
+ 	 * @return BancosDTO
+ 	 */
+      BancosDTO findBancoByCodigoPuntoJdbc(int codigoPunto);
+
 	/**
 	 * Servicio encargado de consultar el banco por abreviatura, 
 	 * y convertirlo a DTO

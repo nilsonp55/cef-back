@@ -1,13 +1,11 @@
 package com.ath.adminefectivo.delegate.impl;
 
 import java.util.Objects;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.delegate.IPuntosDelegate;
 import com.ath.adminefectivo.dto.CreatePuntosDTO;
@@ -18,6 +16,7 @@ import com.ath.adminefectivo.entities.Fondos;
 import com.ath.adminefectivo.entities.Oficinas;
 import com.ath.adminefectivo.entities.Puntos;
 import com.ath.adminefectivo.entities.SitiosClientes;
+import com.ath.adminefectivo.service.IClientesCorporativosService;
 import com.ath.adminefectivo.service.IPuntosService;
 import com.querydsl.core.types.Predicate;
 
@@ -26,6 +25,9 @@ public class PuntosDelegateImpl implements IPuntosDelegate {
 
   @Autowired
   IPuntosService puntosService;
+  
+  @Autowired
+  IClientesCorporativosService clientesServices;
 
   /**
    * {@inheritDoc}
@@ -45,7 +47,12 @@ public class PuntosDelegateImpl implements IPuntosDelegate {
     Puntos punto = null;
     Puntos puntoResponse = null;
     if (Objects.isNull(createPuntosDTO.getCodigoPunto())) {
-
+      
+      // Debe ser igual el bancoAval del ClienteCorporativo con el bancoAval del Punto a crear
+      // en caso de no cumplir la validacion, se retorna error
+      if (createPuntosDTO.getTipoPunto().equals(Constantes.PUNTO_SITIO_CLIENTE))
+        clientesServices.validateClienteBancoAval(createPuntosDTO.getBancoAVAL(), createPuntosDTO.getCodigoCliente());
+      
       punto = new Puntos();
       punto.setTipoPunto(createPuntosDTO.getTipoPunto());
       punto.setNombrePunto(createPuntosDTO.getNombrePunto());
@@ -81,7 +88,7 @@ public class PuntosDelegateImpl implements IPuntosDelegate {
         sitiosClientes.setCodigoCliente(createPuntosDTO.getCodigoCliente());
         sitiosClientes.setFajado(createPuntosDTO.getFajado());
         sitiosClientes.setPuntos(puntoResponse);
-
+        
         puntoResponse = puntosService.guardarPuntoSitioCliente(punto, sitiosClientes);
       }
 
@@ -170,5 +177,14 @@ public class PuntosDelegateImpl implements IPuntosDelegate {
   @Override
   public PuntosDTO getPuntoById(Integer idPunto) {
     return PuntosDTO.CONVERTER_DTO.apply(puntosService.getPuntoById(idPunto));
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  @Transactional
+  public void eliminarPunto(Integer idPunto) {
+    puntosService.eliminarPunto(idPunto);
   }
 }

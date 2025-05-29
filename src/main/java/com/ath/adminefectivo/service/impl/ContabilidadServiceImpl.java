@@ -3,11 +3,9 @@ package com.ath.adminefectivo.service.impl;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.BancosDTO;
@@ -90,12 +88,8 @@ public class ContabilidadServiceImpl implements IContabilidadService {
   @Override
   public int generarMovimientosContables(Date fechaInicio, Date fechaFin, String tipoContabilidad,
       int estadoContabilidadGenerado) {
-    boolean result = transaccionesInternasService.generarMovimientosContables(fechaInicio, fechaFin,
-        tipoContabilidad, estadoContabilidadGenerado);
-    if (result) {
-      return 1;
-    }
-    return 0;
+    return transaccionesInternasService.generarMovimientosContables(fechaInicio, fechaFin,
+        tipoContabilidad, estadoContabilidadGenerado) ? 1 : 0;
   }
 
   /**
@@ -226,8 +220,8 @@ public class ContabilidadServiceImpl implements IContabilidadService {
         && Constantes.NOMBRE_SALIDA.equals(operacionIntradia.getEntradaSalida())) {
       TransaccionesInternasDTO operacionIntradia12 =
           generarTransaccionInternaIntradia(tipoContabilidad, "I", operacionIntradia, fechaSistema);
-      operacionIntradia12.setValor(this
-          .calcularValorImpuestoIncluido(operacionIntradia11.getValor(), Dominios.IMPUESTO_IVA));
+      operacionIntradia12.setValor(operacionIntradia11.getValor() - this.calcularIngresoSinImpuestoIncluido(operacionIntradia11.getValor(), 
+          Dominios.IMPUESTO_IVA));
       operacionIntradia12.setTipoImpuesto(Integer.valueOf(Dominios.IMPUESTO_IVA));
       transaccionesInternasService.saveTransaccionesInternasById(operacionIntradia12);
       valorImpuesto = operacionIntradia12.getValor();
@@ -239,7 +233,7 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 
     TransaccionesInternasDTO operacionIntradia13 =
         generarTransaccionInternaIntradia(tipoContabilidad, "P", operacionIntradia, fechaSistema);
-    operacionIntradia13.setCodigoComision(null);
+
     operacionIntradia13.setMedioPago(Dominios.MEDIOS_PAGO_DESCUENTO);
     transaccionesInternasService.saveTransaccionesInternasById(operacionIntradia13);
 
@@ -541,7 +535,7 @@ public class ContabilidadServiceImpl implements IContabilidadService {
     return (long1 * valorImpuesto) / 100;
   }
 
-  private long calcularValorImpuestoIncluido(long valor, String impuesto) {
+  private long calcularIngresoSinImpuestoIncluido(long valor, String impuesto) {
     Integer valorImpuesto =
         dominioService.valorNumericoDominio(Constantes.DOMINIO_IMPUESTOS, impuesto).intValue();
     return (valor * 100) / (valorImpuesto + 100);

@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 import javax.inject.Named;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -22,7 +23,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class OperacionesLiquidacionTransporteEntity {
 
-    @Id
+	@Id
     @Named(value = "CONSECUTIVO_REGISTRO")
     private Integer consecutivoRegistro;
 
@@ -100,6 +101,12 @@ public class OperacionesLiquidacionTransporteEntity {
 
     @Named(value = "VALOR_TOTAL_TRANSPORTADO_TDV")
     private BigDecimal valorTotalTransportadoTdv;
+    
+    @Named(value = "NUMERO_FAJOS")
+    private BigDecimal numeroFajos;
+
+    @Named(value = "NUMERO_FAJOS_TDV")
+    private BigDecimal numeroFajosTdv;
 
     @Named(value = "NUMERO_BOLSAS")
     private BigDecimal numeroBolsas;

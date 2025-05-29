@@ -1,7 +1,6 @@
 package com.ath.adminefectivo.service;
 
 import java.util.List;
-
 import com.ath.adminefectivo.dto.CentroCiudadDTO;
 import com.querydsl.core.types.Predicate;
 
@@ -43,5 +42,12 @@ public interface ICentroCiudadService {
 	 * @author cesar.castano
 	 */
 	CentroCiudadDTO putCentroCiudad(CentroCiudadDTO centroCiudadDTO);
+	
+    /**
+     * 
+     * @param idCentroCiudad
+     * @author prv_nparra
+     */
+    void deleteCentroCiudad(Integer idCentroCiudad);
 	
 }

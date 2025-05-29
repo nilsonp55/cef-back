@@ -44,6 +44,15 @@ public final class Parametros {
 	public static final String SALT_VALUE = "SALT_VALUE";
 	public static final String URL_FILE_PUBLIC_KEY = "URL_FILE_PUBLIC_KEY";
 	
+	/**
+	 * Reglas personalizadas SQM
+	 */
+	public static final String VALIDAR_FECHA_TRANSPORTE = "FECHAARCHIVO";
+	public static final String CODIGO_TDV = "CODIGOTDV";
+	public static final String MONEDA_DIVISA = "MONEDADIVISA";
+	public static final String MAESTRO_LLAVE_PROCESAMIENTO= "LLAVEPROCESAMIENTO";
+	public static final String MAESTRO_LLAVE_TRANSPORTE= "LLAVETRANSPORTE";
+	
 	
 	
 

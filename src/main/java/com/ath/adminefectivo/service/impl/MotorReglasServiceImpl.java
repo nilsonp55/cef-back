@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,8 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ath.adminefectivo.constantes.Constantes;
+import com.ath.adminefectivo.constantes.Dominios;
+import com.ath.adminefectivo.dto.ListaDetalleDTO;
 import com.ath.adminefectivo.dto.ReglasDetalleArchivoDTO;
 import com.ath.adminefectivo.dto.compuestos.TokenMotorDTO;
+import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoDTO;
 import com.ath.adminefectivo.dto.compuestos.ValidacionMotorDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.exception.NegocioException;
@@ -22,6 +26,7 @@ import com.ath.adminefectivo.factory.TipoReglaFactory;
 import com.ath.adminefectivo.service.IMotorReglasService;
 import com.ath.adminefectivo.service.IReglasDetalleArchivoService;
 import com.ath.adminefectivo.service.ITipoReglaInterface;
+import com.ath.adminefectivo.service.ITipoReglaInterfaceCostos;
 import com.ath.adminefectivo.utils.UtilsString;
 
 import lombok.EqualsAndHashCode;
@@ -35,6 +40,9 @@ public class MotorReglasServiceImpl implements IMotorReglasService {
 
 	@Autowired
 	TipoReglaFactory tipoReglaFactory;
+	
+	@Autowired
+	private ITipoReglaInterfaceCostos reglaCostos;
 
 	public static final int INICIO = 0;
 
@@ -43,22 +51,25 @@ public class MotorReglasServiceImpl implements IMotorReglasService {
 	private List<String> listaMensajesError;
 
 	@Override
-	public ValidacionMotorDTO evaluarReglaMultiple(String regla, String valorCampo) {
+	public ValidacionMotorDTO evaluarReglaMultiple(String regla, String valorCampo,
+			ValidacionArchivoDTO validacionArchivo, int index, Map<String, ListaDetalleDTO> detalleDefinicionMap) {
 		this.listaErrores = new ArrayList<>();
 		this.listaMensajesError = new ArrayList<>();
 		regla = regla.toUpperCase();
 		Collection<TokenMotorDTO> tokenVOSet = compilarRegla(regla);
-		var validacionRegla = evaluarTokens(tokenVOSet, valorCampo);
+		var validacionRegla = evaluarTokens(tokenVOSet, valorCampo, validacionArchivo, index, detalleDefinicionMap);
 		return ValidacionMotorDTO.builder().isValida(validacionRegla).codigosError(listaErrores)
 				.mensajesError(listaMensajesError).build();
 	}
 
 	@Override
-	public ValidacionMotorDTO evaluarReglaSimple(String regla, String valorCampo) {
+	public ValidacionMotorDTO evaluarReglaSimple(String regla, String valorCampo,
+			ValidacionArchivoDTO validacionArchivo, int index, Map<String, ListaDetalleDTO> detalleDefinicionMap) {
 		if (UtilsString.isNumeroEntero(regla)) {
 			this.listaErrores = new ArrayList<>();
 			this.listaMensajesError = new ArrayList<>();
-			var validacionRegla = this.ejecutarRegla(Integer.valueOf(regla), valorCampo);
+			var validacionRegla = this.ejecutarRegla(Integer.valueOf(regla), valorCampo, validacionArchivo, index,
+					detalleDefinicionMap);
 			return ValidacionMotorDTO.builder().isValida(validacionRegla).mensajesError(listaMensajesError)
 					.codigosError(listaErrores).build();
 		} else {
@@ -77,7 +88,8 @@ public class MotorReglasServiceImpl implements IMotorReglasService {
 	 * @return boolean
 	 * @author rafaelParra
 	 */
-	private boolean evaluarTokens(Collection<TokenMotorDTO> tokenVOSet, String valorCampo) {
+	private boolean evaluarTokens(Collection<TokenMotorDTO> tokenVOSet, String valorCampo,
+			ValidacionArchivoDTO validacionArchivo, int index, Map<String, ListaDetalleDTO> detalleDefinicionMap) {
 
 		boolean resultado = false;
 		TokenMotorDTO tokenVO;
@@ -89,12 +101,14 @@ public class MotorReglasServiceImpl implements IMotorReglasService {
 			switch (tokenVO.getTipo()) {
 
 			case TokenMotorDTO.PARENTESIS:
-				tokenVO.setResultado(evaluarTokens(tokenVO.getSubTokens(), valorCampo));
+				tokenVO.setResultado(evaluarTokens(tokenVO.getSubTokens(), valorCampo, validacionArchivo, index,
+						detalleDefinicionMap));
 				break;
 
 			case TokenMotorDTO.NUMERO:
 				if (UtilsString.isNumeroEntero(tokenVO.getRegla())) {
-					tokenVO.setResultado(ejecutarRegla(Integer.parseInt(tokenVO.getRegla()), valorCampo));
+					tokenVO.setResultado(ejecutarRegla(Integer.parseInt(tokenVO.getRegla()), valorCampo,
+							validacionArchivo, index, detalleDefinicionMap));
 				}
 
 				break;
@@ -116,9 +130,10 @@ public class MotorReglasServiceImpl implements IMotorReglasService {
 	 * @param valorCampo
 	 * @return boolean
 	 */
-	private boolean ejecutarRegla(Integer regla, String valorCampo) {
+	private boolean ejecutarRegla(Integer regla, String valorCampo, ValidacionArchivoDTO validacionArchivo, int index,
+			Map<String, ListaDetalleDTO> detalleDefinicionMap) {
 		ReglasDetalleArchivoDTO reglaVO = reglasDetalleArchivoService.buscarRegla(regla);
-		var resultadoRegla = this.compilarRegla(reglaVO, valorCampo);
+		var resultadoRegla = this.compilarRegla(reglaVO, valorCampo, validacionArchivo, index, detalleDefinicionMap);
 		if (!resultadoRegla) {
 			String mensaje = Objects.isNull(reglaVO.getMensajes()) || Objects.isNull(reglaVO.getMensajes().getMensaje())
 					? MessageFormat.format(Constantes.MENSAJE_ERROR_VALIDACION_CAMPOS, regla)
@@ -395,13 +410,19 @@ public class MotorReglasServiceImpl implements IMotorReglasService {
 	 * @param valorCampo
 	 * @return rafaelParra
 	 */
-	public boolean compilarRegla(ReglasDetalleArchivoDTO reglaVO, String valorCampo) {
+	public boolean compilarRegla(ReglasDetalleArchivoDTO reglaVO, String valorCampo,
+			ValidacionArchivoDTO validacionArchivo, int index, Map<String, ListaDetalleDTO> detalleDefinicionMap) {
 
-		if ( valorCampo != null && !"".equals(valorCampo) ) {
+		if (valorCampo != null && !"".equals(valorCampo)) {
 			ITipoReglaInterface tipoReglaInterface = tipoReglaFactory.getInstance(reglaVO.getTipoRegla());
-			return tipoReglaInterface.ejecutarRegla(reglaVO, valorCampo);
-		}
-		else {
+
+			if (reglaVO.getTipoRegla().equals(Dominios.TIPO_REGLA_CONSULTA_SQL_MULTIPARAMETRO)) {
+				return reglaCostos.ejecutarRegla(reglaVO, valorCampo, validacionArchivo, index, detalleDefinicionMap);
+			} else {
+				return tipoReglaInterface.ejecutarRegla(reglaVO, valorCampo);
+			}
+
+		} else {
 			return true;
 		}
 	}

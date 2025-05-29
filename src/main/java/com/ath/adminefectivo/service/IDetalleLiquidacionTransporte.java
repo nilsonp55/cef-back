@@ -1,0 +1,63 @@
+package com.ath.adminefectivo.service;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
+public interface IDetalleLiquidacionTransporte {
+	
+	Integer getIdLlave();
+    String getConsecutivoRegistro();
+    Integer getIdArchivoCargado();
+    String getIdRegistro();
+    String getIdsLiquidacionApp();
+    String getIdsLiquidacionTdv();
+    BigInteger getTipoTransaccion();
+    String getEntidad();
+    java.sql.Timestamp getFechaServicioTransporte();
+    String getIdentificacionCliente();
+    String getRazonSocial();
+    String getCodigoPuntoCargo();
+    String getNombrePuntoCargo();
+    String getCiudadFondo();
+    String getNombreTipoServicio();
+    String getMonedaDivisa();
+    Integer getAplicativo();
+    Integer getTdv();
+    String getTipoPedido();
+    String getTipoPedidoTdv();
+    String getEscala();
+    String getEscalaTdv();
+    BigDecimal getValorTransportadoBilletes();
+    BigDecimal getValorTransportadoBilletesTdv();
+    BigDecimal getValorTransportadoMonedas();
+    BigDecimal getValorTransportadoMonedasTdv();
+    BigDecimal getValorTotalTransportado();
+    BigDecimal getValorTotalTransportadoTdv();
+    BigDecimal getNumeroFajos();
+    BigDecimal getNumeroFajosTdv();
+    BigDecimal getNumeroBolsas();
+    BigDecimal getNumeroBolsasTdv();
+    Integer getCostoFijo();
+    Integer getCostoFijoTdv();
+    BigDecimal getCostoMilaje();
+    BigDecimal getCostoMilajeTdv();
+    BigDecimal getCostoBolsa();
+    BigDecimal getCostoBolsaTdv();
+    Integer getCostoFlete();
+    Integer getCostoFleteTdv();
+    Integer getCostoEmisario();
+    Integer getCostoEmisarioTdv();
+    Integer getOtros1();
+    Integer getOtros2();
+    Integer getOtros3();
+    Integer getOtros4();
+    Integer getOtros5();
+    BigDecimal getSubtotal();
+    BigDecimal getSubtotalTdv();
+    String getIva();
+    BigDecimal getValorTotal();
+    String getEstado();
+    String getModulo();
+    BigInteger getIdLlavesMaestroTdv();
+    BigInteger getIdLlavesMaestroApp();
+}

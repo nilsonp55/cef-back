@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -149,5 +150,48 @@ public class CostosProcesamiento {
 	
 	@Column(name = "CODIGO_TDV")
 	private String codigoTdv;
+	
+	@Column(name = "CODIGO_PUNTO_INTERNO")
+	private Integer codigoPuntoInterno;
 
+	@Column(name = "TIPO_PUNTO")
+	private String tipoPunto;
+
+	@Column(name = "CODIGO_PUNTO_FONDO")
+	private Integer codigoPuntoFondo;
+
+	@Column(name = "NOMBRE_FONDO")
+	private String nombreFondo;
+	
+	@Column(name = "TIPO_OPERACION")
+	private String tipoOperacion;
+	
+	@Column(name = "ENTRADA_SALIDA")
+	private String entradaSalida;
+
+	@Column(name = "CLASIFICACION_FAJADO")
+	private Double clasificacionFajado = 0.0;
+
+	@Column(name = "CLASIFICACION_NO_FAJADO")
+	private Double clasificacionNoFajado = 0.0;
+
+	@Column(name = "COSTO_PAQUETEO")
+	private Double costoPaqueteo = 0.0;
+
+	@Column(name = "MONEDA_RESIDUO")
+	private Double monedaResiduo = 0.0;
+
+	@Column(name = "BILLETE_RESIDUO")
+	private Double billeteResiduo = 0.0;
+	
+	/**
+	 * Campos auxiliares usados en cálculos transitorios del procesamiento.
+	 * No está persistido en base de datos.
+	 */
+	
+	@Transient
+	private BigDecimal valorAlmacenamientoBillete;
+
+	@Transient
+	private BigDecimal valorAlmacenamientoMoneda;
 }

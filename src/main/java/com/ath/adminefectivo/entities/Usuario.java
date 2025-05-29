@@ -42,7 +42,7 @@ public class Usuario {
 	private String apellidos;
 	
 	@Column(name = "TIPO_USUARIO")
-	private String tipoUsario;
+	private String tipoUsuario;
 	
 	@Column(name = "ESTADO")
 	private String estado;

@@ -52,7 +52,7 @@ class UsuarioRepositoryTest {
 			.idUsuario("1")
 			.apellidos("Sarmiento")
 			.nombres("Carlos")
-			.tipoUsario("tecnico")
+			.tipoUsuario("tecnico")
 			.estado("1")
 			.fechaCreacion( Date.from(Instant.now()) )
 			.fechaModificacion( Date.from(Instant.now()) )
@@ -118,7 +118,7 @@ class UsuarioRepositoryTest {
 		usuarioFind.setFechaCreacion(fechaCreacion);
 		usuarioFind.setFechaModificacion(fechaModificacion);
 		usuarioFind.setNombres("Nombres Test");
-		usuarioFind.setTipoUsario("test");
+		usuarioFind.setTipoUsuario("test");
 		usuarioFind.setUsuarioCreacion("user2");
 		usuarioFind.setUsuarioModificacion("user3");
 		Usuario usuarioSaved = usuarioRepository.save(usuarioFind);
@@ -130,7 +130,7 @@ class UsuarioRepositoryTest {
 		assertThat(usuarioSaved.getFechaCreacion()).isEqualTo(usuarioFind.getFechaCreacion());
 		assertThat(usuarioSaved.getFechaModificacion()).isEqualTo(usuarioFind.getFechaModificacion());
 		assertThat(usuarioSaved.getNombres()).isEqualTo(usuarioFind.getNombres());
-		assertThat(usuarioSaved.getTipoUsario()).isEqualTo(usuarioFind.getTipoUsario());
+		assertThat(usuarioSaved.getTipoUsuario()).isEqualTo(usuarioFind.getTipoUsuario());
 		assertThat(usuarioSaved.getUsuarioCreacion()).isEqualTo(usuarioFind.getUsuarioCreacion());
 		assertThat(usuarioSaved.getUsuarioModificacion()).isEqualTo(usuarioFind.getUsuarioModificacion());
 	}

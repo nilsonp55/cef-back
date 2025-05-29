@@ -23,8 +23,11 @@ import com.amazonaws.AmazonServiceException;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.ListObjectsV2Request;
 import com.amazonaws.services.s3.model.ListObjectsV2Result;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.ath.adminefectivo.constantes.Constantes;
@@ -50,7 +53,6 @@ public class S3Utils {
 
   @Value("${aws.s3.region}")
   private String awsRegion;
-
 
   /**
    * upload file
@@ -264,13 +266,10 @@ public class S3Utils {
   public void convertAndSaveArchivoEnBytes(MultipartFile archivo, String key,
       String nombreArchivo) {
     log.info("file to convert: {}", nombreArchivo);
-    FileOutputStream fos = null;
-    try {
-
+    try (FileOutputStream fos = new FileOutputStream(new File(key + nombreArchivo))) {
       String pathArchivo = key + nombreArchivo;
       File file = new File(pathArchivo);
       file.createNewFile();
-      fos = new FileOutputStream(new File(pathArchivo));
       byte[] bytearr = archivo.getBytes();
       log.debug("byte length: {} - Size: {}", bytearr.length, archivo.getSize());
       fos.write(archivo.getBytes());
@@ -280,14 +279,6 @@ public class S3Utils {
       throw new NegocioException(ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getCode(),
           ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getDescription(),
           ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getHttpStatus());
-    } finally {
-      if (fos != null) {
-        try {
-          fos.close();
-        } catch (IOException e) {
-          log.error("closed file: {}", e.getMessage());
-        }
-      }
     }
   }
   
@@ -342,4 +333,27 @@ public class S3Utils {
 	  
 	  return s3ObjectSummaries;
   }
+
+  	//Obtiene un objeto en S3 con el path mas el archivo
+	public S3Object getS3Client(String path) {		
+		S3Object s3Object = null;
+		try {
+			GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, path);
+			s3Object = s3.getObject(getObjectRequest);
+		  } catch (Exception e) {	    
+			  log.error("Error al obtener el archivo desde S3.");
+		  }		
+		return s3Object;		
+	}
+	
+  	//Actualiza un objeto en S3
+	public void putS3Objets(String path, InputStream fileInput, ObjectMetadata metadata) {
+		PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, path, fileInput,metadata);
+		try {
+			s3.putObject(putObjectRequest);
+		  } catch (Exception e) {	    
+			  log.error("Error al actualizar el archivo desde S3.");
+		  }		
+		
+	}
 }

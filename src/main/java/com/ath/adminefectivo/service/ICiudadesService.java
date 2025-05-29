@@ -3,6 +3,7 @@ package com.ath.adminefectivo.service;
 import java.util.List;
 
 import com.ath.adminefectivo.dto.CiudadesDTO;
+import com.ath.adminefectivo.entities.Ciudades;
 import com.querydsl.core.types.Predicate;
 
 public interface ICiudadesService {
@@ -54,7 +55,7 @@ public interface ICiudadesService {
 	 * @return CiudadesDTO
 	 * @author duvan.naranjo
 	 */
-	CiudadesDTO getCiudadPorCodigoDaneOrCodigoBrinks(String ciudad1);
+	Ciudades getCiudadPorCodigoDaneOrCodigoBrinks(String ciudad1);
 
 	/**
 	 * Servicio encargado de consultar una ciudad por nombre ciudad Fiserv

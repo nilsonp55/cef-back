@@ -34,4 +34,13 @@ public interface ICajerosService {
 	 * @author cesar.castano
 	 */
 	Boolean getCodigoPuntoCajero(Integer codigoPunto);
+
+	/**
+	 * Servicio encargado de obtener el objeto Cajero con base en el codigoPunto
+	 * Este servicio consume una optimizacion mediante JDBC
+	 * 
+	 * @param codigoPunto
+	 * @return Integer
+	 */
+	Boolean getCodigoPuntoCajeroJdbc(Integer codigoPunto);
 }

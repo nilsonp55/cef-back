@@ -1,7 +1,8 @@
 package com.ath.adminefectivo.controller;
 
 import java.util.List;
-
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,17 +15,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.ath.adminefectivo.delegate.ICargueCertificacionDelegate;
 import com.ath.adminefectivo.dto.ArchivosCargadosDTO;
 import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
-
 import lombok.extern.log4j.Log4j2;
 
 /**
+ * 
  * Controlador responsable de exponer los metodos referentes al proceso de carga
  * de certificaciones
  * @author cesar.castano
@@ -146,4 +146,25 @@ public class CargueCertificacionController {
 								.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
 
+	/**
+	 * Endpoint to manually trigger the scheduled certificacionesProgramadas method.
+	 *
+	 * @return ResponseEntity<ApiResponseADE<Boolean>>
+	 * @author duvan.naranjo
+	 */
+	@PostMapping(value = "${endpoints.CargueCertificacion.procesarFecha}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ApiResponseADE<Boolean>> ejecutarCertificacionesProgramadas() {
+	  log.info("Peticion procesarFecha bajo demanda.");
+	  ExecutorService executor = Executors.newSingleThreadExecutor();
+	  executor.submit(() -> {
+	    log.info("Inicia procesarFecha certificacionesProgramadas.");
+		cargueCertificacionDelegate.certificacionesProgramadas();
+		log.info("Finaliza procesarFecha certificacionesProgramadas.");
+	  });
+	  executor.shutdown();
+	  log.info("Peticion termina procesarFecha bajo demanda.");
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ApiResponseADE<>(true, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
+	}
 }

@@ -1,7 +1,6 @@
 package com.ath.adminefectivo.controller;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.transaction.RollbackException;
 
@@ -30,7 +29,6 @@ import com.ath.adminefectivo.dto.DownloadDTO;
 import com.ath.adminefectivo.dto.DownloadGestionArchivosDTO;
 import com.ath.adminefectivo.dto.GestionArchivosDTO;
 import com.ath.adminefectivo.dto.MaestrosDefinicionArchivoDTO;
-import com.ath.adminefectivo.dto.compuestos.ArchivosLiquidacionListDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;

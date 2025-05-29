@@ -3,9 +3,13 @@ package com.ath.adminefectivo.service.impl;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +17,7 @@ import org.springframework.stereotype.Service;
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.DetallesDefinicionArchivoDTO;
+import com.ath.adminefectivo.dto.ListaDetalleDTO;
 import com.ath.adminefectivo.dto.MaestrosDefinicionArchivoDTO;
 import com.ath.adminefectivo.dto.compuestos.ErroresCamposDTO;
 import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoDTO;
@@ -70,13 +75,14 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 	@Override
 	public ValidacionArchivoDTO validar(MaestrosDefinicionArchivoDTO maestroDefinicion, List<String[]> contenido,
 			ValidacionArchivoDTO validacionArchivo) {
+	  log.debug("Validar inicio archivo: {}", validacionArchivo.getNombreArchivo());
 		validacionArchivo.setEstadoValidacion(Dominios.ESTADO_VALIDACION_CORRECTO);
 		List<ValidacionLineasDTO> respuesta = cargueDataInicial(maestroDefinicion, contenido);		
 		validacionArchivo = validarEstructura(maestroDefinicion, contenido, validacionArchivo, respuesta);
 		if (validacionArchivo.getEstadoValidacion().equals(Dominios.ESTADO_VALIDACION_CORRECTO)) {
 			validarContenido(maestroDefinicion, validacionArchivo);
 		}
-
+		log.debug("Validar fin");
 		return validacionArchivo;
 	}
 
@@ -90,12 +96,13 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 	 */
 	private ValidacionArchivoDTO validarContenido(MaestrosDefinicionArchivoDTO maestroDefinicion,
 			ValidacionArchivoDTO validacionArchivo) {
+	  log.debug("validarContenido inicio");
 		if (maestroDefinicion.isValidaContenido()) {
 
 			for (int i = 0; i < validacionArchivo.getValidacionLineas().size(); i++) {
 				ValidacionLineasDTO lineaDTO = validacionArchivo.getValidacionLineas().get(i);
 				List<ErroresCamposDTO> erroresCampos = this.validarLineaReglas(lineaDTO,
-						maestroDefinicion.getIdMaestroDefinicionArchivo());
+						maestroDefinicion.getIdMaestroDefinicionArchivo(), validacionArchivo);
 				if (!erroresCampos.isEmpty()) {
 					lineaDTO.setCampos(erroresCampos);
 					lineaDTO.setEstado(Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO);
@@ -106,6 +113,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 				}
 			}
 		}
+		log.debug("validarContenido fin");
 		return validacionArchivo;
 	}
 
@@ -121,15 +129,23 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 	 * @return List<ErroresCamposDTO>
 	 * @author duvan.naranjo
 	 */
-	private List<ErroresCamposDTO> validarLineaReglas(ValidacionLineasDTO lineaDTO, String idMaestroDefinicionArchivo) {
-		List<ErroresCamposDTO> erroresCamposDTO = new ArrayList<>();
+	private List<ErroresCamposDTO> validarLineaReglas(ValidacionLineasDTO lineaDTO, String idMaestroDefinicionArchivo,
+			ValidacionArchivoDTO validacionArchivo) {
+	    log.debug("validarLineaReglas inicio");
+	    List<ErroresCamposDTO> erroresCamposDTO = new ArrayList<>();
 		List<String> contenido = lineaDTO.getContenido();
+
+		ValidacionArchivoDTO validacionArchivoCopy = validacionArchivo.toBuilder().validacionLineas(List.of(lineaDTO))
+				.build();
+
+		Map<String, ListaDetalleDTO> detalleDefinicionMap = listaDetalleMap(contenido, listaDetalleDefinicion);
 
 		for (int i = 0; i < contenido.size(); i++) {
 			DetallesDefinicionArchivoDTO detalle = obtenerListaDetalleFiltrada(idMaestroDefinicionArchivo, i + 1,
 					lineaDTO.getTipo());
 
-			ValidacionMotorDTO validacionMotorDTO = this.validarReglas(detalle, contenido.get(i));
+			ValidacionMotorDTO validacionMotorDTO = this.validarReglas(detalle, contenido.get(i), validacionArchivoCopy,
+					i, detalleDefinicionMap);
 			if (Objects.nonNull(validacionMotorDTO) && !validacionMotorDTO.isValida()) {
 
 				var mensajeErrores = validacionMotorDTO.getMensajesError();
@@ -139,8 +155,8 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 						.mensajeErrorTxt(mensajeErroresTxt).mensajeError(mensajeErrores).build());
 			}
 		}
+		log.debug("validarLineaReglas fin");
 		return erroresCamposDTO;
-
 	}
 
 	/**
@@ -152,22 +168,26 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 	 * @return ValidacionMotorDTO
 	 * @author duvan.naranjo
 	 */
-	private ValidacionMotorDTO validarReglas(DetallesDefinicionArchivoDTO detalle, String valorCampo) {
+	private ValidacionMotorDTO validarReglas(DetallesDefinicionArchivoDTO detalle, String valorCampo,
+			ValidacionArchivoDTO validacionArchivo, int index, Map<String, ListaDetalleDTO> detalleDefinicionMap) {
+	    log.debug("validarReglas inicio");
 		if (detalle.isValidarReglas() && Objects.nonNull(detalle.getExpresionRegla())) {
 			if (detalle.isMultiplesReglas()) {
 				if (!Objects.isNull(detalle.getExpresionRegla())) {
-					return motorReglasService.evaluarReglaMultiple(detalle.getExpresionRegla(), valorCampo);
+					return motorReglasService.evaluarReglaMultiple(detalle.getExpresionRegla(), valorCampo,
+							validacionArchivo, index, detalleDefinicionMap);
 				}
 			} else {
 				if (!Objects.isNull(detalle.getExpresionRegla())) {
-					return motorReglasService.evaluarReglaSimple(detalle.getExpresionRegla(), valorCampo);
+					return motorReglasService.evaluarReglaSimple(detalle.getExpresionRegla(), valorCampo,
+							validacionArchivo, index, detalleDefinicionMap);
 				}
 
 			}
 		}
+		log.debug("validarReglas fin");
 		return null;
 	}
-	
 
 	/**
 	 * metodo encargado de realizar las acciones previas a validar estructura y
@@ -180,13 +200,15 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 	 */
 	private List<ValidacionLineasDTO> cargueDataInicial(MaestrosDefinicionArchivoDTO maestroDefinicion,
 			List<String[]> contenido) {
+	  log.debug("cargueDataInicial inicio");
 		var listaDetalle = detalleDefinicionArchivoService
 				.consultarDetalleDefinicionArchivoByIdMaestro(maestroDefinicion.getIdMaestroDefinicionArchivo());
-
+		
 		this.setListaDetalleDefinicion(listaDetalle);
 		this.cargarListaDominios();
 
 		List<String[]> contenidoValidado = validacionInicial(maestroDefinicion, contenido);
+		log.debug("cargueDataInicial fin");
 		return obtenerLineas(maestroDefinicion, contenidoValidado);
 
 	}
@@ -197,7 +219,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 	@Override
 	public ValidacionArchivoDTO validarEstructura(MaestrosDefinicionArchivoDTO maestroDefinicion,
 			List<String[]> contenido, ValidacionArchivoDTO validacionArchivo, List<ValidacionLineasDTO> respuesta) {
-
+	  log.debug("validarEstructura inicio");
 		if (maestroDefinicion.isValidaEstructura()) {
 			validacionArchivo.setValidacionLineas(validarEstructuraCampos(maestroDefinicion, respuesta));
 			int erroresTotales = validacionDeErrores(validacionArchivo.getValidacionLineas());
@@ -213,7 +235,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 			validacionArchivo.setEstadoValidacion(Dominios.ESTADO_VALIDACION_CORRECTO);
 			validacionArchivo.setDescripcionErrorEstructura(Dominios.ESTADO_VALIDACION_CORRECTO);
 		}
-
+		log.debug("validarEstructura fin");
 		return validacionArchivo;
 	}
 
@@ -222,14 +244,17 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 	 */
 	@Override
 	public boolean validarNombreArchivo(MaestrosDefinicionArchivoDTO maestroDefinicion, String nombreArchivo) {
-
+	  log.debug("validarNombreArchivo inicio - maestroDefinicion: {} - nombreArchivo: {}", maestroDefinicion, nombreArchivo);
 		if (maestroDefinicion.getAgrupador().equals("CERTI")) {
 			String[] arregloNombre = nombreArchivo.split(Constantes.EXPRESION_REGULAR_PUNTO);
 			String inicioNombre = arregloNombre[0].substring(0, 2);
 			String fecha;
 			String mascaraFecha;
 			List<String> formatoFecha;
+			
 			if (!StringUtils.equalsIgnoreCase(arregloNombre[1], maestroDefinicion.getExtension())) {
+              log.debug("arregloNombre[1]: {} - maestroDefinicion.getExtension()", arregloNombre[1],
+                  maestroDefinicion.getExtension());
 				throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
 						ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
 						ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
@@ -243,6 +268,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 				formatoFecha = new ArrayList<>();
 				formatoFecha.add(mascaraFecha);
 				if (!UtilsString.isFecha(fecha, formatoFecha)) {
+				  log.debug("Exception AC isFecha fecha: {} - formatoFecha: {}", fecha, formatoFecha);
 					throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
 							ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
 							ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
@@ -255,6 +281,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 				formatoFecha = new ArrayList<>();
 				formatoFecha.add(mascaraFecha);
 				if (!UtilsString.isFecha(fecha, formatoFecha)) {
+				  log.debug("Exception BS, BI isFecha fecha: {} - formatoFecha: {}", fecha, formatoFecha);
 					throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
 							ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
 							ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
@@ -267,6 +294,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 				formatoFecha = new ArrayList<>();
 				formatoFecha.add(mascaraFecha);
 				if (!UtilsString.isFecha(fecha, formatoFecha)) {
+				  log.debug("Exception TH, VG isFecha fecha: {} - formatoFecha: {}", fecha, formatoFecha);
 					throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
 							ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
 							ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
@@ -285,6 +313,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 				formatoFecha = new ArrayList<>();
 				formatoFecha.add(mascaraFecha);
 				if (!UtilsString.isFecha(fecha, formatoFecha)) {
+				  log.debug("Exception SC isFecha fecha: {} - formatoFecha: {}", fecha, formatoFecha);
 					throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
 							ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
 							ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
@@ -292,23 +321,29 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 				break;
 			}
 			default: {
+			  log.debug("Exception default: {}", ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription());
 				throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
 						ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
 						ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
 			}
 			}
-
+            log.debug("arregloNombre: {} - inicioNombre:{} - fecha:{} - mascaraFecha{}",
+                arregloNombre, inicioNombre, fecha, mascaraFecha);
 		} else {
 			String[] arregloNombre = nombreArchivo
 					.replace(Constantes.SEPARADOR_FECHA_ARCHIVO, Constantes.SEPARADOR_EXTENSION_ARCHIVO)
 					.split(Constantes.EXPRESION_REGULAR_PUNTO);
 			maestroDefinicion.getMascaraArch().split(Constantes.SEPARADOR_FECHA_ARCHIVO);
+			log.debug("else: nombreArchivo: {}", nombreArchivo);
 			if (!StringUtils.equalsIgnoreCase(arregloNombre[2], maestroDefinicion.getExtension())) {
+              log.debug("arregloNombre[2]: {} - maestroDefinicion.getExtension()", arregloNombre[2],
+                  maestroDefinicion.getExtension());
 				throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
 						ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
 						ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
 			}
 		}
+		log.debug("validarNombreArchivo fin");
 		return true;
 	}
 
@@ -329,6 +364,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 				}
 			}
 		}
+		log.debug("nombreArchivo: {} - longitud: {} - fechaString: {}", nombreArchivo, nombreArchivo.length(), fecha);
 		return fecha;
 	}
 
@@ -361,15 +397,18 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 	@Override
 	public Date validarFechaArchivoBetween(String nombreArchivo, String mascaraArchivo, Date fechaComparacion,
 			Date fechaAnteriorHabil) {
-
+      log.debug(
+          "nombreArchivo: {} - mascaraArchivo: {} - fechaComparacion: {} - fechaAnteriorHabil: {}",
+          nombreArchivo, mascaraArchivo, fechaComparacion, fechaAnteriorHabil);
 		Date fechaArchivo = this.obtenerFechaArchivo(nombreArchivo, mascaraArchivo);
 
 		if (Objects.isNull(fechaArchivo)) {
-
+		  log.debug("Fecha archivo no valida: {}", ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getDescription());
 			throw new NegocioException(ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getCode(),
 					ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getDescription(),
 					ApiResponseCode.ERROR_FECHA_ARCHIVO_DIA.getHttpStatus());
 		}
+		log.debug("validarFechaArchivoBetween fin - fechaArchivo: {}", fechaArchivo.toString());
 		return fechaArchivo;
 	}
 
@@ -378,10 +417,10 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 	 */
 	@Override
 	public Date obtenerFechaArchivo(String nombreArchivo, String mascaraArchivo) {
-
+	  log.debug("nombreArchivo: {}, mascaraArchivo: {}", nombreArchivo, mascaraArchivo);
 		Date fechaArchivo = null;
-		String fecha;
-		String mascaraFecha;
+		String fecha = null;
+		String mascaraFecha = null;
 		try {
 			String inicioNombre = mascaraArchivo.substring(0, 2);											
 			switch (inicioNombre) {
@@ -404,6 +443,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 						mascaraFecha = mascaraArchivo.substring(19, 27);
 						fechaArchivo = new SimpleDateFormat(mascaraFecha).parse(fecha);
 					} else {
+					  log.debug("fechaArchivo new Date()");
 						fechaArchivo = new Date();
 					}
 					break;
@@ -434,16 +474,19 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 					break;
 				}
 				default: {
+				  log.debug("default new Date()");
 					fechaArchivo = new Date();
 					
 				}
 			}
-	
+            log.info("Obtener fecha archivo: {} - mascaraFecha: {} - fechaString: {}",
+                nombreArchivo, mascaraFecha, fecha);
+            Optional.of(fechaArchivo).ifPresent(t -> log.info("fechaArchivo: {}", t.toString()));
 		} catch (Exception e) {
 			log.error("Exception: {}", e);
 			fechaArchivo = null;
 		}
-	
+		
 		return fechaArchivo;
 	}
 	
@@ -457,13 +500,14 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 	 * @author duvan.naranjo
 	 */
 	private List<String[]> validacionInicial(MaestrosDefinicionArchivoDTO maestro, List<String[]> contenido) {
-
+	  log.debug("validacionInicial inicio");
 		if (maestro.isCabecera() && !contenido.isEmpty()) {
 			contenido.remove(0);
 		}
 		if (maestro.isControlFinal() && !contenido.isEmpty()) {
 			contenido.remove(contenido.size() - 1);
 		}
+		log.debug("validacionInicial inicio");
 		return contenido;
 	}
 
@@ -478,6 +522,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 	 */
 	private List<ValidacionLineasDTO> obtenerLineas(MaestrosDefinicionArchivoDTO maestroDefinicion,
 			List<String[]> contenido) {
+	  log.debug("obtenerLineas inicio");
 		List<ValidacionLineasDTO> listadoValidacionLineasDTO = new ArrayList<>();
 		for (int i = 0; i < contenido.size(); i++) {
 			if (!Objects.isNull(contenido.get(i)) && contenido.get(i).length != 0) {
@@ -486,6 +531,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 				listadoValidacionLineasDTO.add(validacionArchivoDTO);
 			}
 		}
+		log.debug("obtenerLineas fin");
 		return listadoValidacionLineasDTO;
 	}
 
@@ -498,9 +544,10 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 	 * @author duvan.naranjo
 	 */
 	private ValidacionLineasDTO obtenerCampos(String[] fila, int numeroDeLinea) {
+	  log.debug("obtenerCampos inicio");
 		List<String> listaCampos = Arrays.asList(fila);
 		var contenidoTxt = String.join(", ", fila);
-
+		log.debug("obtenerCampos fin");
 		return ValidacionLineasDTO.builder().numeroLinea(numeroDeLinea + 1).contenidoTxt(contenidoTxt)
 				.estado(Constantes.ESTRUCTURA_OK).contenido(listaCampos).build();
 
@@ -686,24 +733,21 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 	 */
 	private void obtenerTipoRegistro(MaestrosDefinicionArchivoDTO maestroDefinicion,
 			ValidacionLineasDTO validacionLineasDTO) {
-		log.debug("Establecer tipo de formato por linea ");
+		log.debug("obtenerTipoRegistro inicio");
 		if (maestroDefinicion.isMultiformato()) {
 			try {
 				Integer tipo = Integer
 						.valueOf(validacionLineasDTO.getContenido().get(maestroDefinicion.getCampoMultiformato()));
 				validacionLineasDTO.setTipo(tipo);
 			} catch (ArrayIndexOutOfBoundsException e) {
-				throw new NegocioException(ApiResponseCode.ERROR_MULTIFORMATO_POSICION.getCode(),
-						ApiResponseCode.ERROR_MULTIFORMATO_POSICION.getDescription(),
-						ApiResponseCode.ERROR_MULTIFORMATO_POSICION.getHttpStatus());
+			  log.error("Validacion archivo: {}", ApiResponseCode.ERROR_MULTIFORMATO_POSICION.getDescription());
 			} catch (NumberFormatException e) {
-				throw new NegocioException(ApiResponseCode.ERROR_MULTIFORMATO_INVALIDO.getCode(),
-						ApiResponseCode.ERROR_MULTIFORMATO_INVALIDO.getDescription(),
-						ApiResponseCode.ERROR_MULTIFORMATO_INVALIDO.getHttpStatus());
+			  log.error("Validacion archivo: {}", ApiResponseCode.ERROR_MULTIFORMATO_INVALIDO.getDescription());
 			}
 		} else {
 			validacionLineasDTO.setTipo(Constantes.ID_MULTIFORMATO_STD);
 		}
+		log.debug("obtenerTipoRegistro fin");
 
 	}
 
@@ -749,11 +793,38 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 	 */
 	private DetallesDefinicionArchivoDTO obtenerListaDetalleFiltrada(String idMaestro, int numeroCampo,
 			Integer tipoRegistro) {
+	  log.debug("obtenerListaDetalleFiltrada inicio y fin");
 		return listaDetalleDefinicion.stream()
 				.filter(detalleDefinicion -> detalleDefinicion.getId().getTipoRegistro().equals(tipoRegistro)
 						&& detalleDefinicion.getId().getIdArchivo().equals(idMaestro)
 						&& numeroCampo == detalleDefinicion.getId().getNumeroCampo())
 				.findFirst().orElse(null);
+	}
+	
+	
+	/**
+	 * 
+	 * @param contenido
+	 * @param listaDetalleDefinicion
+	 * @return Map<String, ListaDetalleDTO> 
+	 */
+	private Map<String, ListaDetalleDTO> listaDetalleMap(List<String> contenido,
+			List<DetallesDefinicionArchivoDTO> listaDetalleDefinicion) {
+
+		// Ordenar ascendentemente por numeroCampo
+		listaDetalleDefinicion.sort(Comparator.comparing(d -> d.getId().getNumeroCampo()));
+
+		Map<String, ListaDetalleDTO> mapa = new LinkedHashMap<>();
+		for (int i = 0; i < listaDetalleDefinicion.size(); i++) {
+			DetallesDefinicionArchivoDTO detalle = listaDetalleDefinicion.get(i);
+
+			ListaDetalleDTO campo = ListaDetalleDTO.builder().nombreCampo(detalle.getNombreCampo())
+					.tipoDato(detalle.getTipoDato()).valor(contenido.get(i)).build();
+
+			mapa.put(detalle.getNombreCampo(), campo);
+		}
+
+		return mapa;
 	}
 
 }

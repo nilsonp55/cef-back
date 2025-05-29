@@ -8,7 +8,9 @@ import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,10 +25,13 @@ import com.ath.adminefectivo.entities.Usuario;
 import com.ath.adminefectivo.service.IUsuarioService;
 import com.querydsl.core.types.Predicate;
 
+import lombok.extern.log4j.Log4j2;
+
 /**
  * Controlador responsable de exponer los metodos referentes a las usuarios 
  * @author bayron.perez
  */
+@Log4j2
 @RestController
 @RequestMapping("${endpoints.Usuario}")
 public class UsuarioController {
@@ -87,13 +92,13 @@ public class UsuarioController {
 	}
 	
 	/**
-	 * Servicio encargado de guardar cuentaPuc
+	 * Servicio encargado de guardar usuario
 	 * 
 	 * @return ResponseEntity<ApiResponseADE<UsuarioDTO>>
 	 * @author Bayron Andres Perez M
 	 */
 	@PostMapping(value = "${endpoints.Usuario.actualizar}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponseADE<UsuarioDTO>> putCuentasPuc(@RequestBody UsuarioDTO usuarioDTO) {
+	public ResponseEntity<ApiResponseADE<UsuarioDTO>> putUsuario(@RequestBody UsuarioDTO usuarioDTO) {
 
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<UsuarioDTO>(UsuarioDTO.CONVERTER_DTO.apply(usuarioService.
@@ -101,6 +106,22 @@ public class UsuarioController {
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 
+	}
+
+	/**
+	 * Servicio encargado de eliminar un usuario
+	 * 
+	 * @return ResponseEntity<ApiResponseADE<Void>>
+	 * @author prv_nparra
+	 */
+	@DeleteMapping(value = "/{idUsuario}")
+	public ResponseEntity<ApiResponseADE<Void>> deleteUsuario(@PathVariable String idUsuario) {
+		log.info("eliminar usuario id: {}", idUsuario);
+		usuarioService.deleteUsuario(idUsuario);
+		log.info("eliminado existosamente usuario id: {}", idUsuario);
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ApiResponseADE<Void>(null,
+				ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
 	
 }

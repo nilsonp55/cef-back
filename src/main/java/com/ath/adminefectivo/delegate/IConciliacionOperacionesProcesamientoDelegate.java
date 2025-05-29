@@ -39,4 +39,6 @@ public interface IConciliacionOperacionesProcesamientoDelegate {
 	List<RegistroAceptarRechazarDTO> identificadasConDiferenciaAceptarRechazar (RegistrosAceptarRechazarListDTO registros);
 
 	List<RegistroOperacionConciliacionDTO> reintegrarLiquidadas(RegistrosConciliacionListDTO registros);
+	
+	List<RegistroOperacionConciliacionDTO> reintegrarLiquidadasProcesamiento(RegistrosConciliacionListDTO registros);
 }

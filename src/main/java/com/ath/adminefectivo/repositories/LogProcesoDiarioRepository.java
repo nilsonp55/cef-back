@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
 import com.ath.adminefectivo.entities.LogProcesoDiario;
@@ -55,5 +56,9 @@ public interface LogProcesoDiarioRepository extends JpaRepository<LogProcesoDiar
 	 * @author duvan.naranjo
 	 */
 	LogProcesoDiario findByCodigoProcesoAndFechaCreacion(String codigoProceso, Date fechaProceso);
+	
+	
+	@Query("SELECT log.fechaCreacion FROM LogProcesoDiario log GROUP BY log.fechaCreacion ORDER BY log.fechaCreacion")
+	List<Date> findFechasProcesadas();
 	
 }

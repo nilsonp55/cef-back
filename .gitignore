@@ -166,3 +166,6 @@ archivos/
 
 .env*
 
+.aider*
+.env
+.theia/

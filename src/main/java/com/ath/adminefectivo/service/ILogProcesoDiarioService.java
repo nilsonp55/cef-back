@@ -19,7 +19,7 @@ public interface ILogProcesoDiarioService {
 	 * @param predicate
 	 * @return
 	 */
-	List<LogProcesoDiarioDTO> getLogsProcesosDierios(Predicate predicate);
+	List<LogProcesoDiarioDTO> getLogsProcesosDiarios(Predicate predicate);
 	
 	/**
 	 * Servicio encargado de traer todos los procesos diarios
@@ -92,5 +92,19 @@ public interface ILogProcesoDiarioService {
 	 * @author duvan.naranjo
 	 */
 	LogProcesoDiarioDTO obtenerEntidadLogProcesoDiarioByCodigoAndFecha(String codigoProceso, Date fechaProceso);
+	
+	/**
+	 * Consulta LogProcesoDiario de la fecha proceso vigente y/o activa	
+	 * @return Lista de Log Proceo Diario
+	 * @author prv_nparra
+	 */
+	List<LogProcesoDiarioDTO> getFechaProcesoVigente();
+	
+	/**
+	 * Consulta LogProcesoDiario agrupado por fechaCreacion, retornando lista de fechas generadas y procesadas 	
+	 * @return Lista de Log Proceo Diario 
+	 * @author prv_nparra
+	 */
+	List<Date> getLogProcesoDiarioFechasProcesadas();
 
 }

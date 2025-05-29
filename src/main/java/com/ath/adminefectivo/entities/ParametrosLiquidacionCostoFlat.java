@@ -98,7 +98,8 @@ public class ParametrosLiquidacionCostoFlat {
 	@Column(name = "ENTRADA_SALIDA")
 	private String entradaSalidaFlat;
 
-	@OneToOne(cascade = CascadeType.MERGE)
+	//@OneToOne(cascade = CascadeType.REMOVE)
+	@OneToOne(cascade = {CascadeType.MERGE, CascadeType.REMOVE})
 	@JoinColumn(name = "ID_LIQUIDACION", referencedColumnName = "ID_LIQUIDACION")
 	@JsonIgnore
 	private ValoresLiquidadosFlatEntity valoresLiquidadosFlatEntity;
@@ -111,5 +112,11 @@ public class ParametrosLiquidacionCostoFlat {
 
 	@Column(name = "nombre_cliente")
 	private String nombreCliente;
+	
+	@Column(name = "TOTAL_FAJOS")
+	private Double totalFajosFlat;
+	
+	@Column(name = "TOTAL_BOLSAS")
+	private Double totalBolsasFlat;
 
 }

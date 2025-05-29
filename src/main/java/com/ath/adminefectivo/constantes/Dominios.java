@@ -165,6 +165,7 @@ public final class Dominios {
 	public static final String TIPO_REGLA_EXCLUIDOS = "EXC";
 	public static final String TIPO_REGLA_CONSULTA_SQL = "SQL";
 	public static final String TIPO_REGLA_FORMATO_FECHA = "FEC";
+	public static final String TIPO_REGLA_CONSULTA_SQL_MULTIPARAMETRO = "SQM";
 	
 	/**
 	 * Tipos de archivo 
@@ -247,4 +248,11 @@ public final class Dominios {
 	
 	//Dominios para Auditoria Procesos
 	public static final String AUDITORIA_CIERRE_CERTI = "24";
+	
+	
+	public static final String TIPO_OPERACION_TERMINA_CCE = "CCE";
+	public static final boolean VERDADERO = true;
+	public static final boolean FALSO = false;
+	
+	
 }

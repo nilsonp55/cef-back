@@ -6,10 +6,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.delegate.IContabilidadDelegate;
@@ -31,7 +29,6 @@ import com.ath.adminefectivo.service.IOperacionesProgramadasService;
 import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.service.impl.GenerarArchivoServiceimpl;
 import com.ath.adminefectivo.utils.UtilsString;
-
 import lombok.extern.log4j.Log4j2;
 
 @Service
@@ -71,14 +68,15 @@ public class ContabilidadDelegateImpl implements IContabilidadDelegate {
 		Date fechaSistema = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
 		Date fechaProcesoInicial = this.obtenerFechaProceso(fechaSistema, tipoContabilidad);
 		Date fechaProcesoFin = this.obtenerFechaProcesoFinal(tipoContabilidad, fechaSistema);
+		String mensajeRespuestaContabilidad = "MENSAJE EXITOSO";
 		
-		log.debug("fechaProcesoInicial "+fechaProcesoInicial);
-		log.debug("fechaProcesoFin "+fechaProcesoFin);
+		log.debug("fechaProcesoInicial: {} - fechaProcesoFin: {}",fechaProcesoInicial, fechaProcesoFin);
 		
 		var operacionesProgramadas = operacionesProgramadasService.getOperacionesProgramadasPorFechas(tipoContabilidad, fechaProcesoInicial,fechaProcesoFin);
 		
-		if(!operacionesProgramadas.isEmpty()&& cierreContabilidadService.validacionTipoContabilidad(tipoContabilidad)) {
-			
+		if(operacionesProgramadas.isEmpty() && cierreContabilidadService.validacionTipoContabilidad(tipoContabilidad)) {
+		  mensajeRespuestaContabilidad = "NO SE ENCONTRARON OPERACIONES POR PROCESAR PARA LA FECHA";
+		} else {
 			contabilidadService.procesoEliminarExistentes(tipoContabilidad, operacionesProgramadas, fechaSistema, fechaSistema);
 			
 			int resultado = contabilidadService.generarContabilidad(tipoContabilidad, operacionesProgramadas, fechaSistema);
@@ -87,15 +85,14 @@ public class ContabilidadDelegateImpl implements IContabilidadDelegate {
 				List<OperacionIntradiaDTO> listadoOperacionesProgramadasIntradia = operacionesProgramadasService.consultarOperacionesIntradia(fechaProcesoInicial, fechaProcesoFin);	
 				contabilidadService.generarContabilidadIntradia(tipoContabilidad, listadoOperacionesProgramadasIntradia, resultado, fechaSistema);
 			}
-			resultado = contabilidadService.generarMovimientosContables(fechaSistema, fechaSistema, tipoContabilidad, Dominios.ESTADO_CONTABILIDAD_GENERADO);
 			
-			if(resultado > 0) {
-				return contabilidadService.generarRespuestaContabilidad(fechaSistema, tipoContabilidad, "MENSAJE EXITOSO");
-			}else {
-				return contabilidadService.generarRespuestaContabilidad(fechaSistema, tipoContabilidad, "NO SE GENERARON TRANSACCIONES CONTABLES. ");
-			}
+            if (contabilidadService.generarMovimientosContables(fechaSistema, fechaSistema,
+                tipoContabilidad, Dominios.ESTADO_CONTABILIDAD_GENERADO) == 0) {
+              mensajeRespuestaContabilidad = "NO SE GENERARON TRANSACCIONES CONTABLES.";
+            }
+			
 		}
-		return contabilidadService.generarRespuestaContabilidad(fechaSistema, tipoContabilidad, "NO SE ENCONTRARON OPERACIONES POR PROCESAR PARA LA FECHA");
+		return contabilidadService.generarRespuestaContabilidad(fechaSistema, tipoContabilidad, mensajeRespuestaContabilidad);
 	}
 	
 	/**

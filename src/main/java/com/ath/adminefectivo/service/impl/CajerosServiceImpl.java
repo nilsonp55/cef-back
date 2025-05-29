@@ -11,6 +11,7 @@ import com.ath.adminefectivo.dto.CajerosDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.ICajerosRepository;
+import com.ath.adminefectivo.repositories.jdbc.ICajerosJdbcRepository;
 import com.ath.adminefectivo.service.ICajerosService;
 import com.querydsl.core.types.Predicate;
 
@@ -19,6 +20,9 @@ public class CajerosServiceImpl implements ICajerosService{
 
 	@Autowired
 	ICajerosRepository cajerosRepository;
+	
+	@Autowired
+	ICajerosJdbcRepository cajerosJdbcRepository;
 	
 	/**
 	 * {@inheritDoc}
@@ -61,5 +65,12 @@ public class CajerosServiceImpl implements ICajerosService{
 		}
 		return estado;
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Boolean getCodigoPuntoCajeroJdbc(Integer codigoPunto) {		
+		return cajerosJdbcRepository.existsByCodigoPunto(codigoPunto);	}
 
 }

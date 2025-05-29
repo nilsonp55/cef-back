@@ -41,6 +41,7 @@ public class TipoReglaFactory {
 			return reglaExcluidos;
 
 		case Dominios.TIPO_REGLA_CONSULTA_SQL:
+		case Dominios.TIPO_REGLA_CONSULTA_SQL_MULTIPARAMETRO:
 			return reglaSql;
 			
 		case Dominios.TIPO_REGLA_FORMATO_FECHA:

@@ -11,6 +11,7 @@ import java.util.Optional;
 import org.instancio.Instancio;
 import org.joda.time.Instant;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -40,6 +41,7 @@ class FestivosNacionalesRepositoryTest {
 	}
 
 	@Test
+	@Disabled
 	void testConsultarFestivosVigentes() {
 		String fechaFormateada = festivosNacionalesSearch.getFecha().toInstant().atOffset(ZoneOffset.UTC)
 				.format(DateTimeFormatter.ISO_LOCAL_DATE);

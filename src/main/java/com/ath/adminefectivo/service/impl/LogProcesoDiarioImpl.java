@@ -21,6 +21,7 @@ import com.ath.adminefectivo.service.IAuditoriaProcesosService;
 import com.ath.adminefectivo.service.ILogProcesoDiarioService;
 import com.ath.adminefectivo.service.IParametroService;
 import com.querydsl.core.types.Predicate;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Servicios responsables de exponer los metodos referentes a los procesos 
@@ -29,6 +30,7 @@ import com.querydsl.core.types.Predicate;
  */
 
 @Service
+@Log4j2
 public class LogProcesoDiarioImpl implements ILogProcesoDiarioService {
 
 	@Autowired
@@ -45,9 +47,8 @@ public class LogProcesoDiarioImpl implements ILogProcesoDiarioService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<LogProcesoDiarioDTO> getLogsProcesosDierios(Predicate predicate) {
-		Date fecha = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
-		var logProcesoDiarios = logProcesoDiarioRepository.findByFechaCreacion(fecha);
+	public List<LogProcesoDiarioDTO> getLogsProcesosDiarios(Predicate predicate) {
+		var logProcesoDiarios = logProcesoDiarioRepository.findAll(predicate);
 		
 		List<LogProcesoDiarioDTO> listLogProcesoDiarioDto = new ArrayList<>();
 		logProcesoDiarios.forEach(entity -> 
@@ -154,8 +155,10 @@ public class LogProcesoDiarioImpl implements ILogProcesoDiarioService {
 	@Override
 	public LogProcesoDiario obtenerEntidadLogProcesoDiario(String codigoProceso) {
 		Date fecha = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
+		log.debug("valor fecha dia proceso: {}", fecha.toString());
 		var logProcesoDiario = logProcesoDiarioRepository.findByCodigoProcesoAndFechaCreacion(codigoProceso, fecha);
 		if(Objects.isNull(logProcesoDiario)) {
+		  log.debug("Log proceso diario no encontrado para fecha de proceso: {}", fecha.toString());
 			auditoriaProcesosService.actualizarAuditoriaProceso(Dominios.CODIGO_PROCESO_LOG_CERTIFICACION, 
 					fecha, 
 					Constantes.ESTADO_PROCESO_PROCESADO, 
@@ -164,6 +167,7 @@ public class LogProcesoDiarioImpl implements ILogProcesoDiarioService {
 					ApiResponseCode.ERROR_LOGPROCESODIARIO_NO_ENCONTRADO.getDescription(),
 					ApiResponseCode.ERROR_LOGPROCESODIARIO_NO_ENCONTRADO.getHttpStatus());
 		}
+		log.debug("Log proceos diario encontrado para fecha de proceso: {}", fecha.toString());
 		return logProcesoDiario;
 	}
 	
@@ -180,6 +184,23 @@ public class LogProcesoDiarioImpl implements ILogProcesoDiarioService {
 		}else {
 			return LogProcesoDiarioDTO.CONVERTER_DTO.apply(logProcesoDiario);
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<LogProcesoDiarioDTO> getFechaProcesoVigente() {
+		Date fecha = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
+		return this.getLogsProcesosDiariosByFechaProceso(fecha);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<Date> getLogProcesoDiarioFechasProcesadas() {
+		return logProcesoDiarioRepository.findFechasProcesadas();
 	}
 
 }

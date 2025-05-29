@@ -62,7 +62,7 @@ QuerydslPredicateExecutor<CostosTransporte>, PagingAndSortingRepository<CostosTr
 			String estadoConciliacionTransporte);
 
 	@Query("SELECT ct FROM CostosTransporte ct " 
-	        + " WHERE idArchivoCargado =:idArchivo "
+	        + " WHERE idArchivoCargadoTransporte =:idArchivo "
 			)
 	List<CostosTransporte> findByIdArchivoCargado(Long idArchivo);
 	
@@ -70,5 +70,10 @@ QuerydslPredicateExecutor<CostosTransporte>, PagingAndSortingRepository<CostosTr
 	@Modifying
     @Query(value = "UPDATE COSTOS_TRANSPORTE SET ESTADO_CONCILIACION =:estado WHERE ID_ARCHIVO_CARGADO =:idArchivoCargado", nativeQuery = true)
 	void actualizarEstadoByIdArchivoCargado(Long idArchivoCargado, String estado);
+	
+	@Transactional
+	@Modifying
+	@Query(value = "DELETE FROM COSTOS_TRANSPORTE WHERE ID_ARCHIVO_CARGADO = :idArchivo", nativeQuery = true)
+	void eliminarPorIdArchivoCargado(@Param("idArchivo") Long idArchivo);
 }
 

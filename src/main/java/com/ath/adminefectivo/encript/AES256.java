@@ -88,7 +88,7 @@ public class AES256 {
 			random.nextBytes(iv);
 			IvParameterSpec ivspec = new IvParameterSpec(iv);
 
-			/* Create factory for secret keys. */
+			/* Create factory for keys. */
 			SecretKeyFactory factory = SecretKeyFactory.getInstance(parametroService.valorParametro(Parametros.AES256));
 
 			/* PBEKeySpec class implements KeySpec interface. */
@@ -116,7 +116,7 @@ public class AES256 {
 			byte[] iv = new byte[16];
 			random.nextBytes(iv);
 			IvParameterSpec ivspec = new IvParameterSpec(iv);
-			/* Create factory for secret keys. */
+			/* Create factory for keys. */
 			SecretKeyFactory factory = SecretKeyFactory.getInstance(parametroService.valorParametro(Parametros.AES256));
 			
 			/* PBEKeySpec class implements KeySpec interface. */

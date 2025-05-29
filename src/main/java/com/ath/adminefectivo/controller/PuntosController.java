@@ -7,13 +7,13 @@ import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.ath.adminefectivo.delegate.IPuntosDelegate;
 import com.ath.adminefectivo.dto.CreatePuntosDTO;
 import com.ath.adminefectivo.dto.PuntosDTO;
@@ -22,12 +22,15 @@ import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
 import com.ath.adminefectivo.entities.Puntos;
 import com.querydsl.core.types.Predicate;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Controlador responsable de exponer los metodos referentes a los Puntos
  * 
  * @author cesar.castano
  */
+
+@Log4j2
 @RestController
 @RequestMapping("${endpoints.Puntos}")
 public class PuntosController {
@@ -81,5 +84,22 @@ public class PuntosController {
     return ResponseEntity.status(HttpStatus.OK).body(
         new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
             .description(ApiResponseCode.SUCCESS.getDescription()).build()));
+  }
+  
+  /**
+   * Eliminar registro de Punto
+   * @param idPunto Id de la tabla Puntos
+   * @return ResponseEntity<ApiResponseADE<Void>> Estado 204 HTTP
+   * @author prv_nparra
+   */
+  @DeleteMapping(value = "/{idPunto}")
+  public ResponseEntity<ApiResponseADE<Void>> eliminaPunto(@PathVariable Integer idPunto) {
+    log.info("Eliminar Punto Id: {}", idPunto);
+    puntosDelegate.eliminarPunto(idPunto);
+    log.info("Punto Id eliminado: {}", idPunto);
+    return ResponseEntity.status(HttpStatus.NO_CONTENT)
+        .body(new ApiResponseADE<Void>(null,
+            ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+                .description(ApiResponseCode.SUCCESS.getDescription()).build()));
   }
 }

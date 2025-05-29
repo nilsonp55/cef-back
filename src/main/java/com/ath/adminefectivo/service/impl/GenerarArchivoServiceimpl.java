@@ -103,12 +103,8 @@ public class GenerarArchivoServiceimpl implements IgenerarArchivoService {
 				row.createCell(7).setCellValue(dtoContable.getValor());//valor moneda local
 				row.createCell(8).setBlank();//valor en moneda fuerte USD
 				row.createCell(9).setBlank();//Centro de costos
-				try {
-					row.createCell(10).setCellValue( Integer.parseInt(dtoContable.getCentroBeneficio()) );
-				}
-				catch (NumberFormatException ex) {
-					row.createCell(10).setBlank();
-				}
+				row.createCell(10).setCellValue(dtoContable.getCentroBeneficio());
+				
 				row.createCell(11).setBlank();//Orden CO
 				row.createCell(12).setBlank();//Area funcional
 				row.createCell(13).setCellValue(dtoContable.getIdentificador());

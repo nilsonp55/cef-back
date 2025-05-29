@@ -225,6 +225,12 @@ public class ArchivosLiquidacionDelegateImpl implements IArchivosLiquidacionDele
 
 			// Agrega el nuevo registro al principio de la lista
 			listaRegistros.add(0, registrosCargados);
+			
+			// Procesar cada registro para agregar un salto de línea al final del contenido
+	        for (RegistrosCargadosDTO registro : listaRegistros) {
+	            String contenidoConSalto = registro.getContenido() + "\n"; // Agregar salto de línea directamente
+	            registro.setContenido(contenidoConSalto);
+	        }
 		}
 		
 		return listaRegistros;
@@ -360,7 +366,7 @@ public class ArchivosLiquidacionDelegateImpl implements IArchivosLiquidacionDele
 		}
 
 	}
-
+	
 	/**
 	 * Metodo encargado de iterar todos los archivos enviados para procesar
 	 * 

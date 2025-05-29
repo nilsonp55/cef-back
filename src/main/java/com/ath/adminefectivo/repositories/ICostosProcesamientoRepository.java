@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
 
 import com.ath.adminefectivo.entities.CostosProcesamiento;
 
@@ -55,5 +56,10 @@ QuerydslPredicateExecutor<CostosProcesamiento>, PagingAndSortingRepository<Costo
 	@Modifying
     @Query(value = "UPDATE COSTOS_PROCESAMIENTO SET ESTADO_CONCILIACION = :estado WHERE ID_ARCHIVO_CARGADO = :idArchivoCargado", nativeQuery = true)
 	void actualizarEstadoByIdArchivoCargado(Long idArchivoCargado, String estado);
+	
+	@Transactional
+	@Modifying
+	@Query(value = "DELETE FROM COSTOS_PROCESAMIENTO WHERE ID_ARCHIVO_CARGADO = :idArchivo", nativeQuery = true)
+	void eliminarPorIdArchivoCargadoProcesamiento(@Param("idArchivo") Long idArchivo);
 	
 }

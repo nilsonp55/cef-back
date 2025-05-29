@@ -1,19 +1,22 @@
 package com.ath.adminefectivo.exception;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
-
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * Clase donde se personaliza la exception de negocio
  *
  * @author CamiloBenavides
  */
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper=false)
+@AllArgsConstructor
 public class NegocioException extends RuntimeException {
 
 	/**
@@ -32,6 +35,8 @@ public class NegocioException extends RuntimeException {
 	private final HttpStatus status;
 
 	private final String message;
+	
+	private final List<String> errors = new ArrayList<>();
 
 	/**
 	 * Constructor
@@ -62,6 +67,7 @@ public class NegocioException extends RuntimeException {
 		this.code = code;
 		this.message = message;
 		this.status = status;
+		this.errors.add(error);
 	}
 
 }

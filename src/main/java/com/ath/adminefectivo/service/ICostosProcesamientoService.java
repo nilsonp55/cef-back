@@ -23,5 +23,7 @@ public interface ICostosProcesamientoService {
 	List<CostosProcesamiento> getByIdArchivoCargado(Long idArchivo);
 	
 	void aceptarConciliacionRegistro(Long idArchivoCargado);
+	
+	void persistirMaestroLlavesProcesamiento();
 
 }

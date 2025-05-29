@@ -46,6 +46,12 @@ public class EstadoConciliacionParametrosLiquidacion {
 
 	@Column(name = "ESTADO")
 	private Integer estado;
+	
+	@Column(name = "DATOS_VALORES_LIQUIDADOS_PROC")
+	private String datosValoresLiquidadosProc;
+	
+	@Column(name = "DATOS_OTROS_COSTOS_FONDO")
+	private String datosOtrosCostosFondo;
 
 
 }

@@ -32,7 +32,7 @@ import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.service.IFilesService;
 import com.ath.adminefectivo.service.IParametroService;
 import com.ath.adminefectivo.utils.S3Utils;
-
+import com.ath.adminefectivo.utils.S3UtilsV2;
 import lombok.extern.log4j.Log4j2;
 
 @Service
@@ -48,6 +48,9 @@ public class FilesServiceImpl implements IFilesService {
 
   @Autowired
   private S3Utils s3Util;
+  
+  @Autowired
+  private S3UtilsV2 s3UtilsV2;
 
   /**
    * {@inheritDoc}
@@ -105,18 +108,13 @@ public class FilesServiceImpl implements IFilesService {
 					download.setFile(streamReader);
 				}
 			} else {
-				// Divide la cadena de la ruta en segmentos usando el carácter "/"
-				String[] segmentos = path.split("/");
-				// Tomar el último segmento como el nombre del archivo
-				String nombreArchivo = segmentos[segmentos.length - 1];
-
-				File initialFile = new File(TEMPORAL_URL + File.separator + nombreArchivo);
+				File initialFile = new File(path);
 				Resource recurso = new UrlResource(initialFile.toURI());
 				InputStream inputStream = recurso.getInputStream();
 				// Realiza operaciones de lectura del archivo usando inputStream
 				download.setFile(inputStream);
 			}
-			
+			log.debug("descarga archivo desde URL: {}", path);
 		} catch (IOException e) {
 			log.error("downloadFile: {}", e.getMessage());
 			throw new NegocioException(ApiResponseCode.ERROR_ARCHIVOS_NO_EXISTE_BD.getCode(),
@@ -161,7 +159,7 @@ public class FilesServiceImpl implements IFilesService {
 
     List<String> contenidoCarpeta;
     if (Boolean.TRUE.equals(s3Bucket)) {
-      contenidoCarpeta = s3Util.getObjectsFromPathS3(url);
+      contenidoCarpeta = s3UtilsV2.getObjectsFromPathS3(url);
     } else {
       File carpeta = new File(url);
       contenidoCarpeta = Arrays.asList(carpeta.list());
@@ -296,12 +294,14 @@ public class FilesServiceImpl implements IFilesService {
   @Override
   public boolean moverArchivos(String urlSource, String urlDestino, String nombreArchivo,
       String postfijo) {
+    log.debug("moverArchivos inicio");
     Path origenPath = FileSystems.getDefault().getPath(urlSource);
     this.validarPath(urlDestino);
     String[] arregloNombre = nombreArchivo.split(Constantes.EXPRESION_REGULAR_PUNTO);
     nombreArchivo = arregloNombre[0].concat("-" + postfijo);
     Path destinoPath =
         FileSystems.getDefault().getPath(urlDestino, nombreArchivo.concat("." + arregloNombre[1]));
+    log.debug("origenPath: {} - arregloNombre:{} - nombreArchivo: {} - destinoPath: {}", origenPath, arregloNombre, nombreArchivo, destinoPath);
     try {
       if (Boolean.TRUE.equals(s3Bucket)) {
         s3Util.moverObjeto(origenPath.toString(), destinoPath.toString());
@@ -310,11 +310,12 @@ public class FilesServiceImpl implements IFilesService {
       }
 
     } catch (IOException e) {
+      log.debug("moverArchivos Exception: {}", e.getMessage());
       throw new NegocioException(ApiResponseCode.ERROR_MOVER_ARCHIVOS.getCode(),
           ApiResponseCode.ERROR_MOVER_ARCHIVOS.getDescription(),
           ApiResponseCode.ERROR_MOVER_ARCHIVOS.getHttpStatus());
     }
-
+    log.debug("moverArchivos fin");
     return true;
   }
   
@@ -396,5 +397,4 @@ public class FilesServiceImpl implements IFilesService {
       throw new IllegalArgumentException();
     }
   }
-
 }

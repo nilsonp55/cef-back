@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import com.ath.adminefectivo.dto.ParametrosLiquidacionCostoDTO;
 import com.ath.adminefectivo.dto.compuestos.EstimadoClasificacionCostosDTO;
+import com.ath.adminefectivo.entities.EstadoConciliacionParametrosLiquidacion;
 import com.ath.adminefectivo.entities.ParametrosLiquidacionCosto;
 import com.ath.adminefectivo.entities.ParametrosLiquidacionCostoFlat;
 
@@ -58,7 +59,10 @@ public interface IParametrosLiquidacionCostosService {
 	 * @return ParametrosLiquidacionCosto
 	 * @author duvan.naranjo
 	 */
+	
 	ParametrosLiquidacionCostoFlat f2eliminarParametrosLiquidacionCostos(ParametrosLiquidacionCostoFlat eliminar);
+	
+	ParametrosLiquidacionCostoFlat f2eliminarParametrosLiquidacionCostos(ParametrosLiquidacionCostoFlat eliminar, EstadoConciliacionParametrosLiquidacion estadoConciliacionLiqTransporte);
 	
 	/**
 	 * Metodo encargado de actualizar los registros de ParametrosLiquidacionCostos

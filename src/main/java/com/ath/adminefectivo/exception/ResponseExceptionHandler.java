@@ -1,7 +1,10 @@
 package com.ath.adminefectivo.exception;
 
 import java.time.LocalDateTime;
-
+import java.util.Arrays;
+import java.util.Optional;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -9,11 +12,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.dto.response.ResponseADE;
-
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -93,8 +94,9 @@ public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
 			WebRequest request) {
 		log.error("manejarExcepcionesNegocio: {}", exception.getMessage());
 		return ResponseEntity.status(exception.getStatus())
-				.body(new ApiResponseADE<ExceptionResponse>(null, ResponseADE.builder().code(exception.getCode())
-						.description(exception.getMessage()).source(request.getDescription(false)).build()));
+				.body(new ApiResponseADE<ExceptionResponse>(null,
+						ResponseADE.builder().code(exception.getCode()).description(exception.getMessage())
+								.source(request.getDescription(false)).errors(exception.getErrors()).build()));
 
 	}
 	
@@ -116,5 +118,54 @@ public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
 						.source(request.getDescription(false)).build()));
 
 	}
+	
+    /**
+     * Encapsula excepciones lanzadas por CrudRepository dentro de un ResponseEntity y retorna un
+     * mensaje de error con HttpStatus 400
+     * 
+     * @param exception DataAccessException
+     * @param request WebRequest
+     * @return ResponseEntity que contiene el mensaje de error de la excepcion lanzada por
+     *         CrudRepository
+     * @author prv_nparra
+     */
+    @ExceptionHandler(DataAccessException.class)
+    public ResponseEntity<ApiResponseADE<ExceptionResponse>> manejarDataAccessException(
+        DataAccessException exception, WebRequest request) {
+      log.error("manejarDataAccessException: {}", exception.getMessage());
+
+      return ResponseEntity.status(ApiResponseCode.GENERIC_ERROR.getHttpStatus())
+          .body(new ApiResponseADE<ExceptionResponse>(null,
+              ResponseADE.builder().code(ApiResponseCode.GENERIC_ERROR.getCode())
+                  .description(ApiResponseCode.GENERIC_ERROR.getDescription())
+                  .source(request.getDescription(false))
+                  .errors(Arrays
+                      .asList(Optional.of(exception.getRootCause()).orElse(exception).getMessage()))
+                  .build()));
+    }
+	
+    /**
+     * Encapsula excepciones lanzadas por CrudRepository dentro de un ResponseEntity y retorna un
+     * mensaje de error con HttpStatus 400
+     * 
+     * @param exception DataIntegrityViolationException
+     * @param request WebRequest
+     * @return ResponseEntity que contiene el mensaje de error de la excepcion lanzada por
+     *         CrudRepository
+     * @author prv_nparra
+     */
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ApiResponseADE<ExceptionResponse>> manejarDataIntegrityViolationException(
+        DataIntegrityViolationException exception, WebRequest request) {
+      log.error("manejarDataIntegrityViolationException: {}", exception.getMessage());
+      return ResponseEntity.status(ApiResponseCode.GENERIC_ERROR.getHttpStatus())
+          .body(new ApiResponseADE<ExceptionResponse>(null,
+              ResponseADE.builder().code(ApiResponseCode.GENERIC_ERROR.getCode())
+                  .description(ApiResponseCode.GENERIC_ERROR.getDescription())
+                  .source(request.getDescription(false))
+                  .errors(Arrays
+                      .asList(Optional.of(exception.getRootCause()).orElse(exception).getMessage()))
+                  .build()));
+    }
 
 }

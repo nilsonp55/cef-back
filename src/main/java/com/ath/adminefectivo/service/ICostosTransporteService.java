@@ -1,5 +1,6 @@
 package com.ath.adminefectivo.service;
 
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
@@ -74,4 +75,22 @@ public interface ICostosTransporteService {
 	List<CostosTransporte> getByIdArchivoCargado(Long idArchivo);
 	
 	void aceptarConciliacionRegistro(Long idArchivoCargado);
+	
+	void persistirMaestroLlavesTransporte();
+	
+	List<IDetalleLiquidacionTransporte> obtenerDetalleLiquidacionTransporte(String modulo,Long idLlave);
+	
+	<T extends Number> T aplicarAjuste(Number saldoTdv, T valorApp, Class<T> tipo);
+	
+	CostosTransporte calcularDiferenciasCostos(List<IDetalleLiquidacionTransporte> detalles, CostosTransporte costoTransporte);
+	
+	//Long obtenerIdPorTipo(List<IDetalleLiquidacionTransporte> detalles, String tipo);
+	
+	<T> Long obtenerIdPorTipo(List<T> detalles, String tipo);
+	
+	List<CostosTransporte> obtenerCostoTransporteList(String operacion, Long idRegistro);
+	
+	List<IDetalleLiquidacionTransporte> obtenerDetalleTransportePorIdArchivo(Integer idArchivo);
+	
+	List<IDetalleLiquidacionTransporte> obtenerEstadoTransportePorLlave(BigInteger idLlave);
 }

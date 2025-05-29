@@ -72,6 +72,26 @@ public class OperacionesLiquidacionProcesamientoDTO {
 	private BigDecimal tax;
 	@JsonProperty("valor_total")
 	private BigDecimal totalname;
+	@JsonProperty("clasificacion_fajado")
+	private BigDecimal classificationBundled;
+	@JsonProperty("clasificacion_fajado_tdv")
+	private BigDecimal classificationBundledTdv;
+	@JsonProperty("clasificacion_no_fajado")
+	private BigDecimal classificationUnbundled;
+	@JsonProperty("clasificacion_no_fajado_tdv")
+	private BigDecimal classificationUnbundledTdv;
+	@JsonProperty("costo_paqueteo")
+	private BigDecimal packagingCost;
+	@JsonProperty("costo_paqueteo_tdv")
+	private BigDecimal packagingCostTdv;
+	@JsonProperty("moneda_residuo")
+	private BigDecimal coinResidue;
+	@JsonProperty("moneda_residuo_tdv")
+	private BigDecimal coinResidueTdv;
+	@JsonProperty("billete_residuo")
+	private BigDecimal billResidue;
+	@JsonProperty("billete_residuo_tdv")
+	private BigDecimal billResidueTdv;
 	@JsonProperty("estado")
 	private String state;
 	@JsonProperty("modulo")
