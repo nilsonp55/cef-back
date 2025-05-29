@@ -104,7 +104,7 @@ public class S3Utils {
     String name;
     for (int i = 0; i < list.size(); i++) {
 
-      if (!list.get(i).equals(path.substring(0, path.length()))) {
+      if (!list.get(i).equals(path)) {
         name = list.get(i).replace(path, "");
         list2.add(name);
       }
@@ -269,12 +269,12 @@ public class S3Utils {
     try (FileOutputStream fos = new FileOutputStream(new File(key + nombreArchivo))) {
       String pathArchivo = key + nombreArchivo;
       File file = new File(pathArchivo);
-      file.createNewFile();
-      byte[] bytearr = archivo.getBytes();
-      log.debug("byte length: {} - Size: {}", bytearr.length, archivo.getSize());
-      fos.write(archivo.getBytes());
-      s3.putObject(bucketName, pathArchivo, file);
-
+      if(file.createNewFile()) {
+        byte[] bytearr = archivo.getBytes();
+        log.debug("byte length: {} - Size: {}", bytearr.length, archivo.getSize());
+        fos.write(archivo.getBytes());
+        s3.putObject(bucketName, pathArchivo, file);
+      }
     } catch (SdkClientException | IOException e) {
       throw new NegocioException(ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getCode(),
           ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getDescription(),
