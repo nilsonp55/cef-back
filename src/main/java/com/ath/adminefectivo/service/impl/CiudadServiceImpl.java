@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -130,5 +131,84 @@ public class CiudadServiceImpl implements ICiudadesService {
 		} else {
 			return CiudadesDTO.CONVERTER_DTO.apply(ciudadOpt);
 		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public CiudadesDTO createCiudad(CiudadesDTO ciudadDTO) {
+		if (ciudadDTO == null || ciudadDTO.getCodigoDANE() == null) {
+			throw new AplicationException(ApiResponseCode.ERROR_DATOS_ENTRADA_INVALIDOS.getCode(),
+					"El código DANE no puede ser nulo para crear una ciudad.",
+					ApiResponseCode.ERROR_DATOS_ENTRADA_INVALIDOS.getHttpStatus());
+		}
+		if (ciudadesRepository.existsById(ciudadDTO.getCodigoDANE())) {
+			throw new AplicationException(ApiResponseCode.ERROR_CIUDAD_YA_EXISTE.getCode(),
+					"Ciudad con código DANE " + ciudadDTO.getCodigoDANE() + " ya existe.",
+					ApiResponseCode.ERROR_CIUDAD_YA_EXISTE.getHttpStatus());
+		}
+		Ciudades ciudadEntity = CiudadesDTO.CONVERTER_ENTITY.apply(ciudadDTO);
+		Ciudades savedCiudad = ciudadesRepository.save(ciudadEntity);
+		return CiudadesDTO.CONVERTER_DTO.apply(savedCiudad);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public CiudadesDTO getCiudadById(String id) {
+		Optional<Ciudades> ciudadOpt = ciudadesRepository.findById(id);
+		if (ciudadOpt.isPresent()) {
+			return CiudadesDTO.CONVERTER_DTO.apply(ciudadOpt.get());
+		} else {
+			// Consider if a specific "NOT_FOUND" error is more appropriate
+			// Using existing ERROR_CIUDADES_NO_ENCONTRADO for now
+			throw new AplicationException(ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getCode(),
+					ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getDescription() + " ID: " + id,
+					ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getHttpStatus());
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public CiudadesDTO updateCiudad(String id, CiudadesDTO ciudadDTO) {
+		if (ciudadDTO == null || id == null) {
+			throw new AplicationException(ApiResponseCode.ERROR_DATOS_ENTRADA_INVALIDOS.getCode(),
+					"El ID de la ciudad y los datos de la ciudad no pueden ser nulos para actualizar.",
+					ApiResponseCode.ERROR_DATOS_ENTRADA_INVALIDOS.getHttpStatus());
+		}
+		if (!ciudadesRepository.existsById(id)) {
+			throw new AplicationException(ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getCode(),
+					"Ciudad con código DANE " + id + " no encontrada para actualizar.",
+					ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getHttpStatus());
+		}
+		// Ensure the ID in the DTO matches the path variable ID, or decide policy
+		// Forcing path ID to be the source of truth for the entity ID
+		ciudadDTO.setCodigoDANE(id);
+		Ciudades ciudadEntity = CiudadesDTO.CONVERTER_ENTITY.apply(ciudadDTO);
+		Ciudades updatedCiudad = ciudadesRepository.save(ciudadEntity);
+		return CiudadesDTO.CONVERTER_DTO.apply(updatedCiudad);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void deleteCiudad(String id) {
+		if (id == null) {
+			throw new AplicationException(ApiResponseCode.ERROR_DATOS_ENTRADA_INVALIDOS.getCode(),
+					"El ID de la ciudad no puede ser nulo para eliminar.",
+					ApiResponseCode.ERROR_DATOS_ENTRADA_INVALIDOS.getHttpStatus());
+		}
+		if (!ciudadesRepository.existsById(id)) {
+			throw new AplicationException(ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getCode(),
+					"Ciudad con código DANE " + id + " no encontrada para eliminar.",
+					ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getHttpStatus());
+		}
+		ciudadesRepository.deleteById(id);
+		// Consider logging the deletion or returning some status
 	}
 }
