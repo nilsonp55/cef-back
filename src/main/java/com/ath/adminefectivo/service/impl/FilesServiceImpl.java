@@ -39,7 +39,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class FilesServiceImpl implements IFilesService {
 
-  private static final String TEMPORAL_URL = "C:\\Ath\\Docs";
+  private static final String TEMPORAL_URL = "C:\\Ath\\Docs\\";
   @Value("${aws.s3.active}")
   Boolean s3Bucket;
 
@@ -161,7 +161,7 @@ public class FilesServiceImpl implements IFilesService {
     if (Boolean.TRUE.equals(s3Bucket)) {
       contenidoCarpeta = s3UtilsV2.getObjectsFromPathS3(url);
     } else {
-      File carpeta = new File(url);
+      File carpeta = new File(TEMPORAL_URL+url);
       contenidoCarpeta = Arrays.asList(carpeta.list());
     }
 
