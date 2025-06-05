@@ -108,7 +108,7 @@ public class FilesServiceImpl implements IFilesService {
 					download.setFile(streamReader);
 				}
 			} else {
-				File initialFile = new File(path);
+				File initialFile = new File(TEMPORAL_URL+path);
 				Resource recurso = new UrlResource(initialFile.toURI());
 				InputStream inputStream = recurso.getInputStream();
 				// Realiza operaciones de lectura del archivo usando inputStream
@@ -295,6 +295,12 @@ public class FilesServiceImpl implements IFilesService {
   public boolean moverArchivos(String urlSource, String urlDestino, String nombreArchivo,
       String postfijo) {
     log.debug("moverArchivos inicio");
+    
+    if (Boolean.FALSE.equals(s3Bucket)) {
+      urlSource = TEMPORAL_URL + urlSource;
+      urlDestino = TEMPORAL_URL + urlDestino;
+    }
+    
     Path origenPath = FileSystems.getDefault().getPath(urlSource);
     this.validarPath(urlDestino);
     String[] arregloNombre = nombreArchivo.split(Constantes.EXPRESION_REGULAR_PUNTO);
