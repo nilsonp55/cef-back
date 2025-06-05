@@ -6,12 +6,10 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.constantes.Parametros;
@@ -61,8 +59,8 @@ public class CarguePreliminarDelegateImpl implements ICarguePreliminarDelegate {
 	@Override
 	public Boolean persistirArchvoCargado(MultipartFile file) {
 		var url = filesService.persistirArchvo(file);
-		ArchivosCargadosDTO archivo = ArchivosCargadosDTO.builder().nombreArchivo(file.getOriginalFilename())
-				.nombreArchivoUpper(file.getOriginalFilename().toUpperCase())
+		ArchivosCargadosDTO archivo = ArchivosCargadosDTO.builder().nombreArchivo(file.getName())
+				.nombreArchivoUpper(file.getName().toUpperCase())
 				.fechaInicioCargue(new Date()).estado(Constantes.REGISTRO_ACTIVO).contentType(file.getContentType())
 				.estadoCargue(Constantes.ESTADO_CARGUE_PENDIENTE).url(url).build();
 
@@ -194,25 +192,6 @@ public class CarguePreliminarDelegateImpl implements ICarguePreliminarDelegate {
 	}
 
 	/**
-	 * Obtiene la cantidad de registros, verificando si tiene cabecera y control
-	 * final
-	 * 
-	 * @param maestroDefinicion
-	 * @param contenido
-	 * @return
-	 * @return int
-	 * @author duvan.naranjo
-	 */
-	private int obtenerBumeroRegistros(MaestrosDefinicionArchivoDTO maestroDefinicion, int cantidad) {
-		if (maestroDefinicion.isCabecera())
-			cantidad--;
-		if (maestroDefinicion.isControlFinal())
-			cantidad--;
-
-		return cantidad;
-	}
-
-	/**
 	 * Metodo encargado de realizar la validaciones de un archivo cargado
 	 * 
 	 * @param idMaestroDefinicion
@@ -236,12 +215,18 @@ public class CarguePreliminarDelegateImpl implements ICarguePreliminarDelegate {
 		var fechaArchivo = validacionArchivoService.validarFechaArchivo(nombreArchivo,
 				maestroDefinicion.getMascaraArch(), fechaActual);
 
+		int numeroRegistros = contenido.size();
+		if (maestroDefinicion.isCabecera())
+		  numeroRegistros--;
+        if (maestroDefinicion.isControlFinal())
+          numeroRegistros--;
+      
 		this.validacionArchivo = ValidacionArchivoDTO.builder().nombreArchivo(nombreArchivo)
 				.descripcion(maestroDefinicion.getDescripcionArch())
 				.fechaArchivo(fechaArchivo)
 				.maestroDefinicion(maestroDefinicion)
 				.url(url)
-				.numeroRegistros(obtenerBumeroRegistros(maestroDefinicion, contenido.size())).build();
+				.numeroRegistros(numeroRegistros).build();
 
 		if (this.validarCantidadRegistros(maestroDefinicion, this.validacionArchivo.getNumeroRegistros())) {
 			this.validacionArchivo = validacionArchivoService.validar(maestroDefinicion, contenido, validacionArchivo);
