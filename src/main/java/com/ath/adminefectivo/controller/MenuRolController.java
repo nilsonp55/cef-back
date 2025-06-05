@@ -8,8 +8,10 @@ import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -92,8 +94,8 @@ public class MenuRolController {
 	 * @return ResponseEntity<ApiResponseADE<MenuRolDTO>>
 	 * @author Bayron Andres Perez M
 	 */
-	@PostMapping(value = "${endpoints.MenuRol.actualizar}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponseADE<MenuRolDTO>> putCuentasPuc(@RequestBody MenuRolDTO menuRolDTO) {
+	@PutMapping(value = "${endpoints.MenuRol.actualizar}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ApiResponseADE<MenuRolDTO>> putMenuRol(@RequestBody MenuRolDTO menuRolDTO) {
 
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<MenuRolDTO>(MenuRolDTO.CONVERTER_DTO.apply(menuRolService.
@@ -101,5 +103,21 @@ public class MenuRolController {
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 
+	}
+
+	/**
+	 * Servicio encargado de eliminar un menuRol por su ID
+	 *
+	 * @param idMenuRol el ID del menuRol a eliminar
+	 * @return ResponseEntity<ApiResponseADE<String>>
+	 * @author AI Assistant
+	 */
+	@DeleteMapping(value = "${endpoints.MenuRol.eliminar}")
+	public ResponseEntity<ApiResponseADE<String>> deleteMenuRol(@RequestParam(required = true) Integer idMenuRol) {
+		menuRolService.deleteMenuRol(idMenuRol);
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ApiResponseADE<>("MenuRol eliminado exitosamente",
+						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
 }

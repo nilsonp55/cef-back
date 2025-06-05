@@ -10,6 +10,7 @@ import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.MenuRol;
 import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.exception.ConflictException;
+import com.ath.adminefectivo.exception.NotFoundException;
 import com.ath.adminefectivo.repositories.MenuRolRepository;
 import com.ath.adminefectivo.service.IMenuRolService;
 import com.querydsl.core.types.Predicate;
@@ -37,13 +38,10 @@ public class MenuRolServiceImpl implements IMenuRolService{
 	 */
 	@Override
 	public MenuRol getMenuRolById(Integer idMenuRol) {
-		var cuentas = menuRolRepository.findById(idMenuRol);
-		if (Objects.isNull(cuentas)) {
-			throw new AplicationException(ApiResponseCode.ERROR_CUENTAS_PUC_NO_EXIST.getCode(),
-					ApiResponseCode.ERROR_CUENTAS_PUC_NO_EXIST.getDescription(),
-					ApiResponseCode.ERROR_CUENTAS_PUC_NO_EXIST.getHttpStatus());
-		} 
-		return cuentas.get();
+		return menuRolRepository.findById(idMenuRol)
+				.orElseThrow(() -> new NotFoundException(ApiResponseCode.RECURSO_NO_ENCONTRADO.getCode(),
+						"MenuRol no encontrado con el código: " + idMenuRol,
+						ApiResponseCode.RECURSO_NO_ENCONTRADO.getHttpStatus()));
 	}
 
 	/**
@@ -53,7 +51,9 @@ public class MenuRolServiceImpl implements IMenuRolService{
 	public MenuRol postMenuRol(MenuRol menuRol) {
 		if (menuRol.getCodigo() != null && menuRolRepository
 				.existsById(menuRol.getCodigo())) {		
-			throw new ConflictException(ApiResponseCode.ERROR_CUENTAS_PUC_EXIST.getDescription());		
+			throw new ConflictException(ApiResponseCode.RECURSO_YA_EXISTE.getCode(),
+					"Ya existe un MenuRol con el código: " + menuRol.getCodigo(),
+					ApiResponseCode.RECURSO_YA_EXISTE.getHttpStatus());
 		}
 		return menuRolRepository.save(menuRol);
 	}
@@ -63,10 +63,13 @@ public class MenuRolServiceImpl implements IMenuRolService{
 	 */
 	@Override
 	public MenuRol putMenuRol(MenuRol menuRol) {
-		if (menuRol.getCodigo() == null && !menuRolRepository
+		if (menuRol.getCodigo() == null || !menuRolRepository
 				.existsById(menuRol.getCodigo())) {		
-			throw new ConflictException(ApiResponseCode.ERROR_CUENTAS_PUC_NO_EXIST.getDescription());		
+			throw new NotFoundException(ApiResponseCode.RECURSO_NO_ENCONTRADO.getCode(),
+					"MenuRol no encontrado con el código: " + menuRol.getCodigo(),
+					ApiResponseCode.RECURSO_NO_ENCONTRADO.getHttpStatus());
 		}
+		// Ensure the entity is fetched and then updated (save will act as merge if ID exists)
 		return menuRolRepository.save(menuRol);
 	}
 
@@ -75,9 +78,11 @@ public class MenuRolServiceImpl implements IMenuRolService{
 	 */
 	@Override
 	public void deleteMenuRol(Integer idMenuRol) {
-		if (idMenuRol == null && !menuRolRepository
+		if (idMenuRol == null || !menuRolRepository
 				.existsById(idMenuRol)) {		
-			throw new ConflictException(ApiResponseCode.ERROR_CUENTAS_PUC_NO_EXIST.getDescription());		
+			throw new NotFoundException(ApiResponseCode.RECURSO_NO_ENCONTRADO.getCode(),
+					"MenuRol no encontrado con el código: " + idMenuRol,
+					ApiResponseCode.RECURSO_NO_ENCONTRADO.getHttpStatus());
 		}
 		menuRolRepository.deleteById(idMenuRol);
 	}
