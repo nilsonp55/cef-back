@@ -7,7 +7,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -38,7 +37,10 @@ public class SitiosClientes {
 	@Column(name = "FAJADO")
 	private Boolean fajado;
 	
+	@Column(name = "CODIGO_PUNTO_CLIENTE")
+	private String codigoPuntoCliente;
+	
 	@OneToOne
-	@JoinColumn(name = "COD_PUNTO", nullable = false)
+	@JoinColumn(name = "CODIGO_PUNTO", nullable = false)
 	private Puntos puntos;
 }
