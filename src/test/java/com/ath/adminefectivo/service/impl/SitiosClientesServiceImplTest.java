@@ -24,6 +24,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import com.ath.adminefectivo.dto.SitiosClientesDTO;
 import com.ath.adminefectivo.entities.Puntos;
 import com.ath.adminefectivo.entities.SitiosClientes;
+import com.ath.adminefectivo.exception.NotFoundException;
 import com.ath.adminefectivo.repositories.ISitiosClientesRepository;
 import com.querydsl.core.BooleanBuilder;
 import lombok.extern.log4j.Log4j2;
@@ -62,7 +63,8 @@ public class SitiosClientesServiceImplTest {
     this.listOfSitiosClientes = puntos.stream()
         .map(punto -> Instancio.of(SitiosClientes.class)
             .set(field(SitiosClientes::getCodigoPunto), punto.getCodigoPunto())
-            .set(field(SitiosClientes::getPuntos), punto).create())
+            .set(field(SitiosClientes::getPunto), null)
+            .create())
         .collect(Collectors.toList());
     
     
@@ -155,6 +157,7 @@ public class SitiosClientesServiceImplTest {
 
   @Test
   void testDeteleSitioCliente() {
+    given(this.sitiosClientesRepository.findById(any())).willReturn(Optional.of(listOfSitiosClientes.get(0)));
     doNothing().when(this.sitiosClientesRepository).deleteById(any());
     this.sitiosClientesService.deteleSitioCliente(0);
 
@@ -163,18 +166,32 @@ public class SitiosClientesServiceImplTest {
 
   @Test
   void testDeleteSitioClienteException() {
-    var throwedExceptionData = new DataIntegrityViolationException(
-        "test deleted DataIntegrityException", new SQLException("test deleted SQLException"));
-    doThrow(throwedExceptionData).when(this.sitiosClientesRepository).deleteById(any());
-    Exception exception = assertThrows(DataAccessException.class, () -> {
+    var throwedExceptionData = new NotFoundException(SitiosClientes.class.getName(), "0");
+    Exception exception = assertThrows(NotFoundException.class, () -> {
       this.sitiosClientesService.deteleSitioCliente(0);
     });
 
     assertThat(exception.getMessage()).contains(throwedExceptionData.getMessage());
-    assertThat(exception.getCause().getMessage())
-        .contains(throwedExceptionData.getCause().getMessage());
 
     log.info("testDeleteSitioClienteException");
+  }
+  
+  @Test
+  void testDeleteSitioClienteDataException() {
+    var throwedExceptionData = new DataIntegrityViolationException(
+        "test deleted DataIntegrityException", new SQLException("test deleted SQLException"));
+    
+    given(this.sitiosClientesRepository.findById(any())).willReturn(Optional.of(listOfSitiosClientes.get(0)));
+    doThrow(throwedExceptionData).when(this.sitiosClientesRepository).deleteById(any());
+    
+    Exception exception = assertThrows(DataAccessException.class, () -> 
+      this.sitiosClientesService.deteleSitioCliente(0)
+    );
+    assertThat(exception.getMessage()).contains(throwedExceptionData.getMessage());
+    assertThat(exception.getCause().getMessage())
+        .contains(throwedExceptionData.getCause().getMessage());
+    
+    log.info("testDeleteSitioClienteDataException");
   }
 
 }

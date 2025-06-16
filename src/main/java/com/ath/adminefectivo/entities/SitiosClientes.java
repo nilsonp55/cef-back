@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * Entidad encargada de manejar la logica de la tabla SITIOS CLIENTES
+ * 
  * @author Bayron Andres Perez Muñoz
  *
  */
@@ -27,20 +28,21 @@ import lombok.NoArgsConstructor;
 @NamedQuery(name = "SitiosClientes.findAll", query = "SELECT t FROM SitiosClientes t")
 public class SitiosClientes {
 
-	@Id
-	@Column(name = "CODIGO_PUNTO")
-	private Integer codigoPunto;
-	
-	@Column(name = "CODIGO_CLIENTE")
-	private Integer codigoCliente;
-	
-	@Column(name = "FAJADO")
-	private Boolean fajado;
-	
-	@Column(name = "CODIGO_PUNTO_CLIENTE")
-	private String codigoPuntoCliente;
-	
-	@OneToOne
-	@JoinColumn(name = "CODIGO_PUNTO", nullable = false)
-	private Puntos puntos;
+  @Id
+  @Column(name = "CODIGO_PUNTO")
+  private Integer codigoPunto;
+  
+  @OneToOne
+  @JoinColumn(name = "CODIGO_PUNTO", insertable = false, unique = false)
+  private Puntos punto;
+
+  @Column(name = "CODIGO_CLIENTE")
+  private Integer codigoCliente;
+
+  @Column(name = "FAJADO")
+  private Boolean fajado;
+
+  @Column(name = "CODIGO_PUNTO_CLIENTE")
+  private String codigoPuntoCliente;
+
 }

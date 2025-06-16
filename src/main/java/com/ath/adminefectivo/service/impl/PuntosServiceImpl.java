@@ -245,7 +245,6 @@ public class PuntosServiceImpl implements IPuntosService {
   @Override
   public Puntos guardarPuntoSitioCliente(Puntos punto, SitiosClientes sitiosClientes) {
 
-    sitiosClientes.setPuntos(punto);
     sitiosClientes.setCodigoPunto(punto.getCodigoPunto());
     if (sitiosClientes.getCodigoPunto() != null
         && sitiosClienteRepository.existsById(sitiosClientes.getCodigoPunto())) {

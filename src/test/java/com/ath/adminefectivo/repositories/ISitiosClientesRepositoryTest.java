@@ -47,14 +47,14 @@ class ISitiosClientesRepositoryTest {
     List<SitiosClientes> sitiosClientesSaved = puntosSaved.stream()
         .map(punto -> Instancio.of(SitiosClientes.class)
             .set(field(SitiosClientes::getCodigoPunto), punto.getCodigoPunto())
-            .set(field(SitiosClientes::getPuntos), punto).create())
+            .set(field(SitiosClientes::getPunto), null)
+            .create())
         .collect(Collectors.toList());
-
+    
     this.listOfSitiosClientes = this.sitiosClientesRepository.saveAllAndFlush(sitiosClientesSaved);
     this.searchSitiosClientes = this.listOfSitiosClientes.get(0);
 
     this.sitiosClientes = Instancio.of(SitiosClientes.class)
-        .set(field(SitiosClientes::getPuntos), puntosSaved.get(0))
         .set(field(SitiosClientes::getCodigoPunto), puntosSaved.get(0).getCodigoPunto()).create();
 
     log.info("setup - size: {}", this.listOfSitiosClientes.size());
@@ -73,8 +73,7 @@ class ISitiosClientesRepositoryTest {
     SitiosClientes sitiosClientesFound =
         this.sitiosClientesRepository.findByCodigoPunto(this.searchSitiosClientes.getCodigoPunto());
     assertThat(sitiosClientesFound.getCodigoPunto()).isNotNull()
-        .isEqualTo(this.searchSitiosClientes.getCodigoPunto())
-        .isEqualTo(this.searchSitiosClientes.getPuntos().getCodigoPunto());
+        .isEqualTo(this.searchSitiosClientes.getCodigoPunto());
 
     log.info("testFindByCodigoPunto find Id: {}", sitiosClientesFound.getCodigoPunto());
   }
@@ -86,7 +85,6 @@ class ISitiosClientesRepositoryTest {
     assertThat(sitiosClienteSaved.getCodigoPunto()).isEqualTo(this.sitiosClientes.getCodigoPunto());
     assertThat(sitiosClienteSaved.getCodigoCliente()).isEqualTo(this.sitiosClientes.getCodigoCliente());
     assertThat(sitiosClienteSaved.getFajado()).isEqualTo(this.sitiosClientes.getFajado());
-    assertThat(sitiosClienteSaved.getPuntos()).isEqualTo(this.sitiosClientes.getPuntos());
     
     log.info("testCreateSitiosClientes - Id {}", sitiosClienteSaved.getCodigoPunto());
   }
