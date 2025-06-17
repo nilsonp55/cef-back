@@ -51,7 +51,7 @@ public class Puntos {
   @OneToOne(mappedBy = "puntos", orphanRemoval = true, fetch = FetchType.LAZY)
   private Oficinas oficinas;
 
-  @OneToOne(mappedBy = "puntos", orphanRemoval = true, fetch = FetchType.LAZY)
+  @OneToOne(mappedBy = "punto", orphanRemoval = true, fetch = FetchType.LAZY)
   private SitiosClientes sitiosClientes;
 
   @OneToMany(mappedBy = "puntos", fetch = FetchType.LAZY)

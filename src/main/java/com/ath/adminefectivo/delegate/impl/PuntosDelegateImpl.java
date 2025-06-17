@@ -86,8 +86,8 @@ public class PuntosDelegateImpl implements IPuntosDelegate {
       if (createPuntosDTO.getTipoPunto().equals(Constantes.PUNTO_SITIO_CLIENTE)) {
         SitiosClientes sitiosClientes = new SitiosClientes();
         sitiosClientes.setCodigoCliente(createPuntosDTO.getCodigoCliente());
+        sitiosClientes.setCodigoPuntoCliente(createPuntosDTO.getCodigoPuntoCliente());
         sitiosClientes.setFajado(createPuntosDTO.getFajado());
-        sitiosClientes.setPuntos(puntoResponse);
         
         puntoResponse = puntosService.guardarPuntoSitioCliente(punto, sitiosClientes);
       }
