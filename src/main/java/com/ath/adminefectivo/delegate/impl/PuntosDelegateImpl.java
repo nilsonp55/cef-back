@@ -140,6 +140,7 @@ public class PuntosDelegateImpl implements IPuntosDelegate {
 
       if (createPuntosDTO.getTipoPunto().equals(Constantes.PUNTO_SITIO_CLIENTE)) {
         punto.getSitiosClientes().setCodigoCliente(createPuntosDTO.getCodigoCliente());
+        punto.getSitiosClientes().setCodigoPuntoCliente(createPuntosDTO.getCodigoPuntoCliente());
         punto.getSitiosClientes().setFajado(createPuntosDTO.getFajado());
       }
 
