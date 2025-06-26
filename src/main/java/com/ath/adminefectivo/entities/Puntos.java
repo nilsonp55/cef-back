@@ -48,7 +48,7 @@ public class Puntos {
   @Column(name = "ESTADO")
   private String estado;
 
-  @OneToOne(mappedBy = "puntos", orphanRemoval = true, fetch = FetchType.LAZY)
+  @OneToOne(mappedBy = "punto", orphanRemoval = true, fetch = FetchType.LAZY)
   private Oficinas oficinas;
 
   @OneToOne(mappedBy = "punto", orphanRemoval = true, fetch = FetchType.LAZY)
@@ -57,12 +57,12 @@ public class Puntos {
   @OneToMany(mappedBy = "puntos", fetch = FetchType.LAZY)
   private List<PuntosCodigoTDV> puntosCodigoTDV;
 
-  @OneToOne(mappedBy = "puntos", orphanRemoval = true, fetch = FetchType.LAZY)
+  @OneToOne(mappedBy = "punto", orphanRemoval = true, fetch = FetchType.LAZY)
   private Fondos fondos;
 
-  @OneToOne(mappedBy = "puntos", orphanRemoval = true, fetch = FetchType.LAZY)
+  @OneToOne(mappedBy = "punto", orphanRemoval = true, fetch = FetchType.LAZY)
   private CajerosATM cajeroATM;
 
-  @OneToOne(mappedBy = "puntos", orphanRemoval = true, fetch = FetchType.LAZY)
+  @OneToOne(mappedBy = "punto", orphanRemoval = true, fetch = FetchType.LAZY)
   private Bancos bancos;
 }

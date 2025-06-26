@@ -79,7 +79,7 @@ public class FondosJdbcRepositoryImpl  implements IFondosJdbcRepository {
             .tdv(rs.getString("tdv"))
             .bancoAVAL(rs.getInt("banco_aval"))
             .nombreFondo(rs.getString("nombre_fondo"))
-            .puntos(null)
+            .punto(null)
             .build();
     }
 }
