@@ -185,7 +185,7 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
       // es Salida, se toma codigoPuntoDestino
       if (programadaNoConciliadaNombre.getEntradaSalida().equals(Constantes.VALOR_SALIDA)) {
         programadaNoConciliadaNombre.setOficina(
-            Optional.of(puntoDestino.getOficinas().getPuntos().getNombrePunto()).orElse(""));
+            Optional.of(puntoDestino.getOficinas().getPunto().getNombrePunto()).orElse(""));
       }
     }
 

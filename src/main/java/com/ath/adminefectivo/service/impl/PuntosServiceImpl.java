@@ -189,7 +189,6 @@ public class PuntosServiceImpl implements IPuntosService {
     }
 
     banco.setCodigoPunto(punto.getCodigoPunto());
-    banco.setPuntos(punto);
     bancosRepository.save(banco);
 
     return punto;

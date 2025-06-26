@@ -31,6 +31,10 @@ public class Oficinas {
 	@Column(name = "CODIGO_PUNTO")
 	private Integer codigoPunto;
 	
+	@OneToOne
+    @JoinColumn(name = "CODIGO_PUNTO", insertable = false, unique = false)
+    private Puntos punto;
+	
 	@Column(name = "CODIGO_OFICINA")
 	private Integer codigoOficina;
 	
@@ -48,9 +52,5 @@ public class Oficinas {
 	
 	@Column(name = "TARIFA_VERIFICACION")
 	private Double tarifaVerificacion;
-	
-	@OneToOne
-	@JoinColumn(name = "CODIGO_PUNTO", nullable = false)
-	private Puntos puntos;
 	
 }

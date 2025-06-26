@@ -31,6 +31,10 @@ public class Fondos {
 	@Column(name = "CODIGO_PUNTO")
 	private Integer codigoPunto;
 	
+	@OneToOne
+    @JoinColumn(name = "CODIGO_PUNTO", insertable = false, unique = false)
+    private Puntos punto;
+	
 	@Column(name = "TDV")
 	private String tdv;
 	
@@ -40,7 +44,4 @@ public class Fondos {
 	@Column(name = "NOMBRE_FONDO")
 	private String nombreFondo;
 	
-	@OneToOne
-	@JoinColumn(name = "COD_PUNTO", nullable = false)
-	private Puntos puntos;
 }
