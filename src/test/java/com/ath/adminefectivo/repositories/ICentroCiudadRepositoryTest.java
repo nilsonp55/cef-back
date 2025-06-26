@@ -34,6 +34,7 @@ class ICentroCiudadRepositoryTest {
 	void setUp() throws Exception {
 		
 		Bancos banco = Instancio.of(Bancos.class)
+		    .set(field(Bancos::getPunto), null)
 				.create();
 		this.bancosRepository.saveAndFlush(banco);
 		
