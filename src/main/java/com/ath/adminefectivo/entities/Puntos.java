@@ -1,7 +1,6 @@
 package com.ath.adminefectivo.entities;
 
 import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,7 +11,6 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -50,21 +48,21 @@ public class Puntos {
   @Column(name = "ESTADO")
   private String estado;
 
-  @OneToOne(mappedBy = "puntos", orphanRemoval = true, fetch = FetchType.LAZY)
+  @OneToOne(mappedBy = "punto", orphanRemoval = true, fetch = FetchType.LAZY)
   private Oficinas oficinas;
 
-  @OneToOne(mappedBy = "puntos", orphanRemoval = true, fetch = FetchType.LAZY)
+  @OneToOne(mappedBy = "punto", orphanRemoval = true, fetch = FetchType.LAZY)
   private SitiosClientes sitiosClientes;
 
-  @OneToMany(mappedBy = "puntos", orphanRemoval = true, fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "puntos", fetch = FetchType.LAZY)
   private List<PuntosCodigoTDV> puntosCodigoTDV;
 
-  @OneToOne(mappedBy = "puntos", orphanRemoval = true, fetch = FetchType.LAZY)
+  @OneToOne(mappedBy = "punto", orphanRemoval = true, fetch = FetchType.LAZY)
   private Fondos fondos;
 
-  @OneToOne(mappedBy = "puntos", orphanRemoval = true, fetch = FetchType.LAZY)
+  @OneToOne(mappedBy = "punto", orphanRemoval = true, fetch = FetchType.LAZY)
   private CajerosATM cajeroATM;
 
-  @OneToOne(mappedBy = "puntos", orphanRemoval = true, fetch = FetchType.LAZY)
+  @OneToOne(mappedBy = "punto", orphanRemoval = true, fetch = FetchType.LAZY)
   private Bancos bancos;
 }

@@ -1,6 +1,10 @@
 package com.ath.adminefectivo.service;
 
+import java.util.Map;
+
+import com.ath.adminefectivo.dto.ListaDetalleDTO;
 import com.ath.adminefectivo.dto.ReglasDetalleArchivoDTO;
+import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoDTO;
 import com.ath.adminefectivo.dto.compuestos.ValidacionMotorDTO;
 
 /**
@@ -17,7 +21,7 @@ public interface IMotorReglasService {
 	 * @return boolean
 	 * @author rparra
 	 */
-	ValidacionMotorDTO evaluarReglaSimple(String regla, String valorCampo);
+	ValidacionMotorDTO evaluarReglaSimple(String regla, String valorCampo, ValidacionArchivoDTO validacionArchivo, int index, Map<String, ListaDetalleDTO> detalleDefinicionMap);
 
 	/**
 	 * Metodo encargado de realizar la ejecución de una regla
@@ -27,7 +31,7 @@ public interface IMotorReglasService {
 	 * @return booolean
 	 * @author rparra
 	 */
-	boolean compilarRegla(ReglasDetalleArchivoDTO reglaVO, String valorCampo);
+	boolean compilarRegla(ReglasDetalleArchivoDTO reglaVO, String valorCampo, ValidacionArchivoDTO validacionArchivo, int index, Map<String, ListaDetalleDTO> detalleDefinicionMap);
 
 	/**
 	 * 
@@ -37,7 +41,7 @@ public interface IMotorReglasService {
 	 * @return boolean
 	 * @author CamiloBenavides
 	 */
-	ValidacionMotorDTO evaluarReglaMultiple(String regla, String valorCampo);
+	ValidacionMotorDTO evaluarReglaMultiple(String regla, String valorCampo, ValidacionArchivoDTO validacionArchivo, int index, Map<String, ListaDetalleDTO> detalleDefinicionMap);
 
 	
 

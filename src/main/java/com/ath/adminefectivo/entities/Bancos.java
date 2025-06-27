@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * Entidad encargada de manejar la logica de la tabla BANCOS
+ * 
  * @author cesar.castano
  *
  */
@@ -26,31 +27,31 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NamedQuery(name = "Bancos.findAll", query = "SELECT t FROM Bancos t")
 public class Bancos {
-	
-	@Column(name = "ES_AVAL")
-	private Boolean esAVAL;
-	
-	@Column(name = "CODIGO_COMPENSACION")
-	private Integer codigoCompensacion;
-	
-	@Id
-	@Column(name = "CODIGO_PUNTO")
-	private Integer codigoPunto;
-	
-	@Column(name = "NUMERO_NIT")
-	private String numeroNit;
-	
-	@Column(name = "ABREVIATURA")
-	private String abreviatura;
-	
-	@Column(name = "NOMBRE_BANCO")
-	private String nombreBanco;
-	
-	@Column(name = "COBRA_INTRADAY")
-	private Boolean cobraIntraday;
-	
-	@OneToOne
-	@JoinColumn(name = "COD_PUNTO")
-	private Puntos puntos;
-	
+
+  @Id
+  @Column(name = "CODIGO_PUNTO")
+  private Integer codigoPunto;
+  
+  @OneToOne
+  @JoinColumn(name = "CODIGO_PUNTO", insertable = false, unique = false)
+  private Puntos punto;
+
+  @Column(name = "ES_AVAL")
+  private Boolean esAVAL;
+
+  @Column(name = "CODIGO_COMPENSACION")
+  private Integer codigoCompensacion;
+
+  @Column(name = "NUMERO_NIT")
+  private String numeroNit;
+
+  @Column(name = "ABREVIATURA")
+  private String abreviatura;
+
+  @Column(name = "NOMBRE_BANCO")
+  private String nombreBanco;
+
+  @Column(name = "COBRA_INTRADAY")
+  private Boolean cobraIntraday;
+
 }

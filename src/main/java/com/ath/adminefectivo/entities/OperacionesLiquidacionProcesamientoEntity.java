@@ -104,6 +104,48 @@ public class OperacionesLiquidacionProcesamientoEntity {
 
     @Column(name = "VALOR_TOTAL")
     private BigDecimal totalname;
+    
+    @Column(name = "CLASIFICACION_FAJADO")
+    private BigDecimal classificationBundled;
+
+    @Column(name = "CLASIFICACION_FAJADO_TDV")
+    private BigDecimal classificationBundledTdv;
+    
+    @Column(name = "CLASIFICACION_NO_FAJADO")
+    private BigDecimal classificationUnbundled;
+
+    @Column(name = "CLASIFICACION_NO_FAJADO_TDV")
+    private BigDecimal classificationUnbundledTdv;
+    
+    @Column(name = "COSTO_PAQUETEO")
+    private BigDecimal packagingCost;
+    
+    @Column(name = "COSTO_PAQUETEO_TDV")
+    private BigDecimal packagingCostTdv;
+    
+    @Column(name = "MONEDA_RESIDUO")
+    private BigDecimal coinResidue;
+    
+    @Column(name = "MONEDA_RESIDUO_TDV")
+    private BigDecimal coinResidueTdv;
+    
+    @Column(name = "BILLETE_RESIDUO")
+    private BigDecimal billResidue;
+    
+    @Column(name = "BILLETE_RESIDUO_TDV")
+    private BigDecimal billResidueTdv;
+    
+    @Column(name = "VALOR_ALMACENAMIENTO_BILLETE")
+    private BigDecimal storageValueBill;
+
+    @Column(name = "VALOR_ALMACENAMIENTO_BILLETE_TDV")
+    private BigDecimal storageValueBillTdv;
+
+    @Column(name = "VALOR_ALMACENAMIENTO_MONEDA")
+    private BigDecimal storageValueCoin;
+
+    @Column(name = "VALOR_ALMACENAMIENTO_MONEDA_TDV")
+    private BigDecimal storageValueCoinTdv;
 
     @Column(name = "ESTADO")
     private String state;

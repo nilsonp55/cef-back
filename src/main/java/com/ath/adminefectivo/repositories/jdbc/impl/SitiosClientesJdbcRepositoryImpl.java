@@ -4,16 +4,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import javax.sql.DataSource;
-
 import org.springframework.stereotype.Repository;
-import lombok.extern.slf4j.Slf4j;
-
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.SitiosClientes;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.jdbc.ISitiosClientesJdbcRepository;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Repository
@@ -23,7 +20,8 @@ public class SitiosClientesJdbcRepositoryImpl implements ISitiosClientesJdbcRepo
             SELECT 
                 sc.CODIGO_PUNTO,
                 sc.CODIGO_CLIENTE,
-                sc.FAJADO
+                sc.FAJADO,
+                sc.CODIGO_PUNTO_CLIENTE
             FROM controlefect.SITIOS_CLIENTE sc
             WHERE sc.CODIGO_PUNTO = ?
             """;
@@ -63,7 +61,7 @@ public class SitiosClientesJdbcRepositoryImpl implements ISitiosClientesJdbcRepo
             .codigoPunto(rs.getInt("CODIGO_PUNTO"))
             .codigoCliente(rs.getInt("CODIGO_CLIENTE"))
             .fajado(rs.getBoolean("FAJADO"))
-            .puntos(null)
+            .codigoPuntoCliente(rs.getString("CODIGO_PUNTO_CLIENTE"))
             .build();
     }
 }

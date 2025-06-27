@@ -31,6 +31,10 @@ public class CajerosATM {
 	@Column(name = "CODIGO_PUNTO")
 	private Integer codigoPunto;
 	
+	@OneToOne
+    @JoinColumn(name = "CODIGO_PUNTO", insertable = false, unique = false)
+    private Puntos punto;
+	
 	@Column(name = "CODIGO_ATM")
 	private String codigoATM;
 	
@@ -42,9 +46,5 @@ public class CajerosATM {
 	
 	@Column(name = "TARIFA_VERIFICACION")
 	private Double tarifaVerificacion;
-	
-	@OneToOne
-	@JoinColumn(name = "CODIGO_PUNTO", nullable = false)
-	private Puntos puntos;
 	
 }
