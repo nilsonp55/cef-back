@@ -20,7 +20,8 @@ public class SitiosClientesJdbcRepositoryImpl implements ISitiosClientesJdbcRepo
             SELECT 
                 sc.CODIGO_PUNTO,
                 sc.CODIGO_CLIENTE,
-                sc.FAJADO
+                sc.FAJADO,
+                sc.CODIGO_PUNTO_CLIENTE
             FROM controlefect.SITIOS_CLIENTE sc
             WHERE sc.CODIGO_PUNTO = ?
             """;
