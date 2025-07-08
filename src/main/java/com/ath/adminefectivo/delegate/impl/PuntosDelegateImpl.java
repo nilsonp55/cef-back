@@ -86,7 +86,7 @@ public class PuntosDelegateImpl implements IPuntosDelegate {
       if (createPuntosDTO.getTipoPunto().equals(Constantes.PUNTO_SITIO_CLIENTE)) {
         SitiosClientes sitiosClientes = new SitiosClientes();
         sitiosClientes.setCodigoCliente(createPuntosDTO.getCodigoCliente());
-        sitiosClientes.setCodigoPuntoCliente(createPuntosDTO.getCodigoPuntoCliente());
+        sitiosClientes.setIdentificadorCliente(createPuntosDTO.getIdentificadorCliente());
         sitiosClientes.setFajado(createPuntosDTO.getFajado());
         
         puntoResponse = puntosService.guardarPuntoSitioCliente(punto, sitiosClientes);
@@ -140,7 +140,7 @@ public class PuntosDelegateImpl implements IPuntosDelegate {
 
       if (createPuntosDTO.getTipoPunto().equals(Constantes.PUNTO_SITIO_CLIENTE)) {
         punto.getSitiosClientes().setCodigoCliente(createPuntosDTO.getCodigoCliente());
-        punto.getSitiosClientes().setCodigoPuntoCliente(createPuntosDTO.getCodigoPuntoCliente());
+        punto.getSitiosClientes().setIdentificadorCliente(createPuntosDTO.getIdentificadorCliente());
         punto.getSitiosClientes().setFajado(createPuntosDTO.getFajado());
       }
 

@@ -42,7 +42,7 @@ public class SitiosClientes {
   @Column(name = "FAJADO")
   private Boolean fajado;
 
-  @Column(name = "CODIGO_PUNTO_CLIENTE")
-  private String codigoPuntoCliente;
+  @Column(name = "IDENTIFICADOR_CLIENTE")
+  private String identificadorCliente;
 
 }

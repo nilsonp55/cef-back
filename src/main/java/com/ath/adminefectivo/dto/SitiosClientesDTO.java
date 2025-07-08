@@ -22,7 +22,7 @@ public class SitiosClientesDTO {
 	
 	private Integer codigoCliente;
 	
-	private String codigoPuntoCliente;
+	private String identificadorCliente;
 	
 	private Boolean fajado;
 	
