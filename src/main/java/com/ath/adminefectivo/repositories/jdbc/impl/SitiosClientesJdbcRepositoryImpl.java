@@ -21,7 +21,7 @@ public class SitiosClientesJdbcRepositoryImpl implements ISitiosClientesJdbcRepo
                 sc.CODIGO_PUNTO,
                 sc.CODIGO_CLIENTE,
                 sc.FAJADO,
-                sc.CODIGO_PUNTO_CLIENTE
+                sc.IDENTIFICADOR_CLIENTE
             FROM controlefect.SITIOS_CLIENTE sc
             WHERE sc.CODIGO_PUNTO = ?
             """;
@@ -61,7 +61,7 @@ public class SitiosClientesJdbcRepositoryImpl implements ISitiosClientesJdbcRepo
             .codigoPunto(rs.getInt("CODIGO_PUNTO"))
             .codigoCliente(rs.getInt("CODIGO_CLIENTE"))
             .fajado(rs.getBoolean("FAJADO"))
-            .codigoPuntoCliente(rs.getString("CODIGO_PUNTO_CLIENTE"))
+            .identificadorCliente(rs.getString("IDENTIFICADOR_CLIENTE"))
             .build();
     }
 }
