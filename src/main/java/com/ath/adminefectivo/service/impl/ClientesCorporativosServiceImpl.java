@@ -99,9 +99,9 @@ public class ClientesCorporativosServiceImpl implements IClientesCorporativosSer
 
 		BooleanBuilder builder = new BooleanBuilder().and(predicate);
 		if (StringUtils.hasText(busqueda)) {
-			builder.and(QClientesCorporativos.clientesCorporativos.nombreCliente.containsIgnoreCase(busqueda))
-					.or(QClientesCorporativos.clientesCorporativos.identificacion.containsIgnoreCase(busqueda))
-					.or(QClientesCorporativos.clientesCorporativos.codigoCliente.like(busqueda));
+			builder.andAnyOf(QClientesCorporativos.clientesCorporativos.nombreCliente.containsIgnoreCase(busqueda), 
+			    QClientesCorporativos.clientesCorporativos.identificacion.containsIgnoreCase(busqueda)
+			);
 		}
 		Page<ClientesCorporativos> clientes = clientesCorporativosRepository.findAll(builder, page);
 		if(ObjectUtils.isNotEmpty(clientes))
