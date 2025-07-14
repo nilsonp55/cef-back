@@ -97,7 +97,6 @@ public class PuntosDelegateImpl implements IPuntosDelegate {
         fondos.setTdv(createPuntosDTO.getCodigoTDV());
         fondos.setBancoAVAL(createPuntosDTO.getBancoAVAL());
         fondos.setNombreFondo(createPuntosDTO.getNombreFondo());
-        fondos.setPunto(puntoResponse);
 
         puntoResponse = puntosService.guardarPuntoFondo(puntoResponse, fondos);
       }
