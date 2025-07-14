@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -36,8 +37,9 @@ public class SitiosClientes {
   @JoinColumn(name = "CODIGO_PUNTO", insertable = false, unique = false)
   private Puntos punto;
 
-  @Column(name = "CODIGO_CLIENTE")
-  private Integer codigoCliente;
+  @ManyToOne
+  @JoinColumn(name = "CODIGO_CLIENTE", insertable = false)
+  private ClientesCorporativos codigoCliente;
 
   @Column(name = "FAJADO")
   private Boolean fajado;

@@ -12,6 +12,7 @@ import com.ath.adminefectivo.dto.CreatePuntosDTO;
 import com.ath.adminefectivo.dto.PuntosDTO;
 import com.ath.adminefectivo.entities.Bancos;
 import com.ath.adminefectivo.entities.CajerosATM;
+import com.ath.adminefectivo.entities.ClientesCorporativos;
 import com.ath.adminefectivo.entities.Fondos;
 import com.ath.adminefectivo.entities.Oficinas;
 import com.ath.adminefectivo.entities.Puntos;
@@ -85,7 +86,9 @@ public class PuntosDelegateImpl implements IPuntosDelegate {
 
       if (createPuntosDTO.getTipoPunto().equals(Constantes.PUNTO_SITIO_CLIENTE)) {
         SitiosClientes sitiosClientes = new SitiosClientes();
-        sitiosClientes.setCodigoCliente(createPuntosDTO.getCodigoCliente());
+        ClientesCorporativos cliente = new ClientesCorporativos();
+        cliente.setCodigoCliente(createPuntosDTO.getCodigoCliente());
+        sitiosClientes.setCodigoCliente(cliente);
         sitiosClientes.setIdentificadorCliente(createPuntosDTO.getIdentificadorCliente());
         sitiosClientes.setFajado(createPuntosDTO.getFajado());
         
@@ -138,7 +141,9 @@ public class PuntosDelegateImpl implements IPuntosDelegate {
       }
 
       if (createPuntosDTO.getTipoPunto().equals(Constantes.PUNTO_SITIO_CLIENTE)) {
-        punto.getSitiosClientes().setCodigoCliente(createPuntosDTO.getCodigoCliente());
+        ClientesCorporativos cliente = new ClientesCorporativos();
+        cliente.setCodigoCliente(createPuntosDTO.getCodigoCliente());
+        punto.getSitiosClientes().setCodigoCliente(cliente);
         punto.getSitiosClientes().setIdentificadorCliente(createPuntosDTO.getIdentificadorCliente());
         punto.getSitiosClientes().setFajado(createPuntosDTO.getFajado());
       }

@@ -78,7 +78,7 @@ public class ClientesCorporativosServiceImpl implements IClientesCorporativosSer
 		Boolean estado = true;
 		var sitiosCliente = sitiosClientesService.getCodigoPuntoSitio(codigoPunto);
 		if(!Objects.isNull(sitiosCliente)) {
-			var cliente = clientesCorporativosRepository.findByCodigoCliente(sitiosCliente.getCodigoCliente());
+			var cliente = clientesCorporativosRepository.findByCodigoCliente(sitiosCliente.getCodigoCliente().getCodigoCliente());
 			if(cliente == null) {
 				estado = false;
 			}
@@ -183,7 +183,7 @@ public class ClientesCorporativosServiceImpl implements IClientesCorporativosSer
 		if(Objects.isNull(sitiosCliente)) {
 			return false;
 		}
-		return clientesCorporativosJdbcRepository.existsByCodigoCliente(sitiosCliente.getCodigoCliente());
+		return clientesCorporativosJdbcRepository.existsByCodigoCliente(sitiosCliente.getCodigoCliente().getCodigoCliente());
 	}
 	
 	/**

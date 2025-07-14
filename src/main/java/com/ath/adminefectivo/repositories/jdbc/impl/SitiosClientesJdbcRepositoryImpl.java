@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import javax.sql.DataSource;
 import org.springframework.stereotype.Repository;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
+import com.ath.adminefectivo.entities.ClientesCorporativos;
 import com.ath.adminefectivo.entities.SitiosClientes;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.jdbc.ISitiosClientesJdbcRepository;
@@ -59,7 +60,7 @@ public class SitiosClientesJdbcRepositoryImpl implements ISitiosClientesJdbcRepo
     private SitiosClientes mapResultSetToEntity(ResultSet rs) throws SQLException {
         return SitiosClientes.builder()
             .codigoPunto(rs.getInt("CODIGO_PUNTO"))
-            .codigoCliente(rs.getInt("CODIGO_CLIENTE"))
+            .codigoCliente(ClientesCorporativos.builder().codigoCliente(rs.getInt("CODIGO_CLIENTE")).build())
             .fajado(rs.getBoolean("FAJADO"))
             .identificadorCliente(rs.getString("IDENTIFICADOR_CLIENTE"))
             .build();
