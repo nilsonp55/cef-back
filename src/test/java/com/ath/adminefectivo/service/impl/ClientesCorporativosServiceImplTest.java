@@ -48,7 +48,7 @@ class ClientesCorporativosServiceImplTest {
 				.create();
 		clientesCorporativos = listClientesCorporativos.get(0);
 		sitiosClientes = Instancio.of(SitiosClientes.class)
-				.set(field(SitiosClientes::getCodigoCliente), clientesCorporativos.getCodigoCliente())
+				.set(field(SitiosClientes::getCodigoCliente), clientesCorporativos)
 				.create();
 		
 		log.info("setup - cliente: {}", clientesCorporativos.getCodigoCliente());
