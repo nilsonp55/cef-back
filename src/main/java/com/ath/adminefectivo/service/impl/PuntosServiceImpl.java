@@ -77,7 +77,7 @@ public class PuntosServiceImpl implements IPuntosService {
     BooleanBuilder builder = new BooleanBuilder();
     builder.and(predicate);
     if (StringUtils.hasText(busqueda)) {
-      builder.and(QPuntos.puntos.nombrePunto.containsIgnoreCase(busqueda));
+      builder.andAnyOf(QPuntos.puntos.nombrePunto.containsIgnoreCase(busqueda));
     }
     Pageable paginaOrdenada =
         PageRequest.of(page.getPageNumber(), page.getPageSize(), Sort.by("nombrePunto"));
