@@ -38,7 +38,7 @@ public class SitiosClientes {
   private Puntos punto;
 
   @ManyToOne
-  @JoinColumn(name = "CODIGO_CLIENTE", insertable = false)
+  @JoinColumn(name = "CODIGO_CLIENTE")
   private ClientesCorporativos codigoCliente;
 
   @Column(name = "FAJADO")
