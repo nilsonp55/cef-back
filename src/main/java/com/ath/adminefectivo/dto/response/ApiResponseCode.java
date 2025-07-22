@@ -754,8 +754,12 @@ public enum ApiResponseCode {
   
   ERROR_CLIENTE_CORPORATIVO_BANCO_AVAL("E982",
       "Codigo BancoAVAL no corresponde con banco en ClientesCorporativos.",
-      HttpStatus.PRECONDITION_FAILED);
-	
+      HttpStatus.PRECONDITION_FAILED),
+  
+  ERROR_USUARIO_EXISTE("E983", "Usuario ya existe.", HttpStatus.PRECONDITION_FAILED),
+  
+  ERROR_TASA_CAMBIO_EXISTE("E984", "Tasa de cambio ya existe.", HttpStatus.PRECONDITION_FAILED);
+  
 	/**
 	 * Código asociado a la respuesta
 	 */
