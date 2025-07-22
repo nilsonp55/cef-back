@@ -1,9 +1,9 @@
 package com.ath.adminefectivo.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,18 +42,20 @@ public class TasasCambioController {
 	 * @return ResponseEntity<ApiResponseADE<List<TasasCambioDTO>>>
 	 * @author bayron.perez
 	 */
-	@GetMapping(value = "${endpoints.TasasCambio.consultar}")
-	public ResponseEntity<ApiResponseADE<List<TasasCambioDTO>>> getTasasCambios(@QuerydslPredicate
-			(root = TasasCambio.class) Predicate predicate) {
-		List<TasasCambio> consulta = tasasCambioService.getTasasCambios(predicate);
-		
-		List<TasasCambioDTO> listtasasCambiosDto = new ArrayList<>();
-		consulta.forEach(entity -> listtasasCambiosDto.add(TasasCambioDTO.CONVERTER_DTO.apply(entity)));
-		
-		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ApiResponseADE<>(listtasasCambiosDto, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
-						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
-	}
+    @GetMapping(value = "${endpoints.TasasCambio.consultar}")
+    public ResponseEntity<ApiResponseADE<Page<TasasCambioDTO>>> getTasasCambios(
+        @QuerydslPredicate(root = TasasCambio.class) Predicate predicate, Pageable page) {
+      Page<TasasCambio> consulta = tasasCambioService.getTasasCambios(predicate, page);
+
+      Page<TasasCambioDTO> listtasasCambiosDto =
+          new PageImpl<>(consulta.stream().map(TasasCambioDTO.CONVERTER_DTO).toList(),
+              consulta.getPageable(), consulta.getTotalElements());
+
+      return ResponseEntity.status(HttpStatus.OK)
+          .body(new ApiResponseADE<>(listtasasCambiosDto,
+              ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+                  .description(ApiResponseCode.SUCCESS.getDescription()).build()));
+    }
 	
 	/**
 	 * Servicio encargado de retornar la consulta de un tasasCambio
@@ -93,7 +96,7 @@ public class TasasCambioController {
 	 * @return ResponseEntity<ApiResponseADE<TasasCambioDTO>>
 	 * @author Bayron Andres Perez M
 	 */
-	@PostMapping(value = "${endpoints.TasasCambio.actualizar}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PutMapping(value = "${endpoints.TasasCambio.actualizar}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<TasasCambioDTO>> putCuentasPuc(@RequestBody TasasCambioDTO tasasCambioDTO) {
 
 		return ResponseEntity.status(HttpStatus.OK)
