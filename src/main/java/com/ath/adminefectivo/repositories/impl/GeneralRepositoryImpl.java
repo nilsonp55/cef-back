@@ -336,8 +336,15 @@ public class GeneralRepositoryImpl implements IGeneralRepository{
 		String agrupador = validacionArchivo.getMaestroDefinicion().getIdMaestroDefinicionArchivo();
 
 		String fechaRaw = validacionArchivo.getValidacionLineas().get(0).getContenido().get(3);
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-		LocalDate fecha = LocalDate.parse(fechaRaw, formatter);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");		
+		LocalDate fecha;
+
+		try {
+		    fecha = LocalDate.parse(fechaRaw, formatter);
+		} catch (Exception e) {
+		    fecha = LocalDate.of(2000, 1, 1);		 
+		}
+		
 		String fechaFormated = fecha.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
 		String codigoCiiuFondo = validacionArchivo.getValidacionLineas().get(0).getContenido().get(10);
@@ -385,7 +392,7 @@ public class GeneralRepositoryImpl implements IGeneralRepository{
 	    detalleDefinicionMap.put("codigo_ciiu_fondo", ListaDetalleDTO.builder()
 	        .nombreCampo("codigo_ciiu_fondo")
 	        .tipoDato("T")
-	        .valor(codigoCiiuFondo)
+	        .valor(codigoCiiuFondo != null ? codigoCiiuFondo : "0")
 	        .build());
 	    
 	    detalleDefinicionMap.put("fecha_servicio_transporte", ListaDetalleDTO.builder()
@@ -415,7 +422,7 @@ public class GeneralRepositoryImpl implements IGeneralRepository{
 	    detalleDefinicionMap.put("entradaSalida", ListaDetalleDTO.builder()
 	        .nombreCampo("entradaSalida")
 	        .tipoDato("T")
-	        .valor(entradaSalida)
+	        .valor(entradaSalida != null ? entradaSalida : "SIN_ENTRADA_SALIDA")
 	        .build());
 
 	    detalleDefinicionMap.put("nombreArchivo", ListaDetalleDTO.builder()
