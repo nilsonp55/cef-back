@@ -2,11 +2,9 @@ package com.ath.adminefectivo.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.ath.adminefectivo.dto.TiposCuentasDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.TiposCuentas;
@@ -36,16 +34,17 @@ public class TiposCuentasServiceImpl implements ITiposCuentasService {
 		return listcuentasDto;
 	}
 
-	@Override
-	public TiposCuentasDTO getTiposCuentasById(String idTipoCuentas) {
-		var cuentas = tiposCuentasRepository.findById(idTipoCuentas);
-		if (Objects.isNull(cuentas)) {
-			throw new AplicationException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
-					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription()+" TipoCuenta no encontrada para id = "+idTipoCuentas,
-					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
-		} 
-		return TiposCuentasDTO.CONVERTER_DTO.apply(cuentas.get());
-	}
+    @Override
+    public TiposCuentasDTO getTiposCuentasById(String idTipoCuentas) {
+      Optional<TiposCuentas> cuentas = tiposCuentasRepository.findById(idTipoCuentas);
+      TiposCuentas tipoCuenta = cuentas.orElseThrow(
+          () -> new AplicationException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
+              ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription()
+                  + " TipoCuenta no encontrada para id = " + idTipoCuentas,
+              ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus()));
+
+      return TiposCuentasDTO.CONVERTER_DTO.apply(tipoCuenta);
+    }
 
 	@Override
 	public TiposCuentasDTO saveTiposCuentas(TiposCuentasDTO tiposCuentasDTO) {
@@ -53,8 +52,8 @@ public class TiposCuentasServiceImpl implements ITiposCuentasService {
 				.existsById(tiposCuentasDTO.getTipoCuenta())) {		
 			throw new ConflictException(ApiResponseCode.ERROR_TIPOS_CUENTAS_EXIST.getDescription());		
 		}
-		TiposCuentas tipoCuentas = tiposCuentasRepository.save(TiposCuentasDTO.CONVERTER_ENTITY
-				.apply(tiposCuentasDTO));
+		TiposCuentas tipoCuenta = TiposCuentasDTO.CONVERTER_ENTITY.apply(tiposCuentasDTO);
+		TiposCuentas tipoCuentas = tiposCuentasRepository.save(tipoCuenta);
 		
 		return TiposCuentasDTO.CONVERTER_DTO.apply(tipoCuentas);
 	}
