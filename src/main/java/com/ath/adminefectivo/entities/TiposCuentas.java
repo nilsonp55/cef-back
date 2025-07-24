@@ -5,11 +5,12 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-
+import com.ath.adminefectivo.entities.audit.AuditableEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Entidad encargada de manejar la logica de la tabla TiposCuentas
@@ -19,12 +20,13 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "TIPOS_CUENTAS")
-@Data
 @Builder
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @NamedQuery(name = "TiposCuentas.findAll", query = "SELECT t FROM TiposCuentas t")
-public class TiposCuentas {
+public class TiposCuentas extends AuditableEntity {
 
 	@Id
 	@Column(name = "TIPO_CUENTA")
