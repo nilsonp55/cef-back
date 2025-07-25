@@ -66,13 +66,23 @@ public interface IDominioService {
 	List<Double> consultaListValoresNumPorDominio(String dominio);
 
 	/**
-	 * Servicio encargado de realizar la logica de persistir un dominio
+	 * Crear un nuevo registro en tabla dominio
 	 * 
 	 * @param dominioDto
-	 * @return String
+	 * @return dominioDto
 	 * @author duvan.naranjo
+	 * @author prv_nparra
 	 */
-	String persistirDominio(DominioDTO dominioDto);
+	DominioDTO crearDominio(DominioDTO dominioDto);
+	
+	/**
+     * Actualizar un registro en la tabla dominio
+     * 
+     * @param dominioDto
+     * @return dominioDto
+     * @author prv_nparra
+     */
+	DominioDTO actualizarDominio(DominioDTO dominioDto);
 	
 	/**
 	 * Metodo encargado de realizar la eliminacion 
