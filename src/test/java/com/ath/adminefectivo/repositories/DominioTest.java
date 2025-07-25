@@ -55,10 +55,6 @@ class DominioTest {
 				.valorFecha(null)
 				.valorNumero(null)
 				.valorTexto("dd/MM/yyyy")
-				.fechaCreacion(Date.from(Instant.now()))
-				.fechaModificacion(Date.from(Instant.now()))
-				.usuarioCreacion("user09")
-				.usuarioModificacion("user09")
 				.build();
 		
 		dominio2 = Dominio.builder()
@@ -69,10 +65,6 @@ class DominioTest {
 				.valorFecha(null)
 				.valorNumero(null)
 				.valorTexto("yyyy-MM-dd")
-				.fechaCreacion(Date.from(Instant.now()))
-				.fechaModificacion(Date.from(Instant.now()))
-				.usuarioCreacion("user08")
-				.usuarioModificacion("user08")
 				.build();
 		
 		dominio3 = Dominio.builder()
@@ -83,10 +75,6 @@ class DominioTest {
 				.valorFecha(null)
 				.valorNumero(null)
 				.valorTexto("AD")
-				.fechaCreacion(Date.from(Instant.now()))
-				.fechaModificacion(Date.from(Instant.now()))
-				.usuarioCreacion("user07")
-				.usuarioModificacion("user07")
 				.build();
 		
 		log.info("setup - dominioPK: {} - dominio: {}", dominioPK, dominio);
@@ -178,9 +166,7 @@ class DominioTest {
 		dominioFind.setTipo("M");
 		dominioFind.setValorFecha(Date.from(Instant.now()));
 		dominioFind.setValorNumero(Double.valueOf("20"));
-		dominioFind.setValorTexto("Valor Texto Test");;
-		dominioFind.setFechaCreacion(Date.from(Instant.now()));
-		dominioFind.setFechaModificacion(Date.from(Instant.now()));
+		dominioFind.setValorTexto("Valor Texto Test");
 		dominioFind.setUsuarioCreacion("user01");
 		dominioFind.setUsuarioModificacion("user01");
 		
@@ -195,8 +181,6 @@ class DominioTest {
 		assertThat(dominioSaved.getValorFecha()).isEqualTo(dominioFind.getValorFecha());
 		assertThat(dominioSaved.getValorNumero()).isEqualTo(dominioFind.getValorNumero());
 		assertThat(dominioSaved.getValorTexto()).isEqualTo(dominioFind.getValorTexto());
-		assertThat(dominioSaved.getFechaCreacion()).isEqualTo(dominioFind.getFechaCreacion());
-		assertThat(dominioSaved.getFechaModificacion()).isEqualTo(dominioFind.getFechaModificacion());
 		assertThat(dominioSaved.getUsuarioCreacion()).isEqualTo(dominioFind.getUsuarioCreacion());
 		assertThat(dominioSaved.getUsuarioModificacion()).isEqualTo(dominioFind.getUsuarioModificacion());
 		

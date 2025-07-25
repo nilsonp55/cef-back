@@ -24,11 +24,13 @@ import com.ath.adminefectivo.entities.Dominio;
 import com.ath.adminefectivo.entities.id.DominioPK;
 import com.ath.adminefectivo.service.IDominioService;
 import com.querydsl.core.types.Predicate;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Controlador responsable de los unicos servicios de dominios que exiisten 
  * @author bayronPerez
  */
+@Log4j2
 @RestController
 @RequestMapping("${endpoints.DominioFuncional}")
 public class DominioFuncionalController {
@@ -71,16 +73,20 @@ public class DominioFuncionalController {
 	 * @param files
 	 * @return ResponseEntity<ApiResponseADE<Boolean>>
 	 * @author Bayron Andres Perez Muñoz
+	 * @author prv_nparra
 	 */
-	@PostMapping(value = "${endpoints.DominioFuncional.guardar}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, 
-			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponseADE<String>> persistirDominio(@RequestBody DominioDTO dominioDto) {
-
-		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ApiResponseADE<String>(dominioService.persistirDominio(dominioDto),
-						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
-								.description(ApiResponseCode.SUCCESS.getDescription()).build()));
-	}
+    @PostMapping(value = "${endpoints.DominioFuncional.guardar}",
+        consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ApiResponseADE<DominioDTO>> persistirDominio(
+        @RequestBody DominioDTO dominioDto) {
+      log.info("crear Dominio: {}", dominioDto.getId());
+      dominioDto = dominioService.crearDominio(dominioDto);
+      log.info("Dominio creado id: {}", dominioDto.getId());
+      return ResponseEntity.status(HttpStatus.OK)
+          .body(new ApiResponseADE<DominioDTO>(dominioDto,
+              ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+                  .description(ApiResponseCode.SUCCESS.getDescription()).build()));
+    }
 	
 	/**
 	 * Servicio encargado de actualizar un dominio para ser parametrizado en DB 
@@ -88,16 +94,20 @@ public class DominioFuncionalController {
 	 * @param files
 	 * @return ResponseEntity<ApiResponseADE<Boolean>>
 	 * @author Bayron Andres Perez Muñoz
+	 * @author prv_nparra
 	 */
-	@PutMapping(value = "${endpoints.DominioFuncional.guardar}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, 
-			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ApiResponseADE<String>> actualizarDominio(@RequestBody DominioDTO dominioDto) {
-
-		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ApiResponseADE<String>(dominioService.persistirDominio(dominioDto),
-						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
-								.description(ApiResponseCode.SUCCESS.getDescription()).build()));
-	}
+    @PutMapping(value = "${endpoints.DominioFuncional.actualizar}",
+        consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ApiResponseADE<DominioDTO>> actualizarDominio(
+        @RequestBody DominioDTO dominioDto) {
+      log.info("actualizar Dominio: {}", dominioDto.getId());
+      dominioDto = dominioService.actualizarDominio(dominioDto);
+      log.info("Dominio actualizado id: {}", dominioDto.getId());
+      return ResponseEntity.status(HttpStatus.OK)
+          .body(new ApiResponseADE<DominioDTO>(dominioDto,
+              ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+                  .description(ApiResponseCode.SUCCESS.getDescription()).build()));
+    }
 	
 	
 	/**

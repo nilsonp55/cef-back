@@ -35,6 +35,10 @@ public class AuditorAwareImpl implements AuditorAware<String> {
 
     String tokenAuth = headerAuth.get();
     String[] partsToken = tokenAuth.replace(BEARER_STRING, "").split("\\.");
+    if(partsToken.length < 2) {
+      log.error("No hay token valido en peticion: {}", NAME_HEADER);
+      return userToken;
+    }
     tokenAuth = partsToken[0].concat(".").concat(partsToken[1]).concat(".");
     try {
       DecodedJWT jwt = JWT.decode(tokenAuth);
