@@ -8,10 +8,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import com.ath.adminefectivo.entities.audit.AuditableEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Entidad encargada de manejar la logica de la tabla SITIOS CLIENTES
@@ -22,12 +24,13 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "SITIOS_CLIENTE")
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @NamedQuery(name = "SitiosClientes.findAll", query = "SELECT t FROM SitiosClientes t")
-public class SitiosClientes {
+public class SitiosClientes extends AuditableEntity {
 
   @Id
   @Column(name = "CODIGO_PUNTO")
