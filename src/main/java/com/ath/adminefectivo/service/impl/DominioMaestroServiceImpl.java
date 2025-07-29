@@ -80,8 +80,9 @@ public class DominioMaestroServiceImpl implements IDominioMaestroService {
 		if (Objects.isNull(dominioMaestroDto.getDominio())) {
 			throw new ConflictException(ApiResponseCode.ERROR_DOMINIO_NOT_FOUND.getDescription());
 		}
-		return DominioMaestroDto.CONVERTER_DTO.apply(dominioMaestroRepository.
-				save(DominioMaestroDto.CONVERTER_ENTITY.apply(dominioMaestroDto)));
+		DominioMaestro dominio = DominioMaestroDto.CONVERTER_ENTITY.apply(dominioMaestroDto);
+		dominioMaestroRepository.save(dominio);
+		return DominioMaestroDto.CONVERTER_DTO.apply(dominio);
 	}
 
 	/**

@@ -67,12 +67,8 @@ class MenuRolRepositoryTest {
 		// Id columna codigo
 		menuRol = MenuRol.builder()
 			.estado("1")
-			.fechaCreacion("")
-			.fechaModificacion("")
 			.menu(menu)
 			.rol(rol)
-			.usuarioCreacion("user12")
-			.usuarioModificacion("user13")
 			.build();
 		
 		menuRolRepository.save(menuRol);
@@ -128,8 +124,6 @@ class MenuRolRepositoryTest {
 		menuRolFind.setMenu(menu);
 		menuRolFind.setRol(rol);
 		menuRolFind.setEstado("A");
-		menuRolFind.setFechaCreacion("");
-		menuRolFind.setFechaModificacion("");
 		menuRolFind.setUsuarioCreacion("user22");
 		menuRolFind.setUsuarioModificacion("user3");
 		MenuRol menuRolSaved = menuRolRepository.save(menuRolFind);
@@ -139,8 +133,6 @@ class MenuRolRepositoryTest {
 		assertThat(menuRolSaved.getRol()).isEqualTo(menuRolFind.getRol());
 		assertThat(menuRolSaved.getMenu()).isEqualTo(menuRolFind.getMenu());
 		assertThat(menuRolSaved.getEstado()).isEqualTo(menuRolFind.getEstado());
-		assertThat(menuRolSaved.getFechaCreacion()).isEqualTo(menuRolFind.getFechaCreacion());
-		assertThat(menuRolSaved.getFechaModificacion()).isEqualTo(menuRolFind.getFechaModificacion());
 		assertThat(menuRolSaved.getUsuarioCreacion()).isEqualTo(menuRolFind.getUsuarioCreacion());
 		assertThat(menuRolSaved.getUsuarioModificacion()).isEqualTo(menuRolFind.getUsuarioModificacion());
 	}

@@ -2,11 +2,9 @@ package com.ath.adminefectivo.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.ath.adminefectivo.dto.ConfContableEntidadesDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.ConfContableEntidades;
@@ -37,12 +35,13 @@ public class ConfContableEntidadesServiceImpl implements IConfContableEntidadesS
 
 	@Override
 	public ConfContableEntidadesDTO getConfContableEntidadesById(Long idConfContableEntidades) {	
-		var cuentas = iConfContableEntidadesRepository.findById(idConfContableEntidades);
-		if (Objects.isNull(cuentas)) {
+		Optional<ConfContableEntidades> cuentas = iConfContableEntidadesRepository.findById(idConfContableEntidades);
+		
+		if(cuentas.isEmpty()) {
 			throw new AplicationException(ApiResponseCode.ERROR_CUENTAS_PUC_NO_EXIST.getCode(),
 					ApiResponseCode.ERROR_CONF_CONTABLE_ENTIDAD_EXIST.getDescription(),
 					ApiResponseCode.ERROR_CONF_CONTABLE_ENTIDAD_NO_EXIST.getHttpStatus());
-		} 
+		}
 		return ConfContableEntidadesDTO.CONVERTER_DTO.apply(cuentas.get());
 	}
 
@@ -71,13 +70,15 @@ public class ConfContableEntidadesServiceImpl implements IConfContableEntidadesS
 
 	}
 
-	@Override
-	public void deleteConfContableEntidadesById(Long idContableEntidades) {
-		if (idContableEntidades == null && !iConfContableEntidadesRepository
-				.existsById(idContableEntidades)) {		
-			throw new ConflictException(ApiResponseCode.ERROR_CONF_CONTABLE_ENTIDAD_NO_EXIST.getDescription());		
-		}
-		iConfContableEntidadesRepository.deleteById(idContableEntidades);
-	}
+    @Override
+    public void deleteConfContableEntidadesById(Long idContableEntidades) {
+      Optional<ConfContableEntidades> confContableFind =
+          iConfContableEntidadesRepository.findById(idContableEntidades);
+      if (confContableFind.isEmpty()) {
+        throw new ConflictException(
+            ApiResponseCode.ERROR_CONF_CONTABLE_ENTIDAD_NO_EXIST.getDescription());
+      }
+      iConfContableEntidadesRepository.delete(confContableFind.get());
+    }
 
 }

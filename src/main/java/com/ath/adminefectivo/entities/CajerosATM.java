@@ -7,11 +7,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
+import com.ath.adminefectivo.entities.audit.AuditableEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Entidad encargada de manejar la logica de la tabla FONDOS
@@ -20,12 +21,13 @@ import lombok.NoArgsConstructor;
  */
 @Entity
 @Table(name = "CAJEROS_ATM")
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @NamedQuery(name = "CajerosATM.findAll", query = "SELECT t FROM CajerosATM t")
-public class CajerosATM {
+public class CajerosATM extends AuditableEntity {
 
 	@Id
 	@Column(name = "CODIGO_PUNTO")

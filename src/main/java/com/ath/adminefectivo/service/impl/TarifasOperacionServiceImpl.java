@@ -81,13 +81,10 @@ public class TarifasOperacionServiceImpl implements ITarifasOperacionService {
 		TarifasOperacion tarifaOperacionEntity = tarifasOperacionRepository.findById(idTarifaOperacion).get();
 		
 		tarifaOperacionEntity.setEstado(Dominios.ESTADO_GENERAL_ELIMINADO);
-		TarifasOperacion tarifaOperacionActualizado = tarifasOperacionRepository.save(tarifaOperacionEntity);
+		tarifasOperacionRepository.save(tarifaOperacionEntity);
 		
-		if(!Objects.isNull(tarifaOperacionActualizado)) {
-			return (tarifaOperacionEntity.getEstado() == Dominios.ESTADO_GENERAL_ELIMINADO);
-		}else {
-			return false;
-		}
+		return (tarifaOperacionEntity.getEstado() == Dominios.ESTADO_GENERAL_ELIMINADO);
+		
 	}
 
 	@Override

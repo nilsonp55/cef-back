@@ -18,6 +18,7 @@ import com.ath.adminefectivo.dto.PuntosDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.Bancos;
 import com.ath.adminefectivo.entities.CajerosATM;
+import com.ath.adminefectivo.entities.ClientesCorporativos;
 import com.ath.adminefectivo.entities.Fondos;
 import com.ath.adminefectivo.entities.Oficinas;
 import com.ath.adminefectivo.entities.Puntos;
@@ -29,6 +30,7 @@ import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.exception.NotFoundException;
 import com.ath.adminefectivo.repositories.CajerosATMRepository;
 import com.ath.adminefectivo.repositories.IBancosRepository;
+import com.ath.adminefectivo.repositories.IClientesCorporativosRepository;
 import com.ath.adminefectivo.repositories.IFondosRepository;
 import com.ath.adminefectivo.repositories.IOficinasRepository;
 import com.ath.adminefectivo.repositories.IPuntosRepository;
@@ -67,6 +69,9 @@ public class PuntosServiceImpl implements IPuntosService {
 
   @Autowired
   IPuntosJdbcRepository puntosJdbcRepository;
+  
+  @Autowired
+  IClientesCorporativosRepository clientesCorporativosRepository;
 
   /**
    * {@inheritDoc}
@@ -250,8 +255,10 @@ public class PuntosServiceImpl implements IPuntosService {
       throw new ConflictException(ApiResponseCode.ERROR_SITIO_CLIENTE_EXIST.getDescription());
     }
 
-    sitiosClienteRepository.save(sitiosClientes);
-
+    ClientesCorporativos cliente = this.clientesCorporativosRepository.findByCodigoCliente(sitiosClientes.getCodigoCliente().getCodigoCliente());
+    sitiosClientes.setCodigoCliente(cliente);
+    sitiosClientes = sitiosClienteRepository.saveAndFlush(sitiosClientes);
+    punto.setSitiosClientes(sitiosClientes);
     return punto;
   }
 

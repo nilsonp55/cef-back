@@ -5,8 +5,9 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.Usuario;
+import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.exception.NotFoundException;
 import com.ath.adminefectivo.repositories.UsuarioRepository;
 import com.ath.adminefectivo.service.IUsuarioService;
@@ -54,6 +55,12 @@ public class UsuarioServiceImpl implements IUsuarioService {
 	@Override
 	public Usuario postUsuario(Usuario usuario) throws NotFoundException {
 		log.debug("crear usuario id: {}", usuario.getIdUsuario());
+		Optional<Usuario> usuarioFind = usuarioRepository.findByIdUsuarioIgnoreCase(usuario.getIdUsuario());
+		usuarioFind.ifPresent(u -> {
+		  log.debug("Usuario existe :{}", u.getIdUsuario());
+		  throw new NegocioException(ApiResponseCode.ERROR_USUARIO_EXISTE.getCode(), ApiResponseCode.ERROR_USUARIO_EXISTE.getDescription(), ApiResponseCode.ERROR_USUARIO_EXISTE.getHttpStatus());
+		});
+		
 		usuario = usuarioRepository.save(usuario);
 		log.debug("usuario creado id: {}", usuario.getIdUsuario());
 		return usuario;
@@ -65,10 +72,12 @@ public class UsuarioServiceImpl implements IUsuarioService {
 	@Override
 	public Usuario putUsuario(Usuario usuario) throws NotFoundException {
 		log.debug("actualizar usuario id: {}", usuario.getIdUsuario());
-		Optional<Usuario> usuarioFind = usuarioRepository.findById(usuario.getIdUsuario());
+		Optional<Usuario> usuarioFind = usuarioRepository.findByIdUsuarioIgnoreCase(usuario.getIdUsuario());
+		
 		log.debug("actualizar Usuario - isEmpty: {}", usuarioFind.isEmpty());
 		usuarioFind.ifPresentOrElse(
 				u -> {
+				  usuario.setIdUsuario(u.getIdUsuario());
 					usuarioRepository.save(usuario);
 					log.debug("actualizar Usuario - save: {}", usuario.getIdUsuario());
 				},

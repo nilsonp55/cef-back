@@ -13,14 +13,17 @@ import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.Dominio;
 import com.ath.adminefectivo.entities.id.DominioPK;
 import com.ath.adminefectivo.exception.AplicationException;
+import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.DominioRepository;
 import com.ath.adminefectivo.service.IDominioService;
 import com.querydsl.core.types.Predicate;
 
 import lombok.EqualsAndHashCode;
+import lombok.extern.log4j.Log4j2;
 
 @Service
 @EqualsAndHashCode
+@Log4j2
 public class DominioServiceImpl implements IDominioService {
 
 	@Autowired
@@ -92,13 +95,29 @@ public class DominioServiceImpl implements IDominioService {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public String persistirDominio(DominioDTO dominioDto) {
-		if(!Objects.isNull(dominioRepository.save(DominioDTO.CONVERTER_ENTITY.apply(dominioDto)))) {
-			return "Dominio Creado con éxito";
-		}
-		return "No se pudo insertar el dominio";
-	}
+    @Override
+    public DominioDTO crearDominio(DominioDTO dominioDto) {
+      log.debug("crear dominio: {}", dominioDto.getId());
+      Dominio dominio = dominioRepository.save(DominioDTO.CONVERTER_ENTITY.apply(dominioDto));
+      log.debug("Dominio creado: {}", dominio.getDominioPK());
+      return DominioDTO.CONVERTER_DTO.apply(dominio);
+    }
+	
+	/**
+     * {@inheritDoc}
+     */
+    @Override
+    public DominioDTO actualizarDominio(DominioDTO dominioDto) {
+      log.debug("actualizar dominio: {}", dominioDto.getId());
+      dominioRepository.findById(dominioDto.getId())
+          .orElseThrow(() -> new NegocioException(ApiResponseCode.ERROR_DOMINIO_NOT_FOUND.getCode(),
+              ApiResponseCode.ERROR_DOMINIO_NOT_FOUND.getDescription(),
+              ApiResponseCode.ERROR_DOMINIO_NOT_FOUND.getHttpStatus()));
+
+      Dominio dominio = dominioRepository.save(DominioDTO.CONVERTER_ENTITY.apply(dominioDto));
+      log.debug("Dominio actualizado: {}", dominio.getDominioPK());
+      return DominioDTO.CONVERTER_DTO.apply(dominio);
+    }
 
 	@Override
 	public Boolean eliminarDominio(DominioPK dominioPK) {
