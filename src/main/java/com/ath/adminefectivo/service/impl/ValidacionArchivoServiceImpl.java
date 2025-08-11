@@ -113,6 +113,43 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 				}
 			}
 		}
+		
+		List<ErroresCamposDTO> erroresCampos = new ArrayList<>();
+		ValidacionLineasDTO lineaDTO = new ValidacionLineasDTO();
+
+		if (validacionArchivo.getValidacionLineas() == null || validacionArchivo.getValidacionLineas().isEmpty()) {
+
+		    // Crear el mensaje de error
+		    String mensajeErroresTxt = "El archivo no contiene registros válidos para procesar. Verifique que las filas tengan el delimitador correcto";
+		    List<String> mensajesErrores = new ArrayList<>();
+		    mensajesErrores.add(mensajeErroresTxt);
+
+		    // Construir el objeto de error con builder
+		    ErroresCamposDTO error = ErroresCamposDTO.builder()
+		        .nombreCampo(null)
+		        .estado(Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO)
+		        .contenido(null)
+		        .mensajeError(mensajesErrores)
+		        .mensajeErrorTxt(mensajeErroresTxt)
+		        .build();
+
+		    erroresCampos.add(error);
+
+		    // Crear línea DTO con el error
+		    lineaDTO.setNumeroLinea(1); // Puedes poner otra lógica si aplica
+		    lineaDTO.setCampos(erroresCampos);
+		    lineaDTO.setEstado(Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO);
+
+		    // Asegurarse que la lista no sea null antes de agregar
+		    if (validacionArchivo.getValidacionLineas() == null) {
+		        validacionArchivo.setValidacionLineas(new ArrayList<>());
+		    }
+
+		    validacionArchivo.getValidacionLineas().add(lineaDTO);
+		    validacionArchivo.setNumeroErrores(validacionArchivo.getNumeroErrores() + erroresCampos.size());
+		    validacionArchivo.setEstadoValidacion(Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO);
+		}
+		
 		log.debug("validarContenido fin");
 		return validacionArchivo;
 	}
