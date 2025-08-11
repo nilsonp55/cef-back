@@ -75,7 +75,7 @@ public interface IOperacionesLiquidacionTransporte
 		    v.modulo
 	    FROM controlefect.v_detalle_liquidacion_transporte v
 	    LEFT JOIN controlefect.maestro_llaves_costos mc 
-	        ON mc.id_maestro_llave = COALESCE(v.id_llaves_maestro_app, v.id_llaves_maestro_tdv) AND mc.estado = 'PENDIENTE'
+	        ON mc.id_maestro_llave = COALESCE(v.id_llaves_maestro_app, v.id_llaves_maestro_tdv) AND mc.estado IN('PENDIENTE','RECHAZADA')
 	    WHERE 
 	        (:entidad IS NULL OR v.entidad = CAST(:entidad AS TEXT))
 	        AND (:identificacionCliente IS NULL OR v.identificacion_cliente = CAST(:identificacionCliente AS TEXT))
@@ -324,7 +324,7 @@ public interface IOperacionesLiquidacionTransporte
 			    v.id_llaves_maestro_app AS idLlavesMaestroApp
 			FROM controlefect.v_detalle_liquidacion_transporte v
 			LEFT JOIN controlefect.maestro_llaves_costos mc
-			    ON mc.id_maestro_llave = COALESCE(v.id_llaves_maestro_app, v.id_llaves_maestro_tdv) AND mc.estado = 'PENDIENTE'
+			    ON mc.id_maestro_llave = COALESCE(v.id_llaves_maestro_app, v.id_llaves_maestro_tdv) AND mc.estado IN('PENDIENTE','RECHAZADA')
 			WHERE v.modulo = :modulo
 			  AND mc.id_llave = :idLlave
 			""", nativeQuery = true)
@@ -387,10 +387,18 @@ public interface IOperacionesLiquidacionTransporte
 			    v.modulo
 			FROM controlefect.v_detalle_liquidacion_transporte v
 			LEFT JOIN controlefect.maestro_llaves_costos mc
-			    ON mc.id_maestro_llave = COALESCE(v.id_llaves_maestro_app, v.id_llaves_maestro_tdv) AND mc.estado = 'PENDIENTE'
+			    ON mc.id_maestro_llave = COALESCE(v.id_llaves_maestro_app, v.id_llaves_maestro_tdv) AND mc.estado IN('PENDIENTE','RECHAZADA')
 			WHERE mc.id_llave = :consecutivoRegistro
 			""", nativeQuery = true)
 	Optional<OperacionesLiquidacionTransporteEntity> consultarConsecutivoRegistro(
 			@Param("consecutivoRegistro") Integer consecutivoRegistro);
+	
+	@Query(value = """
+			SELECT v.id_llaves_maestro_app AS idLlavesMaestroApp
+			FROM controlefect.v_detalle_liquidacion_transporte v
+			WHERE v.ids_liquidacion_app LIKE %:idLiquidacionApp%
+			LIMIT 1
+			""", nativeQuery = true)
+	BigInteger obtenerIdLlavesMaestroAppPorIdsLiquidacionApp(@Param("idLiquidacionApp") String idLiquidacionApp);
 
 }
