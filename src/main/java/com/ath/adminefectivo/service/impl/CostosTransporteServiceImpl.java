@@ -868,8 +868,8 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 				.obtenerIdLlavesMaestroAppPorIdsLiquidacionApp(idParametriLiq);
 
 		if (idLlavesMaestroApp != null) {
-			maestroLlavesCostosRepository.actualizarEstadoPorLlaves(Collections.singletonList(idLlavesMaestroApp),
-					Constantes.ESTADO_CONCILIACION_RECHAZADA);
+			maestroLlavesCostosRepository.actualizarEstadoAndObservacionesPorLlaves(Collections.singletonList(idLlavesMaestroApp),
+					Constantes.ESTADO_CONCILIACION_RECHAZADA, observacionTransporte);
 		}
 		return idParametrosLiqCostos;
 	}

@@ -40,4 +40,7 @@ public class MaestroLlavesCostosEntity {
     @Column(name = "estado", length = 20)
     private String estado;
     
+    @Column(name = "observaciones_ath", length = 255, nullable = true)
+    private String observacionesAth;
+    
 }
