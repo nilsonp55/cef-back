@@ -269,7 +269,8 @@ public class GestionArchivosLiquidacionDelegateImpl implements IGestionArchivosL
 				archivoAceptar.setEstado("CONCILIADO");
 				
 				Set<BigInteger> llaves = obtenerLlavesDesdeTransporte(costosTransporte);
-				maestroLlavesCostosRepository.actualizarEstadoPorLlaves(new ArrayList<>(llaves),Constantes.ESTADO_CONCILIACION_ACEPTADO);
+				maestroLlavesCostosRepository.actualizarEstadoAndObservacionesPorLlaves(new ArrayList<>(llaves),
+						Constantes.ESTADO_CONCILIACION_ACEPTADO, archivoAceptar.getObservacion());
 				
 			} else {
 				archivoAceptar.setEstado(Constantes.ESTADO_NO_CONCILIADO);
@@ -393,7 +394,8 @@ public class GestionArchivosLiquidacionDelegateImpl implements IGestionArchivosL
 				archivoAceptar.setEstado("CONCILIADO");
 				
 				Set<BigInteger> llaves = obtenerLlavesDesdeProcesamiento(costosProcesamiento);
-				maestroLlavesCostosRepository.actualizarEstadoPorLlaves(new ArrayList<>(llaves),Constantes.ESTADO_CONCILIACION_ACEPTADO);
+				maestroLlavesCostosRepository.actualizarEstadoAndObservacionesPorLlaves(new ArrayList<>(llaves),
+						Constantes.ESTADO_CONCILIACION_ACEPTADO, archivoAceptar.getObservacion());
 			}
 			else
 			{
