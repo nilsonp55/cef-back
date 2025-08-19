@@ -2,6 +2,7 @@ package com.ath.adminefectivo.service;
 
 import java.util.List;
 import com.ath.adminefectivo.dto.RolDTO;
+import com.ath.adminefectivo.entities.Rol;
 
 /**
  * Interfaz de los servicios referentes a los Roles
@@ -24,15 +25,16 @@ public interface IRolService {
 	 * @return DTO de rol creado
 	 * @author prv_nparra
 	 */
-	RolDTO createRoles(RolDTO rol);
+	Rol createRoles(Rol rol);
 	
 	/**
 	 * Actualiza un registro existen en la tabla Rol
 	 * @param rol DTO con los atributos a actualizar
 	 * @return DTO de rol actualizado
 	 * @author prv_nparra
+	 * @param previousId 
 	 */
-	RolDTO updateRoles(RolDTO rol);
+	void updateRoles(Rol rol, String previousId);
 	
 	/**
 	 * Eliminar un registro de la tabla DTO
