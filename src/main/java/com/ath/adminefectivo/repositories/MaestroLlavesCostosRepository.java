@@ -76,8 +76,12 @@ public interface MaestroLlavesCostosRepository extends JpaRepository<MaestroLlav
 	
 	@Modifying
 	@Transactional
-	@Query("UPDATE MaestroLlavesCostosEntity m SET m.estado = :estado WHERE m.idMaestroLlave IN :llaves")
-	int actualizarEstadoPorLlaves(@Param("llaves") List<BigInteger> llaves, @Param("estado") String estado);
+	@Query("UPDATE MaestroLlavesCostosEntity m " +
+	       "SET m.estado = :estado, m.observacionesAth = :observacionesAth " +
+	       "WHERE m.idMaestroLlave IN :llaves")
+	int actualizarEstadoAndObservacionesPorLlaves(@Param("llaves") List<BigInteger> llaves,
+	                                            @Param("estado") String estado,
+	                                            @Param("observacionesAth") String observacionesAth);
 
 
 }
