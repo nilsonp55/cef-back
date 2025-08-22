@@ -78,11 +78,10 @@ public class RolServiceImpl implements IRolService {
   @Override
   public void updateRoles(Rol rol, String previousId) {
     log.debug("updateRoles id: {}", rol.getIdRol());
-    if((previousId != null || previousId != "") 
-    		&& !(rol.getIdRol().equals(previousId))
-    		&& rolRepository.existsById(rol.getIdRol())) {
-    	throw new ConflictException("El Rol ya existe con el Id Rol: " + rol.getIdRol());
-    }
+    
+    rolRepository.findById(previousId).orElseThrow(
+        () -> new ConflictException("El Rol ya existe con el Id Rol: " + rol.getIdRol()));
+
     if(rol.getIdRol().equals(previousId)) {
     	rolRepository.updateRol(
         		rol.getNombre(),
