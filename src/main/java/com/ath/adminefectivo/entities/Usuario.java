@@ -1,6 +1,5 @@
 package com.ath.adminefectivo.entities;
 
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,13 +8,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+
+import com.ath.adminefectivo.entities.audit.AuditableEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  *  Entidad encargada de manejar la logica de la tabla USUARIO
@@ -24,12 +24,13 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "USUARIO")
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @NamedQuery(name = "Usuario.findAll", query = "SELECT t FROM Usuario t")
-public class Usuario {
+public class Usuario extends AuditableEntity{
 	
 	@Id
 	@Column(name = "IDUSUARIO")
@@ -50,19 +51,5 @@ public class Usuario {
 	@ManyToOne
 	@JoinColumn(name = "ROL", referencedColumnName = "ID_ROL", nullable = false)
 	private Rol rol;
-	
-	@Temporal(TemporalType.DATE)
-	@Column(name = "FECHA_CREACION")
-	private Date fechaCreacion;
-	
-	@Column(name = "USUARIO_CREACION")
-	private String usuarioCreacion;
-	
-	@Temporal(TemporalType.DATE)
-	@Column(name = "FECHA_MODIFICACION")
-	private Date fechaModificacion;
-	
-	@Column(name = "USUARIO_MODIFICACION")
-	private String usuarioModificacion;
 
 }

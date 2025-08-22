@@ -49,18 +49,17 @@ class UsuarioRepositoryTest {
 		rol.setUsuarioModificacion("user1");
 		rolRepository.save(rol);
 		
-		usuario = Usuario.builder()
-			.idUsuario("1")
-			.apellidos("Sarmiento")
-			.nombres("Carlos")
-			.tipoUsuario("tecnico")
-			.estado("1")
-			.fechaCreacion( Date.from(Instant.now()) )
-			.fechaModificacion( Date.from(Instant.now()) )
-			.usuarioCreacion("user12")
-			.usuarioModificacion("user13")
-			.rol(rol)
-			.build();
+		usuario = new Usuario();
+			usuario.setIdUsuario("1");
+			usuario.setApellidos("Sarmiento");
+			usuario.setNombres("Carlos");
+			usuario.setTipoUsuario("tecnico");
+			usuario.setEstado("1");
+			usuario.setFechaCreacion( LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
+			usuario.setFechaModificacion(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
+			usuario.setUsuarioCreacion("user12");
+			usuario.setUsuarioModificacion("user13");
+			usuario.setRol(rol);
 		
 		usuarioRepository.save(usuario);
 	}
@@ -116,8 +115,8 @@ class UsuarioRepositoryTest {
 		// when -  action or the behaviour that we are going test
 		usuarioFind.setApellidos("apellidoTest");
 		usuarioFind.setEstado("A");
-		usuarioFind.setFechaCreacion(fechaCreacion);
-		usuarioFind.setFechaModificacion(fechaModificacion);
+		usuarioFind.setFechaCreacion(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
+		usuarioFind.setFechaModificacion(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
 		usuarioFind.setNombres("Nombres Test");
 		usuarioFind.setTipoUsuario("test");
 		usuarioFind.setUsuarioCreacion("user2");
