@@ -30,6 +30,14 @@ public class MenuServiceImpl implements IMenuService {
 
       return listMenuDTO;
     }
+    
+    @Override
+    public List<String> getAllIdMenu() {
+      List<String> listIdMenu = menuRepository.getAllIdMenu();
+      log.debug("List ID Menu size: ", listIdMenu.size());
+
+      return listIdMenu;
+    }
 
     @Override
     public MenuDTO createMenu(MenuDTO menu) {

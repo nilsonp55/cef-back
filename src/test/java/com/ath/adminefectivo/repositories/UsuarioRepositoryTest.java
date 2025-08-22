@@ -4,6 +4,8 @@ package com.ath.adminefectivo.repositories;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -36,16 +38,15 @@ class UsuarioRepositoryTest {
 	@BeforeEach
 	void setup() {
 		
-		Rol rol = Rol.builder()
-				.idRol("1")
-				.descripcion("Rol1")
-				.estado("A")
-				.fechaCreacion(Date.from(Instant.now()))
-				.fechaModificacion(Date.from(Instant.now()))
-				.nombre("ROL1")
-				.usuarioCreacion("user1")
-				.usuarioModificacion("user11")
-				.build();
+		Rol rol = new Rol();
+		rol.setIdRol("1");
+		rol.setDescripcion("Rol1");
+		rol.setEstado("A");
+		rol.setFechaCreacion(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
+		rol.setFechaModificacion(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
+		rol.setNombre("ROL1");
+		rol.setUsuarioCreacion("user1");
+		rol.setUsuarioModificacion("user1");
 		rolRepository.save(rol);
 		
 		usuario = Usuario.builder()

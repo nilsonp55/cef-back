@@ -10,13 +10,13 @@ import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import com.ath.adminefectivo.entities.audit.AuditableEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  *  Entidad encargada de manejar la logica de la tabla ROL
@@ -25,12 +25,13 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "ROL")
-@Data
+@Setter
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @NamedQuery(name = "Rol.findAll", query = "SELECT t FROM Rol t")
-public class Rol {
+public class Rol extends AuditableEntity  {
 	
 	@Id
 	@Column(name = "ID_ROL")
@@ -47,19 +48,5 @@ public class Rol {
 	
 	@OneToMany(mappedBy = "rol", cascade = {CascadeType.ALL}, orphanRemoval = true)
 	private List<MenuRol> menuRol;
-	
-	@Column(name = "USUARIO_CREACION")
-	private String usuarioCreacion;
-	
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "FECHA_CREACION")
-	private Date fechaCreacion;
-
-	@Column(name = "USUARIO_MODIFICACION")
-	private String usuarioModificacion;
-	
-	@Temporal(TemporalType.DATE)
-	@Column(name = "FECHA_MODIFICACION")
-	private Date fechaModificacion;
 
 }

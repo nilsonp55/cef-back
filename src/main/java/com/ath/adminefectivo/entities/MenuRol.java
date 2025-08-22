@@ -1,5 +1,6 @@
 package com.ath.adminefectivo.entities;
 
+import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -23,8 +24,8 @@ import lombok.Setter;
  */
 @Entity
 @Table(name = "MENU_ROL")
-@Getter
 @Setter
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
