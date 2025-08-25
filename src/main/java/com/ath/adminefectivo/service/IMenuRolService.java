@@ -46,5 +46,14 @@ public interface IMenuRolService {
 	 * @author bayron.perez
 	 */
 	void deleteMenuRol(Integer idMenuRol);
+	
+	
+	/**
+	 * Guardar set de menus para un rol creado
+	 * @param List<MenuRol> menuRol
+	 * @return
+	 * @author josePabon
+	 */
+	List<MenuRol> saveAllMenuRol(List<MenuRol> menuRol);
 
 }
