@@ -20,10 +20,10 @@ public interface IConciliacionOperacionesProcesamientoRepository extends CrudRep
 	@Transactional(readOnly = true)
 	@Query(
 	    value = "SELECT "
-	            + " mc.id_llave AS consecutivo_registro, "
+	            + " COALESCE(mc.id_llave, 0) AS consecutivo_registro, "
 	            + " v.id_archivo_cargado, "
-	            + " mc.id_llave AS id_registro, "
-	            + " mc.id_llave AS id_liquidacion, "
+	            + " COALESCE(mc.id_llave, 0) AS id_registro, "
+	            + " COALESCE(mc.id_llave, 0) AS id_liquidacion, "
 	            + " v.tipo_transaccion, "
 	            + " v.entidad, "
 	            + " v.fecha_servicio_transporte, "
@@ -165,7 +165,7 @@ public interface IConciliacionOperacionesProcesamientoRepository extends CrudRep
 			    FROM controlefect.v_detalle_liquidacion_procesamiento v
 			    LEFT JOIN controlefect.maestro_llaves_costos mc
 			        ON mc.id_maestro_llave = COALESCE(v.id_llaves_maestro_app, v.id_llaves_maestro_tdv)
-			    WHERE v.id_llaves_maestro_tdv = :idLlaveMaestro
+			    WHERE :idLlaveMaestro IN (v.id_llaves_maestro_tdv, v.id_llaves_maestro_app)
 			""", nativeQuery = true)
 	List<IDetalleLiquidacionProcesamiento> countConciliadasProcesamientoByLlave(
 			@Param("idLlaveMaestro") BigInteger idLlaveMaestro);
@@ -289,10 +289,10 @@ public interface IConciliacionOperacionesProcesamientoRepository extends CrudRep
 	@Transactional(readOnly = true)
 	@Query(value = """
 	        SELECT
-	            mc.id_llave AS consecutivo_registro,
+	            COALESCE(mc.id_llave, 0) AS consecutivo_registro,
 	            v.id_archivo_cargado,
-	            mc.id_llave AS id_registro,
-	            mc.id_llave AS id_liquidacion,
+	            COALESCE(mc.id_llave, 0) AS id_registro,
+	            COALESCE(mc.id_llave, 0) AS id_liquidacion,
 	            v.tipo_transaccion,
 	            v.entidad,
 	            v.fecha_servicio_transporte,

@@ -119,7 +119,7 @@ public class ArchivosLiquidacionDelegateImpl implements IArchivosLiquidacionDele
 
 	    List<String> cadenaTrasportadoras = obtenerCadenaTransportadoras(transportadoras);
 	    List<String> cadenaEntidades = obtenerCadenaEntidades(bancos);
-	    List<MaestrosDefinicionArchivoDTO> maestrosDefinicion = consultarMaestrosDefinicion();
+	    List<MaestrosDefinicionArchivoDTO> maestrosDefinicion = consultarMaestrosDefinicion(Constantes.LIQUIDACION_AGRUPADOR);
 	    String urlPendientes = filesService.consultarPathArchivos(Constantes.ESTADO_CARGUE_PENDIENTE);
 	    String url = maestrosDefinicion.get(0).getUbicacion().concat(urlPendientes);
 	    String requiredFileExtension = maestrosDefinicion.get(0).getExtension();
@@ -228,7 +228,7 @@ public class ArchivosLiquidacionDelegateImpl implements IArchivosLiquidacionDele
 			
 			// Procesar cada registro para agregar un salto de línea al final del contenido
 	        for (RegistrosCargadosDTO registro : listaRegistros) {
-	            String contenidoConSalto = registro.getContenido() + "\n"; // Agregar salto de línea directamente
+	            String contenidoConSalto = registro.getContenido(); // Agregar salto de línea directamente
 	            registro.setContenido(contenidoConSalto);
 	        }
 		}
@@ -247,7 +247,9 @@ public class ArchivosLiquidacionDelegateImpl implements IArchivosLiquidacionDele
 		if (maestroDefinicion.isCabecera()) {
 			List<DetallesDefinicionArchivoDTO> listadoDetalleArchivo = detalleDefinicionArchivoService
 					.consultarDetalleDefinicionArchivoByIdMaestro(archivosCargados.getIdModeloArchivo());
-
+			
+			listadoDetalleArchivo.sort(Comparator.comparing(dto -> dto.getId().getNumeroCampo()));
+			
 			for (int i = 0; i < listadoDetalleArchivo.size(); i++) {
 				DetallesDefinicionArchivoDTO detalle = listadoDetalleArchivo.get(i);
 				cabecera.append(detalle.getNombreCampo().toUpperCase());
@@ -566,11 +568,11 @@ public class ArchivosLiquidacionDelegateImpl implements IArchivosLiquidacionDele
 	            .toList();
 	}
 
-	private List<MaestrosDefinicionArchivoDTO> consultarMaestrosDefinicion() {
-	    return maestroDefinicionArchivoService.consultarDefinicionArchivoByAgrupador(null, Constantes.LIQUIDACION_AGRUPADOR);
+	public List<MaestrosDefinicionArchivoDTO> consultarMaestrosDefinicion(String agrupador) {
+	    return maestroDefinicionArchivoService.consultarDefinicionArchivoByAgrupador(null, agrupador);
 	}
 
-	private List<ArchivosLiquidacionDTO> obtenerDtoResponseList(int start, int end, boolean content, String fileName, String url) {
+	public List<ArchivosLiquidacionDTO> obtenerDtoResponseList(int start, int end, boolean content, String fileName, String url) {
 	    return inicializarDtoList(filesService.obtenerContenidoCarpetaSummaryS3Object(url, start, end, content, fileName), url);
 	}
 
