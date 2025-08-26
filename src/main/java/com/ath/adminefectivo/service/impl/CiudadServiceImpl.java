@@ -4,10 +4,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.CiudadesDTO;
@@ -15,13 +14,13 @@ import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.Ciudades;
 import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.exception.NegocioException;
+import com.ath.adminefectivo.exception.NotFoundException;
 import com.ath.adminefectivo.repositories.ICiudadesRepository;
 import com.ath.adminefectivo.repositories.jdbc.ICiudadesJdbcRepository;
 import com.ath.adminefectivo.service.IAuditoriaProcesosService;
 import com.ath.adminefectivo.service.ICiudadesService;
 import com.ath.adminefectivo.service.IParametroService;
 import com.querydsl.core.types.Predicate;
-
 import lombok.extern.log4j.Log4j2;
 
 @Service
@@ -131,4 +130,54 @@ public class CiudadServiceImpl implements ICiudadesService {
 			return CiudadesDTO.CONVERTER_DTO.apply(ciudadOpt);
 		}
 	}
+	
+	@Override
+	public CiudadesDTO createCiudad(CiudadesDTO ciudad) {
+	  log.debug("crear ciudad id: {}", ciudad.getCodigoDANE());
+	  Optional<Ciudades> ciudadFind = ciudadesRepository.findById(ciudad.getCodigoDANE());
+	  ciudadFind.ifPresent(c -> {
+	    log.error("crear ciudad id existe: {}", ciudad.getCodigoDANE());
+	    throw new NegocioException(ApiResponseCode.ERROR_EXIST_REGISTRO.getCode(), 
+	        ApiResponseCode.ERROR_EXIST_REGISTRO.getDescription(), 
+	        ApiResponseCode.ERROR_EXIST_REGISTRO.getHttpStatus());
+	  });
+	  
+	  Ciudades ciudadEntity = CiudadesDTO.CONVERTER_ENTITY.apply(ciudad);
+	  ciudadEntity = ciudadesRepository.save(ciudadEntity);
+	  log.debug("creada ciudad id: {}", ciudad.getCodigoDANE());
+	  return CiudadesDTO.CONVERTER_DTO.apply(ciudadEntity);
+	}
+    
+    @Override
+    public CiudadesDTO updateCiudad(CiudadesDTO ciudad) {
+      log.debug("actualizar ciudad id: {}", ciudad.getCodigoDANE());
+      Optional<Ciudades> ciudadFind = ciudadesRepository.findById(ciudad.getCodigoDANE());
+      log.debug("actualizar ciudad isEmpty: {}", ciudadFind.isEmpty());
+
+      Ciudades ciudadEntity = ciudadFind.orElseThrow(
+          () -> { 
+            log.error("actualizar ciudad id no existe: {}", ciudad.getCodigoDANE());
+            throw new NegocioException(ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getCode(),
+              ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getDescription(),
+              ApiResponseCode.ERROR_CIUDADES_NO_ENCONTRADO.getHttpStatus()); });
+      
+      ciudadEntity = CiudadesDTO.CONVERTER_ENTITY.apply(ciudad);
+      ciudadEntity = ciudadesRepository.save(ciudadEntity);
+      log.debug("actualizada ciudad id: {}", ciudadEntity.getCodigoDANE());
+      return CiudadesDTO.CONVERTER_DTO.apply(ciudadEntity);
+    }
+    
+	@Override
+    public void deleteCiudad(String codigoDane) {
+	  log.debug("deleteCiudad - codigoDane: {}", codigoDane);
+	  Optional<Ciudades> ciudad = ciudadesRepository.findById(codigoDane);
+	  log.debug("deleteCiudad - isEmpty: {}", ciudad.isEmpty());
+	  ciudad.ifPresentOrElse(c -> {
+	    ciudadesRepository.delete(c);
+	    log.debug("deleteCiudad - existoso codigoDane: {}", codigoDane);
+	  }, () -> {
+	    log.debug("deleteCiudad - error codigoDane: {}", codigoDane);
+	    throw new NotFoundException(CiudadServiceImpl.class.getName(), codigoDane);
+	  });
+    }
 }
