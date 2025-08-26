@@ -81,5 +81,10 @@ public class MenuRolServiceImpl implements IMenuRolService{
 		}
 		menuRolRepository.deleteById(idMenuRol);
 	}
-
+	
+	@Override
+	public List<MenuRol> saveAllMenuRol(List<MenuRol> menuRol) {
+		 return menuRolRepository.saveAll(menuRol);
+		
+	}
 }

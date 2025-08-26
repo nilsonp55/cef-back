@@ -764,7 +764,9 @@ public enum ApiResponseCode {
   
   ERROR_ACTUALIZA_PUNTO_SIN_CODIGO("E986", "No se permite actualizar Punto sin valor en codigo_punto.", HttpStatus.PRECONDITION_FAILED),
   
-  ERROR_EXIST_BANREP("E987", "Punto Banrep ya existente.", HttpStatus.PRECONDITION_FAILED);
+  ERROR_EXIST_BANREP("E987", "Punto Banrep ya existente.", HttpStatus.PRECONDITION_FAILED),
+  
+  ERROR_EXIST_REGISTRO("E988", "El registro ya existe en la base de datos.", HttpStatus.PRECONDITION_FAILED);
   
 	/**
 	 * Código asociado a la respuesta
