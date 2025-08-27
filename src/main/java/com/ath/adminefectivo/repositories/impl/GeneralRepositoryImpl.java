@@ -34,6 +34,9 @@ import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.constantes.Parametros;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.SignStyle;
+import java.time.temporal.ChronoField;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -216,7 +219,20 @@ public class GeneralRepositoryImpl implements IGeneralRepository{
 	        
 	        case Parametros.MONEDA_DIVISA:
 	            return "fecha_servicio_transporte";
+	        
+	        case Parametros.TIPO_COMISION_TARIFA_ESPECIAL:
+	        	
+				String tipoOperacion = detalleDefinicionMap.get("tipo_operacion").getValor();
 
+				detalleDefinicionMap.put("nombre_dominio_comision",
+						ListaDetalleDTO.builder().nombreCampo("nombre_dominio_comision").tipoDato("T")
+								.valor(Dominios.TIPO_OPERA_PROVISION.equalsIgnoreCase(tipoOperacion)
+										? Dominios.COMISION_TARIFA_ESPECIAL_PROVISION
+										: Dominios.COMISION_TARIFA_ESPECIAL_RECOLECCION)
+								.build());
+
+				return null;
+	        	
 	        default:
 	            return null;
 	    }
@@ -229,8 +245,23 @@ public class GeneralRepositoryImpl implements IGeneralRepository{
 		String agrupadorProcesamiento = validacionArchivo.getMaestroDefinicion().getIdMaestroDefinicionArchivo();
 
 		String fechaRawProcesamiento = validacionArchivo.getValidacionLineas().get(0).getContenido().get(3);
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-		LocalDate fechaProcesamiento = LocalDate.parse(fechaRawProcesamiento, formatter);
+		
+		DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+		        .appendValue(ChronoField.DAY_OF_MONTH, 1, 2, SignStyle.NOT_NEGATIVE)
+		        .appendLiteral('/')
+		        .appendValue(ChronoField.MONTH_OF_YEAR, 1, 2, SignStyle.NOT_NEGATIVE)
+		        .appendLiteral('/')
+		        .appendValue(ChronoField.YEAR, 4)
+		        .toFormatter();
+		
+		LocalDate fechaProcesamiento;
+
+		try {
+			fechaProcesamiento = LocalDate.parse(fechaRawProcesamiento, formatter);
+		} catch (Exception e) {
+			fechaProcesamiento = LocalDate.of(2000, 1, 1);		 
+		}
+		
 		String fechaFormated = fechaProcesamiento.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
 		String codigoCiiuFondoProcesamiento = validacionArchivo.getValidacionLineas().get(0).getContenido().get(9);
@@ -336,7 +367,15 @@ public class GeneralRepositoryImpl implements IGeneralRepository{
 		String agrupador = validacionArchivo.getMaestroDefinicion().getIdMaestroDefinicionArchivo();
 
 		String fechaRaw = validacionArchivo.getValidacionLineas().get(0).getContenido().get(3);
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");		
+
+		DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+		        .appendValue(ChronoField.DAY_OF_MONTH, 1, 2, SignStyle.NOT_NEGATIVE)
+		        .appendLiteral('/')
+		        .appendValue(ChronoField.MONTH_OF_YEAR, 1, 2, SignStyle.NOT_NEGATIVE)
+		        .appendLiteral('/')
+		        .appendValue(ChronoField.YEAR, 4)
+		        .toFormatter();
+		
 		LocalDate fecha;
 
 		try {
