@@ -18,6 +18,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -352,6 +353,10 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 		var ldtFechaServicioTransporteFinal = transformToLocalDateTime(filtrosCostoTransporte.getFechaServicioTransporteFinal());
 		costosProcesamientoService.persistirMaestroLlavesProcesamiento();
 		
+		Pageable pageable = filtrosCostoTransporte.getPage() != null
+	            ? filtrosCostoTransporte.getPage() 
+	            : PageRequest.of(0, 10); 
+		
 		var consulta = operacionesLiquidacionTransporte.conciliadasLiquidadasTransporte(filtrosCostoTransporte.getEntidad(),
 				ldtFechaServicioTransporte,
 				ldtFechaServicioTransporteFinal, 
@@ -364,13 +369,13 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 				filtrosCostoTransporte.getMonedaDivisa(),
 				filtrosCostoTransporte.getEstado(),
 				Constantes.OPERACIONES_LIQUIDACION_CONCILIADAS, 
-				filtrosCostoTransporte.getPage());
+				pageable);
 
 		List<OperacionesLiquidacionTransporteDTO> operacionesLiquidacionTransporteDTO = new ArrayList<>();
 		consulta.forEach(entity -> operacionesLiquidacionTransporteDTO
 				.add(OperacionesLiquidacionTransporteDTO.CONVERTER_DTO.apply(entity)));
 		
-		return liquidacionPage(consulta, filtrosCostoTransporte.getPage());
+		return liquidacionPage(consulta, pageable);
 	}
 
 	@Override
@@ -379,6 +384,10 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 		var ldtFechaTransporteServicio = transformToLocalDateTime(filtrosTransporteCostos.getFechaServicioTransporte());
 		var ldtFechaFinalServicioTransporte = transformToLocalDateTime(filtrosTransporteCostos.getFechaServicioTransporteFinal());
 		costosProcesamientoService.persistirMaestroLlavesProcesamiento();
+		
+		Pageable pageable = filtrosTransporteCostos.getPage() != null
+	            ? filtrosTransporteCostos.getPage() 
+	            : PageRequest.of(0, 10); 
 		
 		var consultaLiqTransporte = operacionesLiquidacionTransporte.conciliadasLiquidadasTransporte(filtrosTransporteCostos.getEntidad(),
 				ldtFechaTransporteServicio,
@@ -392,13 +401,13 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 				filtrosTransporteCostos.getMonedaDivisa(),
 				filtrosTransporteCostos.getEstado(),
 				Constantes.OPERACIONES_LIQUIDACION_REMITIDAS_NO_IDENTIFICADAS, 
-				filtrosTransporteCostos.getPage());
+				pageable);
 
 		List<OperacionesLiquidacionTransporteDTO> operacionesTransporteLiquidacionDTO = new ArrayList<>();
 		consultaLiqTransporte.forEach(entity -> operacionesTransporteLiquidacionDTO
 				.add(OperacionesLiquidacionTransporteDTO.CONVERTER_DTO.apply(entity)));
 		
-		return liquidacionPage(consultaLiqTransporte, filtrosTransporteCostos.getPage());
+		return liquidacionPage(consultaLiqTransporte, pageable);
 	}
 	
 	@Override
@@ -407,6 +416,10 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 		var convertedFechaTransporteServicio = transformToLocalDateTime(filtrosCostoTransporte.getFechaServicioTransporte());
 		var convertedFechaFinalServicioTransporte = transformToLocalDateTime(filtrosCostoTransporte.getFechaServicioTransporteFinal());
 		costosProcesamientoService.persistirMaestroLlavesProcesamiento();
+		
+		Pageable pageable = filtrosCostoTransporte.getPage() != null
+	            ? filtrosCostoTransporte.getPage() 
+	            : PageRequest.of(0, 10); 
 		
 		var consultaLiquidacionTransporte = operacionesLiquidacionTransporte.conciliadasLiquidadasTransporte(filtrosCostoTransporte.getEntidad(),
 				convertedFechaTransporteServicio,
@@ -420,13 +433,13 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 				filtrosCostoTransporte.getMonedaDivisa(),
 				filtrosCostoTransporte.getEstado(),
 				Constantes.OPERACIONES_LIQUIDACION_LIQUIDADAS_NO_COBRADAS, 
-				filtrosCostoTransporte.getPage());
+				pageable);
 
 		List<OperacionesLiquidacionTransporteDTO> listOperacionesLiquidacionTransporteDTO = new ArrayList<>();
 		consultaLiquidacionTransporte.forEach(entity -> listOperacionesLiquidacionTransporteDTO
 				.add(OperacionesLiquidacionTransporteDTO.CONVERTER_DTO.apply(entity)));
 		
-		return liquidacionPage(consultaLiquidacionTransporte, filtrosCostoTransporte.getPage());
+		return liquidacionPage(consultaLiquidacionTransporte, pageable);
 	}
 
 	@Override
@@ -435,6 +448,10 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 		var fechaServicioTransporteConverted = transformToLocalDateTime(filtrosParametrosTransporte.getFechaServicioTransporte());
 		var fechaServicioTransporteFinalConverted = transformToLocalDateTime(filtrosParametrosTransporte.getFechaServicioTransporteFinal());
 		costosProcesamientoService.persistirMaestroLlavesProcesamiento();
+		
+		Pageable pageable = filtrosParametrosTransporte.getPage() != null
+	            ? filtrosParametrosTransporte.getPage() 
+	            : PageRequest.of(0, 10); 
 		
 		var consultaOperacionesLiqTransporte = operacionesLiquidacionTransporte.conciliadasLiquidadasTransporte(filtrosParametrosTransporte.getEntidad(),
 				fechaServicioTransporteConverted,
@@ -448,13 +465,13 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 				filtrosParametrosTransporte.getMonedaDivisa(),
 				filtrosParametrosTransporte.getEstado(),
 				Constantes.OPERACIONES_LIQUIDACION_IDENTIFICADAS_CON_DIFERENCIAS, 
-				filtrosParametrosTransporte.getPage());
+				pageable);
 
 		List<OperacionesLiquidacionTransporteDTO> listOperacionesLiquidacionTransporte = new ArrayList<>();
 		consultaOperacionesLiqTransporte.forEach(entity -> listOperacionesLiquidacionTransporte
 				.add(OperacionesLiquidacionTransporteDTO.CONVERTER_DTO.apply(entity)));
 		
-		return liquidacionPage(consultaOperacionesLiqTransporte, filtrosParametrosTransporte.getPage());
+		return liquidacionPage(consultaOperacionesLiqTransporte, pageable);
 	}
 
 	@Override
@@ -462,6 +479,10 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 		
 		var ldtFechaServicioTransporteParsed = transformToLocalDateTime(filtrosCostosTransporteDTO.getFechaServicioTransporte());
 		var ldtFechaServicioTransporteFinalParsed = transformToLocalDateTime(filtrosCostosTransporteDTO.getFechaServicioTransporteFinal());
+		
+		Pageable pageable = filtrosCostosTransporteDTO.getPage() != null
+	            ? filtrosCostosTransporteDTO.getPage() 
+	            : PageRequest.of(0, 10); 
 		
 		var consultaOperacionesLiq = operacionesLiquidacionTransporte.conciliadasLiquidadasTransporte(filtrosCostosTransporteDTO.getEntidad(), 
 				ldtFechaServicioTransporteParsed,
@@ -476,7 +497,7 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 				filtrosCostosTransporteDTO.getEstado(),
 				Constantes.OPERACIONES_LIQUIDACION_LIQUIDADAS_NO_COBRADAS_ELIMINADAS, 
 				//Constantes.OPERACIONES_LIQUIDACION_IDENTIFICADAS_CON_DIFERENCIAS,
-				filtrosCostosTransporteDTO.getPage());
+				pageable);
 
 		System.out.println("Valor de consultaOperacionesLiq antes del forEach: " + consultaOperacionesLiq); // Agrega este log
 		
@@ -484,7 +505,7 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 		consultaOperacionesLiq.forEach(entity -> operacionesLiqTransporteDTO
 				.add(OperacionesLiquidacionTransporteDTO.CONVERTER_DTO.apply(entity)));
 
-		return liquidacionPage(consultaOperacionesLiq, filtrosCostosTransporteDTO.getPage());
+		return liquidacionPage(consultaOperacionesLiq, pageable);
 	}
 
 	

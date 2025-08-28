@@ -22,10 +22,10 @@ public interface IOperacionesLiquidacionTransporte
 	@Transactional(readOnly = true)
 	@Query(value = """
 	    SELECT 
-	        mc.id_llave AS consecutivo_registro,
+	        COALESCE(mc.id_llave, 0) AS consecutivo_registro,
 		    v.id_archivo_cargado,
-		    mc.id_llave AS id_registro,
-		    mc.id_llave AS id_liquidacion,
+		    COALESCE(mc.id_llave, 0) AS id_registro,
+		    COALESCE(mc.id_llave, 0) AS id_liquidacion,
 		    v.tipo_transaccion,
 		    v.entidad,
 		    v.fecha_servicio_transporte,
@@ -195,7 +195,8 @@ public interface IOperacionesLiquidacionTransporte
 			FROM controlefect.v_detalle_liquidacion_transporte v
 			LEFT JOIN controlefect.maestro_llaves_costos mc
 			    ON mc.id_maestro_llave = COALESCE(v.id_llaves_maestro_app, v.id_llaves_maestro_tdv)
-			WHERE v.id_llaves_maestro_tdv = :idLlaveMaestro
+			--WHERE v.id_llaves_maestro_tdv = :idLlaveMaestro
+			WHERE :idLlaveMaestro IN (v.id_llaves_maestro_tdv, v.id_llaves_maestro_app)
 			""", nativeQuery = true)
 	List<IDetalleLiquidacionTransporte> countConciliadasTransporteByLlave(
 			@Param("idLlaveMaestro") BigInteger idLlaveMaestro);
@@ -261,7 +262,7 @@ public interface IOperacionesLiquidacionTransporte
 			LEFT JOIN controlefect.maestro_llaves_costos mc
 			    ON mc.id_maestro_llave = COALESCE(v.id_llaves_maestro_app, v.id_llaves_maestro_tdv)
 			WHERE v.id_archivo_cargado = :idArchivo
-			  AND mc.id_llave = :idLlave
+			  --AND mc.id_llave = :idLlave
 			""", nativeQuery = true)
 	List<IDetalleLiquidacionTransporte> obtenerDetallesPorIdArchivo(@Param("idArchivo") Integer idArchivo);
 	
@@ -334,10 +335,10 @@ public interface IOperacionesLiquidacionTransporte
 	@Transactional(readOnly = true)
 	@Query(value = """
 			SELECT
-			    mc.id_llave AS consecutivo_registro,
+			    COALESCE(mc.id_llave, 0) AS consecutivo_registro,
 			    v.id_archivo_cargado,
-			    mc.id_llave AS id_registro,
-			    mc.id_llave AS id_liquidacion,
+			    COALESCE(mc.id_llave, 0) AS id_registro,
+			    COALESCE(mc.id_llave, 0) AS id_liquidacion,
 			    v.tipo_transaccion,
 			    v.entidad,
 			    v.fecha_servicio_transporte,

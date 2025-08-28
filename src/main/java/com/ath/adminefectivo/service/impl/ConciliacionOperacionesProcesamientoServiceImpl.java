@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -101,6 +102,10 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 		var ldtFechaServicioTransporteFinal = convertToLocalDateTime(filtros.getFinalProcessServiceDate());
 		costosProcesamientoService.persistirMaestroLlavesProcesamiento();
 		
+		Pageable pageable = filtros.getPage() != null
+	            ? filtros.getPage() 
+	            : PageRequest.of(0, 10); 
+		
 		var consulta = operacionesLiquidacion.conciliadasLiquidadasProcesamiento(filtros.getEntity(), 
 				ldtFechaServicioTransporte,
 				ldtFechaServicioTransporteFinal, 
@@ -113,9 +118,9 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 				filtros.getCurrency(), 
 				filtros.getStatus(),
 				Constantes.OPERACIONES_LIQUIDACION_CONCILIADAS, 
-				filtros.getPage());
+				pageable);
 
-		return liquidacion(consulta, filtros.getPage());
+		return liquidacion(consulta, pageable);
 	}
 
 	@Override
@@ -125,6 +130,10 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 		var ldtFechaServicioTransporte = convertToLocalDateTime(filtros.getProcessServiceDate());
 		var ldtFechaServicioTransporteFinal = convertToLocalDateTime(filtros.getFinalProcessServiceDate());
 		costosProcesamientoService.persistirMaestroLlavesProcesamiento();
+		
+		Pageable pageable = filtros.getPage() != null
+	            ? filtros.getPage() 
+	            : PageRequest.of(0, 10); 
 		
 		var consulta = operacionesLiquidacion.conciliadasLiquidadasProcesamiento(filtros.getEntity(), 
 				ldtFechaServicioTransporte,
@@ -138,9 +147,9 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 				filtros.getCurrency(), 
 				filtros.getStatus(),
 				Constantes.OPERACIONES_LIQUIDACION_REMITIDAS_NO_IDENTIFICADAS, 
-				filtros.getPage());
+				pageable);
 		
-		return liquidacion(consulta, filtros.getPage());
+		return liquidacion(consulta, pageable);
 	}
 
 	@Override
@@ -149,6 +158,10 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 		var ldtFechaServicioTransporte = convertToLocalDateTime(filtros.getProcessServiceDate());
 		var ldtFechaServicioTransporteFinal = convertToLocalDateTime(filtros.getFinalProcessServiceDate());
 		costosProcesamientoService.persistirMaestroLlavesProcesamiento();
+		
+		Pageable pageable = filtros.getPage() != null
+	            ? filtros.getPage() 
+	            : PageRequest.of(0, 10); 
 		
 		var consulta = operacionesLiquidacion.conciliadasLiquidadasProcesamiento(filtros.getEntity(), 
 				ldtFechaServicioTransporte,
@@ -162,9 +175,9 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 				filtros.getCurrency(), 
 				filtros.getStatus(),
 				Constantes.OPERACIONES_LIQUIDACION_LIQUIDADAS_NO_COBRADAS, 
-				filtros.getPage());
-	
-		return liquidacion(consulta, filtros.getPage());
+				pageable);
+		
+		return liquidacion(consulta, pageable);
 	}
 
 	@Override
@@ -173,6 +186,10 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 		var ldtFechaServicioTransporte = convertToLocalDateTime(filtros.getProcessServiceDate());
 		var ldtFechaServicioTransporteFinal = convertToLocalDateTime(filtros.getFinalProcessServiceDate());
 		costosProcesamientoService.persistirMaestroLlavesProcesamiento();
+		
+		Pageable pageable = filtros.getPage() != null
+	            ? filtros.getPage() 
+	            : PageRequest.of(0, 10); 
 		
 		var consulta = operacionesLiquidacion.conciliadasLiquidadasProcesamiento(filtros.getEntity(), 
 				ldtFechaServicioTransporte,
@@ -186,9 +203,9 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 				filtros.getCurrency(), 
 				filtros.getStatus(),
 				Constantes.OPERACIONES_LIQUIDACION_IDENTIFICADAS_CON_DIFERENCIAS, 
-				filtros.getPage());
+				pageable);
 		
-		return liquidacion(consulta, filtros.getPage());
+		return liquidacion(consulta, pageable);
 	}
 
 	@Override
@@ -196,6 +213,10 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 		
 		var ldtFechaServicioTransporte = convertToLocalDateTime(filtros.getProcessServiceDate());
 		var ldtFechaServicioTransporteFinal = convertToLocalDateTime(filtros.getFinalProcessServiceDate());
+		
+		Pageable pageable = filtros.getPage() != null
+	            ? filtros.getPage() 
+	            : PageRequest.of(0, 10); 
 		
 		var consulta = operacionesLiquidacion.conciliadasLiquidadasProcesamiento(filtros.getEntity(), 
 				ldtFechaServicioTransporte,
@@ -209,9 +230,9 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 				filtros.getCurrency(), 
 				filtros.getStatus(),
 				Constantes.OPERACIONES_LIQUIDACION_LIQUIDADAS_NO_COBRADAS_ELIMINADAS, 
-				filtros.getPage());
+				pageable);
 
-		return liquidacion(consulta, filtros.getPage());
+		return liquidacion(consulta, pageable);
 	}
 
 	private LocalDateTime convertToLocalDateTime(Date dateToConvert) {
