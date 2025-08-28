@@ -219,19 +219,6 @@ public class GeneralRepositoryImpl implements IGeneralRepository{
 	        
 	        case Parametros.MONEDA_DIVISA:
 	            return "fecha_servicio_transporte";
-	        
-	        case Parametros.TIPO_COMISION_TARIFA_ESPECIAL:
-	        	
-				String tipoOperacion = detalleDefinicionMap.get("tipo_operacion").getValor();
-
-				detalleDefinicionMap.put("nombre_dominio_comision",
-						ListaDetalleDTO.builder().nombreCampo("nombre_dominio_comision").tipoDato("T")
-								.valor(Dominios.TIPO_OPERA_PROVISION.equalsIgnoreCase(tipoOperacion)
-										? Dominios.COMISION_TARIFA_ESPECIAL_PROVISION
-										: Dominios.COMISION_TARIFA_ESPECIAL_RECOLECCION)
-								.build());
-
-				return null;
 	        	
 	        default:
 	            return null;
