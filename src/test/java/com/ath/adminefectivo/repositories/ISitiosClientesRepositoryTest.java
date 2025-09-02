@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import com.ath.adminefectivo.entities.ClientesCorporativos;
 import com.ath.adminefectivo.entities.Puntos;
 import com.ath.adminefectivo.entities.SitiosClientes;
 import lombok.extern.log4j.Log4j2;
@@ -21,6 +22,9 @@ class ISitiosClientesRepositoryTest {
   private ISitiosClientesRepository sitiosClientesRepository;
   @Autowired
   private IPuntosRepository puntosRepository;
+  @Autowired
+  private IClientesCorporativosRepository clientesCorporativos;
+  
   private SitiosClientes sitiosClientes;
   private List<SitiosClientes> listOfSitiosClientes;
   private SitiosClientes searchSitiosClientes;
@@ -43,19 +47,24 @@ class ISitiosClientesRepositoryTest {
                 "BPOP-VALLEDUPAR-PROSEGUR", "CB CELTEL 20 DE JULIO",
                 "9099|85VIRREY SOLIS  UAB PALMIRA", null))
         .create());
+    
+    ClientesCorporativos cliente = clientesCorporativos.save(Instancio.of(ClientesCorporativos.class).create());
 
     List<SitiosClientes> sitiosClientesSaved = puntosSaved.stream()
         .map(punto -> Instancio.of(SitiosClientes.class)
             .set(field(SitiosClientes::getCodigoPunto), punto.getCodigoPunto())
-            .set(field(SitiosClientes::getPuntos), punto).create())
+            .set(field(SitiosClientes::getPunto), null)
+            .set(field(SitiosClientes::getCodigoCliente), cliente)
+            .create())
         .collect(Collectors.toList());
-
+    
     this.listOfSitiosClientes = this.sitiosClientesRepository.saveAllAndFlush(sitiosClientesSaved);
     this.searchSitiosClientes = this.listOfSitiosClientes.get(0);
 
     this.sitiosClientes = Instancio.of(SitiosClientes.class)
-        .set(field(SitiosClientes::getPuntos), puntosSaved.get(0))
-        .set(field(SitiosClientes::getCodigoPunto), puntosSaved.get(0).getCodigoPunto()).create();
+        .set(field(SitiosClientes::getCodigoPunto), puntosSaved.get(0).getCodigoPunto())
+        .set(field(SitiosClientes::getCodigoCliente), cliente)
+        .create();
 
     log.info("setup - size: {}", this.listOfSitiosClientes.size());
   }
@@ -73,8 +82,7 @@ class ISitiosClientesRepositoryTest {
     SitiosClientes sitiosClientesFound =
         this.sitiosClientesRepository.findByCodigoPunto(this.searchSitiosClientes.getCodigoPunto());
     assertThat(sitiosClientesFound.getCodigoPunto()).isNotNull()
-        .isEqualTo(this.searchSitiosClientes.getCodigoPunto())
-        .isEqualTo(this.searchSitiosClientes.getPuntos().getCodigoPunto());
+        .isEqualTo(this.searchSitiosClientes.getCodigoPunto());
 
     log.info("testFindByCodigoPunto find Id: {}", sitiosClientesFound.getCodigoPunto());
   }
@@ -86,7 +94,6 @@ class ISitiosClientesRepositoryTest {
     assertThat(sitiosClienteSaved.getCodigoPunto()).isEqualTo(this.sitiosClientes.getCodigoPunto());
     assertThat(sitiosClienteSaved.getCodigoCliente()).isEqualTo(this.sitiosClientes.getCodigoCliente());
     assertThat(sitiosClienteSaved.getFajado()).isEqualTo(this.sitiosClientes.getFajado());
-    assertThat(sitiosClienteSaved.getPuntos()).isEqualTo(this.sitiosClientes.getPuntos());
     
     log.info("testCreateSitiosClientes - Id {}", sitiosClienteSaved.getCodigoPunto());
   }

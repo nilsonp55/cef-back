@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ath.adminefectivo.dto.SitiosClientesDTO;
 import com.ath.adminefectivo.entities.SitiosClientes;
+import com.ath.adminefectivo.exception.NotFoundException;
 import com.ath.adminefectivo.repositories.ISitiosClientesRepository;
 import com.ath.adminefectivo.repositories.jdbc.ISitiosClientesJdbcRepository;
 import com.ath.adminefectivo.service.ISitiosClientesService;
@@ -64,7 +65,9 @@ public class SitiosClientesServiceImpl implements ISitiosClientesService{
      */
     @Override
     public SitiosClientesDTO updateSitioCliente(SitiosClientesDTO sitioCliente) {
-      sitiosClientesRepository.findById(sitioCliente.getCodigoPunto()).orElseThrow();
+      sitiosClientesRepository
+          .findById(sitioCliente.getCodigoPunto())
+          .orElseThrow();
 
       SitiosClientes entity =
           sitiosClientesRepository.save(SitiosClientesDTO.CONVERTER_ENTITY.apply(sitioCliente));
@@ -75,8 +78,11 @@ public class SitiosClientesServiceImpl implements ISitiosClientesService{
      * {@inheritDoc}
      */
     @Override
-	public void deteleSitioCliente(Integer codigoPunto) {
-      sitiosClientesRepository.deleteById(codigoPunto);
+    public void deteleSitioCliente(Integer codigoPunto) {
+      sitiosClientesRepository.findById(codigoPunto)
+          .ifPresentOrElse(sc -> sitiosClientesRepository.deleteById(sc.getCodigoPunto()), () -> {
+            throw new NotFoundException(SitiosClientes.class.getName(), codigoPunto.toString());
+          });
     }
 
 }

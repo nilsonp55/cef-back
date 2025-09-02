@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -60,10 +61,19 @@ public class ConciliacionCostosProcesamientoController {
 			@RequestParam(required = false) String ciudadFondo,
 			@RequestParam(required = false) String nombreTipoServicio,
 			@RequestParam(required = false) String monedaDivisa, @RequestParam(required = false) String estado,
-			Pageable page) {
+			@RequestParam(defaultValue = "0") int page,
+	        @RequestParam(defaultValue = "0") int size) {
+		
+		Pageable pageable;
+		
+		if (size == 0) {
+		    pageable = Pageable.unpaged(); // trae todos los registros sin límite
+		} else {
+		    pageable = PageRequest.of(page, size);
+		}
 
 		var filtrosConciliadasPr = ParametrosFiltroCostoProcesamientoDTO.create(entidad, fechaServicioTransporte, fechaServicioTransporteFinal, identificacionCliente, razonSocial,
-	            codigoPuntoCargo, nombrePuntoCargo, ciudadFondo, nombreTipoServicio, monedaDivisa, estado, page);
+	            codigoPuntoCargo, nombrePuntoCargo, ciudadFondo, nombreTipoServicio, monedaDivisa, estado, pageable);
 		
 		var consulta = operacionesLiquidacionDelegate.getLiquidacionConciliadaProcesamiento(filtrosConciliadasPr);
 		return ResponseEntity.status(HttpStatus.OK)
@@ -84,10 +94,19 @@ public class ConciliacionCostosProcesamientoController {
 			@RequestParam(required = false) String ciudadFondo,
 			@RequestParam(required = false) String nombreTipoServicio,
 			@RequestParam(required = false) String monedaDivisa, @RequestParam(required = false) String estado,
-			Pageable page) {
+			@RequestParam(defaultValue = "0") int page,
+	        @RequestParam(defaultValue = "0") int size) {
+		
+		Pageable pageable;
+		
+		if (size == 0) {
+		    pageable = Pageable.unpaged(); // trae todos los registros sin límite
+		} else {
+		    pageable = PageRequest.of(page, size);
+		}
 
 		var filtrosNoIdentificadasPr = ParametrosFiltroCostoProcesamientoDTO.create(entidad, fechaServicioTransporte, fechaServicioTransporteFinal, identificacionCliente, razonSocial,
-	            codigoPuntoCargo, nombrePuntoCargo, ciudadFondo, nombreTipoServicio, monedaDivisa, estado, page);
+	            codigoPuntoCargo, nombrePuntoCargo, ciudadFondo, nombreTipoServicio, monedaDivisa, estado, pageable);
 		
 		var consulta = operacionesLiquidacionDelegate.getLiquidacionRemitidasNoIdentificadasProcesamiento(filtrosNoIdentificadasPr);
 		return ResponseEntity.status(HttpStatus.OK)
@@ -107,10 +126,19 @@ public class ConciliacionCostosProcesamientoController {
 			@RequestParam(required = false) String ciudadFondo,
 			@RequestParam(required = false) String nombreTipoServicio,
 			@RequestParam(required = false) String monedaDivisa, @RequestParam(required = false) String estado,
-			Pageable page) {
+			@RequestParam(defaultValue = "0") int page,
+	        @RequestParam(defaultValue = "0") int size) {
+		
+		Pageable pageable;
+		
+		if (size == 0) {
+		    pageable = Pageable.unpaged(); // trae todos los registros sin límite
+		} else {
+		    pageable = PageRequest.of(page, size);
+		}
 
 		var filtrosEliminadasPr = ParametrosFiltroCostoProcesamientoDTO.create(entidad, fechaServicioTransporte, fechaServicioTransporteFinal, identificacionCliente, razonSocial,
-	            codigoPuntoCargo, nombrePuntoCargo, ciudadFondo, nombreTipoServicio, monedaDivisa, estado, page);
+	            codigoPuntoCargo, nombrePuntoCargo, ciudadFondo, nombreTipoServicio, monedaDivisa, estado, pageable);
 
 		var consulta = operacionesLiquidacionDelegate.getEliminadasProcesamiento(filtrosEliminadasPr);
 		return ResponseEntity.status(HttpStatus.OK)
@@ -130,10 +158,19 @@ public class ConciliacionCostosProcesamientoController {
 			@RequestParam(required = false) String ciudadFondo,
 			@RequestParam(required = false) String nombreTipoServicio,
 			@RequestParam(required = false) String monedaDivisa, @RequestParam(required = false) String estado,
-			Pageable page) {
-
+			@RequestParam(defaultValue = "0") int page,
+	        @RequestParam(defaultValue = "0") int size) {
+		
+		Pageable pageable;
+		
+		if (size == 0) {
+		    pageable = Pageable.unpaged(); // trae todos los registros sin límite
+		} else {
+		    pageable = PageRequest.of(page, size);
+		}
+		
 		var filtrosNoCobradasPr = ParametrosFiltroCostoProcesamientoDTO.create(entidad, fechaServicioTransporte, fechaServicioTransporteFinal, identificacionCliente, razonSocial,
-	            codigoPuntoCargo, nombrePuntoCargo, ciudadFondo, nombreTipoServicio, monedaDivisa, estado, page);
+	            codigoPuntoCargo, nombrePuntoCargo, ciudadFondo, nombreTipoServicio, monedaDivisa, estado, pageable);
 		
 		var consulta = operacionesLiquidacionDelegate.getLiquidadasNoCobradasProcesamiento(filtrosNoCobradasPr);
 		return ResponseEntity.status(HttpStatus.OK)
@@ -153,10 +190,19 @@ public class ConciliacionCostosProcesamientoController {
 			@RequestParam(required = false) String ciudadFondo,
 			@RequestParam(required = false) String nombreTipoServicio,
 			@RequestParam(required = false) String monedaDivisa, @RequestParam(required = false) String estado,
-			Pageable page) {
+			@RequestParam(defaultValue = "0") int page,
+	        @RequestParam(defaultValue = "0") int size) {
+		
+		Pageable pageable;
+		
+		if (size == 0) {
+		    pageable = Pageable.unpaged(); // trae todos los registros sin límite
+		} else {
+		    pageable = PageRequest.of(page, size);
+		}
 		
 		var filtrosConDiferenciasPr = ParametrosFiltroCostoProcesamientoDTO.create(entidad, fechaServicioTransporte, fechaServicioTransporteFinal, identificacionCliente, razonSocial,
-	            codigoPuntoCargo, nombrePuntoCargo, ciudadFondo, nombreTipoServicio, monedaDivisa, estado, page);
+	            codigoPuntoCargo, nombrePuntoCargo, ciudadFondo, nombreTipoServicio, monedaDivisa, estado, pageable);
 
 		var consulta = operacionesLiquidacionDelegate.getIdentificadasConDiferenciasProcesamiento(filtrosConDiferenciasPr);
 		return ResponseEntity.status(HttpStatus.OK)
@@ -238,7 +284,7 @@ public class ConciliacionCostosProcesamientoController {
 	public ResponseEntity<ApiResponseADE<List<RegistroOperacionConciliacionDTO>>> reintegrarLiquidadas(
 			@RequestBody RegistrosConciliacionListDTO registrosConciliacion) {
 
-		var respuesta = operacionesLiquidacionDelegate.reintegrarLiquidadas(registrosConciliacion);
+		var respuesta = operacionesLiquidacionDelegate.reintegrarLiquidadasProcesamiento(registrosConciliacion);
 
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(respuesta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())

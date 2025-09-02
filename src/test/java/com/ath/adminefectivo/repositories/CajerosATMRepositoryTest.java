@@ -28,13 +28,13 @@ class CajerosATMRepositoryTest {
 	@BeforeEach
 	void setUpCajerosATMRepository() throws Exception {
 		listOfCajerosATM = Instancio.ofList(CajerosATM.class).size(11)
-				.set(field(CajerosATM::getPuntos), null)
+				.set(field(CajerosATM::getPunto), null)
 				.create();
 
 		cajerosATMRepository.saveAll(listOfCajerosATM);
 
 		cajerosATM = Instancio.of(CajerosATM.class)
-				.set(field(CajerosATM::getPuntos), null)
+				.set(field(CajerosATM::getPunto), null)
 				.create();
 
 		log.info("setUpCajerosATMRepository - id: {}", cajerosATM.getCodigoPunto());

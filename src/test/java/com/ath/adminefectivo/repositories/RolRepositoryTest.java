@@ -3,7 +3,8 @@ package com.ath.adminefectivo.repositories;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Instant;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,17 +32,17 @@ class RolRepositoryTest {
 	@BeforeEach
 	void setup() {
 		
-		rol = Rol.builder()
-				.idRol("1")
-				.descripcion("Rol1")
-				.estado("A")
-				.fechaCreacion(Date.from(Instant.now()))
-				.fechaModificacion(Date.from(Instant.now()))
-				.nombre("ROL1")
-				.usuarioCreacion("user1")
-				.usuarioModificacion("user1")
-				.build();
+		rol = new Rol();
+		rol.setIdRol("1");
+		rol.setDescripcion("Rol1");
+		rol.setEstado("A");
+		rol.setFechaCreacion(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
+		rol.setFechaModificacion(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
+		rol.setNombre("ROL1");
+		rol.setUsuarioCreacion("user1");
+		rol.setUsuarioModificacion("user1");
 		rolRepository.save(rol);
+
 	}
 	
 	@DisplayName("Crear objeto Rol devolver rol creado")
@@ -87,8 +88,8 @@ class RolRepositoryTest {
 	@Test
     void givenRolObjectWhenUpdateRolThenReturnUpdatedRol(){		
 		// given - precondition or setup
-		Date fechaCreacion = Date.from(Instant.now());
-		Date fechaModificacion = Date.from(Instant.now());
+		LocalDateTime fechaCreacion = LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault());
+		LocalDateTime  fechaModificacion = LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault());
 		
 		// when -  action or the behaviour that we are going test
 		Rol rolFind = rolRepository.findById(rol.getIdRol()).get();

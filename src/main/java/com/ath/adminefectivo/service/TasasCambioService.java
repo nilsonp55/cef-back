@@ -1,7 +1,7 @@
 package com.ath.adminefectivo.service;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import com.ath.adminefectivo.entities.TasasCambio;
 import com.ath.adminefectivo.entities.TasasCambioPK;
 import com.querydsl.core.types.Predicate;
@@ -14,7 +14,7 @@ public interface TasasCambioService {
 	 * @return List<TasasCambio>
 	 * @author bayron.perez
 	 */
-	List<TasasCambio> getTasasCambios(Predicate predicate);
+	Page<TasasCambio> getTasasCambios(Predicate predicate, Pageable page);
 	
 	/**
 	 * Metodo encargado de obtener un usaurio por su ID

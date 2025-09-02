@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -12,23 +14,23 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.dto.PuntosDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.Bancos;
 import com.ath.adminefectivo.entities.CajerosATM;
+import com.ath.adminefectivo.entities.ClientesCorporativos;
 import com.ath.adminefectivo.entities.Fondos;
 import com.ath.adminefectivo.entities.Oficinas;
 import com.ath.adminefectivo.entities.Puntos;
 import com.ath.adminefectivo.entities.QPuntos;
 import com.ath.adminefectivo.entities.SitiosClientes;
 import com.ath.adminefectivo.exception.AplicationException;
-import com.ath.adminefectivo.exception.ConflictException;
 import com.ath.adminefectivo.exception.NegocioException;
+import com.ath.adminefectivo.exception.NotFoundException;
 import com.ath.adminefectivo.repositories.CajerosATMRepository;
 import com.ath.adminefectivo.repositories.IBancosRepository;
+import com.ath.adminefectivo.repositories.IClientesCorporativosRepository;
 import com.ath.adminefectivo.repositories.IFondosRepository;
 import com.ath.adminefectivo.repositories.IOficinasRepository;
 import com.ath.adminefectivo.repositories.IPuntosRepository;
@@ -37,7 +39,6 @@ import com.ath.adminefectivo.repositories.jdbc.IPuntosJdbcRepository;
 import com.ath.adminefectivo.service.IPuntosService;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
-
 import lombok.extern.log4j.Log4j2;
 
 @Service
@@ -68,6 +69,9 @@ public class PuntosServiceImpl implements IPuntosService {
 
   @Autowired
   IPuntosJdbcRepository puntosJdbcRepository;
+  
+  @Autowired
+  IClientesCorporativosRepository clientesCorporativosRepository;
 
   /**
    * {@inheritDoc}
@@ -77,8 +81,8 @@ public class PuntosServiceImpl implements IPuntosService {
 
     BooleanBuilder builder = new BooleanBuilder();
     builder.and(predicate);
-    if (StringUtils.hasText(busqueda)) {
-      builder.and(QPuntos.puntos.nombrePunto.containsIgnoreCase(busqueda));
+    if ( StringUtils.isNotEmpty(busqueda) ) {
+      builder.andAnyOf(QPuntos.puntos.nombrePunto.containsIgnoreCase(busqueda));
     }
     Pageable paginaOrdenada =
         PageRequest.of(page.getPageNumber(), page.getPageSize(), Sort.by("nombrePunto"));
@@ -173,9 +177,18 @@ public class PuntosServiceImpl implements IPuntosService {
     }
     return puntos;
   }
-
+  
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public Puntos crearPunto(Puntos punto) {
+  public Puntos actualizarPunto(Puntos punto) {
+    if( ObjectUtils.isEmpty( punto.getCodigoPunto() ) ) {
+      log.error("No se permite actualizar Punto sin valor en codigo_punto, punto: {}", punto.toString());
+      throw new NegocioException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
+          ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription(),
+          ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
+    }
     return puntosRepository.save(punto);
   }
 
@@ -183,14 +196,26 @@ public class PuntosServiceImpl implements IPuntosService {
    * {@inheritDoc}
    */
   @Override
-  public Puntos guardarPuntoBanco(Puntos punto, Bancos banco) {
-
-    if (banco.getCodigoPunto() != null && bancosRepository.existsById(banco.getCodigoPunto())) {
-      throw new ConflictException(ApiResponseCode.ERROR_BANCO_EXIST.getDescription());
+  public Puntos crearPunto(Puntos punto) {
+    if( ObjectUtils.isNotEmpty( punto.getCodigoPunto() ) ) {
+      log.error("No se permite crear Punto con valor en codigo_punto, punto: {}", punto.toString());
+      throw new NegocioException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
+          ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription(),
+          ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
     }
+    
+    return puntosRepository.save(punto);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Puntos crearPuntoBanco(Puntos punto, Bancos banco) {
+
+    punto = puntosRepository.save(punto);
 
     banco.setCodigoPunto(punto.getCodigoPunto());
-    banco.setPuntos(punto);
     bancosRepository.save(banco);
 
     return punto;
@@ -200,12 +225,9 @@ public class PuntosServiceImpl implements IPuntosService {
    * {@inheritDoc}
    */
   @Override
-  public Puntos guardarPuntoOficina(Puntos punto, Oficinas oficina) {
+  public Puntos crearPuntoOficina(Puntos punto, Oficinas oficina) {
 
-    if (oficina.getCodigoPunto() != null
-        && oficinasRepository.existsById(oficina.getCodigoPunto())) {
-      throw new ConflictException(ApiResponseCode.ERROR_OFICINA_EXIST.getDescription());
-    }
+    punto = puntosRepository.save(punto);
 
     oficina.setCodigoPunto(punto.getCodigoPunto());
     oficinasRepository.save(oficina);
@@ -217,12 +239,9 @@ public class PuntosServiceImpl implements IPuntosService {
    * {@inheritDoc}
    */
   @Override
-  public Puntos guardarPuntoCajeroATM(Puntos punto, CajerosATM cajerosATM) {
+  public Puntos crearPuntoCajeroATM(Puntos punto, CajerosATM cajerosATM) {
 
-    if (cajerosATM.getCodigoPunto() != null
-        && cajerosATMRepository.existsById(cajerosATM.getCodigoPunto())) {
-      throw new ConflictException(ApiResponseCode.ERROR_CAJERO_EXIST.getDescription());
-    }
+    punto = puntosRepository.save(punto);
 
     cajerosATM.setCodigoPunto(punto.getCodigoPunto());
     cajerosATMRepository.save(cajerosATM);
@@ -230,6 +249,44 @@ public class PuntosServiceImpl implements IPuntosService {
     return punto;
   }
 
+  @Override
+  public Puntos crearPuntoSitioCliente(Puntos punto, SitiosClientes sitiosClientes) {
+
+    punto = puntosRepository.save(punto);
+    
+    sitiosClientes.setCodigoPunto(punto.getCodigoPunto());
+    ClientesCorporativos cliente = this.clientesCorporativosRepository.findByCodigoCliente(sitiosClientes.getCodigoCliente().getCodigoCliente());
+    sitiosClientes.setCodigoCliente(cliente);
+    sitiosClientes = sitiosClienteRepository.saveAndFlush(sitiosClientes);
+    punto.setSitiosClientes(sitiosClientes);
+    return punto;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Puntos crearPuntoFondo(Puntos punto, Fondos fondo) {
+
+    punto = puntosRepository.save(punto);
+
+    fondo.setCodigoPunto(punto.getCodigoPunto());
+    fondosRepository.save(fondo);
+
+    return punto;
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Puntos crearPuntoBanrep(Puntos punto) {
+
+    punto = puntosRepository.save(punto);
+
+    return punto;
+  }
+  
   /**
    * {@inheritDoc}
    */
@@ -240,38 +297,6 @@ public class PuntosServiceImpl implements IPuntosService {
       return PuntosDTO.CONVERTER_DTO.apply(punto);
     }
     return null;
-  }
-
-
-  @Override
-  public Puntos guardarPuntoSitioCliente(Puntos punto, SitiosClientes sitiosClientes) {
-
-    sitiosClientes.setPuntos(punto);
-    sitiosClientes.setCodigoPunto(punto.getCodigoPunto());
-    if (sitiosClientes.getCodigoPunto() != null
-        && sitiosClienteRepository.existsById(sitiosClientes.getCodigoPunto())) {
-      throw new ConflictException(ApiResponseCode.ERROR_SITIO_CLIENTE_EXIST.getDescription());
-    }
-
-    sitiosClienteRepository.save(sitiosClientes);
-
-    return punto;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public Puntos guardarPuntoFondo(Puntos punto, Fondos fondo) {
-
-    if (fondo.getCodigoPunto() != null && fondosRepository.existsById(fondo.getCodigoPunto())) {
-      throw new ConflictException(ApiResponseCode.ERROR_FONDO_EXIST.getDescription());
-    }
-
-    fondo.setCodigoPunto(punto.getCodigoPunto());
-    fondosRepository.save(fondo);
-
-    return punto;
   }
 
   /**
@@ -359,15 +384,24 @@ public class PuntosServiceImpl implements IPuntosService {
   @Override
   public Puntos validarPuntoActualizar(Integer codigoPunto, String tipoPunto) {
 
-    Optional<Puntos> punto =
-        Optional.ofNullable(puntosRepository.findByCodigoPuntoAndTipoPunto(codigoPunto, tipoPunto));
-    if (punto.isEmpty()) {
+    // Verificar que codigo_punto existe en tabla, en caso contrario lanzar exception
+    Puntos punto = puntosRepository.findById(codigoPunto).orElseThrow(() -> {
       throw new NegocioException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
           ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription(),
           ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
+    });
+    
+    // Verificar que TIPO_PUNTO no cambia con respecto al registro existente, en caso
+    // contrario se lanza exception
+    if( punto.getTipoPunto().equalsIgnoreCase(tipoPunto) ) {
+      log.debug("Se valida punto con codigo_punto: {} y tipo punto: {}", codigoPunto, tipoPunto);
+    } else {
+      throw new NegocioException(ApiResponseCode.ERROR_TIPO_PUNTO_DIFERENTE.getCode(),
+          ApiResponseCode.ERROR_TIPO_PUNTO_DIFERENTE.getDescription(),
+          ApiResponseCode.ERROR_TIPO_PUNTO_DIFERENTE.getHttpStatus());
     }
-
-    return punto.get();
+        
+    return punto;
   }
 
   @Override
@@ -388,8 +422,134 @@ public class PuntosServiceImpl implements IPuntosService {
   @Override
   public void eliminarPunto(Integer codigoPunto) throws NegocioException {
     log.debug("Eliminar punto: {}", codigoPunto);
-    puntosRepository.deleteById(codigoPunto);
-    log.debug("Punto Eliminado: {}", codigoPunto);
+    puntosRepository.findById(codigoPunto).ifPresentOrElse(punto -> {
+      puntosRepository.deleteById(codigoPunto);
+      log.debug("Punto Eliminado: {}", codigoPunto);
+    }, () -> {
+      throw new NotFoundException(PuntosServiceImpl.class.getName(), codigoPunto.toString());
+    });
+    
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void validarPuntoFondoUnique(Puntos p, Fondos f) throws NegocioException {
+    List<Puntos> puntosFondo = puntosRepository.findFondoUnique(p.getNombrePunto(),
+        p.getCodigoCiudad(), f.getBancoAVAL(), f.getNombreFondo());
+    Optional.ofNullable(puntosFondo).ifPresent(puntos -> {
+      List<Puntos> listaValidar =
+          puntos.stream().filter(t -> t.getCodigoPunto() != p.getCodigoPunto()).toList();
+      if (listaValidar.size() > 0)
+        throw new NegocioException(ApiResponseCode.ERROR_FONDO_EXIST.getCode(),
+            ApiResponseCode.ERROR_FONDO_EXIST.getHttpStatus(),
+            ApiResponseCode.ERROR_FONDO_EXIST.getDescription(),
+            puntos.stream().map(punto -> new String("Punto fondo existe: ")
+                .concat(punto.getCodigoPunto().toString())).toList());
+    });
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void validarPuntoBancoUnique(Puntos p, Bancos b) throws NegocioException {
+
+    List<Puntos> PuntosBanco = puntosRepository.findBancoUnique(p.getNombrePunto(),
+        p.getCodigoCiudad(), b.getNumeroNit(), b.getAbreviatura(), b.getNombreBanco());
+    Optional.ofNullable(PuntosBanco).ifPresent(puntos -> {
+      List<Puntos> listaValidar =
+          puntos.stream().filter(t -> t.getCodigoPunto() != p.getCodigoPunto()).toList();
+      if (listaValidar.size() > 0)
+        throw new NegocioException(ApiResponseCode.ERROR_BANCO_EXIST.getCode(),
+            ApiResponseCode.ERROR_BANCO_EXIST.getHttpStatus(),
+            ApiResponseCode.ERROR_BANCO_EXIST.getDescription(),
+            puntos.stream().map(punto -> new String("Punto banco existe: ")
+                .concat(punto.getCodigoPunto().toString())).toList());
+    });
+
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void validarPuntoCajeroUnique(Puntos p, CajerosATM c) throws NegocioException {
+
+    List<Puntos> puntosCajero = puntosRepository.findCajeroUnique(p.getNombrePunto(),
+        p.getCodigoCiudad(), c.getBancoAval(), c.getCodigoATM());
+    Optional.ofNullable(puntosCajero).ifPresent(puntos -> {
+      List<Puntos> listaValidar =
+          puntos.stream().filter(t -> t.getCodigoPunto() != p.getCodigoPunto()).toList();
+      if (listaValidar.size() > 0)
+        throw new NegocioException(ApiResponseCode.ERROR_CAJERO_EXIST.getCode(),
+            ApiResponseCode.ERROR_CAJERO_EXIST.getHttpStatus(),
+            ApiResponseCode.ERROR_CAJERO_EXIST.getDescription(),
+            puntos.stream().map(punto -> new String("Punto cajero existe: ")
+                .concat(punto.getCodigoPunto().toString())).toList());
+    });
+  } 
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void validarPuntoOficinaUnique(Puntos p, Oficinas o) throws NegocioException {
+    List<Puntos> puntosOficina = puntosRepository.findOficinaUnique(p.getNombrePunto(),
+        p.getCodigoCiudad(), o.getBancoAVAL(), o.getCodigoOficina());
+    Optional.ofNullable(puntosOficina).ifPresent(puntos -> {
+      List<Puntos> listaValidar =
+          puntos.stream().filter(t -> t.getCodigoPunto() != p.getCodigoPunto()).toList();
+      if (listaValidar.size() > 0)
+        throw new NegocioException(ApiResponseCode.ERROR_OFICINA_EXIST.getCode(),
+            ApiResponseCode.ERROR_OFICINA_EXIST.getHttpStatus(),
+            ApiResponseCode.ERROR_OFICINA_EXIST.getDescription(),
+            puntos.stream().map(punto -> new String("Punto cajero existe: ")
+                .concat(punto.getCodigoPunto().toString())).toList());
+    });
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void validarPuntoBanrepUnique(Puntos p) throws NegocioException { 
+    List<Puntos> puntosBanrep = puntosRepository.findBanrepUnique(p.getNombrePunto(),
+        p.getCodigoCiudad());
+    Optional.ofNullable(puntosBanrep).ifPresent(puntos -> {
+      List<Puntos> listaValidar =
+          puntos.stream().filter(t -> t.getCodigoPunto() != p.getCodigoPunto()).toList();
+      if (listaValidar.size() > 0)
+        throw new NegocioException(ApiResponseCode.ERROR_EXIST_BANREP.getCode(),
+            ApiResponseCode.ERROR_EXIST_BANREP.getHttpStatus(),
+            ApiResponseCode.ERROR_EXIST_BANREP.getDescription(),
+            puntos.stream().map(punto -> new String("Punto banrep existe: ")
+                .concat(punto.getCodigoPunto().toString())).toList());
+    });
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void validarPuntoClienteUnique(Puntos p, SitiosClientes sc) throws NegocioException {
+    List<Puntos> puntosCliente =
+        puntosRepository.findSitioClienteUnique(p.getNombrePunto(), p.getCodigoCiudad(),
+            sc.getIdentificadorCliente(), sc.getCodigoCliente().getCodigoCliente());
+    Optional.ofNullable(puntosCliente).ifPresent(puntos -> {
+      List<Puntos> listaValidar = puntos.stream()
+          .filter(t -> t.getSitiosClientes().getCodigoCliente().getCodigoBancoAval()
+              .equals(sc.getCodigoCliente().getCodigoBancoAval())
+              && t.getCodigoPunto() != p.getCodigoPunto())
+          .toList();
+      if (listaValidar.size() > 0)
+        throw new NegocioException(ApiResponseCode.ERROR_SITIO_CLIENTE_EXIST.getCode(),
+            ApiResponseCode.ERROR_SITIO_CLIENTE_EXIST.getHttpStatus(),
+            ApiResponseCode.ERROR_SITIO_CLIENTE_EXIST.getDescription(),
+            puntos.stream().map(punto -> new String("Punto sitio_cliente existe: ")
+                .concat(punto.getCodigoPunto().toString())).toList());
+    });
   }
   
 }

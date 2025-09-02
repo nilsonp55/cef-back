@@ -2,7 +2,6 @@ package com.ath.adminefectivo.delegate;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
 import com.ath.adminefectivo.dto.CreatePuntosDTO;
 import com.ath.adminefectivo.dto.PuntosDTO;
 import com.querydsl.core.types.Predicate;
@@ -28,7 +27,7 @@ public interface IPuntosDelegate {
    * @return PuntosDTO
    * @author Bayron Andres Perez M.
    */
-  PuntosDTO guardarPunto(CreatePuntosDTO rreatePuntosDTO);
+  PuntosDTO crearPunto(CreatePuntosDTO rreatePuntosDTO);
 
   /**
    * Delegate encargado de la actualizacion de los puntos
@@ -46,4 +45,12 @@ public interface IPuntosDelegate {
    */
   PuntosDTO getPuntoById(Integer idPunto);
 
+  /**
+   * Borrar un punto validando que no este relacionado en PuntoCodigoTDV
+   * @param idPunto
+   * @author prv_nparra
+   * 
+   */
+  void eliminarPunto(Integer idPunto);
+  
 }

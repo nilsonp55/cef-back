@@ -1,10 +1,8 @@
 package com.ath.adminefectivo.service;
 
 import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
 import com.ath.adminefectivo.dto.ClientesCorporativosDTO;
 import com.ath.adminefectivo.exception.NotFoundException;
 import com.querydsl.core.types.Predicate;
@@ -96,4 +94,10 @@ public interface IClientesCorporativosService {
 	 */
 	Boolean getCodigoPuntoClienteJdbc(Integer codigoPunto);
 
+	/**
+     * Validar codigoBanco AVAl debe corresponder con el codigoBanco del ClienteCorporativo
+     * @param codigoBancoAval
+     * @param codigoCliente
+     */
+	void validateClienteBancoAval(Integer codigoBancoAval, Integer codigoCliente);
 }

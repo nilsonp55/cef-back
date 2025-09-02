@@ -1,7 +1,6 @@
 package com.ath.adminefectivo.dto.response;
 
 import org.springframework.http.HttpStatus;
-
 import lombok.AllArgsConstructor;
 
 /**
@@ -720,7 +719,7 @@ public enum ApiResponseCode {
 	/**
 	 * Error al modificar tipo punto en tabla de puntos
 	 */
-	ERROR_TIPO_PUNTO_DIFERENTE("E977", "No estᡰermitido modificar el tipo punto",
+	ERROR_TIPO_PUNTO_DIFERENTE("E977", "No se permite modificar el tipo punto de un punto existente.",
 			HttpStatus.PRECONDITION_FAILED),
 
 	/**
@@ -751,8 +750,24 @@ public enum ApiResponseCode {
 	 * Error al obtener parametros de DB o no se encuentran activos
 	 */
 	ERROR_OBTENER_PARAMETROS_ACTIVOS ("E981", "No se encontraron parametros o no se encuentran activos",
-			HttpStatus.PRECONDITION_FAILED);
-	
+			HttpStatus.PRECONDITION_FAILED),
+  
+  ERROR_CLIENTE_CORPORATIVO_BANCO_AVAL("E982",
+      "Codigo BancoAVAL no corresponde con banco en ClientesCorporativos.",
+      HttpStatus.PRECONDITION_FAILED),
+  
+  ERROR_USUARIO_EXISTE("E983", "Usuario ya existe.", HttpStatus.PRECONDITION_FAILED),
+  
+  ERROR_TASA_CAMBIO_EXISTE("E984", "Tasa de cambio ya existe.", HttpStatus.PRECONDITION_FAILED),
+  
+  ERROR_CREAR_PUNTO_CON_CODIGO("E985", "No se permite crear Punto con valor en codigo_punto.", HttpStatus.PRECONDITION_FAILED),
+  
+  ERROR_ACTUALIZA_PUNTO_SIN_CODIGO("E986", "No se permite actualizar Punto sin valor en codigo_punto.", HttpStatus.PRECONDITION_FAILED),
+  
+  ERROR_EXIST_BANREP("E987", "Punto Banrep ya existente.", HttpStatus.PRECONDITION_FAILED),
+  
+  ERROR_EXIST_REGISTRO("E988", "El registro ya existe en la base de datos.", HttpStatus.PRECONDITION_FAILED);
+  
 	/**
 	 * Código asociado a la respuesta
 	 */

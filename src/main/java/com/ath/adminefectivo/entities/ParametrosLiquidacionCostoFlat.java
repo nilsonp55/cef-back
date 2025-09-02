@@ -112,5 +112,11 @@ public class ParametrosLiquidacionCostoFlat {
 
 	@Column(name = "nombre_cliente")
 	private String nombreCliente;
+	
+	@Column(name = "TOTAL_FAJOS")
+	private Double totalFajosFlat;
+	
+	@Column(name = "TOTAL_BOLSAS")
+	private Double totalBolsasFlat;
 
 }

@@ -113,4 +113,3 @@ aws configure
 aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 652041729658.dkr.ecr.us-east-1.amazonaws.com
 docker push 652041729658.dkr.ecr.us-east-1.amazonaws.com/awue1athcef-pt-ecr-fargate:latest
 ```
-

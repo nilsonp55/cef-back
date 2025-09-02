@@ -888,7 +888,6 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
       for (OperacionesCertificadas operacionesCertificadas : ocertificadas) {
         operacionesCertificadas.setValorSobrante(valor);
         operacionesCertificadasRepository.save(operacionesCertificadas);
-        break;
       }
     }
 
@@ -925,7 +924,6 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
       for (OperacionesCertificadas operacionesCertificadas : ocertificadas) {
         operacionesCertificadas.setValorFaltante(valor);
         operacionesCertificadasRepository.save(operacionesCertificadas);
-        break;
       }
     }
 

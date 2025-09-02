@@ -3,11 +3,12 @@ package com.ath.adminefectivo.service.impl;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-
 import java.util.List;
-
+import java.util.Optional;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,14 +16,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import com.ath.adminefectivo.dto.ClientesCorporativosDTO;
 import com.ath.adminefectivo.entities.ClientesCorporativos;
 import com.ath.adminefectivo.entities.SitiosClientes;
+import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.IClientesCorporativosRepository;
 import com.ath.adminefectivo.service.ISitiosClientesService;
 import com.querydsl.core.BooleanBuilder;
-
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -48,7 +48,7 @@ class ClientesCorporativosServiceImplTest {
 				.create();
 		clientesCorporativos = listClientesCorporativos.get(0);
 		sitiosClientes = Instancio.of(SitiosClientes.class)
-				.set(field(SitiosClientes::getCodigoCliente), clientesCorporativos.getCodigoCliente())
+				.set(field(SitiosClientes::getCodigoCliente), clientesCorporativos)
 				.create();
 		
 		log.info("setup - cliente: {}", clientesCorporativos.getCodigoCliente());
@@ -124,4 +124,33 @@ class ClientesCorporativosServiceImplTest {
 		// when - then
 		assertFalse(clientesCorporativosService.getCodigoPuntoCliente(codigoPunto).booleanValue());
 	}
+	
+    @Test
+    void testValidateClienteCorporativoWhenCodigoBancoAvalValid() {
+      given(clientesCorporativosRepository.findById(any()))
+          .willReturn(Optional.of(this.clientesCorporativos));
+
+      clientesCorporativosService.validateClienteBancoAval(
+          this.clientesCorporativos.getCodigoBancoAval(),
+          this.clientesCorporativos.getCodigoCliente());
+
+      log.info(
+          "testValidateClienteCorporativoWhenCodigoBancoAvalValid - codigoBanco: {}, codigoCliente: {}",
+          this.clientesCorporativos.getCodigoBancoAval(),
+          this.clientesCorporativos.getCodigoCliente());
+    }
+    
+    @Test
+    void testValidateClienteCorporativoWhenCodigoBancoAvalNotValid() {
+
+      given(clientesCorporativosRepository.findById(any()))
+          .willReturn(Optional.of(this.clientesCorporativos));
+
+      Exception exception = assertThrows(NegocioException.class, () -> clientesCorporativosService
+          .validateClienteBancoAval(312, this.clientesCorporativos.getCodigoCliente()));
+
+      log.info("testValidateClienteCorporativoWhenCodigoBancoAvalNotValid - Exception: {}",
+          exception.getMessage());
+
+    }
 }

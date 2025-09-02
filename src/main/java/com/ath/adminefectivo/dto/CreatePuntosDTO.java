@@ -45,6 +45,7 @@ public class CreatePuntosDTO {
 	
 	//Sitios clientes	
 	private Integer codigoCliente;
+	private String identificadorCliente;
 	
 	//Puntos Codigo
 	private String codigoTDV;

@@ -4,6 +4,8 @@ package com.ath.adminefectivo.repositories;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -36,30 +38,28 @@ class UsuarioRepositoryTest {
 	@BeforeEach
 	void setup() {
 		
-		Rol rol = Rol.builder()
-				.idRol("1")
-				.descripcion("Rol1")
-				.estado("A")
-				.fechaCreacion(Date.from(Instant.now()))
-				.fechaModificacion(Date.from(Instant.now()))
-				.nombre("ROL1")
-				.usuarioCreacion("user1")
-				.usuarioModificacion("user11")
-				.build();
+		Rol rol = new Rol();
+		rol.setIdRol("1");
+		rol.setDescripcion("Rol1");
+		rol.setEstado("A");
+		rol.setFechaCreacion(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
+		rol.setFechaModificacion(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
+		rol.setNombre("ROL1");
+		rol.setUsuarioCreacion("user1");
+		rol.setUsuarioModificacion("user1");
 		rolRepository.save(rol);
 		
-		usuario = Usuario.builder()
-			.idUsuario("1")
-			.apellidos("Sarmiento")
-			.nombres("Carlos")
-			.tipoUsuario("tecnico")
-			.estado("1")
-			.fechaCreacion( Date.from(Instant.now()) )
-			.fechaModificacion( Date.from(Instant.now()) )
-			.usuarioCreacion("user12")
-			.usuarioModificacion("user13")
-			.rol(rol)
-			.build();
+		usuario = new Usuario();
+			usuario.setIdUsuario("1");
+			usuario.setApellidos("Sarmiento");
+			usuario.setNombres("Carlos");
+			usuario.setTipoUsuario("tecnico");
+			usuario.setEstado("1");
+			usuario.setFechaCreacion( LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
+			usuario.setFechaModificacion(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
+			usuario.setUsuarioCreacion("user12");
+			usuario.setUsuarioModificacion("user13");
+			usuario.setRol(rol);
 		
 		usuarioRepository.save(usuario);
 	}
@@ -115,8 +115,8 @@ class UsuarioRepositoryTest {
 		// when -  action or the behaviour that we are going test
 		usuarioFind.setApellidos("apellidoTest");
 		usuarioFind.setEstado("A");
-		usuarioFind.setFechaCreacion(fechaCreacion);
-		usuarioFind.setFechaModificacion(fechaModificacion);
+		usuarioFind.setFechaCreacion(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
+		usuarioFind.setFechaModificacion(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
 		usuarioFind.setNombres("Nombres Test");
 		usuarioFind.setTipoUsuario("test");
 		usuarioFind.setUsuarioCreacion("user2");
