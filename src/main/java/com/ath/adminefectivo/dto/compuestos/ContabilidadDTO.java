@@ -2,7 +2,7 @@ package com.ath.adminefectivo.dto.compuestos;
 
 import java.util.List;
 
-import com.ath.adminefectivo.dto.ErroresContablesDTO;
+import com.ath.adminefectivo.dto.ErroresContablesConsultaDTO;
 import com.ath.adminefectivo.dto.RespuestaContableDTO;
 
 import lombok.AllArgsConstructor;
@@ -26,7 +26,7 @@ public class ContabilidadDTO {
 	
 	private ConteoContabilidadDTO conteoContabilidadDTO;
 	
-	private List<ErroresContablesDTO> erroresContablesDTO;
+	private List<ErroresContablesConsultaDTO> erroresContablesDTO;
 	
 	private List<RespuestaContableDTO> respuestasContablesDTO;
 	
