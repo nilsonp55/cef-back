@@ -165,6 +165,7 @@ public final class Dominios {
 	public static final String TIPO_REGLA_EXCLUIDOS = "EXC";
 	public static final String TIPO_REGLA_CONSULTA_SQL = "SQL";
 	public static final String TIPO_REGLA_FORMATO_FECHA = "FEC";
+	public static final String TIPO_REGLA_CONSULTA_SQL_MULTIPARAMETRO = "SQM";
 	
 	/**
 	 * Tipos de archivo 

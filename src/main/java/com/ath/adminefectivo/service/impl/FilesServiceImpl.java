@@ -39,7 +39,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class FilesServiceImpl implements IFilesService {
 
-  private static final String TEMPORAL_URL = "C:\\Ath\\Docs";
+  private static final String TEMPORAL_URL = "C:\\Ath\\Docs\\";
   @Value("${aws.s3.active}")
   Boolean s3Bucket;
 
@@ -108,7 +108,7 @@ public class FilesServiceImpl implements IFilesService {
 					download.setFile(streamReader);
 				}
 			} else {
-				File initialFile = new File(path);
+				File initialFile = new File(TEMPORAL_URL+path);
 				Resource recurso = new UrlResource(initialFile.toURI());
 				InputStream inputStream = recurso.getInputStream();
 				// Realiza operaciones de lectura del archivo usando inputStream
@@ -161,7 +161,7 @@ public class FilesServiceImpl implements IFilesService {
     if (Boolean.TRUE.equals(s3Bucket)) {
       contenidoCarpeta = s3UtilsV2.getObjectsFromPathS3(url);
     } else {
-      File carpeta = new File(url);
+      File carpeta = new File(TEMPORAL_URL+url);
       contenidoCarpeta = Arrays.asList(carpeta.list());
     }
 
@@ -295,6 +295,12 @@ public class FilesServiceImpl implements IFilesService {
   public boolean moverArchivos(String urlSource, String urlDestino, String nombreArchivo,
       String postfijo) {
     log.debug("moverArchivos inicio");
+    
+    if (Boolean.FALSE.equals(s3Bucket)) {
+      urlSource = TEMPORAL_URL + urlSource;
+      urlDestino = TEMPORAL_URL + urlDestino;
+    }
+    
     Path origenPath = FileSystems.getDefault().getPath(urlSource);
     this.validarPath(urlDestino);
     String[] arregloNombre = nombreArchivo.split(Constantes.EXPRESION_REGULAR_PUNTO);
