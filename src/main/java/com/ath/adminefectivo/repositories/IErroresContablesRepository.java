@@ -9,6 +9,7 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
 import com.ath.adminefectivo.dto.compuestos.ResultadoErroresContablesDTO;
 import com.ath.adminefectivo.entities.ErroresContables;
+import com.ath.adminefectivo.dto.ErroresContablesConsultaDTO;
 
 /**
  * Repository encargado de manejar la logica de la entidad Errores Contables
@@ -20,18 +21,19 @@ public interface IErroresContablesRepository extends JpaRepository<ErroresContab
 	/**
 	 * Consulta la lista de errores contables entre un rango de fechas 
 	 * 
-	 * @param fechaInicio
 	 * @param fechaFin
-	 * @return List<ErroresContables>
-	 * @author duvan.naranjo
+	 * @param tipoContabilidad
+	 * @return List<ErroresContablesConsultaDTO>
+	 * @author jose.pabon
 	 */
-	@Query(value = "SELECT ec.* from errores_contables ec, "
-			+ " transacciones_internas ti "
+	@Query(value = "SELECT new com.ath.adminefectivo.dto.ErroresContablesConsultaDTO(ec.idErroresContables, ti.idTransaccionesInternas, ec.fecha, ec.mensajeError, ec.estado) "
+			+ "from ErroresContables ec, "
+			+ " TransaccionesInternas ti "
 			+ "where "
 			+ "ec.fecha  = ?1 and "
-			+ "ec.id_transacciones_internas = ti.id_transacciones_internas and "
-			+ "ti.tipo_proceso = ?2 ", nativeQuery = true )
-	public List<ErroresContables> findByFechaBetweenAndTipoProceso(Date end, String tipoContabilidad);
+			+ "ec.transaccionInterna.idTransaccionesInternas = ti.idTransaccionesInternas and "
+			+ "ti.tipoProceso = ?2 ")
+	public List<ErroresContablesConsultaDTO> findByFechaBetweenAndTipoProcesoNotRelation(Date end, String tipoContabilidad);
 
 	/**
 	 * Consulta la lista de errores contables y lo devuelve en el tipo
