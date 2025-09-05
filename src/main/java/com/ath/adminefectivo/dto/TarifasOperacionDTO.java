@@ -1,9 +1,11 @@
 package com.ath.adminefectivo.dto;
 
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 import java.util.function.Function;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import com.ath.adminefectivo.entities.TarifasOperacion;
 import com.ath.adminefectivo.utils.UtilsObjects;
@@ -63,6 +65,12 @@ public class TarifasOperacionDTO {
 
 	private Date fechaVigenciaFin;
 	
+	//@JsonInclude(JsonInclude.Include.NON_NULL)
+	private Integer limiteComisionAplicar;
+	
+	//@JsonInclude(JsonInclude.Include.NON_NULL)
+	private BigDecimal valorComisionAdicional;
+	
 	/**
 	 * Funcion que retorna la entidad recibiendo un DTO *
 	 */
@@ -90,6 +98,11 @@ public class TarifasOperacionDTO {
 		if(!Objects.isNull(t.getTransportadora())) {
 			tarifasOperacionDTO.setTransportadoraDTO(TransportadorasDTO.CONVERTER_DTO.apply(t.getTransportadora()));
 		}
+		
+		// Mapear manualmente los nuevos campos
+	    tarifasOperacionDTO.setLimiteComisionAplicar(t.getLimiteComisionAplicar());
+	    tarifasOperacionDTO.setValorComisionAdicional(t.getValorComisionAdicional());
+	    
 		return tarifasOperacionDTO;
 	};
 }

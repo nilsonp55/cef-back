@@ -176,6 +176,9 @@ public class OperacionesProgramadas {
   @Column(name = "TIPO_PUNTO_DESTINO")
   private String tipoPuntoDestino;
   
+  @Column(name = "CODIGO_SERVICIO_TDV", nullable = true)
+  private String codigoServicioTdv;
+  
   /*
   * HU006 Determina si se liquida costo para la operacion
   */

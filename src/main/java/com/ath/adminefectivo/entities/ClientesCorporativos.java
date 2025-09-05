@@ -50,4 +50,7 @@ public class ClientesCorporativos {
 	@Column(name = "AMPARADO")
 	private Boolean amparado;
 	
+	@Column(name = "APLICA_TARIFA_ESPECIAL")
+	private boolean aplicaTarifaEspecial = false;
+	
 }

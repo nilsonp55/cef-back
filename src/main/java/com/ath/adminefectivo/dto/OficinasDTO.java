@@ -1,6 +1,7 @@
 package com.ath.adminefectivo.dto;
 
 import java.util.function.Function;
+import org.springframework.lang.Nullable;
 
 import com.ath.adminefectivo.entities.Oficinas;
 import com.ath.adminefectivo.utils.UtilsObjects;
@@ -36,6 +37,9 @@ public class OficinasDTO {
 	private Double tarifaVerificacion;
 	
 	private String nombreOficina;
+	
+	@Nullable
+    private Boolean programaTransporte;
 	
 	/**
 	 * Función encargada de recibir un DTO y retornar un objeto con los mismos datos

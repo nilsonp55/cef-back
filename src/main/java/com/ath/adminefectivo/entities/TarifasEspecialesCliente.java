@@ -1,0 +1,118 @@
+package com.ath.adminefectivo.entities;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * Entidad encargada de manejar la logica de la tabla TarifasEspecialesCliente
+ * @author henry.montoya
+ *
+ */
+@Entity
+@Table(name = "TARIFAS_ESPECIALES_CLIENTE", schema = "controlefect")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@NamedQuery(name = "TarifasEspecialesCliente.findAll", query = "SELECT t FROM TarifasEspecialesCliente t")
+public class TarifasEspecialesCliente {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID_TARIFA_ESPECIAL")
+    private Long idTarifaEspecial;
+    
+    @Column(name = "ID_ARCHIVO_CARGADO")
+	private Integer idArchivoCargado;
+
+	@Column(name = "ID_REGISTRO")
+	private Integer idRegistro;
+
+    @Column(name = "CODIGO_BANCO", nullable = false)
+    private Integer codigoBanco;
+
+    @Column(name = "CODIGO_TDV", nullable = false, length = 5)
+    private String codigoTdv;
+
+    @Column(name = "CODIGO_CLIENTE", nullable = false)
+    private Integer codigoCliente;
+
+    @Column(name = "CODIGO_DANE", length = 5)
+    private String codigoDane;
+
+    @Column(name = "CODIGO_PUNTO")
+    private Integer codigoPunto;
+
+    @Column(name = "TIPO_OPERACION", length = 50)
+    private String tipoOperacion;
+
+    @Column(name = "TIPO_SERVICIO", length = 30)
+    private String tipoServicio;
+
+    @Column(name = "TIPO_COMISION", length = 30)
+    private String tipoComision;
+
+    @Column(name = "UNIDAD_COBRO", length = 30)
+    private String unidadCobro;
+
+    @Column(name = "ESCALA", length = 50)
+    private String escala;
+
+    @Column(name = "BILLETES", length = 5)
+    private String billetes;
+
+    @Column(name = "MONEDAS", length = 5)
+    private String monedas;
+
+    @Column(name = "FAJADO", length = 5)
+    private String fajado;
+
+    @Column(name = "VALOR_TARIFA", precision = 16, scale = 6)
+    private BigDecimal valorTarifa;
+
+    @Column(name = "FECHA_INICIO_VIGENCIA")
+    @Temporal(TemporalType.DATE)
+    private Date fechaInicioVigencia;
+
+    @Column(name = "FECHA_FIN_VIGENCIA")
+    @Temporal(TemporalType.DATE)
+    private Date fechaFinVigencia;
+
+    @Column(name = "LIMITE_COMISION_APLICAR", precision = 16, scale = 2)
+    private Integer limiteComisionAplicar;
+
+    @Column(name = "VALOR_COMISION_ADICIONAL", precision = 16, scale = 6)
+    private BigDecimal valorComisionAdicional;
+
+    @Column(name = "USUARIO_CREACION", nullable = false, length = 50)
+    private String usuarioCreacion;
+
+    @Column(name = "FECHA_CREACION", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fechaCreacion;
+
+    @Column(name = "USUARIO_MODIFICACION", length = 50)
+    private String usuarioModificacion;
+
+    @Column(name = "FECHA_MODIFICACION")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fechaModificacion;
+    
+    @Column(name = "ESTADO", nullable = false)
+    private boolean estado;
+}

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.lang.Nullable;
 
 /**
  * Clase que contiene el DTO la creacion de un punto
@@ -57,6 +58,9 @@ public class CreatePuntosDTO {
 	
 	//Cajeros
 	private String codigoATM;
+	
+	@Nullable
+    private Boolean programaTransporte;
 	
 	
 }

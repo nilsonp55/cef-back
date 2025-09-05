@@ -1,6 +1,8 @@
 package com.ath.adminefectivo.entities;
 
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -16,6 +18,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 /**
  *  Entidad encargada de manejar la logica de la tabla USUARIO
@@ -26,7 +29,7 @@ import lombok.Setter;
 @Table(name = "USUARIO")
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @NamedQuery(name = "Usuario.findAll", query = "SELECT t FROM Usuario t")

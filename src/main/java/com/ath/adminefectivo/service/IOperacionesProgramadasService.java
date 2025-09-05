@@ -124,5 +124,6 @@ public interface IOperacionesProgramadasService {
 	 * @author duvan.naranjo
 	 */
 	String reabrirCierrePorAgrupador(String agrupador);
-
+	
+	void saveAll(List<OperacionesProgramadas> OperacionesCertificadasDTOList);
 }
