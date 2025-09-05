@@ -17,6 +17,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 /**
  *  Entidad encargada de manejar la logica de la tabla ROL
@@ -27,7 +28,7 @@ import lombok.Setter;
 @Table(name = "ROL")
 @Setter
 @Getter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @NamedQuery(name = "Rol.findAll", query = "SELECT t FROM Rol t")

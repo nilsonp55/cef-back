@@ -323,7 +323,7 @@ public class GestionArchivosLiquidacionDelegateImpl implements IGestionArchivosL
 			} else {
 				archivoAceptar.setEstado(Constantes.ESTADO_NO_CONCILIADO);
 			}
-
+			
 		}
 
 		return archivoAceptar;

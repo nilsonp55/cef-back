@@ -1,5 +1,6 @@
 package com.ath.adminefectivo.entities;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -95,5 +96,11 @@ public class TarifasOperacion {
 
 	@Column(name = "FECHA_VIGENCIA_FIN")
 	private Date fechaVigenciaFin;
+	
+	@Column(name = "LIMITE_COMISION_APLICAR")
+    private Integer limiteComisionAplicar;
+
+    @Column(name = "VALOR_COMISION_ADICIONAL")
+    private BigDecimal valorComisionAdicional;
 
 }

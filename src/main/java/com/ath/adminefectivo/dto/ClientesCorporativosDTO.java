@@ -44,6 +44,8 @@ public class ClientesCorporativosDTO {
 	@NotNull
 	private Boolean amparado;
 	
+	private boolean aplicaTarifaEspecial = false;
+	
 	/**
 	 * Función encargada de recibir un DTO y retornar un objeto con los mismos datos
 	 */

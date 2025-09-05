@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import org.springframework.data.domain.Sort;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +37,10 @@ public class TarifasOperacionServiceImpl implements ITarifasOperacionService {
 	@Override
 	public Page<TarifasOperacionDTO> getTarifasOperacion(Predicate predicate, Pageable pageable) {
 
-		Page<TarifasOperacion> tarifaOperacion = tarifasOperacionRepository.findAll(predicate, pageable);
+		Page<TarifasOperacion> tarifaOperacion = tarifasOperacionRepository.findAll(
+			    predicate,
+			    PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("idTarifasOperacion").ascending())
+			);
 		
 		return new PageImpl<>(tarifaOperacion.getContent().stream().map(TarifasOperacionDTO
 		.CONVERTER_DTO).toList(), tarifaOperacion.getPageable(), tarifaOperacion.getTotalElements());

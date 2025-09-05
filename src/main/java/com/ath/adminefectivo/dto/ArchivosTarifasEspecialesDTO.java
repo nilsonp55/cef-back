@@ -3,6 +3,7 @@ package com.ath.adminefectivo.dto;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;
@@ -11,8 +12,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Clase que contiene la estructura de los archivos Liquidación
- * @author juan.ortizt
+ * Clase que contiene la estructura de los archivos Tarifas Especiales
+ * @author jorge.trespalacios
  */
 
 @Data
@@ -20,10 +21,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ArchivosLiquidacionDTO {
+public class ArchivosTarifasEspecialesDTO {
 
 	    private Long idArchivo;
 
+	    @JsonFormat(pattern = "dd/MM/yyyy")
 	    private Date fechaArchivo;
 
 	    private String estado;
@@ -47,10 +49,6 @@ public class ArchivosLiquidacionDTO {
 	    private Long idArchivodb;
 	    
 	    private String observacion;
-	    
-	    private String usuarioSesion;
-	    
-	    private Boolean permitirReemplazoRegistros;
 	        
 	    private List<String> contenidoArchivo;      
 
