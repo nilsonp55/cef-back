@@ -4,13 +4,16 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import com.ath.adminefectivo.entities.audit.AuditableEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Entidad encargada de manejar la logica de la tabla SITIOS CLIENTES
@@ -21,12 +24,13 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "SITIOS_CLIENTE")
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @NamedQuery(name = "SitiosClientes.findAll", query = "SELECT t FROM SitiosClientes t")
-public class SitiosClientes {
+public class SitiosClientes extends AuditableEntity {
 
   @Id
   @Column(name = "CODIGO_PUNTO")
@@ -36,13 +40,14 @@ public class SitiosClientes {
   @JoinColumn(name = "CODIGO_PUNTO", insertable = false, unique = false)
   private Puntos punto;
 
-  @Column(name = "CODIGO_CLIENTE")
-  private Integer codigoCliente;
+  @ManyToOne
+  @JoinColumn(name = "CODIGO_CLIENTE")
+  private ClientesCorporativos codigoCliente;
 
   @Column(name = "FAJADO")
   private Boolean fajado;
 
-  @Column(name = "CODIGO_PUNTO_CLIENTE")
-  private String codigoPuntoCliente;
+  @Column(name = "IDENTIFICADOR_CLIENTE")
+  private String identificadorCliente;
 
 }

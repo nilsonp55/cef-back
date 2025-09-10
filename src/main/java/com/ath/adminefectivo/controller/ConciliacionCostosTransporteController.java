@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -61,10 +62,19 @@ public class ConciliacionCostosTransporteController {
 			@RequestParam(required = false) String ciudadFondo,
 			@RequestParam(required = false) String nombreTipoServicio,
 			@RequestParam(required = false) String monedaDivisa, @RequestParam(required = false) String estado,
-			Pageable page) {
+			@RequestParam(defaultValue = "0") int page,
+	        @RequestParam(defaultValue = "0") int size) {
+		
+		Pageable pageable;
+		
+		if (size == 0) {
+		    pageable = Pageable.unpaged(); // trae todos los registros sin límite
+		} else {
+		    pageable = PageRequest.of(page, size);
+		}
 		
 		var filtrosConciliadasTr = ParametrosFiltroCostoTransporteDTO.create(entidad, fechaServicioTransporte, fechaServicioTransporteFinal, identificacionCliente, razonSocial,
-                codigoPuntoCargo, nombrePuntoCargo, ciudadFondo, nombreTipoServicio, monedaDivisa, estado, page);
+                codigoPuntoCargo, nombrePuntoCargo, ciudadFondo, nombreTipoServicio, monedaDivisa, estado, pageable);
 		
 		var consulta = conciliacionCostosTransporteDelegate
 				.getLiquidacionConciliadaTransporte(filtrosConciliadasTr);
@@ -85,10 +95,19 @@ public class ConciliacionCostosTransporteController {
 			@RequestParam(required = false) String ciudadFondo,
 			@RequestParam(required = false) String nombreTipoServicio,
 			@RequestParam(required = false) String monedaDivisa, @RequestParam(required = false) String estado,
-			Pageable page) {
+			@RequestParam(defaultValue = "0") int page,
+	        @RequestParam(defaultValue = "0") int size) {
+		
+		Pageable pageable;
+		
+		if (size == 0) {
+		    pageable = Pageable.unpaged(); // trae todos los registros sin límite
+		} else {
+		    pageable = PageRequest.of(page, size);
+		}
 
 		var filtrosNoIdentificadasTr = ParametrosFiltroCostoTransporteDTO.create(entidad, fechaServicioTransporte, fechaServicioTransporteFinal, identificacionCliente, razonSocial,
-                codigoPuntoCargo, nombrePuntoCargo, ciudadFondo, nombreTipoServicio, monedaDivisa, estado, page);
+                codigoPuntoCargo, nombrePuntoCargo, ciudadFondo, nombreTipoServicio, monedaDivisa, estado, pageable);
 
 		
 		var consulta = conciliacionCostosTransporteDelegate
@@ -110,10 +129,19 @@ public class ConciliacionCostosTransporteController {
 			@RequestParam(required = false) String ciudadFondo,
 			@RequestParam(required = false) String nombreTipoServicio,
 			@RequestParam(required = false) String monedaDivisa, @RequestParam(required = false) String estado,
-			Pageable page) {
+			@RequestParam(defaultValue = "0") int page,
+	        @RequestParam(defaultValue = "0") int size) {
+		
+		Pageable pageable;
+		
+		if (size == 0) {
+		    pageable = Pageable.unpaged(); // trae todos los registros sin límite
+		} else {
+		    pageable = PageRequest.of(page, size);
+		}
 
 		var filtrosEliminadasTr = ParametrosFiltroCostoTransporteDTO.create(entidad, fechaServicioTransporte, fechaServicioTransporteFinal, identificacionCliente, razonSocial,
-                codigoPuntoCargo, nombrePuntoCargo, ciudadFondo, nombreTipoServicio, monedaDivisa, estado, page);
+                codigoPuntoCargo, nombrePuntoCargo, ciudadFondo, nombreTipoServicio, monedaDivisa, estado, pageable);
 
 
 		var consulta = conciliacionCostosTransporteDelegate.getEliminadasTransporte(filtrosEliminadasTr);
@@ -137,10 +165,19 @@ public class ConciliacionCostosTransporteController {
 			@RequestParam(required = false) String ciudadFondo,
 			@RequestParam(required = false) String nombreTipoServicio,
 			@RequestParam(required = false) String monedaDivisa, @RequestParam(required = false) String estado,
-			Pageable page) {
+			@RequestParam(defaultValue = "0") int page,
+	        @RequestParam(defaultValue = "0") int size) {
+		
+		Pageable pageable;
+		
+		if (size == 0) {
+		    pageable = Pageable.unpaged(); // trae todos los registros sin límite
+		} else {
+		    pageable = PageRequest.of(page, size);
+		}
 		
 		var filtrosNoCobradasTr = ParametrosFiltroCostoTransporteDTO.create(entidad, fechaServicioTransporte, fechaServicioTransporteFinal, identificacionCliente, razonSocial,
-                codigoPuntoCargo, nombrePuntoCargo, ciudadFondo, nombreTipoServicio, monedaDivisa, estado, page);
+                codigoPuntoCargo, nombrePuntoCargo, ciudadFondo, nombreTipoServicio, monedaDivisa, estado, pageable);
 
 		var consulta = conciliacionCostosTransporteDelegate
 				.getLiquidadasNoCobradasTransporte(filtrosNoCobradasTr);
@@ -161,10 +198,19 @@ public class ConciliacionCostosTransporteController {
 			@RequestParam(required = false) String ciudadFondo,
 			@RequestParam(required = false) String nombreTipoServicio,
 			@RequestParam(required = false) String monedaDivisa, @RequestParam(required = false) String estado,
-			Pageable page) {
+			@RequestParam(defaultValue = "0") int page,
+	        @RequestParam(defaultValue = "0") int size) {
+		
+		Pageable pageable;
+		
+		if (size == 0) {
+		    pageable = Pageable.unpaged(); // trae todos los registros sin límite
+		} else {
+		    pageable = PageRequest.of(page, size);
+		}
 		
 		var filtrosConDiferenciasTr = ParametrosFiltroCostoTransporteDTO.create(entidad, fechaServicioTransporte, fechaServicioTransporteFinal, identificacionCliente, razonSocial,
-                codigoPuntoCargo, nombrePuntoCargo, ciudadFondo, nombreTipoServicio, monedaDivisa, estado, page);
+                codigoPuntoCargo, nombrePuntoCargo, ciudadFondo, nombreTipoServicio, monedaDivisa, estado, pageable);
 
 
 		var consulta = conciliacionCostosTransporteDelegate

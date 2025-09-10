@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import com.ath.adminefectivo.config.RequestContextHolder;
 
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -24,6 +25,8 @@ public class Cors implements Filter {
 			throws IOException, ServletException {
 		HttpServletResponse response = (HttpServletResponse) res;
 		HttpServletRequest request = (HttpServletRequest) req;
+		
+		RequestContextHolder.setRequest(request);
 
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		response.setHeader("Access-Control-Allow-Methods", "DELETE, GET, OPTIONS, PATCH, POST, PUT");
@@ -34,7 +37,11 @@ public class Cors implements Filter {
 		if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
 			response.setStatus(HttpServletResponse.SC_OK);
 		} else {
+		  try {
 			chain.doFilter(req, res);
+		  } finally {
+		    RequestContextHolder.clear();
+		  }
 		}
 	}
 

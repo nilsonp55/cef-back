@@ -9,11 +9,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-
+import com.ath.adminefectivo.entities.audit.AuditableEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Entidad encargada de manejar la logica de la tabla PUNTOS CODIGO TDV
@@ -22,12 +23,13 @@ import lombok.NoArgsConstructor;
  */
 @Entity
 @Table(name = "PUNTOS_CODIGO_TDV")
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @NamedQuery(name = "PuntosCodigoTDV.findAll", query = "SELECT t FROM PuntosCodigoTDV t")
-public class PuntosCodigoTDV {
+public class PuntosCodigoTDV extends AuditableEntity {
 
 	@Id
 	@Column(name = "id_punto_codigo_tdv")

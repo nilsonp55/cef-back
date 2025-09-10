@@ -1,6 +1,7 @@
 package com.ath.adminefectivo.entities;
 
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,10 +12,12 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import com.ath.adminefectivo.entities.audit.AuditableEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Entidad encargada de manejar la logica de la tabla PUNTOS
@@ -24,12 +27,13 @@ import lombok.NoArgsConstructor;
  */
 @Entity
 @Table(name = "PUNTOS")
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @NamedQuery(name = "Puntos.findAll", query = "SELECT t FROM Puntos t")
-public class Puntos {
+public class Puntos extends AuditableEntity {
 
   @Id
   @Column(name = "CODIGO_PUNTO")
@@ -48,21 +52,21 @@ public class Puntos {
   @Column(name = "ESTADO")
   private String estado;
 
-  @OneToOne(mappedBy = "puntos", orphanRemoval = true, fetch = FetchType.LAZY)
+  @OneToOne(mappedBy = "punto", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
   private Oficinas oficinas;
 
-  @OneToOne(mappedBy = "punto", orphanRemoval = true, fetch = FetchType.LAZY)
+  @OneToOne(mappedBy = "punto", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
   private SitiosClientes sitiosClientes;
 
   @OneToMany(mappedBy = "puntos", fetch = FetchType.LAZY)
   private List<PuntosCodigoTDV> puntosCodigoTDV;
 
-  @OneToOne(mappedBy = "puntos", orphanRemoval = true, fetch = FetchType.LAZY)
+  @OneToOne(mappedBy = "punto", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
   private Fondos fondos;
 
-  @OneToOne(mappedBy = "puntos", orphanRemoval = true, fetch = FetchType.LAZY)
+  @OneToOne(mappedBy = "punto", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
   private CajerosATM cajeroATM;
 
-  @OneToOne(mappedBy = "puntos", orphanRemoval = true, fetch = FetchType.LAZY)
+  @OneToOne(mappedBy = "punto", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
   private Bancos bancos;
 }

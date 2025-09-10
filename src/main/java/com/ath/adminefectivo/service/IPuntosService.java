@@ -89,12 +89,26 @@ public interface IPuntosService {
   PuntosDTO getPuntoByTipoPuntoAndCodigoCiudad(String tipoPunto, String codigoCiudad);
 
   /**
+   * 
+   * @param punto
+   * @return
+   */
+  Puntos actualizarPunto(Puntos punto);
+  
+  /**
+   * 
+   * @param punto
+   * @return
+   */
+  Puntos crearPunto(Puntos punto);
+  
+  /**
    * Servicio encargado de la persistencia de los puntos para banco
    * 
    * @return Puntos
    * @author Bayron Andres Perez M.
    */
-  Puntos guardarPuntoBanco(Puntos punto, Bancos banco);
+  Puntos crearPuntoBanco(Puntos punto, Bancos banco);
 
   /**
    * Servicio encargado de la persistencia de los puntos para oficina
@@ -102,7 +116,7 @@ public interface IPuntosService {
    * @return Puntos
    * @author Bayron Andres Perez M.
    */
-  Puntos guardarPuntoOficina(Puntos punto, Oficinas oficina);
+  Puntos crearPuntoOficina(Puntos punto, Oficinas oficina);
 
   /**
    * Servicio encargado de la persistencia de los puntos para cajeroATM
@@ -110,7 +124,7 @@ public interface IPuntosService {
    * @return Puntos
    * @author Bayron Andres Perez M.
    */
-  Puntos guardarPuntoCajeroATM(Puntos punto, CajerosATM cajerosATM);
+  Puntos crearPuntoCajeroATM(Puntos punto, CajerosATM cajerosATM);
 
   /**
    * Servicio encargado de la persistencia de los puntos para sitio cliente
@@ -118,7 +132,7 @@ public interface IPuntosService {
    * @return Puntos
    * @author Bayron Andres Perez M.
    */
-  Puntos guardarPuntoSitioCliente(Puntos punto, SitiosClientes sitiosClientes);
+  Puntos crearPuntoSitioCliente(Puntos punto, SitiosClientes sitiosClientes);
 
   /**
    * Servicio encargado de la persistencia de los puntos para fondos
@@ -126,7 +140,14 @@ public interface IPuntosService {
    * @return Puntos
    * @author Bayron Andres Perez M.
    */
-  Puntos guardarPuntoFondo(Puntos punto, Fondos fondo);
+  Puntos crearPuntoFondo(Puntos punto, Fondos fondo);
+  
+  /**
+   * 
+   * @param punto
+   * @return
+   */
+  Puntos crearPuntoBanrep(Puntos punto);
 
   /**
    * Servicio encargado de retornar un punto por
@@ -185,8 +206,6 @@ public interface IPuntosService {
    */
   Puntos getCodigoPuntoJdbc(Integer codigoBancoAval);
 
-  Puntos crearPunto(Puntos punto);
-
   /**
    * Valida que un punto sea del tipo dado.
    * 
@@ -226,4 +245,56 @@ public interface IPuntosService {
 	 */
 	Puntos getPuntoByIdJdbc(Integer idPunto);
 
+	/**
+	 * 
+	 * @param p
+	 * @param f
+	 * @throws NegocioException
+	 * @author prv_nparra
+	 */
+	void validarPuntoFondoUnique(Puntos p, Fondos f) throws NegocioException;
+	
+	/**
+	 * 
+	 * @param p
+	 * @param b
+	 * @throws NegocioException
+	 * @author prv_nparra
+	 */
+	void validarPuntoBancoUnique(Puntos p, Bancos b) throws NegocioException;
+	
+	/**
+	 * 
+	 * @param p
+	 * @param c
+	 * @throws NegocioException
+	 * @author prv_nparra
+	 */
+	void validarPuntoCajeroUnique(Puntos p, CajerosATM c) throws NegocioException;
+	
+	/**
+	 * 
+	 * @param p
+	 * @param co
+	 * @throws NegocioException
+	 * @author prv_nparra
+	 */
+	void validarPuntoOficinaUnique(Puntos p, Oficinas o) throws NegocioException;
+	
+	/**
+	 * 
+	 * @param p
+	 * @throws NegocioException
+	 * @author prv_nparra
+	 */
+	void validarPuntoBanrepUnique(Puntos p) throws NegocioException;
+	
+	/**
+	 * 
+	 * @param p
+	 * @param sc
+	 * @throws NegocioException
+	 * @author prv_nparra
+	 */
+	void validarPuntoClienteUnique(Puntos p, SitiosClientes sc) throws NegocioException;
 }
