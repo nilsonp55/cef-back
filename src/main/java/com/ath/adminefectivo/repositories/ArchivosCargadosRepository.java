@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
 
 import com.ath.adminefectivo.entities.ArchivosCargados;
 
@@ -174,30 +175,93 @@ public interface ArchivosCargadosRepository extends JpaRepository<ArchivosCargad
 //		       "and estadoCargue IN ?3 " +
 //		       "order by fechaArchivo desc, estadoCargue asc")
 	
-	@Query("""
-			select ac from ArchivosCargados ac 
-			where ac.idModeloArchivo IN (
-			    select mda.idMaestroDefinicionArchivo from MaestroDefinicionArchivo mda 
-			    where mda.agrupador = ?1
-			)
-			and ac.estado = ?2 
-			and (
-			    ac.estadoCargue = 'ERRADO' 
-			    or (
-			        ac.estadoCargue = 'EN_CONCILIACION' and (
-			            exists (
-			                select 1 from CostosProcesamiento cp 
-			                where cp.idArchivoCargado = ac.idArchivo
-			            )
-			            or exists (
-			                select 1 from CostosTransporte ct 
-			                where ct.idArchivoCargadoTransporte = ac.idArchivo
-			            )
-			        )
-			    )
-			)
-			order by ac.fechaArchivo desc, ac.estadoCargue asc
-			""")
-	Page<ArchivosCargados> getArchivosByAgrupadorAndEstadoCargue(String agrupador, String estado, Set<String> estadoCargue, Pageable page);
+	@Query(
+		    value = """
+		        WITH ULTIMOS AS (
+		            SELECT ac.ID_ARCHIVO,
+		                   ac.FECHA_INICIO_CARGUE,
+		                   ac.FECHA_FIN_CARGUE,
+		                   ac.ESTADO_CARGUE,
+		                   ac.NOMBRE_ARCHIVO,
+		                   ac.NOMBRE_ARCHIVO_UPPER,
+		                   ac.FECHA_ARCHIVO,
+		                   ac.NUMERO_REGISTROS,
+		                   ac.NUMERO_ERRORES,
+		                   ac.VIGENCIA,
+		                   ac.ID_MODELO_ARCHIVO,
+		                   ac.URL,
+		                   ac.CONTENT_TYPE,
+		                   ac.ESTADO,
+		                   ac.USUARIO_CREACION,
+		                   ac.FECHA_CREACION,
+		                   ac.USUARIO_MODIFICACION,
+		                   ac.OBSERVACION,
+		                   ac.FECHA_MODIFICACION,
+		                   ROW_NUMBER() OVER (
+		                       PARTITION BY ac.NOMBRE_ARCHIVO
+		                       ORDER BY ac.FECHA_ARCHIVO DESC, ac.ESTADO_CARGUE ASC
+		                   ) AS rn
+		            FROM CONTROLEFECT.ARCHIVOS_CARGADOS ac
+		            WHERE ac.ID_MODELO_ARCHIVO IN (
+		                SELECT mda.ID_MAESTRO_DEFINICION_ARCHIVO
+		                FROM CONTROLEFECT.MAESTRO_DEFINICION_ARCHIVO mda
+		                WHERE mda.AGRUPADOR = :agrupador
+		            )
+		            AND ac.ESTADO = :estado
+		            AND ac.ESTADO_CARGUE IN (:estadoCargue)
+		        )
+		        SELECT ID_ARCHIVO,
+		               FECHA_INICIO_CARGUE,
+		               FECHA_FIN_CARGUE,
+		               ESTADO_CARGUE,
+		               NOMBRE_ARCHIVO,
+		               NOMBRE_ARCHIVO_UPPER,
+		               FECHA_ARCHIVO,
+		               NUMERO_REGISTROS,
+		               NUMERO_ERRORES,
+		               VIGENCIA,
+		               ID_MODELO_ARCHIVO,
+		               URL,
+		               CONTENT_TYPE,
+		               ESTADO,
+		               USUARIO_CREACION,
+		               FECHA_CREACION,
+		               USUARIO_MODIFICACION,
+		               OBSERVACION,
+		               FECHA_MODIFICACION
+		        FROM ULTIMOS
+		        WHERE rn = 1
+		        ORDER BY FECHA_ARCHIVO DESC, ESTADO_CARGUE ASC
+		        """,
+		    countQuery = """
+		        SELECT COUNT(*) 
+		        FROM (
+		            WITH ULTIMOS AS (
+		                SELECT ac.ID_ARCHIVO,
+		                       ROW_NUMBER() OVER (
+		                           PARTITION BY ac.NOMBRE_ARCHIVO
+		                           ORDER BY ac.FECHA_ARCHIVO DESC, ac.ESTADO_CARGUE ASC
+		                       ) AS rn
+		                FROM CONTROLEFECT.ARCHIVOS_CARGADOS ac
+		                WHERE ac.ID_MODELO_ARCHIVO IN (
+		                    SELECT mda.ID_MAESTRO_DEFINICION_ARCHIVO
+		                    FROM CONTROLEFECT.MAESTRO_DEFINICION_ARCHIVO mda
+		                    WHERE mda.AGRUPADOR = :agrupador
+		                )
+		                AND ac.ESTADO = :estado
+		                AND ac.ESTADO_CARGUE IN (:estadoCargue)
+		            )
+		            SELECT 1 FROM ULTIMOS WHERE rn = 1
+		        ) AS conteo
+		        """,
+		    nativeQuery = true
+		)
+		Page<ArchivosCargados> getArchivosByAgrupadorAndEstadoCargue(
+		        @Param("agrupador") String agrupador,
+		        @Param("estado") String estado,
+		        @Param("estadoCargue") Set<String> estadoCargue,
+		        Pageable pageable
+		);
+
 
 }
