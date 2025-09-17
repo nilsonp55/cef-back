@@ -3,8 +3,12 @@ package com.ath.adminefectivo.service.impl;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
@@ -14,6 +18,7 @@ import org.springframework.stereotype.Service;
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.DetallesDefinicionArchivoDTO;
+import com.ath.adminefectivo.dto.ListaDetalleDTO;
 import com.ath.adminefectivo.dto.MaestrosDefinicionArchivoDTO;
 import com.ath.adminefectivo.dto.compuestos.ErroresCamposDTO;
 import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoDTO;
@@ -98,7 +103,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
             for (int i = 0; i < validacionArchivo.getValidacionLineas().size(); i++) {
                 ValidacionLineasDTO lineaDTO = validacionArchivo.getValidacionLineas().get(i);
                 List<ErroresCamposDTO> erroresCampos = this.validarLineaReglas(lineaDTO,
-                        maestroDefinicion.getIdMaestroDefinicionArchivo());
+                        maestroDefinicion.getIdMaestroDefinicionArchivo(), validacionArchivo);
                 if (!erroresCampos.isEmpty()) {
                     lineaDTO.setCampos(erroresCampos);
                     lineaDTO.setEstado(Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO);
@@ -107,6 +112,44 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
                 } else {
                     lineaDTO.setEstado(Dominios.ESTADO_VALIDACION_CORRECTO);
                 }
+            }
+        }
+        //nueva logica para liqco
+        if(maestroDefinicion.getAgrupador().equals(Constantes.LIQUIDACION_AGRUPADOR)) {
+        	List<ErroresCamposDTO> erroresCampos = new ArrayList<>();
+            ValidacionLineasDTO lineaDTO = new ValidacionLineasDTO();
+
+            if (validacionArchivo.getValidacionLineas() == null || validacionArchivo.getValidacionLineas().isEmpty()) {
+
+                // Crear el mensaje de error
+                String mensajeErroresTxt = "El archivo no contiene registros válidos para procesar. Verifique que las filas tengan el delimitador correcto";
+                List<String> mensajesErrores = new ArrayList<>();
+                mensajesErrores.add(mensajeErroresTxt);
+
+                // Construir el objeto de error con builder
+                ErroresCamposDTO error = ErroresCamposDTO.builder()
+                    .nombreCampo(null)
+                    .estado(Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO)
+                    .contenido(null)
+                    .mensajeError(mensajesErrores)
+                    .mensajeErrorTxt(mensajeErroresTxt)
+                    .build();
+
+                erroresCampos.add(error);
+
+                // Crear línea DTO con el error
+                lineaDTO.setNumeroLinea(1); // Puedes poner otra lógica si aplica
+                lineaDTO.setCampos(erroresCampos);
+                lineaDTO.setEstado(Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO);
+
+                // Asegurarse que la lista no sea null antes de agregar
+                if (validacionArchivo.getValidacionLineas() == null) {
+                    validacionArchivo.setValidacionLineas(new ArrayList<>());
+                }
+
+                validacionArchivo.getValidacionLineas().add(lineaDTO);
+                validacionArchivo.setNumeroErrores(validacionArchivo.getNumeroErrores() + erroresCampos.size());
+                validacionArchivo.setEstadoValidacion(Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO);
             }
         }
         log.debug("validarContenido fin");
@@ -125,16 +168,26 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
      * @return List<ErroresCamposDTO>
      * @author duvan.naranjo
      */
-    private List<ErroresCamposDTO> validarLineaReglas(ValidacionLineasDTO lineaDTO, String idMaestroDefinicionArchivo) {
+    private List<ErroresCamposDTO> validarLineaReglas(ValidacionLineasDTO lineaDTO, String idMaestroDefinicionArchivo,
+            ValidacionArchivoDTO validacionArchivo) {
       log.debug("validarLineaReglas inicio");
         List<ErroresCamposDTO> erroresCamposDTO = new ArrayList<>();
         List<String> contenido = lineaDTO.getContenido();
-
+        
+        ValidacionArchivoDTO validacionArchivoCopy = validacionArchivo.toBuilder().validacionLineas(List.of(lineaDTO))
+                .build();
+        Map<String, ListaDetalleDTO> detalleDefinicionMap = new HashMap<>();
+        
+        if(validacionArchivo.getMaestroDefinicion().getAgrupador().equals(Constantes.LIQUIDACION_AGRUPADOR)) {
+            detalleDefinicionMap = listaDetalleMap(contenido, listaDetalleDefinicion);
+        }
+        
         for (int i = 0; i < contenido.size(); i++) {
             DetallesDefinicionArchivoDTO detalle = obtenerListaDetalleFiltrada(idMaestroDefinicionArchivo, i + 1,
                     lineaDTO.getTipo());
 
-            ValidacionMotorDTO validacionMotorDTO = this.validarReglas(detalle, contenido.get(i));
+            ValidacionMotorDTO validacionMotorDTO = this.validarReglas(detalle, contenido.get(i), validacionArchivoCopy,
+                    i, detalleDefinicionMap);
             if (Objects.nonNull(validacionMotorDTO) && !validacionMotorDTO.isValida()) {
 
                 var mensajeErrores = validacionMotorDTO.getMensajesError();
@@ -158,16 +211,19 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
      * @return ValidacionMotorDTO
      * @author duvan.naranjo
      */
-    private ValidacionMotorDTO validarReglas(DetallesDefinicionArchivoDTO detalle, String valorCampo) {
-      log.debug("validarReglas inicio");
+    private ValidacionMotorDTO validarReglas(DetallesDefinicionArchivoDTO detalle, String valorCampo,
+            ValidacionArchivoDTO validacionArchivo, int index, Map<String, ListaDetalleDTO> detalleDefinicionMap) {
+        log.debug("validarReglas inicio");
         if (detalle.isValidarReglas() && Objects.nonNull(detalle.getExpresionRegla())) {
             if (detalle.isMultiplesReglas()) {
                 if (!Objects.isNull(detalle.getExpresionRegla())) {
-                    return motorReglasService.evaluarReglaMultiple(detalle.getExpresionRegla(), valorCampo);
+                    return motorReglasService.evaluarReglaMultiple(detalle.getExpresionRegla(), valorCampo,
+                            validacionArchivo, index, detalleDefinicionMap);
                 }
             } else {
                 if (!Objects.isNull(detalle.getExpresionRegla())) {
-                    return motorReglasService.evaluarReglaSimple(detalle.getExpresionRegla(), valorCampo);
+                    return motorReglasService.evaluarReglaSimple(detalle.getExpresionRegla(), valorCampo,
+                            validacionArchivo, index, detalleDefinicionMap);
                 }
 
             }
@@ -789,4 +845,29 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
                 .findFirst().orElse(null);
     }
 
+
+    /**
+     * 
+     * @param contenido
+     * @param listaDetalleDefinicion
+     * @return Map<String, ListaDetalleDTO> 
+     */
+    private Map<String, ListaDetalleDTO> listaDetalleMap(List<String> contenido,
+            List<DetallesDefinicionArchivoDTO> listaDetalleDefinicion) {
+
+        // Ordenar ascendentemente por numeroCampo
+        listaDetalleDefinicion.sort(Comparator.comparing(d -> d.getId().getNumeroCampo()));
+
+        Map<String, ListaDetalleDTO> mapa = new LinkedHashMap<>();
+        for (int i = 0; i < listaDetalleDefinicion.size(); i++) {
+            DetallesDefinicionArchivoDTO detalle = listaDetalleDefinicion.get(i);
+
+            ListaDetalleDTO campo = ListaDetalleDTO.builder().nombreCampo(detalle.getNombreCampo())
+                    .tipoDato(detalle.getTipoDato()).valor(contenido.get(i)).build();
+
+            mapa.put(detalle.getNombreCampo(), campo);
+        }
+
+        return mapa;
+    }
 }

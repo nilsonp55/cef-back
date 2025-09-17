@@ -186,14 +186,14 @@ public class FilesServiceImpl implements IFilesService {
 	                ApiResponseCode.ERROR_CARPETA_NO_ENCONTRADA.getDescription(),
 	                ApiResponseCode.ERROR_CARPETA_NO_ENCONTRADA.getHttpStatus());
 	    }
-	    return obtenerArchivosDTOList(s3ObjectSummaries, content);
+	    return obtenerArchivosDTOList(s3ObjectSummaries, content, url);
 	}
 
 	private List<S3ObjectSummary> getResumenObjetosS3(String url, int start, int end, String fileName) {
 	    if (Boolean.TRUE.equals(s3Bucket)) {
 	        return getResumenObjetosS3Bucket(url, start, end, fileName);
 	    } else {
-	        return getResumenDirectorioLocal(fileName);
+	        return getResumenDirectorioLocal(url,fileName);
 	    }
 	}
 
@@ -205,17 +205,26 @@ public class FilesServiceImpl implements IFilesService {
 	    }
 	}
 
-	private List<S3ObjectSummary> getResumenDirectorioLocal(String fileName) {
+	private List<S3ObjectSummary> getResumenDirectorioLocal(String url, String fileName) {
 	    if (!fileName.isEmpty() && !fileName.isBlank() && !fileName.endsWith(".txt")) {
 	        fileName = fileName + ".txt";
 	    }
-	    File fileOrDirectory = new File(TEMPORAL_URL, fileName);
+
+	    File fileOrDirectory = new File(getLocalTemporalPath(url), fileName);
 	    if (fileOrDirectory.isDirectory()) {
 	        return getResumenObjetosDirectorio(fileOrDirectory);
 	    } else if (fileOrDirectory.isFile()) {
 	        return getResumenObjetoArchivo(fileOrDirectory);
 	    }
 	    return null;
+	}
+	
+	private String getLocalTemporalPath(String url) {
+		String temporalPath = TEMPORAL_URL;
+		if (!Objects.isNull(url) && !url.isEmpty() && !url.isBlank()) {
+			temporalPath = temporalPath.concat(url);
+	    }
+		return temporalPath;
 	}
 
 	private List<S3ObjectSummary> getResumenObjetosDirectorio(File directorio) {
@@ -243,14 +252,14 @@ public class FilesServiceImpl implements IFilesService {
 	    return objetoS3;
 	}
 
-	private List<SummaryArchivoLiquidacionDTO> obtenerArchivosDTOList(List<S3ObjectSummary> s3ObjectSummaries, boolean content) {
+	private List<SummaryArchivoLiquidacionDTO> obtenerArchivosDTOList(List<S3ObjectSummary> s3ObjectSummaries, boolean content, String url) {
 	    List<SummaryArchivoLiquidacionDTO> archivosDTOList = new ArrayList<>();
 	    for (S3ObjectSummary s3ObjectSummary : s3ObjectSummaries) {
 	        if (s3ObjectSummary.getSize() > 0) {
 	            SummaryArchivoLiquidacionDTO archivoDTO = new SummaryArchivoLiquidacionDTO();
 	            archivoDTO.setS3ObjectSummary(s3ObjectSummary);
 	            if (content) {
-	                List<String> contenidoArchivo = obtenerContenidoArchivo(s3ObjectSummary);
+	                List<String> contenidoArchivo = obtenerContenidoArchivo(s3ObjectSummary, url);
 	                archivoDTO.setContenidoArchivo(contenidoArchivo);
 	            }
 	            archivosDTOList.add(archivoDTO);
@@ -259,11 +268,11 @@ public class FilesServiceImpl implements IFilesService {
 	    return archivosDTOList;
 	}
 
-	private List<String> obtenerContenidoArchivo(S3ObjectSummary s3ObjectSummary) {
+	private List<String> obtenerContenidoArchivo(S3ObjectSummary s3ObjectSummary, String url) {
 	    if (Boolean.TRUE.equals(s3Bucket)) {
 	        return s3Util.getFileContent(s3ObjectSummary.getKey());
 	    } else {
-	        return leerContenidoArchivo(new File(TEMPORAL_URL + File.separator + s3ObjectSummary.getKey()));
+	        return leerContenidoArchivo(new File(getLocalTemporalPath(url) + s3ObjectSummary.getKey()));
 	    }
 	}
 
