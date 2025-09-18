@@ -40,8 +40,14 @@ import lombok.extern.log4j.Log4j2;
 public class FilesServiceImpl implements IFilesService {
 
   private static final String TEMPORAL_URL = "C:\\Ath\\Docs\\";
+  private static final String TEMPORAL_URL_ERR = "C:\\Ath\\Docs\\Error\\";
+  private static final String TEMPORAL_URL_PROC = "C:\\Ath\\Docs\\Procesados\\";
+  
   @Value("${aws.s3.active}")
   Boolean s3Bucket;
+  
+  @Value("${aws.s3.caller}")
+  String caller;
 
   @Autowired
   IParametroService parametroService;
@@ -108,11 +114,26 @@ public class FilesServiceImpl implements IFilesService {
 					download.setFile(streamReader);
 				}
 			} else {
-				File initialFile = new File(TEMPORAL_URL+path);
-				Resource recurso = new UrlResource(initialFile.toURI());
-				InputStream inputStream = recurso.getInputStream();
-				// Realiza operaciones de lectura del archivo usando inputStream
-				download.setFile(inputStream);
+				
+				if ("gft".equals(caller)) {
+					// Divide la cadena de la ruta en segmentos usando el carácter "/"
+					String[] segmentos = path.split("/");
+					// Tomar el último segmento como el nombre del archivo
+					String nombreArchivo = segmentos[segmentos.length - 1];
+
+					File initialFile = new File(TEMPORAL_URL + File.separator + nombreArchivo);
+					Resource recurso = new UrlResource(initialFile.toURI());
+					InputStream inputStream = recurso.getInputStream();
+					// Realiza operaciones de lectura del archivo usando inputStream
+					download.setFile(inputStream);
+				} else {
+					File initialFile = new File(TEMPORAL_URL + path);
+					Resource recurso = new UrlResource(initialFile.toURI());
+					InputStream inputStream = recurso.getInputStream();
+					// Realiza operaciones de lectura del archivo usando inputStream
+					download.setFile(inputStream);
+				}
+				
 			}
 			log.debug("descarga archivo desde URL: {}", path);
 		} catch (IOException e) {
@@ -139,7 +160,14 @@ public class FilesServiceImpl implements IFilesService {
     	String[] segmentos = url.split("/");
     	// Tomar el último segmento como el nombre del archivo
     	String nombreArchivo = segmentos[segmentos.length - 1];
-    	url = TEMPORAL_URL + "\\" + nombreArchivo;
+    	
+    	if (url.contains("Error")) {
+    	    url = TEMPORAL_URL_ERR + "\\" + nombreArchivo;
+    	}else if (url.contains("Procesados")) {
+        	    url = TEMPORAL_URL_PROC + "\\" + nombreArchivo;
+    	} else {
+    	    url = TEMPORAL_URL + "\\" + nombreArchivo;
+    	}
         Files.delete(Path.of(url));
         
       }
@@ -193,7 +221,7 @@ public class FilesServiceImpl implements IFilesService {
 	    if (Boolean.TRUE.equals(s3Bucket)) {
 	        return getResumenObjetosS3Bucket(url, start, end, fileName);
 	    } else {
-	        return getResumenDirectorioLocal(url,fileName);
+	        return getResumenDirectorioLocal(fileName, url);
 	    }
 	}
 
@@ -205,12 +233,27 @@ public class FilesServiceImpl implements IFilesService {
 	    }
 	}
 
-	private List<S3ObjectSummary> getResumenDirectorioLocal(String url, String fileName) {
-	    if (!fileName.isEmpty() && !fileName.isBlank() && !fileName.endsWith(".txt")) {
-	        fileName = fileName + ".txt";
+	private List<S3ObjectSummary> getResumenDirectorioLocal(String fileName, String url) {
+	    
+		if (fileName != null && !fileName.isBlank()) {
+	        // Detectar si tiene extensión
+	        int lastDot = fileName.lastIndexOf('.');
+	        if (lastDot == -1 || lastDot == fileName.length() - 1) {
+	            // No tiene extensión → agregar .txt
+	            fileName = fileName + ".txt";
+	        }
+	        // Si tiene extensión, se respeta la que venga
 	    }
-
-	    File fileOrDirectory = new File(getLocalTemporalPath(url), fileName);
+		
+		File fileOrDirectory;
+		if (url.contains("Error")) {
+		    fileOrDirectory = new File(TEMPORAL_URL_ERR, fileName);
+		}else if (url.contains("Procesados")) {
+		    fileOrDirectory = new File(TEMPORAL_URL_PROC, fileName);
+		} else {
+		    fileOrDirectory = new File(TEMPORAL_URL, fileName);
+		}
+		
 	    if (fileOrDirectory.isDirectory()) {
 	        return getResumenObjetosDirectorio(fileOrDirectory);
 	    } else if (fileOrDirectory.isFile()) {
@@ -272,7 +315,13 @@ public class FilesServiceImpl implements IFilesService {
 	    if (Boolean.TRUE.equals(s3Bucket)) {
 	        return s3Util.getFileContent(s3ObjectSummary.getKey());
 	    } else {
-	        return leerContenidoArchivo(new File(getLocalTemporalPath(url) + s3ObjectSummary.getKey()));
+	    	File file;
+	    	if (url.contains("Error")) {
+	    	    file = new File(TEMPORAL_URL_ERR + File.separator + s3ObjectSummary.getKey());
+	    	} else {
+	    	    file = new File(TEMPORAL_URL + File.separator + s3ObjectSummary.getKey());
+	    	}
+	    	return leerContenidoArchivo(file);
 	    }
 	}
 
@@ -392,6 +441,7 @@ public class FilesServiceImpl implements IFilesService {
       case Constantes.ESTADO_CARGUE_PENDIENTE -> Parametros.RUTA_ARCHIVOS_PENDIENTES;
       case Constantes.ESTADO_CARGUE_ERROR -> Parametros.RUTA_ARCHIVOS_ERRADOS;
       case Constantes.ESTADO_CARGUE_VALIDO -> Parametros.RUTA_ARCHIVOS_PROCESADOS;
+      case Constantes.ESTADO_PROCESO_PENDIENTE -> Parametros.RUTA_ARCHIVOS_PENDIENTES;
       default -> throw new NegocioException(ApiResponseCode.ERROR_ESTADO_ARCHIVO.getCode(),
           ApiResponseCode.ERROR_ESTADO_ARCHIVO.getDescription(),
           ApiResponseCode.ERROR_ESTADO_ARCHIVO.getHttpStatus());

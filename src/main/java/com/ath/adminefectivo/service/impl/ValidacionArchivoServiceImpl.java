@@ -137,10 +137,10 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 
                 erroresCampos.add(error);
 
-                // Crear línea DTO con el error
-                lineaDTO.setNumeroLinea(1); // Puedes poner otra lógica si aplica
-                lineaDTO.setCampos(erroresCampos);
-                lineaDTO.setEstado(Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO);
+		    // Crear línea DTO con el error
+		    lineaDTO.setNumeroLinea(1);
+		    lineaDTO.setCampos(erroresCampos);
+		    lineaDTO.setEstado(Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO);
 
                 // Asegurarse que la lista no sea null antes de agregar
                 if (validacionArchivo.getValidacionLineas() == null) {

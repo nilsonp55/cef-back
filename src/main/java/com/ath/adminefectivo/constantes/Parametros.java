@@ -52,6 +52,7 @@ public final class Parametros {
 	public static final String MONEDA_DIVISA = "MONEDADIVISA";
 	public static final String MAESTRO_LLAVE_PROCESAMIENTO= "LLAVEPROCESAMIENTO";
 	public static final String MAESTRO_LLAVE_TRANSPORTE= "LLAVETRANSPORTE";
+	public static final String TIPO_COMISION_TARIFA_ESPECIAL= "TIPOCOMISIONTARIFAESPECIAL";
 	
 	
 	

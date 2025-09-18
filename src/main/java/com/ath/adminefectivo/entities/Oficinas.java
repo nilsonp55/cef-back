@@ -55,4 +55,7 @@ public class Oficinas extends AuditableEntity{
 	@Column(name = "TARIFA_VERIFICACION")
 	private Double tarifaVerificacion;
 	
+	@Column(name = "PROGRAMA_TRANSPORTE")
+	private Boolean programaTransporte;
+	
 }

@@ -1,5 +1,7 @@
 package com.ath.adminefectivo.repositories;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
@@ -23,4 +25,7 @@ public interface IClientesCorporativosRepository extends JpaRepository<ClientesC
 	 * @author cesar.castano
 	 */
 	ClientesCorporativos findByCodigoCliente(Integer codigoCliente);
+	
+	Optional<ClientesCorporativos> findByIdentificacionAndCodigoBancoAvalAndAmparadoTrueAndAplicaTarifaEspecialTrue(
+            String identificacion, Integer codigoBancoAval);
 }

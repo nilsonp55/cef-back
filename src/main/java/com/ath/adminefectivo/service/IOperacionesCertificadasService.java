@@ -1,9 +1,11 @@
 package com.ath.adminefectivo.service;
 
+import java.util.Date;
 import java.util.List;
 
 import com.ath.adminefectivo.dto.DetallesDefinicionArchivoDTO;
 import com.ath.adminefectivo.dto.FechasConciliacionDTO;
+import com.ath.adminefectivo.dto.OperacionesCertificadasDTO;
 import com.ath.adminefectivo.entities.ArchivosCargados;
 import com.ath.adminefectivo.entities.OperacionesCertificadas;
 
@@ -85,4 +87,5 @@ public interface IOperacionesCertificadasService {
 
 	void procesarArchivoOtrosFondos(ArchivosCargados elemento, List<DetallesDefinicionArchivoDTO> detalleArchivo);
 
+	List<OperacionesCertificadasDTO> findOpCertificadasNotInOpProgramadas(Date fechaCreacion);
 }
