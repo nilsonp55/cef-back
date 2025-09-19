@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -19,6 +21,8 @@ import com.ath.adminefectivo.dto.MaestrosDefinicionArchivoDTO;
 import com.ath.adminefectivo.dto.compuestos.ArchivosLiquidacionListDTO;
 import com.ath.adminefectivo.dto.compuestos.SummaryArchivoLiquidacionDTO;
 import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoDTO;
+import com.ath.adminefectivo.dto.response.ApiResponseCode;
+import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.IBancoSimpleInfoRepository;
 import com.ath.adminefectivo.repositories.ITransportadorasRepository;
 import com.ath.adminefectivo.service.IArchivosCargadosService;
@@ -89,24 +93,41 @@ public class ArchivosTarifasEspecialesDelegateImpl implements IArchivosTarifasEs
 	 */
 	@Override
 	public Page<ArchivosTarifasEspecialesDTO> getAll(int start, int end, boolean content, String fileName,
-			Optional<List<ArchivosTarifasEspecialesDTO>> dtoResponseListOptional) {
+			Optional<List<ArchivosTarifasEspecialesDTO>> dtoResponseListOptional, int idOption) {
 
 		log.info("Inicia Proceso Archivos Pendientes de carga Tarifas Especiales: Acceso AWS:{}", s3aws);
+		
+		String agrupador;
 
+		switch (idOption) {
+		case 1:
+			agrupador = Constantes.TARIFAS_ESPECIALES_AGRUPADOR;
+			break;
+		case 2:
+			agrupador = Constantes.TARIFAS_REGULARES_AGRUPADOR;
+			break;
+		default:
+			throw new NegocioException(ApiResponseCode.ERROR_TIPO_CARGUE_ARCHIVO.getCode(),
+	                ApiResponseCode.ERROR_TIPO_CARGUE_ARCHIVO.getDescription(),
+	                ApiResponseCode.ERROR_TIPO_CARGUE_ARCHIVO.getHttpStatus());
+		}
+		
 		List<MaestrosDefinicionArchivoDTO> maestrosDefinicion = maestroDefinicionArchivoService
-				.consultarDefinicionArchivoByAgrupador(null, Constantes.TARIFAS_ESPECIALES_AGRUPADOR);
+				.consultarDefinicionArchivoByAgrupador(null, agrupador);
 
 		String urlPendientes = filesService.consultarPathArchivos(Constantes.ESTADO_CARGUE_PENDIENTE);
 		String url = maestrosDefinicion.get(0).getUbicacion().concat(urlPendientes);
 		String extension = maestrosDefinicion.get(0).getExtension();
 		String mascara = maestrosDefinicion.get(0).getMascaraArch();
 		String idMaestroDefinicion = maestrosDefinicion.get(0).getIdMaestroDefinicionArchivo();
+		String prefijo = mascara.substring(mascara.indexOf("[") + 1, mascara.indexOf("]"));
 
 		List<ArchivosTarifasEspecialesDTO> dtoResponseList = obtenerDtoResponseList(start, end, content, fileName, url);
 
-		if (dtoResponseList.isEmpty()) {
-			return new PageImpl<>(dtoResponseList);
-		}
+		// Filtrar lista según el prefijo
+		List<ArchivosTarifasEspecialesDTO> dtoFiltrada = dtoResponseList.stream()
+				.filter(dto -> dto.getNombreArchivo() != null && dto.getNombreArchivo().startsWith(prefijo))
+				.collect(Collectors.toList());
 
 		log.info("Archivos en directorio Tarifas Especiales: url:{} - cantidad:{}", url, dtoResponseList.size());
 
@@ -115,7 +136,7 @@ public class ArchivosTarifasEspecialesDelegateImpl implements IArchivosTarifasEs
 		 * que cumplan con la máscara y la extensión esperada.
 		 */
 		List<ArchivosTarifasEspecialesDTO> responseList = archivosTarifasEspecialesService
-				.filtrarPorMascara(dtoResponseList, mascara, extension, idMaestroDefinicion, true);
+				.filtrarPorMascara(dtoFiltrada, mascara, extension, idMaestroDefinicion, true);
 
 		log.info("Finaliza proceso cargue de archivos Tarifas Especiales - Total procesados: {}", responseList.size());
 		return new PageImpl<>(responseList);

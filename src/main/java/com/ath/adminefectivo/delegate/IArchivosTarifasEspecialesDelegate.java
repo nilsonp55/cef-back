@@ -18,22 +18,13 @@ public interface IArchivosTarifasEspecialesDelegate {
      * @return List<ArchivosTarifasEspecialesDTO>
      * @author jorge.trespalacios
      */
-	Page<ArchivosTarifasEspecialesDTO> getAll(int start, int end, boolean content, String fileName, Optional<List<ArchivosTarifasEspecialesDTO>> dtoResponseListOptional);
+	Page<ArchivosTarifasEspecialesDTO> getAll(int start, int end, boolean content, String fileName, Optional<List<ArchivosTarifasEspecialesDTO>> dtoResponseListOptional, int idOption);
 	
 	Page<ArchivosLiquidacionDTO> procesarAchivosTarifasEspeciales(ArchivosLiquidacionListDTO archivosProcesar);
 	
 	Page<ArchivosLiquidacionDTO> getContentFile(ArchivosLiquidacionListDTO archivosProcesar);
 	
 	boolean eliminarArchivoTarifaEspecial(ArchivosLiquidacionListDTO archivosProcesar);
-	
-//	ArchivosTarifasEspecialesListDTO eliminarArchivo(ArchivosTarifasEspecialesListDTO archivosTarifasEspeciales);
-//
-//	Page<ArchivosTarifasEspecialesDTO> procesarAchivos(ArchivosTarifasEspecialesListDTO archivosProcesar);
-//
-//	void procesarAchivoCargado(ArchivosTarifasEspecialesDTO archivoProcesar);
-//
-//	ValidacionArchivoDTO consultarDetalleError(Long idArchivoCargado);
-//
-//	List<RegistrosCargadosDTO> consultarDetalleArchivo(Long idArchivoCargado);
+
 
 }

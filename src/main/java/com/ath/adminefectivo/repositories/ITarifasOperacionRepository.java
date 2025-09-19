@@ -1,5 +1,6 @@
 package com.ath.adminefectivo.repositories;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,5 +23,9 @@ public interface ITarifasOperacionRepository extends JpaRepository<TarifasOperac
 			+ "codigo_tdv = ?2",nativeQuery=true)
 	List<TarifasOperacion> findByBancoAndTransportadoraAndComisionAndFajado(int codigoBanco, String codigoTdv);
 
+	@Query(value = "SELECT * FROM tarifas_operacion x "
+            + "WHERE x.fecha_vigencia_ini >= ?1 "
+            + "AND x.fecha_vigencia_fin <= ?2", nativeQuery = true)
+    List<TarifasOperacion> findByFechaVigenciaBetween(Date fechaInicio, Date fechaFin);
 
 }
