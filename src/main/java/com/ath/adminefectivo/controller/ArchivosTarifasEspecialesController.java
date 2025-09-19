@@ -59,8 +59,9 @@ public class ArchivosTarifasEspecialesController {
     		@RequestParam(name = "start", defaultValue = "1") int start,
             @RequestParam(name = "end", defaultValue = "5") int end,
             @RequestParam(name = "content", defaultValue = "false") boolean content,
-            @RequestParam(name = "fileName", required = false, defaultValue = "") String fileName) {
-        var consulta = archivosTarifasEspecialesDelegate.getAll(start, end, content, fileName, Optional.empty());
+            @RequestParam(name = "fileName", required = false, defaultValue = "") String fileName,
+            @RequestParam(name = "idOption", defaultValue = "1") int idOption) {
+        var consulta = archivosTarifasEspecialesDelegate.getAll(start, end, content, fileName, Optional.empty(), idOption);
         
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())

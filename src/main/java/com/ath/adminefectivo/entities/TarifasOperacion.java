@@ -102,5 +102,11 @@ public class TarifasOperacion {
 
     @Column(name = "VALOR_COMISION_ADICIONAL")
     private BigDecimal valorComisionAdicional;
+    
+    @Column(name = "ID_ARCHIVO_CARGADO")
+	private Integer idArchivoCargado;
+
+	@Column(name = "ID_REGISTRO")
+	private Integer idRegistro;
 
 }

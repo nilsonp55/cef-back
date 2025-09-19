@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 import java.sql.Timestamp;
 
 import org.apache.poi.ss.formula.functions.T;
+import com.ath.adminefectivo.entities.Bancos;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
@@ -44,13 +45,16 @@ import com.ath.adminefectivo.entities.BancoSimpleInfoEntity;
 import com.ath.adminefectivo.entities.ClientesCorporativos;
 import com.ath.adminefectivo.entities.CostosTransporte;
 import com.ath.adminefectivo.entities.TarifasEspecialesCliente;
+import com.ath.adminefectivo.entities.TarifasOperacion;
 import com.ath.adminefectivo.entities.Transportadoras;
 import com.ath.adminefectivo.entities.VTarifasEspecialesClienteEntity;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.ArchivosCargadosRepository;
 import com.ath.adminefectivo.repositories.IBancoSimpleInfoRepository;
+import com.ath.adminefectivo.repositories.IBancosRepository;
 import com.ath.adminefectivo.repositories.IClientesCorporativosRepository;
 import com.ath.adminefectivo.repositories.ITarifasEspecialesRepository;
+import com.ath.adminefectivo.repositories.ITarifasOperacionRepository;
 import com.ath.adminefectivo.repositories.ITransportadorasRepository;
 import com.ath.adminefectivo.repositories.IVTarifasEspecialesClienteRepository;
 import com.ath.adminefectivo.service.IArchivosCargadosService;
@@ -95,7 +99,7 @@ public class ArchivosTarifasEspecialesServiceImpl implements IArchivosTarifasEsp
 	IArchivosLiquidacionService archivosLiquidacionService;
 	
     @Autowired
-    IBancoSimpleInfoRepository bancosRepository;
+    IBancosRepository bancosRepository;
 
     @Autowired
     ITransportadorasRepository transportadorasRepository;
@@ -117,6 +121,12 @@ public class ArchivosTarifasEspecialesServiceImpl implements IArchivosTarifasEsp
     
     @Autowired
 	ArchivosCargadosRepository archivosCargadosRepository;
+    
+    @Autowired
+    ITarifasOperacionRepository tarifasOperacionRepository;
+    
+    @Autowired
+    IBancoSimpleInfoRepository bancoSimpleInfoRepository;
        
     private ValidacionArchivoDTO validacionArchivo;
     
@@ -230,13 +240,13 @@ public class ArchivosTarifasEspecialesServiceImpl implements IArchivosTarifasEsp
 		Date fechaArchivo = archivoProcesar.getFechaArchivo();
 		List<TarifasEspecialesClienteDTO> registrosArchivo = null;
 		
-		List<BancoSimpleInfoEntity> bancos;
+		List<Bancos> bancos;
 	    List<Transportadoras> transportadoras;
 	    	    	    
 	    log.info("Inicia Proceso Archivos Pendientes de carga : Acceso AWS:{}", s3aws);
 	    
 	    try {
-	        bancos = bancosRepository.findByEsAvalEqualsOne();
+	        bancos = bancosRepository.findByEsAVAL(true);
 	        transportadoras = transportadorasRepository.findAll();
 	    } catch (Exception e) {
 	        throw new NegocioException(ApiResponseCode.ERROR_LECTURA_DOCUMENTO.getCode(),
@@ -268,7 +278,7 @@ public class ArchivosTarifasEspecialesServiceImpl implements IArchivosTarifasEsp
 			// SI validacion del contenido del archivo fue exitosa
 			if (Objects.equals(this.validacionArchivo.getEstadoValidacion(), Dominios.ESTADO_VALIDACION_CORRECTO)) {
 				
-				registrosArchivo = parseCsv(this.validacionArchivo.getValidacionLineas(), bancos, transportadoras);
+				registrosArchivo = parseCsv(this.validacionArchivo.getValidacionLineas(), bancos, transportadoras, idMaestroDefinicion);
 				
 				// 3. Validar duplicados y traslapes dentro del archivo
 	            validarDuplicadosYTraslapesArchivo(registrosArchivo);
@@ -279,7 +289,8 @@ public class ArchivosTarifasEspecialesServiceImpl implements IArchivosTarifasEsp
 	            	    .toList();
 				
 				// 3. Consultar clientes en la vista de tarifas especales
-		        List<TarifasEspecialesClienteDTO> registrosBD = obtenerTarifasPorClienteDTO(codigosCliente);
+				List<TarifasEspecialesClienteDTO> registrosBD = obtenerTarifasPorClienteDTO(codigosCliente,
+						registrosArchivo, idMaestroDefinicion);
 		        
 		        validarDuplicadosYTraslapesDataBase(registrosArchivo, registrosBD, usuarioSesion, permiteReemplazo);
 			}
@@ -292,8 +303,13 @@ public class ArchivosTarifasEspecialesServiceImpl implements IArchivosTarifasEsp
 			// Si estado de validacion es OK persistir la informacion a tablas de proceso
 			if (Objects.equals(this.validacionArchivo.getEstadoValidacion(), Dominios.ESTADO_VALIDACION_CORRECTO)) {
 
-				// Persistir datos correctos en tarifas especiales
-				persistirTarifasEspeciales(registrosArchivo, idArchivo);
+				// Persistir datos correctos de tarifas
+				if (Constantes.MAESTRO_ARCHIVO_TARIFAS_ESPECIALES.equals(idMaestroDefinicion)) {
+					persistirTarifasEspeciales(registrosArchivo, idArchivo);
+				}else {
+					persistirTarifaOperacion(registrosArchivo, idArchivo);
+				}
+				
 
 				// Actualizar el estado de archivo a estado OK
 				var actualizarArchivo = archivosCargadosService.consultarArchivoById(idArchivo);
@@ -342,13 +358,13 @@ public class ArchivosTarifasEspecialesServiceImpl implements IArchivosTarifasEsp
 	 * La estructura resultante se utilizada en la validación de duplicidad y solapamiento de vigencias,
 	 * considerando las reglas de negocio sobre los campos clave y el cruce de fechas de inicio/fin.
 	 */
-	private List<TarifasEspecialesClienteDTO> parseCsv(List<ValidacionLineasDTO> validacionLineas, List<BancoSimpleInfoEntity> bancos,
-			List<Transportadoras> transportadoras) {
+	private List<TarifasEspecialesClienteDTO> parseCsv(List<ValidacionLineasDTO> validacionLineas, List<Bancos> bancos,
+			List<Transportadoras> transportadoras, String idMaestroDefinicion) {
 		
 		List<TarifasEspecialesClienteDTO> lista = new ArrayList<>();
 		Integer codigoCliente = 0;
 		
-		
+		Map<String, Integer> mapping = getFieldMapping(idMaestroDefinicion);
 
 		for (ValidacionLineasDTO linea : validacionLineas) {
 
@@ -356,7 +372,7 @@ public class ArchivosTarifasEspecialesServiceImpl implements IArchivosTarifasEsp
 
 			// Buscar codigoBanco usando la abreviatura en campos[0]
 			Integer codigoBanco = bancos.stream().filter(b -> campos[0].equalsIgnoreCase(b.getAbreviatura()))
-					.map(BancoSimpleInfoEntity::getCodigoPunto).findFirst().orElse(0);
+					.map(Bancos::getCodigoPunto).findFirst().orElse(0);
 			
 			String codigoTransportadora = transportadoras.stream().filter(b -> campos[1].equalsIgnoreCase(b.getNombreTransportadora()))
 					.map(Transportadoras::getCodigo).findFirst().orElse(null);
@@ -370,27 +386,39 @@ public class ArchivosTarifasEspecialesServiceImpl implements IArchivosTarifasEsp
 			}
 
 			TarifasEspecialesClienteDTO dto = TarifasEspecialesClienteDTO.builder()
-					.idRegistro(linea.getNumeroLinea())
-				    .codigoBanco(codigoBanco)
-				    .codigoTdv(codigoTransportadora)
-				    .codigoCliente(codigoCliente)
-				    .codigoDane(campos[4])
-				    .codigoPunto(nullIfEmptyInt(campos[5]))
-				    .tipoOperacion(campos[6])
-				    .tipoServicio(campos[7])
-				    .tipoComision(campos[8])
-				    .unidadCobro(campos[9])
-				    .escala(campos[10])
-				    .billetes(campos[11])
-				    .monedas(campos[12])
-				    .fajado(campos[13])
-				    .valorTarifa(new BigDecimal(campos[14]))
-				    .fechaInicioVigencia(parseDate(campos[15]))
-				    .fechaFinVigencia(parseDate(campos[16]))
-				    .limiteComisionAplicar(UtilsString.toInteger(campos[17]))
-				    .valorComisionAdicional(new BigDecimal(campos[18]))
-				    .estado("1".equals(campos[19]))
-				    .build();
+			        .idRegistro(linea.getNumeroLinea())
+			        .codigoBanco(codigoBanco)
+			        .codigoTdv(codigoTransportadora)
+			        .codigoCliente(codigoCliente)
+			        .codigoDane(campos[mapping.get("codigoDane")])
+
+			        .codigoPunto(
+			        	    idMaestroDefinicion.equals(Constantes.MAESTRO_ARCHIVO_TARIFAS_ESPECIALES) 
+			        	        ? nullIfEmptyInt(getCampo(mapping, campos, "codigoPunto")) 
+			        	        : null
+			        	)
+			        
+			        .tipoOperacion(campos[mapping.get("tipoOperacion")])
+			        .tipoServicio(campos[mapping.get("tipoServicio")])
+			        .tipoComision(campos[mapping.get("tipoComision")])
+
+			        .unidadCobro(
+			        	    idMaestroDefinicion.equals(Constantes.MAESTRO_ARCHIVO_TARIFAS_ESPECIALES) 
+			        	        ? getCampo(mapping, campos, "unidadCobro") 
+			        	        : null
+			        	)
+			        
+			        .escala(campos[mapping.get("escala")])
+			        .billetes(campos[mapping.get("billetes")])
+			        .monedas(campos[mapping.get("monedas")])
+			        .fajado(campos[mapping.get("fajado")])
+			        .valorTarifa(new BigDecimal(campos[mapping.get("valorTarifa")]))
+			        .fechaInicioVigencia(parseDate(campos[mapping.get("fechaInicio")]))
+			        .fechaFinVigencia(parseDate(campos[mapping.get("fechaFin")]))
+			        .limiteComisionAplicar(UtilsString.toInteger(campos[mapping.get("limiteComision")]))
+			        .valorComisionAdicional(new BigDecimal(campos[mapping.get("valorComisionAdicional")]))
+			        .estado("1".equals(campos[mapping.get("estado")]))
+			        .build();
 
 			lista.add(dto);
 		}
@@ -401,6 +429,51 @@ public class ArchivosTarifasEspecialesServiceImpl implements IArchivosTarifasEsp
 	            .toList();
 	}
 
+	private Map<String, Integer> getFieldMapping(String idMaestroDefinicion) {
+
+		Map<String, Integer> map = new HashMap<>();
+
+		if (Constantes.MAESTRO_ARCHIVO_TARIFAS_ESPECIALES.equals(idMaestroDefinicion)) {
+			map.put("codigoDane", 4);
+			map.put("codigoPunto", 5);
+			map.put("tipoOperacion", 6);
+			map.put("tipoServicio", 7);
+			map.put("tipoComision", 8);
+			map.put("unidadCobro", 9);
+			map.put("escala", 10);
+			map.put("billetes", 11);
+			map.put("monedas", 12);
+			map.put("fajado", 13);
+			map.put("valorTarifa", 14);
+			map.put("fechaInicio", 15);
+			map.put("fechaFin", 16);
+			map.put("limiteComision", 17);
+			map.put("valorComisionAdicional", 18);
+			map.put("estado", 19);
+		} else if (Constantes.MAESTRO_ARCHIVO_TARIFAS_REGULARES.equals(idMaestroDefinicion)) {
+			map.put("codigoDane", 2);
+			map.put("tipoOperacion", 3);
+			map.put("tipoServicio", 4);
+			map.put("escala", 5);
+			map.put("billetes", 6);
+			map.put("monedas", 7);
+			map.put("fajado", 8);
+			map.put("tipoComision", 9);
+			map.put("valorTarifa", 10);
+			map.put("fechaInicio", 11);
+			map.put("fechaFin", 12);
+			map.put("limiteComision", 13);
+			map.put("valorComisionAdicional", 14);
+			map.put("estado", 15);
+		}
+		return map;
+	}
+	
+	private String getCampo(Map<String, Integer> mapping, String[] campos, String key) {
+	    Integer idx = mapping.get(key);
+	    return (idx != null && idx < campos.length) ? campos[idx] : null;
+	}
+	
     private Integer nullIfEmptyInt(String val) {
         return (val == null || val.isBlank()) ? null : Integer.valueOf(val);
     }
@@ -562,7 +635,7 @@ public class ArchivosTarifasEspecialesServiceImpl implements IArchivosTarifasEsp
 		            		
 		            		errores.append("Duplicado entre la fila ")
 		                       .append(i + 1)
-		                       .append(" del archivo y el registro en BD con idTarifaEspecial ")
+		                       .append(" del archivo y el registro en BD con el idTarifa ")
 		                       .append(registroBD.getIdTarifaEspecial())
 		                       .append(" | ");
 		            	}		 
@@ -575,7 +648,7 @@ public class ArchivosTarifasEspecialesServiceImpl implements IArchivosTarifasEsp
 							&& fechasTraslapadas(registroArchivo, registroBD)) {
 
 						int numeroLinea = i + 1;
-					    String mensajeErroresTxt = "Se encontró traslape de fechas de vigencia con un registro de la base de datos (idTarifaEspecial: "
+					    String mensajeErroresTxt = "Se encontró traslape de fechas de vigencia con un registro de la base de datos (idTarifa: "
 					            + registroBD.getIdTarifaEspecial() +")";					 
 					    
 					    //ValidacionLineasDTO
@@ -715,14 +788,32 @@ public class ArchivosTarifasEspecialesServiceImpl implements IArchivosTarifasEsp
     
     //------------------------------ DATABASE ------------------------------------------
     
-    private List<TarifasEspecialesClienteDTO> obtenerTarifasPorClienteDTO(List<Integer> codigoCliente) {
-        List<VTarifasEspecialesClienteEntity> entidades = 
-        		tarifasEspecialesCliente.findByCodigoClienteIn(codigoCliente, Pageable.unpaged()).getContent();
+	private List<TarifasEspecialesClienteDTO> obtenerTarifasPorClienteDTO(List<Integer> codigoCliente,
+			List<TarifasEspecialesClienteDTO> registros, String idMaestroDefinicion) {
 
-        return entidades.stream()
-                .map(this::mapEntityToDTO)
-                .collect(Collectors.toList());
-    }
+		List<?> entidades;
+
+		if (Constantes.MAESTRO_ARCHIVO_TARIFAS_ESPECIALES.equals(idMaestroDefinicion)) {
+			entidades = tarifasEspecialesCliente.findByCodigoClienteIn(codigoCliente, Pageable.unpaged()).getContent();
+		} else {
+			
+			 Date fechaMin = registros.stream()
+                     .map(TarifasEspecialesClienteDTO::getFechaInicioVigencia)
+                     .filter(Objects::nonNull)
+                     .min(Date::compareTo)
+                     .orElse(null);
+
+			 Date fechaMax = registros.stream()
+                     .map(TarifasEspecialesClienteDTO::getFechaFinVigencia)
+                     .filter(Objects::nonNull)
+                     .max(Date::compareTo)
+                     .orElse(null);
+
+			entidades = tarifasOperacionRepository.findByFechaVigenciaBetween(fechaMin, fechaMax);
+		}
+
+		return entidades.stream().map(this::mapEntityToDTO).collect(Collectors.toList());
+	}
     
     private <T> TarifasEspecialesClienteDTO mapEntityToDTO(T entity) {
     	
@@ -780,23 +871,137 @@ public class ArchivosTarifasEspecialesServiceImpl implements IArchivosTarifasEsp
             dto.setUsuarioModificacion(e.getUsuarioModificacion());
             dto.setFechaModificacion(e.getFechaModificacion());
             dto.setEstado(e.isEstado());
+        }else if (entity instanceof TarifasOperacion) {
+            TarifasOperacion e = (TarifasOperacion) entity;
+            dto.setIdTarifaEspecial((long) e.getIdTarifasOperacion());
+            dto.setCodigoBanco(e.getBanco() != null ? e.getBanco().getCodigoPunto() : null);
+            dto.setCodigoTdv(e.getTransportadora() != null ? e.getTransportadora().getCodigo() : null);        
+            dto.setCodigoCliente(0);
+            dto.setCodigoDane(e.getTipoPunto());
+            dto.setTipoOperacion(e.getTipoOperacion());
+            dto.setTipoServicio(e.getTipoServicio());
+            dto.setTipoComision(e.getComisionAplicar());
+            dto.setEscala(e.getEscala());
+            dto.setBilletes(e.getBilletes());
+            dto.setMonedas(e.getMonedas());
+            dto.setFajado(e.getFajado());
+            dto.setValorTarifa(e.getValorTarifa() != null ? BigDecimal.valueOf(e.getValorTarifa()) : null);
+            dto.setFechaInicioVigencia(e.getFechaVigenciaIni());
+            dto.setFechaFinVigencia(e.getFechaVigenciaFin());
+            dto.setLimiteComisionAplicar(e.getLimiteComisionAplicar());
+            dto.setValorComisionAdicional(e.getValorComisionAdicional());
+            dto.setUsuarioCreacion(e.getUsuarioCreacion());
+            dto.setFechaCreacion(e.getFechaCreacion());
+            dto.setUsuarioModificacion(e.getUsuarioModificacion());
+            dto.setFechaModificacion(e.getFechaModificacion());
+            dto.setEstado(e.getEstado() == 1);
         }
 
         return dto;
     }
     
     private void persistirTarifasEspeciales(List<TarifasEspecialesClienteDTO> registroArchivo, Long idArchivoCargado) {
-    	
-    	List<TarifasEspecialesCliente> listTarifasEspeciales = registroArchivo.stream()
-    		    .map(dto -> {
-    		        TarifasEspecialesCliente entity = TarifasEspecialesClienteDTO.CONVERTER_ENTITY.apply(dto);
-    		        entity.setIdArchivoCargado(idArchivoCargado.intValue());
-    		        return entity;
-    		    })
-    		    .collect(Collectors.toList());
-    	    	
+
+        List<TarifasEspecialesCliente> listTarifasEspeciales = registroArchivo.stream()
+            .map(dto -> {
+                TarifasEspecialesCliente entity;
+
+                if (dto.getIdTarifaEspecial() != null) {
+
+                    entity = tarifasEspeciales.findById(dto.getIdTarifaEspecial())
+                            .orElseThrow(() -> new IllegalStateException(
+                                    "No se encontró TarifaEspecial con id " + dto.getIdTarifaEspecial()));
+
+                    // Solo actualizar campos NO incluidos en la restricción de unicidad
+                    entity.setBilletes(dto.getBilletes());
+                    entity.setMonedas(dto.getMonedas());
+                    entity.setFajado(dto.getFajado());
+                    entity.setValorTarifa(dto.getValorTarifa());
+                    entity.setEstado(dto.isEstado());
+                    entity.setUsuarioModificacion(dto.getUsuarioModificacion());
+                    entity.setFechaModificacion(dto.getFechaModificacion());
+                    entity.setLimiteComisionAplicar(dto.getLimiteComisionAplicar());
+                    entity.setValorComisionAdicional(dto.getValorComisionAdicional());
+                    entity.setIdArchivoCargado(idArchivoCargado.intValue());
+                    entity.setIdRegistro(dto.getIdRegistro());
+
+                } else {
+                    // Caso INSERT → crear nueva entidad completa
+                    entity = TarifasEspecialesClienteDTO.CONVERTER_ENTITY.apply(dto);
+                    entity.setIdArchivoCargado(idArchivoCargado.intValue());
+                }
+
+                return entity;
+            })
+            .collect(Collectors.toList());
+
         tarifasEspeciales.saveAll(listTarifasEspeciales);
     }
+
+    
+    private void persistirTarifaOperacion(List<TarifasEspecialesClienteDTO> registroArchivo, Long idArchivoCargado) {
+
+        List<TarifasOperacion> listTarifasOperacion = registroArchivo.stream()
+            .map(dto -> {
+                TarifasOperacion entity;
+
+                if (dto.getIdTarifaEspecial() != null) {
+                    entity = tarifasOperacionRepository.findById(dto.getIdTarifaEspecial().intValue())
+                            .orElseThrow(() -> new IllegalStateException(
+                                    "No se encontró TarifaOperacion con id " + dto.getIdTarifaEspecial()));
+
+                    // Solo actualizar campos que NO hacen parte de la restricción de unicidad
+                    entity.setBilletes(dto.getBilletes());
+                    entity.setMonedas(dto.getMonedas());
+                    entity.setFajado(dto.getFajado());
+                    entity.setValorTarifa(dto.getValorTarifa() != null ? dto.getValorTarifa().doubleValue() : null);
+                    entity.setEstado(dto.isEstado() ? 1 : 0);
+                    entity.setUsuarioModificacion(dto.getUsuarioModificacion());
+                    entity.setFechaModificacion(dto.getFechaModificacion());
+                    entity.setLimiteComisionAplicar(dto.getLimiteComisionAplicar());
+                    entity.setValorComisionAdicional(dto.getValorComisionAdicional());
+                    entity.setIdArchivoCargado(idArchivoCargado.intValue());
+                    entity.setIdRegistro(dto.getIdRegistro());
+
+                } else {
+                    // Caso INSERT → crear nueva entidad completa
+                    entity = new TarifasOperacion();
+
+                    entity.setBanco(bancosRepository.findBancoByCodigoPunto(dto.getCodigoBanco()));
+                    entity.setTransportadora(transportadorasRepository.findById(dto.getCodigoTdv()).get());
+
+                    entity.setTipoPunto(dto.getCodigoDane());
+                    entity.setTipoOperacion(dto.getTipoOperacion());
+                    entity.setTipoServicio(dto.getTipoServicio());
+                    entity.setEscala(dto.getEscala());
+                    entity.setComisionAplicar(dto.getTipoComision());
+                    entity.setFechaVigenciaIni(dto.getFechaInicioVigencia());
+                    entity.setFechaVigenciaFin(dto.getFechaFinVigencia());
+
+                    // Campos actualizables también se llenan en insert
+                    entity.setBilletes(dto.getBilletes());
+                    entity.setMonedas(dto.getMonedas());
+                    entity.setFajado(dto.getFajado());
+                    entity.setValorTarifa(dto.getValorTarifa() != null ? dto.getValorTarifa().doubleValue() : null);
+                    entity.setEstado(dto.isEstado() ? 1 : 0);
+                    entity.setUsuarioCreacion(dto.getUsuarioCreacion());
+                    entity.setFechaCreacion(dto.getFechaCreacion());
+                    entity.setUsuarioModificacion(dto.getUsuarioModificacion());
+                    entity.setFechaModificacion(dto.getFechaModificacion());
+                    entity.setLimiteComisionAplicar(dto.getLimiteComisionAplicar());
+                    entity.setValorComisionAdicional(dto.getValorComisionAdicional());
+                    entity.setIdArchivoCargado(idArchivoCargado.intValue());
+                    entity.setIdRegistro(dto.getIdRegistro());
+                }
+
+                return entity;
+            })
+            .collect(Collectors.toList());
+
+        tarifasOperacionRepository.saveAll(listTarifasOperacion);
+    }
+
+
     
     @Getter 
     @AllArgsConstructor
