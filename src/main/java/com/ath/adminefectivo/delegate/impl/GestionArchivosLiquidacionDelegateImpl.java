@@ -41,6 +41,8 @@ import com.ath.adminefectivo.service.ICostosProcesamientoService;
 import com.ath.adminefectivo.service.ICostosTransporteService;
 import com.ath.adminefectivo.service.IDetalleLiquidacionProcesamiento;
 import com.ath.adminefectivo.service.IDetalleLiquidacionTransporte;
+import com.ath.adminefectivo.service.impl.CostosProcesamientoServiceImpl;
+import com.ath.adminefectivo.service.impl.CostosTransporteServiceImpl;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -68,6 +70,12 @@ public class GestionArchivosLiquidacionDelegateImpl implements IGestionArchivosL
 	
 	@Autowired 
 	MaestroLlavesCostosRepository maestroLlavesCostosRepository;
+	
+	@Autowired
+	CostosProcesamientoServiceImpl costosProcesamientoServiceImpl;
+	
+	@Autowired
+	CostosTransporteServiceImpl costosTransporteServiceImpl;
 
 	
 	@Override
@@ -76,6 +84,7 @@ public class GestionArchivosLiquidacionDelegateImpl implements IGestionArchivosL
 		Set<String> estadoConciliacion = new HashSet<>();
 		estadoConciliacion.add(Constantes.ESTADO_CARGUE_ERROR);
 		estadoConciliacion.add(Dominios.ESTADO_VALIDACION_EN_CONCILIACION);
+		estadoConciliacion.add(Dominios.ESTADO_VALIDACION_ACEPTADO);
 		
 		// Obtener archivos cargados con estado ERRADO y EN_CONCILIACION
 	    Page<ArchivosCargadosDTO> archivosCargadosPage = archivosCargadosService.getAllByAgrupadorAndEstadoCargue(agrupador, estadoConciliacion, page);
@@ -165,6 +174,7 @@ public class GestionArchivosLiquidacionDelegateImpl implements IGestionArchivosL
 		Date fechaServicioMin;
 		Date fechaServicioMax;
 		Integer totalTransporte = 0;
+		Integer idArchivoProcesamientoConciliado = 0;
 		Set<Integer> idArchivosProcesamientoUnicos = new HashSet<>();
 		AtomicBoolean validacionConcilProcesamiento = new AtomicBoolean(true);
 		boolean llavesCoinciden = false;
@@ -203,7 +213,7 @@ public class GestionArchivosLiquidacionDelegateImpl implements IGestionArchivosL
 			    List<IDetalleLiquidacionProcesamiento> detallesProcesamiento = operacionesLiquidacion.obtenerEstadoProcesamientoPorLlave(llave);
 			    
 			    if (detallesProcesamiento.isEmpty()) {
-			    	validacionConcilProcesamiento.set(false);
+			    	validacionConcilProcesamiento.set(true);
 			        break;
 			    }
 			    
@@ -214,7 +224,9 @@ public class GestionArchivosLiquidacionDelegateImpl implements IGestionArchivosL
 			        }
 
 			        idArchivosProcesamientoUnicos.add(detalleProcesamiento.getIdArchivoCargado());
-
+			        
+			     // Valida que todos los registros de la operación provengan de un único archivo de origen.
+			     // Si se detectan registros de más de un archivo, la validación falla y no hace cierre.
 			        if (idArchivosProcesamientoUnicos.size() > 1) {
 			        	validacionConcilProcesamiento.set(false);
 			            break;
@@ -225,7 +237,7 @@ public class GestionArchivosLiquidacionDelegateImpl implements IGestionArchivosL
 			}
 
 			validacionConcilProcCompleta = validacionConcilProcesamiento.get();
-			Integer idArchivoProcesamientoConciliado = (validacionConcilProcesamiento.get() && !idArchivosProcesamientoUnicos.isEmpty())
+			idArchivoProcesamientoConciliado = (validacionConcilProcesamiento.get() && !idArchivosProcesamientoUnicos.isEmpty())
 				    ? idArchivosProcesamientoUnicos.iterator().next()
 				    : null;
 
@@ -251,6 +263,20 @@ public class GestionArchivosLiquidacionDelegateImpl implements IGestionArchivosL
 
 			filtrosT.setFechaServicioTransporte(fechaServicioMin);
 			filtrosT.setFechaServicioTransporteFinal(fechaServicioMax);
+		}else {
+			//Si costosTransporte.size() es = 0, puede deberse a que el archivo ya se acepto
+			//Se valida en costos transporte si esta aceptado para retornar como aceptado el proceso
+			List<CostosTransporte> estadoTransporte = costosTransporteServiceImpl.getByIdArchivoCargado(archivoAceptar.getIdArchivo());
+			
+			boolean todosAceptados = estadoTransporte
+			        .stream()
+			        .allMatch(ct -> "ACEPTADO".equals(ct.getEstadoConciliacionTransporte()));
+
+			if (todosAceptados) {
+			    archivoAceptar.setEstado("CONCILIADO");
+			}
+
+			return archivoAceptar;
 		}
 
 		// Validaciones necesarias para continuar con el proceso:
@@ -262,15 +288,38 @@ public class GestionArchivosLiquidacionDelegateImpl implements IGestionArchivosL
 			var lista = hayLiquidadasNoCobradas.getContent();
 
 			if (lista.isEmpty()) {
-				// puede cerrar proceso
-				archivoCargado.setEstado(Constantes.ESTADO_CONCILIACION_ACEPTADO);
-				archivosCargadosService.actualizarArchivosCargados(archivoCargado);
-				costosTransporteService.aceptarConciliacionRegistro(archivoAceptar.getIdArchivo());
+
+				var archivoTransporte = archivosCargadosService.consultarArchivoById(archivoCargado.getIdArchivo());
+
+				// puede cerrar proceso si el archivo se encuentra EN_CONCILIACION
+				if (archivoTransporte.getEstadoCargue().equals(Dominios.ESTADO_VALIDACION_EN_CONCILIACION)) {
+
+					archivoCargado.setEstadoCargue(Constantes.ESTADO_CONCILIACION_ACEPTADO);
+					archivosCargadosService.actualizarArchivosCargados(archivoCargado);
+					costosTransporteService.aceptarConciliacionRegistro(archivoAceptar.getIdArchivo());
+				}
+
+				if (idArchivoProcesamientoConciliado.longValue() > 0) {
+
+					var archivoCargadoProcesamiento = archivosCargadosService
+							.consultarArchivoById(idArchivoProcesamientoConciliado.longValue());
+
+					if (archivoCargadoProcesamiento.getEstadoCargue()
+							.equals(Dominios.ESTADO_VALIDACION_EN_CONCILIACION)) {
+
+						archivoCargadoProcesamiento.setEstadoCargue(Constantes.ESTADO_CONCILIACION_ACEPTADO);
+						archivosCargadosService.actualizarArchivosCargados(archivoCargadoProcesamiento);
+						costosProcesamientoService
+								.aceptarConciliacionRegistro(idArchivoProcesamientoConciliado.longValue());
+					}
+				}
+
 				archivoAceptar.setEstado("CONCILIADO");
-				
+
 				Set<BigInteger> llaves = obtenerLlavesDesdeTransporte(costosTransporte);
-				maestroLlavesCostosRepository.actualizarEstadoPorLlaves(new ArrayList<>(llaves),Constantes.ESTADO_CONCILIACION_ACEPTADO);
-				
+				maestroLlavesCostosRepository.actualizarEstadoAndObservacionesPorLlaves(new ArrayList<>(llaves),
+						Constantes.ESTADO_CONCILIACION_ACEPTADO, archivoAceptar.getObservacion());
+
 			} else {
 				archivoAceptar.setEstado(Constantes.ESTADO_NO_CONCILIADO);
 			}
@@ -288,6 +337,7 @@ public class GestionArchivosLiquidacionDelegateImpl implements IGestionArchivosL
 		
 		Long conciliados =0l ;
 		Integer totalProcesamiento = 0;
+		Integer idArchivoConciliado = 0;
 		Date fechaServicioMax;
 		Date fechaServicioMin;
 		Set<Integer> idArchivosUnicos = new HashSet<>();
@@ -323,7 +373,7 @@ public class GestionArchivosLiquidacionDelegateImpl implements IGestionArchivosL
 			    List<IDetalleLiquidacionTransporte> detalles = operacionesLiquidacionTransporte.obtenerEstadoTransportePorLlave(llave);
 			    
 			    if (detalles.isEmpty()) {
-			        validacionConciliacion.set(false);
+			        validacionConciliacion.set(true);
 			        break;
 			    }
 			    
@@ -347,7 +397,7 @@ public class GestionArchivosLiquidacionDelegateImpl implements IGestionArchivosL
 			// validacionConciliacionCompleta = true si las llaves en archivo de transporte
 			// Tambien existen y se encuentran CONCILIADAS
 			validacionConciliacionCompleta = validacionConciliacion.get();
-			Integer idArchivoConciliado = (validacionConciliacion.get() && !idArchivosUnicos.isEmpty())
+			idArchivoConciliado = (validacionConciliacion.get() && !idArchivosUnicos.isEmpty())
 				    ? idArchivosUnicos.iterator().next()
 				    : null;
 			
@@ -372,6 +422,21 @@ public class GestionArchivosLiquidacionDelegateImpl implements IGestionArchivosL
 
 			filtrosP.setProcessServiceDate(fechaServicioMin);
 			filtrosP.setFinalProcessServiceDate(fechaServicioMax);
+		}else {
+			
+			//Si costosProcesamiento.size() es = 0, puede deberse a que el archivo ya se acepto
+			//Se valida en costos transporte si esta aceptado para retornar como aceptado el proceso
+			List<CostosProcesamiento> estadoTransporte = costosProcesamientoServiceImpl.getByIdArchivoCargado(archivoAceptar.getIdArchivo());
+			
+			boolean todosAceptados = estadoTransporte
+			        .stream()
+			        .allMatch(ct -> "ACEPTADO".equals(ct.getEstadoConciliacion()));
+
+			if (todosAceptados) {
+			    archivoAceptar.setEstado("CONCILIADO");
+			}
+
+			return archivoAceptar;
 		}
 		
 		// Validaciones necesarias para continuar con el proceso:
@@ -384,24 +449,43 @@ public class GestionArchivosLiquidacionDelegateImpl implements IGestionArchivosL
 			var hayLiquidadasNoCobradas = operacionesLiquidacion.getLiquidadasNoCobradasProcesamiento(filtrosP);
 			var lista = hayLiquidadasNoCobradas.getContent();
 			
-			if(lista.isEmpty())
-			{
-				//puede cerrar proceso
-				archivoCargado.setEstado(Constantes.ESTADO_CONCILIACION_ACEPTADO);
-				archivosCargadosService.actualizarArchivosCargados(archivoCargado);
-				costosProcesamientoService.aceptarConciliacionRegistro(archivoAceptar.getIdArchivo());
-				archivoAceptar.setEstado("CONCILIADO");
+			if (lista.isEmpty()) {
+				var archivoProcesamiento = archivosCargadosService
+						.consultarArchivoById(idArchivoConciliado.longValue());
 				
+				// puede cerrar proceso si estado de archivo EN_CONCILIACION
+				if (archivoProcesamiento.getEstadoCargue().equals(Dominios.ESTADO_VALIDACION_EN_CONCILIACION)) {
+
+					archivoCargado.setEstadoCargue(Constantes.ESTADO_CONCILIACION_ACEPTADO);
+					archivosCargadosService.actualizarArchivosCargados(archivoCargado);
+					costosProcesamientoService.aceptarConciliacionRegistro(archivoAceptar.getIdArchivo());
+				}
+
+				if (idArchivoConciliado.longValue() > 0) {
+
+					var archivoCargadoTransporte = archivosCargadosService
+							.consultarArchivoById(idArchivoConciliado.longValue());
+
+					if (archivoCargadoTransporte.getEstadoCargue().equals(Dominios.ESTADO_VALIDACION_EN_CONCILIACION)) {
+
+						archivoCargadoTransporte.setEstadoCargue(Constantes.ESTADO_CONCILIACION_ACEPTADO);
+						archivosCargadosService.actualizarArchivosCargados(archivoCargadoTransporte);
+						costosTransporteService.aceptarConciliacionRegistro(idArchivoConciliado.longValue());
+					}
+
+				}
+
+				archivoAceptar.setEstado("CONCILIADO");
+
 				Set<BigInteger> llaves = obtenerLlavesDesdeProcesamiento(costosProcesamiento);
-				maestroLlavesCostosRepository.actualizarEstadoPorLlaves(new ArrayList<>(llaves),Constantes.ESTADO_CONCILIACION_ACEPTADO);
-			}
-			else
-			{
+				maestroLlavesCostosRepository.actualizarEstadoAndObservacionesPorLlaves(new ArrayList<>(llaves),
+						Constantes.ESTADO_CONCILIACION_ACEPTADO, archivoAceptar.getObservacion());
+			} else {
 				archivoAceptar.setEstado(Constantes.ESTADO_NO_CONCILIADO);
 			}
-		
+
 		}
-		
+
 		return archivoAceptar;
 	
 	}

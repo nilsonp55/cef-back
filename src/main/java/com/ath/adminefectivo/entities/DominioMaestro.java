@@ -5,10 +5,9 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-
+import com.ath.adminefectivo.entities.audit.AuditableEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,14 +20,13 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "DOMINIO_MAESTRO")
-@Data
 @Builder
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @NamedQuery(name = "DominioMaestro.findAll", query = "SELECT t FROM DominioMaestro t")
-public class DominioMaestro {
+public class DominioMaestro extends AuditableEntity {
 
 	@Id
 	@Column(name = "DOMINIO")

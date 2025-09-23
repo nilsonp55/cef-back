@@ -49,7 +49,7 @@ public class TdvDenominCantidad {
 	private String familia;
 	
 	@Column(name = "cantidad_por_denom")
-	private int cantidad_por_denom;
+	private int cantidadPorDenom;
 
 	@Column(name = "ESTADO", nullable = true)
 	private int estado;

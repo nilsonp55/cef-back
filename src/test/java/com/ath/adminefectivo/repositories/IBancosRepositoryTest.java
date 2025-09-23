@@ -40,14 +40,13 @@ class IBancosRepositoryTest {
 		
 		List<Bancos> listSave = Instancio.ofList(Bancos.class)
 				.size(11)
-				.set(field(Bancos::getPuntos), punto)
 				.set(field(Bancos::getCodigoPunto), punto.getCodigoPunto())
+				.set(field(Bancos::getPunto), null)
 				.create();		
 		listOfBancos = bancosRepository.saveAllAndFlush(listSave);
 		bancosSearch = listOfBancos.get(0);
 		
 		bancos = Instancio.of(Bancos.class)
-				.set(field(Bancos::getPuntos), punto)
 				.set(field(Bancos::getCodigoPunto), punto.getCodigoPunto())
 				.create();
 		

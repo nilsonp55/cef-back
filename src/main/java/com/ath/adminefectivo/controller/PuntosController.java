@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -66,10 +67,26 @@ public class PuntosController {
       @RequestBody CreatePuntosDTO createPuntosDTO) {
 
     return ResponseEntity.status(HttpStatus.OK)
-        .body(new ApiResponseADE<PuntosDTO>(puntosDelegate.guardarPunto(createPuntosDTO),
+        .body(new ApiResponseADE<PuntosDTO>(puntosDelegate.crearPunto(createPuntosDTO),
             ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
                 .description(ApiResponseCode.SUCCESS.getDescription()).build()));
 
+  }
+  
+  /**
+   * Servicio para actualizar puntos
+   * @param createPuntosDTO
+   * @return ResponseEntity<ApiResponseADE<PuntosDTO>>
+   * @author prv_nparra
+   */
+  @PutMapping(value = "${endpoints.Puntos.actualizar}", consumes = MediaType.APPLICATION_JSON_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<ApiResponseADE<PuntosDTO>> actualizarPuntos(
+      @RequestBody CreatePuntosDTO createPuntosDTO) {
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(new ApiResponseADE<PuntosDTO>(puntosDelegate.actualizarPunto(createPuntosDTO),
+            ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+                .description(ApiResponseCode.SUCCESS.getDescription()).build()));
   }
 
   /**

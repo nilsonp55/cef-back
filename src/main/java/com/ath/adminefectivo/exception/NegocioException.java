@@ -36,7 +36,7 @@ public class NegocioException extends RuntimeException {
 
 	private final String message;
 	
-	private final List<String> errors = new ArrayList<>();
+	private List<String> errors = new ArrayList<>();
 
 	/**
 	 * Constructor
@@ -69,5 +69,7 @@ public class NegocioException extends RuntimeException {
 		this.status = status;
 		this.errors.add(error);
 	}
+	
+	
 
 }

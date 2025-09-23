@@ -18,11 +18,12 @@ import com.ath.adminefectivo.service.IDetalleLiquidacionProcesamiento;
 public interface IConciliacionOperacionesProcesamientoRepository extends CrudRepository<OperacionesLiquidacionProcesamientoEntity, Integer> {
 
 	@Transactional(readOnly = true)
-	@Query(value = "SELECT "
-	            + " mc.id_llave AS consecutivo_registro, "
+	@Query(
+	    value = "SELECT "
+	            + " COALESCE(mc.id_llave, 0) AS consecutivo_registro, "
 	            + " v.id_archivo_cargado, "
-	            + " mc.id_llave AS id_registro, "
-	            + " mc.id_llave AS id_liquidacion, "
+	            + " COALESCE(mc.id_llave, 0) AS id_registro, "
+	            + " COALESCE(mc.id_llave, 0) AS id_liquidacion, "
 	            + " v.tipo_transaccion, "
 	            + " v.entidad, "
 	            + " v.fecha_servicio_transporte, "
@@ -57,13 +58,14 @@ public interface IConciliacionOperacionesProcesamientoRepository extends CrudRep
 	            + " v.billete_residuo_tdv, "
 	            + " v.valor_almacenamiento_billete, "
 	            + " v.valor_almacenamiento_billete_tdv, "
-	            + "	v.valor_almacenamiento_moneda, "
+	            + " v.valor_almacenamiento_moneda, "
 	            + " v.valor_almacenamiento_moneda_tdv, "
 	            + " v.estado, "
 	            + " v.modulo "
 	            + " FROM v_detalle_liquidacion_procesamiento v "
 	            + " LEFT JOIN controlefect.maestro_llaves_costos mc "
-	            + " ON mc.id_maestro_llave = COALESCE(v.id_llaves_maestro_app, v.id_llaves_maestro_tdv) AND mc.estado = 'PENDIENTE' "
+	            + " ON mc.id_maestro_llave = COALESCE(v.id_llaves_maestro_app, v.id_llaves_maestro_tdv) "
+	            + " AND mc.estado IN('PENDIENTE','RECHAZADA') "
 	            + " WHERE (:entity is null or v.entidad = cast(:entity AS text)) "
 	            + " AND  (:clientIdentification is null or v.identificacion_cliente = cast(:clientIdentification AS text))"
 	            + " AND  (:businessName is null or v.razon_social = cast(:businessName AS text))  "
@@ -74,23 +76,40 @@ public interface IConciliacionOperacionesProcesamientoRepository extends CrudRep
 	            + " AND  (:currencyExchange is null or v.moneda_divisa = cast(:currencyExchange AS text))  "
 	            + " AND  (:state is null or v.estado = cast(:state AS text)) "
 	            + " AND  (v.modulo = :module)  "
-	            + " AND  (v.fecha_servicio_transporte BETWEEN :fechaServicioTransporte AND :fechaServicioTransporteFinal) ",
-	        nativeQuery = true)	
-				
+	            + " AND  (v.fecha_servicio_transporte BETWEEN :fechaServicioTransporte AND :fechaServicioTransporteFinal)",
+	    countQuery = "SELECT COUNT(*) "
+	            + " FROM v_detalle_liquidacion_procesamiento v "
+	            + " LEFT JOIN controlefect.maestro_llaves_costos mc "
+	            + " ON mc.id_maestro_llave = COALESCE(v.id_llaves_maestro_app, v.id_llaves_maestro_tdv) "
+	            + " AND mc.estado IN('PENDIENTE','RECHAZADA') "
+	            + " WHERE (:entity is null or v.entidad = cast(:entity AS text)) "
+	            + " AND  (:clientIdentification is null or v.identificacion_cliente = cast(:clientIdentification AS text))"
+	            + " AND  (:businessName is null or v.razon_social = cast(:businessName AS text))  "
+	            + " AND  (:cargoPointCode is null or v.codigo_punto_cargo = cast(:cargoPointCode AS text)) "
+	            + " AND  (:cargoPointName is null or v.nombre_punto_cargo = cast(:cargoPointName AS text))  "
+	            + " AND  (:fundCity is null or v.ciudad_fondo = cast(:fundCity AS text))  "
+	            + " AND  (:serviceTypeName is null or v.nombre_tipo_servicio = cast(:serviceTypeName AS text))  "
+	            + " AND  (:currencyExchange is null or v.moneda_divisa = cast(:currencyExchange AS text))  "
+	            + " AND  (:state is null or v.estado = cast(:state AS text)) "
+	            + " AND  (v.modulo = :module)  "
+	            + " AND  (v.fecha_servicio_transporte BETWEEN :fechaServicioTransporte AND :fechaServicioTransporteFinal)",
+	    nativeQuery = true
+	)
 	Page<OperacionesLiquidacionProcesamientoEntity> conciliadasLiquidadasProcesamiento(
-			@Param("entity") String entidad,				
-			@Param("fechaServicioTransporte") LocalDateTime fechaServicioTransporte,	
-			@Param("fechaServicioTransporteFinal") LocalDateTime fechaServicioTransporteFinal,	
-			@Param("clientIdentification") String identificacionCliente,	
-			@Param("businessName") String razonSocial,	
-			@Param("cargoPointCode") String codigoPuntoCargo,
-			@Param("cargoPointName") String nombrePuntoCargo,
-			@Param("fundCity") String ciudadFondo,	
-			@Param("serviceTypeName") String nombreTipoServicio,	
-			@Param("currencyExchange") String monedaDivisa,	
-			@Param("state") String estado,
-			@Param("module") String modulo,
-						Pageable pageable);
+	        @Param("entity") String entidad,
+	        @Param("fechaServicioTransporte") LocalDateTime fechaServicioTransporte,
+	        @Param("fechaServicioTransporteFinal") LocalDateTime fechaServicioTransporteFinal,
+	        @Param("clientIdentification") String identificacionCliente,
+	        @Param("businessName") String razonSocial,
+	        @Param("cargoPointCode") String codigoPuntoCargo,
+	        @Param("cargoPointName") String nombrePuntoCargo,
+	        @Param("fundCity") String ciudadFondo,
+	        @Param("serviceTypeName") String nombreTipoServicio,
+	        @Param("currencyExchange") String monedaDivisa,
+	        @Param("state") String estado,
+	        @Param("module") String modulo,
+	        Pageable pageable
+	);
 	
 	Optional<OperacionesLiquidacionProcesamientoEntity> findByRecordConsecutive(Integer recordConsecutive);
 	
@@ -146,7 +165,7 @@ public interface IConciliacionOperacionesProcesamientoRepository extends CrudRep
 			    FROM controlefect.v_detalle_liquidacion_procesamiento v
 			    LEFT JOIN controlefect.maestro_llaves_costos mc
 			        ON mc.id_maestro_llave = COALESCE(v.id_llaves_maestro_app, v.id_llaves_maestro_tdv)
-			    WHERE v.id_llaves_maestro_tdv = :idLlaveMaestro
+			    WHERE :idLlaveMaestro IN (v.id_llaves_maestro_tdv, v.id_llaves_maestro_app)
 			""", nativeQuery = true)
 	List<IDetalleLiquidacionProcesamiento> countConciliadasProcesamientoByLlave(
 			@Param("idLlaveMaestro") BigInteger idLlaveMaestro);
@@ -259,7 +278,7 @@ public interface IConciliacionOperacionesProcesamientoRepository extends CrudRep
 			        v.id_llaves_maestro_app AS idLlavesMaestroApp
 			    FROM controlefect.v_detalle_liquidacion_procesamiento v
 			    LEFT JOIN controlefect.maestro_llaves_costos mc
-			        ON mc.id_maestro_llave = COALESCE(v.id_llaves_maestro_app, v.id_llaves_maestro_tdv) AND mc.estado = 'PENDIENTE'
+			        ON mc.id_maestro_llave = COALESCE(v.id_llaves_maestro_app, v.id_llaves_maestro_tdv) AND mc.estado IN('PENDIENTE','RECHAZADA')
 			    WHERE v.modulo = :modulo
 			      AND mc.id_llave = :idLlave			  
 			""", nativeQuery = true)
@@ -270,10 +289,10 @@ public interface IConciliacionOperacionesProcesamientoRepository extends CrudRep
 	@Transactional(readOnly = true)
 	@Query(value = """
 	        SELECT
-	            mc.id_llave AS consecutivo_registro,
+	            COALESCE(mc.id_llave, 0) AS consecutivo_registro,
 	            v.id_archivo_cargado,
-	            mc.id_llave AS id_registro,
-	            mc.id_llave AS id_liquidacion,
+	            COALESCE(mc.id_llave, 0) AS id_registro,
+	            COALESCE(mc.id_llave, 0) AS id_liquidacion,
 	            v.tipo_transaccion,
 	            v.entidad,
 	            v.fecha_servicio_transporte,
@@ -314,7 +333,7 @@ public interface IConciliacionOperacionesProcesamientoRepository extends CrudRep
 	            v.modulo
 	        FROM controlefect.v_detalle_liquidacion_procesamiento v
 	        LEFT JOIN controlefect.maestro_llaves_costos mc
-	            ON mc.id_maestro_llave = COALESCE(v.id_llaves_maestro_app, v.id_llaves_maestro_tdv) AND mc.estado = 'PENDIENTE'
+	            ON mc.id_maestro_llave = COALESCE(v.id_llaves_maestro_app, v.id_llaves_maestro_tdv) AND mc.estado IN('PENDIENTE','RECHAZADA')
 	        WHERE mc.id_llave = :consecutivoRegistro
 	        """, nativeQuery = true)
 	Optional<OperacionesLiquidacionProcesamientoEntity> consultarConsecutivoRegistroProc(

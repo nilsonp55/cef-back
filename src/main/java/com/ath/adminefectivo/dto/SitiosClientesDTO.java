@@ -1,10 +1,9 @@
 package com.ath.adminefectivo.dto;
 
 import java.util.function.Function;
-
+import com.ath.adminefectivo.entities.ClientesCorporativos;
 import com.ath.adminefectivo.entities.SitiosClientes;
 import com.ath.adminefectivo.utils.UtilsObjects;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,9 +21,9 @@ public class SitiosClientesDTO {
 
 	private Integer codigoPunto;
 	
-	private Integer codigoCliente;
+	private ClientesCorporativos codigoCliente;
 	
-	private String nombreSitio;
+	private String identificadorCliente;
 	
 	private Boolean fajado;
 	

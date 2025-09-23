@@ -27,7 +27,7 @@ public interface IPuntosDelegate {
    * @return PuntosDTO
    * @author Bayron Andres Perez M.
    */
-  PuntosDTO guardarPunto(CreatePuntosDTO rreatePuntosDTO);
+  PuntosDTO crearPunto(CreatePuntosDTO rreatePuntosDTO);
 
   /**
    * Delegate encargado de la actualizacion de los puntos

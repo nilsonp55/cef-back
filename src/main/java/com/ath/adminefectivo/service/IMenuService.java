@@ -41,4 +41,11 @@ public interface IMenuService {
    */
   void deleteMenu(String idMenu);
 
+  /**
+   * Obtener todos los id de los menu de la tabla Menu
+   * 
+   * @author josePabon
+   */
+  List<String> getAllIdMenu();
+
 }

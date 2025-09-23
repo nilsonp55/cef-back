@@ -1,7 +1,6 @@
 package com.ath.adminefectivo.service;
 
 import java.util.List;
-
 import com.ath.adminefectivo.dto.CiudadesDTO;
 import com.ath.adminefectivo.entities.Ciudades;
 import com.querydsl.core.types.Predicate;
@@ -65,4 +64,10 @@ public interface ICiudadesService {
 	 * @author duvan.naranjo
 	 */
 	CiudadesDTO getCiudadPorNombreCiudadFiserv(String nombreCiudad);
+	
+	CiudadesDTO createCiudad(CiudadesDTO ciudad);
+	
+	CiudadesDTO updateCiudad(CiudadesDTO ciudad);
+	
+	void deleteCiudad(String codigoDane); 
 }

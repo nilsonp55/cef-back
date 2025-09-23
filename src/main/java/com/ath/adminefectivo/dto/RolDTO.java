@@ -1,5 +1,6 @@
 package com.ath.adminefectivo.dto;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.function.Function;
 
@@ -30,11 +31,11 @@ public class RolDTO {
 	
 	private String usuarioCreacion;
 	
-	private Date fechaCreacion;
+	private LocalDateTime fechaCreacion;
 
 	private String usuarioModificacion;
 	
-	private Date fechaModificacion;	
+	private LocalDateTime fechaModificacion;	
 	
 	/**
 	 * Funcion Conversor de ROL de Dto a Entity

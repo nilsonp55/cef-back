@@ -49,9 +49,10 @@ public class DominioDTO {
 	 * Funcion que retorna la entidad recibiendo un DTO *
 	 */
 	public static final Function<DominioDTO, Dominio> CONVERTER_ENTITY = (DominioDTO t) -> {
-		Dominio domino = new Dominio();
-		UtilsObjects.copiarPropiedades(t, domino);
-		return domino;
+		Dominio dominio = new Dominio();
+		UtilsObjects.copiarPropiedades(t, dominio);
+		dominio.setDominioPK(t.getId());
+		return dominio;
 	};
 
 	/**

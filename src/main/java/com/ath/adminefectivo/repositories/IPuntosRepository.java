@@ -124,4 +124,130 @@ public interface IPuntosRepository
     		    @Param("nomCiudadFondo") String nomCiudadFondo
     		);
 
+      /**
+       * 
+       * @param nombrePunto
+       * @param codigoCiudad
+       * @param codigoBancoAval
+       * @param nombreFondo
+       * @return List<Puntos>
+       * @author prv_nparra
+       */
+      @Query(value = "SELECT p FROM Puntos p JOIN Fondos f ON f.codigoPunto = p.codigoPunto "
+          + " WHERE p.tipoPunto = 'FONDO' "
+          + " and p.nombrePunto = :nombrePunto "
+          + " and p.codigoCiudad = :codigoCiudad "
+          + " and f.bancoAVAL = :codigoBancoAval "
+          + " and f.nombreFondo = :nombreFondo")
+      public List<Puntos> findFondoUnique(
+          @Param(value = "nombrePunto") String nombrePunto, 
+          @Param(value = "codigoCiudad") String codigoCiudad, 
+          @Param(value = "codigoBancoAval") Integer codigoBancoAval, 
+          @Param(value = "nombreFondo") String nombreFondo );
+      
+      /**
+       * 
+       * @param nombrePunto
+       * @param codigoCiudad
+       * @param numeroNit
+       * @param abreviatura
+       * @param nombreBanco
+       * @return
+       * @author prv_nparra
+       */
+      @Query(value = "SELECT p FROM Puntos p JOIN Bancos b ON b.codigoPunto = p.codigoPunto "
+          + " WHERE p.tipoPunto = 'BANCO' "
+          + " and p.nombrePunto = :nombrePunto "
+          + " and p.codigoCiudad = :codigoCiudad "
+          + " and b.numeroNit = :numeroNit "
+          + " and b.abreviatura = :abreviatura "
+          + " and b.nombreBanco = :nombreBanco")
+      public List<Puntos> findBancoUnique(
+          @Param(value = "nombrePunto") String nombrePunto,
+          @Param(value = "codigoCiudad") String codigoCiudad,
+          @Param(value = "numeroNit") String numeroNit,
+          @Param(value = "abreviatura") String abreviatura,
+          @Param(value = "nombreBanco") String nombreBanco );
+      
+      /**
+       * 
+       * @param nombrePunto
+       * @param codigoCiudad
+       * @param bancoAval
+       * @param codigoATM
+       * @return
+       * @author prv_nparra
+       */
+      @Query(value = "SELECT p from Puntos p JOIN CajerosATM c ON c.codigoPunto = p.codigoPunto "
+          + " WHERE p.tipoPunto = 'CAJERO' "
+          + " and p.nombrePunto = :nombrePunto "
+          + " and p.codigoCiudad = :codigoCiudad "
+          + " and c.bancoAval = :bancoAval "
+          + " and c.codigoATM = :codigoATM ")
+      public List<Puntos> findCajeroUnique(
+          @Param(value = "nombrePunto") String nombrePunto,
+          @Param(value = "codigoCiudad") String codigoCiudad,
+          @Param(value = "bancoAval") Integer bancoAval,
+          @Param(value = "codigoATM") String codigoATM);
+      
+      /**
+       * 
+       * @param nombrePunto
+       * @param codigoCiudad
+       * @param bancoAval
+       * @param codigoOficina
+       * @return
+       * @author prv_nparra
+       */
+      @Query(value = "SELECT p from Puntos p JOIN Oficinas o ON o.codigoPunto = p.codigoPunto "
+          + " WHERE p.tipoPunto = 'OFICINA' "
+          + " and p.nombrePunto = :nombrePunto "
+          + " and p.codigoCiudad = :codigoCiudad "
+          + " and o.bancoAVAL = :bancoAval "
+          + " and o.codigoOficina = :codigoOficina ")
+      public List<Puntos> findOficinaUnique(
+          @Param(value = "nombrePunto") String nombrePunto,
+          @Param(value = "codigoCiudad") String codigoCiudad,
+          @Param(value = "bancoAval") Integer bancoAval,
+          @Param(value = "codigoOficina") Integer codigoOficina);
+      
+      /**
+       * 
+       * @param nombrePunto
+       * @param codigoCiudad
+       * @return
+       * @author prv_nparra
+       */
+      @Query(value = "SELECT p from Puntos p "
+          + " WHERE p.tipoPunto = 'BAN_REP' "
+          + " and p.nombrePunto = :nombrePunto "
+          + " and p.codigoCiudad = :codigoCiudad ")
+      public List<Puntos> findBanrepUnique(
+          @Param(value = "nombrePunto") String nombrePunto,
+          @Param(value = "codigoCiudad") String codigoCiudad);
+      
+      /**
+       * 
+       * @param nombrePunto
+       * @param codigoCiudad
+       * @param identificadorCliente
+       * @param codigoCliente
+       * @param codigoBancoAval
+       * @return
+       * @author prv_nparra
+       */
+      @Query(nativeQuery = true, 
+          value = "select p.codigo_punto, p.codigo_ciudad, p.estado, p.nombre_punto, p.tipo_punto, "
+              + " p.fecha_creacion, p.fecha_modificacion, p.usuario_creacion, p.usuario_modificacion " 
+          + " from puntos p join sitios_cliente sc on sc.codigo_punto = p.codigo_punto "
+          + " where p.tipo_punto = 'CLIENTE' "
+          + " and p.nombre_punto = :nombrePunto "
+          + " and p.codigo_ciudad = :codigoCiudad "
+          + " and sc.identificador_cliente = :identificadorCliente "
+          + " and sc.codigo_cliente = :codigoCliente ")
+      public List<Puntos> findSitioClienteUnique(
+          @Param(value = "nombrePunto") String nombrePunto,
+          @Param(value = "codigoCiudad") String codigoCiudad,
+          @Param(value = "identificadorCliente") String identificadorCliente,
+          @Param(value = "codigoCliente") Integer codigoCliente);
 }

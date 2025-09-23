@@ -41,7 +41,7 @@ public class CentroCiudadServiceImplTest {
   @BeforeEach
   void setUp() throws Exception {
 
-    Bancos banco = Instancio.of(Bancos.class).set(field(Bancos::getPuntos), null).create();
+    Bancos banco = Instancio.of(Bancos.class).create();
     Ciudades ciudad = Instancio.of(Ciudades.class).create();
 
     this.listOfCentroCiudad = Instancio.ofList(CentroCiudad.class).size(11)

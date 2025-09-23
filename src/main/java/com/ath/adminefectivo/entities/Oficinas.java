@@ -7,11 +7,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
+import com.ath.adminefectivo.entities.audit.AuditableEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Entidad encargada de manejar la logica de la tabla OFICINAS
@@ -20,16 +21,21 @@ import lombok.NoArgsConstructor;
  */
 @Entity
 @Table(name = "OFICINAS")
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @NamedQuery(name = "Oficinas.findAll", query = "SELECT t FROM Oficinas t")
-public class Oficinas {
+public class Oficinas extends AuditableEntity{
 
 	@Id
 	@Column(name = "CODIGO_PUNTO")
 	private Integer codigoPunto;
+	
+	@OneToOne
+    @JoinColumn(name = "CODIGO_PUNTO", insertable = false, unique = false)
+    private Puntos punto;
 	
 	@Column(name = "CODIGO_OFICINA")
 	private Integer codigoOficina;
@@ -48,9 +54,5 @@ public class Oficinas {
 	
 	@Column(name = "TARIFA_VERIFICACION")
 	private Double tarifaVerificacion;
-	
-	@OneToOne
-	@JoinColumn(name = "CODIGO_PUNTO", nullable = false)
-	private Puntos puntos;
 	
 }
