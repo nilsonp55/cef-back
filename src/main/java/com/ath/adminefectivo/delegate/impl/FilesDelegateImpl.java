@@ -206,7 +206,13 @@ public class FilesDelegateImpl implements IFilesDelegate {
 		var archivosCargados = archivosCargadosService.consultarArchivo(idArchivo);
 		if (!Objects.isNull(archivosCargados)) {
 			String[] arregloNombre = archivosCargados.getNombreArchivo().split(Constantes.EXPRESION_REGULAR_PUNTO);
-			nombreArchivo = arregloNombre[0].concat("-" + idArchivo.toString());
+			
+			if("TECLI".equals(archivosCargados.getIdModeloArchivo())) {
+				nombreArchivo = arregloNombre[0];
+			}else {
+				nombreArchivo = arregloNombre[0].concat("-" + idArchivo.toString());
+			}
+			
 			var maestrosDefinicion = maestroDefinicionArchivoService.consultarDefinicionArchivoById(
 										archivosCargados.getIdModeloArchivo());
 			String ubicacion = maestrosDefinicion.getUbicacion();

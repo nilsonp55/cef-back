@@ -120,8 +120,17 @@ public class FilesServiceImpl implements IFilesService {
 					String[] segmentos = path.split("/");
 					// Tomar el último segmento como el nombre del archivo
 					String nombreArchivo = segmentos[segmentos.length - 1];
-
-					File initialFile = new File(TEMPORAL_URL + File.separator + nombreArchivo);
+					
+					File initialFile;
+					
+					if(path.contains("Error")) {
+						initialFile = new File(TEMPORAL_URL_ERR + File.separator + nombreArchivo);
+					}else if(path.contains("Procesado")) {
+						initialFile = new File(TEMPORAL_URL_PROC + File.separator + nombreArchivo);
+					}else {
+						initialFile = new File(TEMPORAL_URL + File.separator + nombreArchivo);
+					}
+					
 					Resource recurso = new UrlResource(initialFile.toURI());
 					InputStream inputStream = recurso.getInputStream();
 					// Realiza operaciones de lectura del archivo usando inputStream
@@ -163,7 +172,7 @@ public class FilesServiceImpl implements IFilesService {
     	
     	if (url.contains("Error")) {
     	    url = TEMPORAL_URL_ERR + "\\" + nombreArchivo;
-    	}else if (url.contains("Procesados")) {
+    	}else if (url.contains("Procesado")) {
         	    url = TEMPORAL_URL_PROC + "\\" + nombreArchivo;
     	} else {
     	    url = TEMPORAL_URL + "\\" + nombreArchivo;

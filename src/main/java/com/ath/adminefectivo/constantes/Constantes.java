@@ -799,5 +799,12 @@ public static final String DELETE_SEPARADORES = "";
 	public static final String REGLA_NO_EDITABLE = "NO_EDITABLE";
 	public static final String MAESTRO_ARCHIVO_TARIFAS_ESPECIALES = "TECLI";
 	
+	/**
+	 * Constantes tarifas regulares
+	 */
+	
+	
+	public static final String TARIFAS_REGULARES_AGRUPADOR = "TAROPR";
+	public static final String MAESTRO_ARCHIVO_TARIFAS_REGULARES = "TAROP";
 	
 }
