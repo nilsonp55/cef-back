@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ath.adminefectivo.dto.AuditLogProcessDTO;
 import com.ath.adminefectivo.dto.AuditoriaLogDTO;
 import com.ath.adminefectivo.service.IAuditoriaLogsService;
 
@@ -50,6 +51,30 @@ public class AuditoriaLogsController {
 
         Page<AuditoriaLogDTO> resultados = auditoriaLogService.consultarLogAdministrativos(
                 fechaInicial, fechaFinal, usuario, ipOrigen, opcionMenu, pageable
+        );
+
+        return ResponseEntity.ok(resultados);
+    }
+    
+
+    @GetMapping(value = "${endpoints.AuditoriaLogs.consultar.proc}", produces = "application/json")
+    public ResponseEntity<Page<AuditLogProcessDTO>> consultarAuditoriaProcess(
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicial,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFinal,
+            @RequestParam(required = false) String usuario,
+            @RequestParam(required = false, name = "ipOrigen") String ipOrigen,
+            @RequestParam(required = false) String nombreProceso,
+            @RequestParam(required = false) String estadoHttp,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        log.debug("Solicitud consultarAuditoriaProcess - fechaInicial: {}, fechaFinal: {}, usuario: {}, ipOrigen: {}, codigoProceso: {}, estadoHttp: {}",
+                fechaInicial, fechaFinal, usuario, ipOrigen, nombreProceso, estadoHttp);
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "fechaHoraProc"));
+
+        Page<AuditLogProcessDTO> resultados = auditoriaLogService.consultarLogProceso(
+                fechaInicial, fechaFinal, usuario, ipOrigen, nombreProceso, estadoHttp, pageable
         );
 
         return ResponseEntity.ok(resultados);

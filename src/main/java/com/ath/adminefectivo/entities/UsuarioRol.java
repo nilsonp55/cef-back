@@ -1,8 +1,12 @@
 package com.ath.adminefectivo.entities;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import com.ath.adminefectivo.auditoria.listener.AuditoriaEntityListener;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,7 +17,9 @@ import lombok.NoArgsConstructor;
  * @author bayron.perez
  */
 
+@Entity
 @Data
+@EntityListeners(AuditoriaEntityListener.class)
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "USUARIO_ROL")

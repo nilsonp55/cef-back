@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
@@ -13,6 +14,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.ath.adminefectivo.auditoria.listener.AuditoriaEntityListener;
 import com.ath.adminefectivo.entities.id.FallasRegistroPK;
 
 import lombok.AllArgsConstructor;
@@ -27,6 +29,7 @@ import lombok.NoArgsConstructor;
  * @author CamiloBenavides
  */
 @Entity
+@EntityListeners(AuditoriaEntityListener.class)
 @Table(name = "FALLAS_REGISTRO")
 @Data
 @Builder

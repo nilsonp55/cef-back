@@ -15,7 +15,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
     	System.out.println("Registrando AuditoriaInterceptor en InterceptorConfig");
         registry.addInterceptor(auditoriaInterceptor)
-                .addPathPatterns("/v1.0.1/ade/tarifas-especiales-cliente/**");
-        //.addPathPatterns("/**"); // Esto intercepta todas las rutas del proyecto
+                //.addPathPatterns("/v1.0.1/ade/tarifas-especiales-cliente/**");
+        .addPathPatterns("/**"); // Esto intercepta todas las rutas del proyecto
     }
 }

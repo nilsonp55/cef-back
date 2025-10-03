@@ -11,57 +11,57 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "audit_log_admin")
+@Table(name = "audit_log_process", schema = "controlefect")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuditoriaLogEntity {
+public class AuditLogProcessEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id_log_admin")
-	private Long idLogAdmin;
-	
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_log_process")
+    private Long idLogProcessProc;
+
     @Column(name = "fecha_hora")
-    private LocalDateTime fechaHora;
-    
+    private LocalDateTime fechaHoraProc;
+
     @Column(name = "ip_origen")
-    private String ipOrigen;
-    
+    private String ipOrigenProc;
+
     @Column(name = "usuario")
-    private String usuario;
+    private String usuarioProc;
 
     @Column(name = "opcion_menu")
-    private String opcionMenu;
-    
+    private String opcionMenuProc;
+
     @Column(name = "accion_http")
-    private String accionHttp;
-    
+    private String accionHttpProc;
+
     @Column(name = "codigo_proceso", columnDefinition = "uuid")
-    private UUID codigoProceso;
-    
+    private UUID codigoProcesoProc;
+
     @Column(name = "nombre_proceso")
-    private String nombreProceso;
+    private String nombreProcesoProc;
 
     @Column(name = "estado_http")
-    private String estadoHttp;
-    
+    private String estadoHttpProc;
+
     @Column(name = "estado_operacion")
-    private String estadoOperacion;
-    
+    private String estadoOperacionProc;
+
     @Column(name = "mensaje_respuesta")
-    private String mensajeRespuesta;
-    
+    private String mensajeRespuestaProc;
+
     @Column(name = "peticion", columnDefinition = "text")
-    private String peticion;
+    private String peticionProc;
 
     @Column(name = "respuesta", columnDefinition = "text")
-    private String respuesta;
+    private String respuestaProc;
 
     @Column(name = "valor_anterior", columnDefinition = "text")
-    private String valorAnterior;
+    private String valorAnteriorProc;
 
     @Column(name = "valor_nuevo", columnDefinition = "text")
-    private String valorNuevo;
+    private String valorNuevoProc;
 }

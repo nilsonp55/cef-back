@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.ColumnResult;
 import javax.persistence.ConstructorResult;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.Id;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQuery;
@@ -17,6 +18,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.ath.adminefectivo.auditoria.listener.AuditoriaEntityListener;
 import com.ath.adminefectivo.dto.compuestos.ResultadoFuncionDinamicaDTO;
 
 import lombok.AllArgsConstructor;
@@ -35,6 +37,7 @@ resultSetMapping = "Mapping.ResultadoFuncionDinamicaDTO")
 @SqlResultSetMapping(name = "Mapping.ResultadoFuncionDinamicaDTO", classes = @ConstructorResult(targetClass = ResultadoFuncionDinamicaDTO.class, columns = {
 		@ColumnResult(name = "id_funcion"),	@ColumnResult(name = "consecutivo"),	@ColumnResult(name = "resultado") }))
 @Entity
+@EntityListeners(AuditoriaEntityListener.class)
 @Table(name = "FUNCIONES_DINAMICAS")
 @Data
 @Builder

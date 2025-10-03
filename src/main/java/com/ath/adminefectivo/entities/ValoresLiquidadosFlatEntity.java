@@ -3,6 +3,7 @@ package com.ath.adminefectivo.entities;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -10,6 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.ath.adminefectivo.auditoria.listener.AuditoriaEntityListener;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,6 +26,7 @@ import lombok.NoArgsConstructor;
  */
 
 @Entity
+@EntityListeners(AuditoriaEntityListener.class)
 @Table(name = "VALORES_LIQUIDADOS")
 @Data
 @Builder
@@ -80,6 +84,9 @@ public class ValoresLiquidadosFlatEntity {
 	
 	@Column(name = "CLASIFICACION_MONEDA")
 	private Double clasificacionMonedaFlat;
+	
+	@Column(name = "OBSERVACION_LIQUIDACION")
+	private String observacionLiquidacionFlat;
 	
 	//@OneToOne(mappedBy = "valoresLiquidadosFlatEntity", cascade = CascadeType.REMOVE)
 	@OneToOne(mappedBy = "valoresLiquidadosFlatEntity", cascade = {CascadeType.MERGE, CascadeType.REMOVE})

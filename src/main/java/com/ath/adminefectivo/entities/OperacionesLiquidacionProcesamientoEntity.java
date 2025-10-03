@@ -8,9 +8,11 @@ import java.util.Date;
 import javax.inject.Named;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.ath.adminefectivo.auditoria.listener.AuditoriaEntityListener;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
@@ -19,6 +21,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
+@EntityListeners(AuditoriaEntityListener.class)
 @Table(name = "v_detalle_liquidacion_procesamiento")
 @Data
 @Builder

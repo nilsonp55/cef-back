@@ -802,9 +802,24 @@ public static final String DELETE_SEPARADORES = "";
 	/**
 	 * Constantes tarifas regulares
 	 */
-	
-	
+
 	public static final String TARIFAS_REGULARES_AGRUPADOR = "TAROPR";
 	public static final String MAESTRO_ARCHIVO_TARIFAS_REGULARES = "TAROP";
+	
+	/**
+	 * Constantes de estados para interceptores logs de auditoria
+	 */
+	public static final String POST = "POST";
+	public static final String PUT = "PUT";
+	public static final String DELETE = "DELETE";
+	public static final String CREAR = "CREAR";
+	public static final String ACTUALIZAR = "ACTUALIZAR";
+	public static final String ELIMINAR = "ELIMINAR";
+	public static final String DESCONOCIDO = "DESCONOCIDO";
+	public static final String CREATE = "CREATE";
+	public static final String UPDATE = "UPDATE";
+	public static final String SIN_PROCESO = "SIN_PROCESO";
+	public static final String EXITOSO = "EXITOSO";
+	
 	
 }

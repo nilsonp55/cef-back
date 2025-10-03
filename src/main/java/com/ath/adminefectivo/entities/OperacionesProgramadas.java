@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.ColumnResult;
 import javax.persistence.ConstructorResult;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,6 +20,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import com.ath.adminefectivo.auditoria.listener.AuditoriaEntityListener;
 import com.ath.adminefectivo.dto.compuestos.OperacionIntradiaDTO;
 
 import lombok.AllArgsConstructor;
@@ -60,6 +62,7 @@ import lombok.Setter;
         columns = {@ColumnResult(name = "bancoAVAL"), @ColumnResult(name = "codigoPunto"),
             @ColumnResult(name = "entradaSalida")}))
 @Entity
+@EntityListeners(AuditoriaEntityListener.class)
 @Table(name = "OPERACIONES_PROGRAMADAS")
 @Setter
 @Getter

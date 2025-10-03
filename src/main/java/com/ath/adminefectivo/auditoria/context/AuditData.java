@@ -20,11 +20,15 @@ public class AuditData {
     private String usuario;
     private String uri;
     private String metodo;
+    private String nombreProceso;
+    private String opcionMenu;
+    private String idMenu;
     private Map<String, String> headers;
     private String peticion;      // JSON string truncated/masked
     private String respuesta;     // JSON string truncated/masked
     private Integer estadoHttp;
     private String mensajeRespuesta;
+    private Boolean isProcess;
     private String estadoOperacion; // OK | ERROR
     @Builder.Default
     private List<EntityChange> cambios = new ArrayList<>();

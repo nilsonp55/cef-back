@@ -5,8 +5,6 @@ import java.util.function.Function;
 
 import com.ath.adminefectivo.entities.audit.AuditoriaLogEntity;
 import com.ath.adminefectivo.utils.UtilsObjects;
-
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.*;
 

@@ -49,7 +49,9 @@ private Long idValoresLiq;
 	private Double tasaAeroportuaria;
 	
 	private Integer idSeqGrupo;
-	
+
+	private String observacionLiquidacion;
+
 	private ParametrosLiquidacionCostoDTO parametrosLiquidacionCostoDTO;
 	
 	/**

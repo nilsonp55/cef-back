@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.ColumnResult;
 import javax.persistence.ConstructorResult;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -16,6 +17,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
 
+import com.ath.adminefectivo.auditoria.listener.AuditoriaEntityListener;
 import com.ath.adminefectivo.dto.RespuestaContableDTO;
 import com.ath.adminefectivo.dto.compuestos.ConteoContabilidadDTO;
 
@@ -107,6 +109,7 @@ resultSetMapping = "Mapping.ConteoContabilidadDTO")
 		@ColumnResult(name = "conteoContablesCompletadas"),	@ColumnResult(name = "estadoContablesCompletadas"),		
 		}))
 @Entity
+@EntityListeners(AuditoriaEntityListener.class)
 @Table(name = "TRANSACCIONES_CONTABLES")
 @Data
 @Builder

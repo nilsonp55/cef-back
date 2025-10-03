@@ -2,9 +2,13 @@ package com.ath.adminefectivo.auditoria.config;
 
 import com.ath.adminefectivo.auditoria.context.AuditData;
 import com.ath.adminefectivo.auditoria.context.AuditoriaContext;
+import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
+import com.ath.adminefectivo.repositories.MenuRepository;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -13,9 +17,16 @@ import javax.servlet.http.HttpServletResponse;
 
 @Component
 public class AuditoriaInterceptor implements HandlerInterceptor {
-
+	
     private static final Logger logger = LoggerFactory.getLogger(AuditoriaInterceptor.class);
 
+    private final MenuRepository menuRepository;
+
+    @Autowired
+    public AuditoriaInterceptor(MenuRepository menuRepository) {
+        this.menuRepository = menuRepository;
+    }
+    
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         // Asumimos que RequestResponseCachingFilter ya creó el AuditData y lo puso en el contexto
@@ -25,10 +36,8 @@ public class AuditoriaInterceptor implements HandlerInterceptor {
             return true; // permitir continuar
         }
 
-        // Determinar opcion menu / codigo de proceso según path (si no viene ya)
-        String path = request.getRequestURI();
-        String codigoProceso = obtenerCodigoProcesoDesdePath(path);
-        audit.setCodigoProceso(codigoProceso);
+        // Obtiene el nombre del procesos a partir del nombre del menu.
+        obtenerNombreProceso(request, audit);
 
         // Usuario: si ya no está, intentar extraer de encabezado o SecurityContext (no incluido aquí)
         if (audit.getUsuario() == null) {
@@ -46,14 +55,30 @@ public class AuditoriaInterceptor implements HandlerInterceptor {
         AuditoriaContext.clear();
     }
 
-    private String obtenerCodigoProcesoDesdePath(String path) {
-        if (path == null) return Dominios.CODIGO_PROCESO_LOG_LIQUIDACION;
-        if (path.contains("/v1.0.1/ade/conciliacion-transporte/consultar-conciliadas")) {
-            return Dominios.CODIGO_PROCESO_LOG_CERTIFICACION;
+    private void obtenerNombreProceso(HttpServletRequest request, AuditData audit) {
+    	String nombreMenu = audit.getOpcionMenu();
+
+        // 1️ Si aún no hay nombre en audit, intentar con header
+        if (nombreMenu == null || nombreMenu.isBlank()) {
+            nombreMenu = request.getHeader("X-Menu-Id");
         }
-        if (path.contains("/archivos-liquidacion/eliminar")) {
-            return Dominios.CODIGO_PROCESO_LOG_CONCILIACION;
+
+        // 2️ Si tampoco hay header, asignar valores por defecto y salir
+        if (nombreMenu == null || nombreMenu.isBlank()) {
+            audit.setNombreProceso(Constantes.SIN_PROCESO);
+            audit.setIsProcess(false);
+            return;
         }
-        return Dominios.CODIGO_PROCESO_LOG_LIQUIDACION;
+
+        // 3️ Consultar en base de datos
+        menuRepository.findByNombre(nombreMenu).ifPresentOrElse(menu -> {
+            audit.setNombreProceso(menu.getCodigoProceso());
+            audit.setIsProcess(menu.getEsProceso());
+            audit.setIdMenu(menu.getIdMenu());
+        }, () -> {
+            // Si no se encuentra en BD, también valores por defecto
+            audit.setNombreProceso(Constantes.DESCONOCIDO);
+            audit.setIsProcess(false);
+        });
     }
 }
