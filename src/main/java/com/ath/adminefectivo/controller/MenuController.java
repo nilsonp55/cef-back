@@ -34,7 +34,7 @@ public class MenuController {
 		this.menuService = menuService;
 	}
 
-	@GetMapping(value = "${endpoints.Menu.crud}")
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<List<MenuDTO>>> getAllMenu(
 			@QuerydslPredicate(root = Menu.class) Predicate predicate) {
 
@@ -46,7 +46,7 @@ public class MenuController {
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
 	
-    @PostMapping(value = "${endpoints.Menu.crud}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponseADE<MenuDTO>> createMenu(@RequestBody MenuDTO menu) {
       log.info("Create Menu nombre: {}", menu.getNombre());
       menu = menuService.createMenu(menu);
@@ -56,7 +56,7 @@ public class MenuController {
               .description(ApiResponseCode.SUCCESS.getDescription()).build()));
     }
 
-    @PutMapping(value = "${endpoints.Menu.crud}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponseADE<MenuDTO>> updateMenu(@RequestBody MenuDTO menu) {
       log.info("Update Menu nombre: {}", menu.getNombre());
       menu = menuService.updateMenu(menu);
@@ -66,7 +66,7 @@ public class MenuController {
               .description(ApiResponseCode.SUCCESS.getDescription()).build()));
     }
     
-    @DeleteMapping(value = "${endpoints.Menu.crud}{idMenu}")
+    @DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponseADE<Void>> deleteMenu(@PathVariable String idMenu) {
       log.info("Delete Menu Id: {}", idMenu);
       menuService.deleteMenu(idMenu);
