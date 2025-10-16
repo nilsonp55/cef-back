@@ -4,6 +4,7 @@ package com.ath.adminefectivo.delegate.impl;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -480,6 +481,53 @@ public class ArchivosLiquidacionDelegateImpl implements IArchivosLiquidacionDele
 		}
 		
 	}
+	
+	/**
+     * Método genérico para agregar un error a un ValidacionArchivoDTO
+     *
+     * @param validacionArchivo El objeto ValidacionArchivoDTO donde se agregará el error
+     * @param mensajeErrorTxt   Mensaje de error en texto
+     * @param numeroLinea       Número de la línea donde ocurre el error
+     * @param estado            Estado de validación a asignar (ej. ESTADO_VALIDACION_REGISTRO_ERRADO)
+     */
+    public static ValidacionArchivoDTO agregarErrorValidacion(ValidacionArchivoDTO validacionArchivo,
+                                              String mensajeErrorTxt,
+                                              int numeroLinea,
+                                              String estado) {
+
+        // Crear lista de mensajes
+        List<String> mensajesErrores = new ArrayList<>();
+        mensajesErrores.add(mensajeErrorTxt);
+
+        // Crear objeto de error
+        ErroresCamposDTO error = ErroresCamposDTO.builder()
+                .nombreCampo(null)
+                .estado(estado)
+                .contenido(null)
+                .mensajeError(mensajesErrores)
+                .mensajeErrorTxt(mensajeErrorTxt)
+                .build();
+
+        // Crear línea DTO con el error
+        ValidacionLineasDTO lineaDTO = new ValidacionLineasDTO();
+        lineaDTO.setNumeroLinea(numeroLinea);
+        lineaDTO.setCampos(Collections.singletonList(error));
+        lineaDTO.setEstado(estado);
+
+        // Inicializar lista si es null
+        if (validacionArchivo.getValidacionLineas() == null) {
+            validacionArchivo.setValidacionLineas(new ArrayList<>());
+        }
+
+        // Agregar la línea con el error
+        validacionArchivo.getValidacionLineas().add(lineaDTO);
+
+        // Actualizar número de errores y estado del archivo
+        validacionArchivo.setNumeroErrores(validacionArchivo.getNumeroErrores() + 1);
+        validacionArchivo.setEstadoValidacion(estado);
+        
+        return validacionArchivo;
+    }
     
 	/**
 	 * Obtiene la cantidad de registros, verificando si tiene cabecera y control
@@ -542,9 +590,12 @@ public class ArchivosLiquidacionDelegateImpl implements IArchivosLiquidacionDele
 		
 			if (!validacionAceptado)
 			{
-				this.validacionArchivo.setEstadoValidacion(Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO);
-				this.validacionArchivo.setDescripcionErrorEstructura("Archivo ya se encuentra conciliado");
-				this.validacionArchivo.setNumeroErrores(1);
+				validacionArchivo = ArchivosLiquidacionDelegateImpl.agregarErrorValidacion(
+	    	            validacionArchivo,
+	    	            "Archivo ya se encuentra conciliado",
+	    	            1,
+	    	            Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO
+	    	        );
 			}
 
 		return validacionAceptado;

@@ -67,28 +67,41 @@ public class LecturaArchivoServiceImpl implements ILecturaArchivoService {
 		log.debug("maestroDefinicion: {} - delimitador: {} - algoritmoEncriptado: {}", maestroDefinicion, delimitador, algoritmoEncriptado);
 		if(algoritmoEncriptado.equals(dominioService.valorTextoDominio(Constantes.DOMINIO_TIPO_ENCRIPTADO, Dominios.TIPO_ENCRIPTADO_NA))) {
 			
-			CSVParser parser = new CSVParserBuilder().withSeparator(delimitador.charAt(0)).withIgnoreQuotations(true).build();
-			
+			CSVParser parser = new CSVParserBuilder().withSeparator(delimitador.charAt(0)).withIgnoreQuotations(true)
+					.build();
+
 			List<String[]> resultadoValidado = new ArrayList<>();
 			try {
-					CSVReader csvReader;
-				if(maestroDefinicion.getIdMaestroDefinicionArchivo().equals(Dominios.TIPO_ARCHIVO_ISRPO)) {
-					csvReader = new CSVReaderBuilder(new InputStreamReader(archivo, StandardCharsets.UTF_16)).withCSVParser(parser).build();
-				}else {
+				CSVReader csvReader;
+				if (maestroDefinicion.getIdMaestroDefinicionArchivo().equals(Dominios.TIPO_ARCHIVO_ISRPO)) {
+					csvReader = new CSVReaderBuilder(new InputStreamReader(archivo, StandardCharsets.UTF_16))
+							.withCSVParser(parser).build();
+				} else {
 					csvReader = new CSVReaderBuilder(new InputStreamReader(archivo)).withCSVParser(parser).build();
 				}
-				
+
 				List<String[]> resultadoSinValidar = csvReader.readAll();
-					resultadoSinValidar.forEach(linea ->{
-					
-					if(linea.length > 2) {
-						resultadoValidado.add(linea);
-					}}
-					);
-					
-					csvReader.close();
-					
-					return resultadoValidado;
+
+				resultadoSinValidar.forEach(linea -> {
+
+					if (maestroDefinicion.getAgrupador().equals(Constantes.LIQUIDACION_AGRUPADOR)) {
+
+						if (linea.length > 0) {
+							resultadoValidado.add(linea);
+						}
+
+					} else {
+
+						if (linea.length > 2) {
+							resultadoValidado.add(linea);
+						}
+					}
+
+				});
+
+				csvReader.close();
+
+				return resultadoValidado;
 					
 			} catch (Exception e) {
 				throw new NegocioException(ApiResponseCode.ERROR_LECTURA_DOCUMENTO.getCode(),

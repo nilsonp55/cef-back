@@ -144,8 +144,8 @@ public interface ArchivosCargadosRepository extends JpaRepository<ArchivosCargad
 	 * @return List<ArchivosCargados>
 	 * @author rparra
 	 */
-	@Query("select ac from ArchivosCargados ac " + "where estadoCargue = ?1 and nombreArchivoUpper = ?2 and "
-			+ "idModeloArchivo = ?3")
+	@Query("select ac from ArchivosCargados ac " + "where ac.estadoCargue = ?1 and ac.nombreArchivoUpper = ?2 and "
+			+ "ac.idModeloArchivo = ?3")
 	List<ArchivosCargados> getRegistrosCargadosPorEstadoCargueyNombreUpperyModelo(String estadoCargue,
 			String nombreArchivo, String idModeloArchivo);
 
