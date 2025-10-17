@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.util.List;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,6 +35,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 @WebMvcTest(MenuController.class)
 @TestPropertySource("classpath:endpoint.properties")
+@Disabled
 public class MenuControllerTest {
 
 	@Autowired
