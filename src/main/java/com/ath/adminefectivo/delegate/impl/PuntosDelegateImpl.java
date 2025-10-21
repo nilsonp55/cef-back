@@ -169,7 +169,7 @@ public class PuntosDelegateImpl implements IPuntosDelegate {
           .abreviatura(createPuntosDTO.getAbreviatura())
           .esAVAL(createPuntosDTO.getEsAVAL())
           .build();
-      
+      punto.setBancos(banco);
       // validar si Banco Existe, se lazan exception si existe
       puntosService.validarPuntoBancoUnique(punto, banco);
     }

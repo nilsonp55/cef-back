@@ -43,7 +43,4 @@ public interface IMotorReglasService {
 	 */
 	ValidacionMotorDTO evaluarReglaMultiple(String regla, String valorCampo, ValidacionArchivoDTO validacionArchivo, int index, Map<String, ListaDetalleDTO> detalleDefinicionMap);
 
-	
-
-
 }
