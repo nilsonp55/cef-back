@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.ath.adminefectivo.dto.AuditoriaLoginDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.AuditoriaLogin;
@@ -19,6 +18,7 @@ public class AuditoriaLoginServiceImpl implements AuditoriaLoginService {
 
 	@Autowired
 	private AuditoriaLoginRepository auditoriaLoginRepository;
+	
 	
 	@Override
 	public List<AuditoriaLoginDTO> getAllAuditoriaLogin(Predicate predicate) {
@@ -40,5 +40,4 @@ public class AuditoriaLoginServiceImpl implements AuditoriaLoginService {
 		
 		return AuditoriaLoginDTO.CONVERTER_DTO.apply(auditoriaLoginResp);
 	}
-
 }

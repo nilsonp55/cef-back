@@ -35,6 +35,7 @@ import com.ath.adminefectivo.repositories.ArchivosCargadosRepository;
 import com.ath.adminefectivo.repositories.ICostosProcesamientoRepository;
 import com.ath.adminefectivo.repositories.ICostosTransporteRepository;
 import com.ath.adminefectivo.repositories.IRegistrosCargadosRepository;
+import com.ath.adminefectivo.repositories.ITarifasEspecialesRepository;
 import com.ath.adminefectivo.service.IArchivosCargadosService;
 import com.ath.adminefectivo.service.IFilesService;
 import com.ath.adminefectivo.service.IMaestroDefinicionArchivoService;
@@ -67,6 +68,9 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 	
 	@Autowired
 	ICostosProcesamientoRepository costosprocesamientoRepository;
+	
+	@Autowired
+	ITarifasEspecialesRepository tarifasEspecialesRepository;
 
 	/**
 	 * {@inheritDoc}
@@ -229,11 +233,12 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 			boolean alcance) {
 		Date fechaGuardar;
 		fechaGuardar = parametrosService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
-
+		
 		if (Dominios.ESTADO_VALIDACION_CORRECTO.equals(validacionArchivo.getEstadoValidacion())
 				|| Dominios.ESTADO_VALIDACION_REPROCESO.equals(validacionArchivo.getEstadoValidacion())) {
 			this.cambiarEstadoArchivoOK(validacionArchivo);
 		}
+		
 		ArchivosCargados archivosCargados = ArchivosCargados.builder().estado(Constantes.REGISTRO_ACTIVO)
 				.estadoCargue(validacionArchivo.getEstadoValidacion())
 				.idModeloArchivo(validacionArchivo.getMaestroDefinicion().getIdMaestroDefinicionArchivo())
@@ -487,15 +492,19 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 		}
 		
 		if (!archivoAnterior) {
-
+					
 			if (Constantes.MAESTRO_ARCHIVO_TRANSPORTE.equals(idMaestro)
-					|| Constantes.MAESTRO_ARCHIVO_PROCESAMIENTO.equals(idMaestro)) {
-
+					|| Constantes.MAESTRO_ARCHIVO_PROCESAMIENTO.equals(idMaestro)
+					|| Constantes.MAESTRO_ARCHIVO_TARIFAS_ESPECIALES.equals(idMaestro)) {
+							
 				List<ArchivosCargados> archivosCargados = archivosCargadosRepository
-						.getRegistrosCargadosPorEstadoCargueyNombreUpperyModelo(
-								Dominios.ESTADO_VALIDACION_EN_CONCILIACION,
-								validacionArchivo.getNombreArchivo().toUpperCase(),
-								validacionArchivo.getMaestroDefinicion().getIdMaestroDefinicionArchivo());
+					    .getRegistrosCargadosPorEstadoCargueyNombreUpperyModelo(
+					        Constantes.MAESTRO_ARCHIVO_TARIFAS_ESPECIALES.equals(idMaestro)
+					            ? Dominios.ESTADO_VALIDACION_CORRECTO
+					            : Dominios.ESTADO_VALIDACION_EN_CONCILIACION,
+					        validacionArchivo.getNombreArchivo().toUpperCase(),
+					        validacionArchivo.getMaestroDefinicion().getIdMaestroDefinicionArchivo()
+					    );
 
 				if (!Objects.isNull(archivosCargados)) {
 					archivosCargados.forEach(arch -> {
@@ -503,21 +512,24 @@ public class ArchivosCargadosServiceImpl implements IArchivosCargadosService {
 						archivoEntity.setEstadoCargue(Dominios.ESTADO_VALIDACION_REEMPLAZADO);
 						archivosCargadosRepository.save(archivoEntity);
 
-						if (Constantes.MAESTRO_ARCHIVO_TRANSPORTE
+						if (Constantes.MAESTRO_ARCHIVO_TARIFAS_ESPECIALES
 								.equals(validacionArchivo.getMaestroDefinicion().getIdMaestroDefinicionArchivo())) {
 
 							costosTransporteRepository.eliminarPorIdArchivoCargado(archivoEntity.getIdArchivo());
+
+						} else if (Constantes.MAESTRO_ARCHIVO_TRANSPORTE
+								.equals(validacionArchivo.getMaestroDefinicion().getIdMaestroDefinicionArchivo())) {
+
+							tarifasEspecialesRepository.eliminarPorIdArchivoCargado(archivoEntity.getIdArchivo());
 
 						} else {
 							costosprocesamientoRepository
 									.eliminarPorIdArchivoCargadoProcesamiento(archivoEntity.getIdArchivo());
 						}
-
 					});
 				}
 			}
 		}
-
 	}
 	
 	/**

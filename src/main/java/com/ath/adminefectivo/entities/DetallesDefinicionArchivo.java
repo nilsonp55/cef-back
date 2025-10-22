@@ -3,9 +3,11 @@ package com.ath.adminefectivo.entities;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import com.ath.adminefectivo.auditoria.listener.AuditoriaEntityListener;
 import com.ath.adminefectivo.entities.id.DetallesDefinicionArchivoPK;
 
 import lombok.AllArgsConstructor;
@@ -19,6 +21,7 @@ import lombok.NoArgsConstructor;
  *
  */
 @Entity
+@EntityListeners(AuditoriaEntityListener.class)
 @Table(name = "DETALLES_DEFINICION_ARCHIVO")
 @Data
 @Builder

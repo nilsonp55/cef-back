@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.ColumnResult;
 import javax.persistence.ConstructorResult;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -17,6 +18,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
 
+import com.ath.adminefectivo.auditoria.listener.AuditoriaEntityListener;
 import com.ath.adminefectivo.dto.compuestos.EstimadoClasificacionCostosDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -47,6 +49,7 @@ import lombok.NoArgsConstructor;
 		@ColumnResult(name = "estimadaBolsas", type = Long.class) }))
 
 @Entity
+@EntityListeners(AuditoriaEntityListener.class)
 @Table(name = "PARAMETROS_LIQUIDACION_COSTO")
 @Data
 @Builder

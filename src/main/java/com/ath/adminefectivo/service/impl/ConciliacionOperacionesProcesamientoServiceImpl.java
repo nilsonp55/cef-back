@@ -472,6 +472,7 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 							valoresLiquidadosFlat.setMilajeVerificacionFlat(valoresLiquidados.getMilajeVerificacionFlat());
 							valoresLiquidadosFlat.setTasaAeroportuariaFlat(valoresLiquidados.getTasaAeroportuariaFlat());
 							valoresLiquidadosFlat.setClasificacionMonedaFlat(valoresLiquidados.getClasificacionMonedaFlat());
+							valoresLiquidadosFlat.setObservacionLiquidacionFlat(valoresLiquidados.getObservacionLiquidacionFlat()!=null?valoresLiquidados.getObservacionLiquidacionFlat():"");
 						}
 
 						valoresLiquidadosFlatService.f2actualizarvaloresLiquidadosRepository(valoresLiquidadosFlat);

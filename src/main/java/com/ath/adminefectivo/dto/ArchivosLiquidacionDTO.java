@@ -47,6 +47,10 @@ public class ArchivosLiquidacionDTO {
 	    private Long idArchivodb;
 	    
 	    private String observacion;
+	    
+	    private String usuarioSesion;
+	    
+	    private Boolean permitirReemplazoRegistros;
 	        
 	    private List<String> contenidoArchivo;      
 

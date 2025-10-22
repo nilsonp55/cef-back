@@ -1955,5 +1955,9 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
         .findFirst().orElse(null).getId().getNumeroCampo() - 1].trim();
   }
 
+	@Override
+	public void saveAll(List<OperacionesProgramadas> OperacionesCertificadasDTOList) {
+		operacionesProgramadasRepository.saveAll(OperacionesCertificadasDTOList);
+	}
 
 }

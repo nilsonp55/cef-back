@@ -19,6 +19,8 @@ public enum ApiResponseCode {
 	 * Codigo generico de error
 	 */
 	GENERIC_ERROR("E400", "Ocurrió un error. ", HttpStatus.BAD_REQUEST),
+	NOT_FOUND_ERROR("E404", "El recurso solicitado no fue encontrado", HttpStatus.NOT_FOUND),
+    CONFLICT_ERROR("E409", "Conflicto con el estado actual del recurso", HttpStatus.CONFLICT),
 
 	/**
 	 * Error de en la persistencia de documentos
@@ -738,8 +740,7 @@ public enum ApiResponseCode {
      * Ocurrió un error al consultar la tabla de puntos, retorna mas de un registro
      */
     ERROR_PUNTOS_ENCONTRADOS_REPETIDOS("E980", "Al consultar puntos, retorna mas de un registro",
-          HttpStatus.PRECONDITION_FAILED),
-	
+          HttpStatus.PRECONDITION_FAILED),	
 	/**
 	 * Error al obtener el contenido de un archivo en un repositorio local
 	 */
@@ -752,22 +753,46 @@ public enum ApiResponseCode {
 	ERROR_OBTENER_PARAMETROS_ACTIVOS ("E981", "No se encontraron parametros o no se encuentran activos",
 			HttpStatus.PRECONDITION_FAILED),
   
-  ERROR_CLIENTE_CORPORATIVO_BANCO_AVAL("E982",
-      "Codigo BancoAVAL no corresponde con banco en ClientesCorporativos.",
-      HttpStatus.PRECONDITION_FAILED),
+	ERROR_CLIENTE_CORPORATIVO_BANCO_AVAL("E982", "Codigo BancoAVAL no corresponde con banco en ClientesCorporativos.",
+			HttpStatus.PRECONDITION_FAILED),
+
+	ERROR_USUARIO_EXISTE("E983", "Usuario ya existe.", HttpStatus.PRECONDITION_FAILED),
+
+	ERROR_TASA_CAMBIO_EXISTE("E984", "Tasa de cambio ya existe.", HttpStatus.PRECONDITION_FAILED),
+
+	ERROR_CREAR_PUNTO_CON_CODIGO("E985", "No se permite crear Punto con valor en codigo_punto.",
+			HttpStatus.PRECONDITION_FAILED),
+
+	ERROR_ACTUALIZA_PUNTO_SIN_CODIGO("E986", "No se permite actualizar Punto sin valor en codigo_punto.",
+			HttpStatus.PRECONDITION_FAILED),
+
+	ERROR_EXIST_BANREP("E987", "Punto Banrep ya existente.", HttpStatus.PRECONDITION_FAILED),
   
-  ERROR_USUARIO_EXISTE("E983", "Usuario ya existe.", HttpStatus.PRECONDITION_FAILED),
+  /**
+	 * Error al obtener parametros de DB o no se encuentran activos
+	 */
+	ERROR_TARIFA_ESPECIAL_DUPLICADA ("E988", "La tarifa ya existe con la misma vigencia.", HttpStatus.CONFLICT),
+	
+	/**
+	 * Se intentó actualizar una tarifa especial sin proporcionar su ID
+	 */
+	ERROR_ID_TARIFA_NO_PROPORCIONADO("E989", "Debe especificar el ID para actualizar", HttpStatus.PRECONDITION_FAILED),
   
-  ERROR_TASA_CAMBIO_EXISTE("E984", "Tasa de cambio ya existe.", HttpStatus.PRECONDITION_FAILED),
-  
-  ERROR_CREAR_PUNTO_CON_CODIGO("E985", "No se permite crear Punto con valor en codigo_punto.", HttpStatus.PRECONDITION_FAILED),
-  
-  ERROR_ACTUALIZA_PUNTO_SIN_CODIGO("E986", "No se permite actualizar Punto sin valor en codigo_punto.", HttpStatus.PRECONDITION_FAILED),
-  
-  ERROR_EXIST_BANREP("E987", "Punto Banrep ya existente.", HttpStatus.PRECONDITION_FAILED),
-  
-  ERROR_EXIST_REGISTRO("E988", "El registro ya existe en la base de datos.", HttpStatus.PRECONDITION_FAILED);
-  
+	/**
+	 * Indica inconsistencias en los registros del archivo:
+	 * - Duplicados en los campos clave (BANCO, CLIENTE, TDV, CIUDAD, PUNTO, ESCALA,
+	 *   TIPO OPERACIÓN, TIPO SERVICIO, TIPO DE COMISIÓN, FECHA INICIO/FIN VIGENCIA)
+	 * - Traslapes de fechas entre registros
+	 */
+	ERROR_DUPLICIDAD_TRASLAPE_ARCHIVO_TARIFAS_ESPECIALES("E984", "El archivo contiene registros duplicados o con fechas traslapadas:", HttpStatus.CONFLICT),
+	
+	ERROR_DUPLICIDAD_TRASLAPE_DATABASE_TARIFAS_ESPECIALES("E985", "Algunos registros del archivo presentan duplicidad con información registrada en la base de datos", HttpStatus.CONFLICT),
+	
+	ERROR_VALIDACION_ARCHIVO("E986", "Algunos registros presentan errores en la validación de reglas.", HttpStatus.BAD_REQUEST),
+	
+	ERROR_ELIMINACION_REGISTRO_TARIFAS_ESPECIALES("E987", "Solo se pueden eliminar registros cuya fecha de inicio y fin de vigencia sean mayores o iguales al primer día del mes anterior.", HttpStatus.PRECONDITION_FAILED),
+	
+	ERROR_EXIST_REGISTRO("E988", "El registro ya existe en la base de datos.", HttpStatus.PRECONDITION_FAILED);
 	/**
 	 * Código asociado a la respuesta
 	 */

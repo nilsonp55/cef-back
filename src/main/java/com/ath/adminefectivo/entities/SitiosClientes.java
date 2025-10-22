@@ -2,12 +2,15 @@ package com.ath.adminefectivo.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.ath.adminefectivo.auditoria.listener.AuditoriaEntityListener;
 import com.ath.adminefectivo.entities.audit.AuditableEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,6 +26,7 @@ import lombok.Setter;
  */
 
 @Entity
+@EntityListeners(AuditoriaEntityListener.class)
 @Table(name = "SITIOS_CLIENTE")
 @Getter
 @Setter

@@ -249,10 +249,11 @@ public final class Dominios {
 	//Dominios para Auditoria Procesos
 	public static final String AUDITORIA_CIERRE_CERTI = "24";
 	
-	
 	public static final String TIPO_OPERACION_TERMINA_CCE = "CCE";
 	public static final boolean VERDADERO = true;
 	public static final boolean FALSO = false;
 	
-	
+	//Dominios para Tarifas Especiales Cliente
+	public static final String COMISION_TARIFA_ESPECIAL_PROVISION = "COMISION_TARIFA_ESPECIAL_PROVISION";
+	public static final String COMISION_TARIFA_ESPECIAL_RECOLECCION = "COMISION_TARIFA_ESPECIAL_RECOLECCION";
 }

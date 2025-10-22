@@ -8,8 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ath.adminefectivo.dto.PuntoCiudadesDTO;
 import com.ath.adminefectivo.dto.SitiosClientesDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseADE;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
@@ -42,6 +44,23 @@ public class SitiosClientesController {
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
+	}
+	
+	/**
+	 * Servicio que consulta los puntos asociados a un cliente utilizando el Codigo Cliente como parametro de entrada
+	 * 
+	 * @return ResponseEntity<ApiResponseADE<List<PuntoCiudadesDTO>>>
+	 * @author jose.pabon
+	 */	
+	@GetMapping(value = "${endpoints.SitiosClientes.consultarPuntosAsociados}")
+	public ResponseEntity<ApiResponseADE<List<PuntoCiudadesDTO>>> getCodigoPuntoCiudad(@RequestParam() Integer codigoCliente) {
+		  
+        List<PuntoCiudadesDTO> puntoAsociadosClientes = sitiosClientesService.getPuntoAsociadosClientes(codigoCliente);
+        
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ApiResponseADE<>(puntoAsociadosClientes, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
+   
 	}
 }
 

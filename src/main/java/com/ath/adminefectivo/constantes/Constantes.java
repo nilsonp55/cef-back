@@ -773,7 +773,6 @@ public static final String DELETE_SEPARADORES = "";
 	public static final String ESTADO_NO_CONCILIADO = "NO CONCILIADO";
 	
 	public static final String OPERACION_EN_ESTADO_CONCILIADO = "Operacion en estado CONCILIADA, no se puede actualizar";
-
 	/**
 	 * Listas de Conciliacion
 	 */
@@ -781,5 +780,46 @@ public static final String DELETE_SEPARADORES = "";
 	public static final String LISTA_CONCILIACION_IDLIQUIDACIONAPP = "ID_LIQUIDACION_APP";
 	public static final String LISTA_CONCILIACION_IDLIQUIDACIONTDV = "ID_LIQUIDACION_TDV";
 	public static final String LISTA_CONCILIACION_CONSECUTIVO = "CONSEUTIVO_REGISTRO";
+	
+	/**
+	 * ESTADO OPERACION
+	 * Establecer el estado de operación como ejecutada en operaciones programadas
+	 */
+	public static final String ESTADO_OPERACION_EJECUTADA = "EJECUTADA";
+	
+	/**
+	 * Constantes tarifas especiales cliente
+	 */
+	
+	public static final String VIGENCIAS_PASADAS = "PASADA";
+	public static final String VIGENCIAS_ACTUALES = "ACTUAL";
+	public static final String TARIFAS_ESPECIALES_AGRUPADOR = "TARESP";
+	public static final String REGLA_EDICION_COMPLETA = "EDICION_COMPLETA";
+	public static final String REGLA_EDICION_PARCIAL = "EDICION_PARCIAL";
+	public static final String REGLA_NO_EDITABLE = "NO_EDITABLE";
+	public static final String MAESTRO_ARCHIVO_TARIFAS_ESPECIALES = "TECLI";
+	
+	/**
+	 * Constantes tarifas regulares
+	 */
 
+	public static final String TARIFAS_REGULARES_AGRUPADOR = "TAROPR";
+	public static final String MAESTRO_ARCHIVO_TARIFAS_REGULARES = "TAROP";
+	
+	/**
+	 * Constantes de estados para interceptores logs de auditoria
+	 */
+	public static final String POST = "POST";
+	public static final String PUT = "PUT";
+	public static final String DELETE = "DELETE";
+	public static final String CREAR = "CREAR";
+	public static final String ACTUALIZAR = "ACTUALIZAR";
+	public static final String ELIMINAR = "ELIMINAR";
+	public static final String DESCONOCIDO = "DESCONOCIDO";
+	public static final String CREATE = "CREATE";
+	public static final String UPDATE = "UPDATE";
+	public static final String SIN_PROCESO = "SIN_PROCESO";
+	public static final String EXITOSO = "EXITOSO";
+	
+	
 }

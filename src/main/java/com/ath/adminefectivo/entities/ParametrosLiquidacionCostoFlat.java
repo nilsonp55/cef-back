@@ -5,12 +5,14 @@ import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.ath.adminefectivo.auditoria.listener.AuditoriaEntityListener;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
@@ -20,6 +22,7 @@ import lombok.NoArgsConstructor;
 
 
 @Entity
+@EntityListeners(AuditoriaEntityListener.class)
 @Table(name = "PARAMETROS_LIQUIDACION_COSTO")
 @Data
 @Builder
