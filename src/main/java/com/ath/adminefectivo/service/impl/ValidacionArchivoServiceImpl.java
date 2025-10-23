@@ -261,7 +261,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
         return obtenerLineas(maestroDefinicion, contenidoValidado);
 
     }
-
+	
     /**
      * {@inheritDoc}
      */
@@ -296,7 +296,6 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
           return validacionArchivo;
       }
       
-      
         if (maestroDefinicion.isValidaEstructura()) {
             validacionArchivo.setValidacionLineas(validarEstructuraCampos(maestroDefinicion, respuesta));
             int erroresTotales = validacionDeErrores(validacionArchivo.getValidacionLineas());
@@ -316,20 +315,21 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
         return validacionArchivo;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean validarNombreArchivo(MaestrosDefinicionArchivoDTO maestroDefinicion, String nombreArchivo) {
-      log.debug("validarNombreArchivo inicio - maestroDefinicion: {} - nombreArchivo: {}", maestroDefinicion, nombreArchivo);
-        if (maestroDefinicion.getAgrupador().equals("CERTI")) {
-            String[] arregloNombre = nombreArchivo.split(Constantes.EXPRESION_REGULAR_PUNTO);
-            String inicioNombre = arregloNombre[0].substring(0, 2);
-            String fecha;
-            String mascaraFecha;
-            List<String> formatoFecha;
-            
-            if (!StringUtils.equalsIgnoreCase(arregloNombre[1], maestroDefinicion.getExtension())) {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean validarNombreArchivo(MaestrosDefinicionArchivoDTO maestroDefinicion, String nombreArchivo) {
+	  log.debug("validarNombreArchivo inicio - maestroDefinicion: {} - nombreArchivo: {}", maestroDefinicion, nombreArchivo);
+		if (maestroDefinicion.getAgrupador().equals("CERTI")) {
+			String[] arregloNombre = nombreArchivo.split(Constantes.EXPRESION_REGULAR_PUNTO);
+			String inicioNombre = arregloNombre[0].substring(0, 2);
+			String fecha;
+			String mascaraFecha;
+			List<String> formatoFecha;
+			
+			if (!StringUtils.equalsIgnoreCase(arregloNombre[1], maestroDefinicion.getExtension())) {
+
               log.debug("arregloNombre[1]: {} - maestroDefinicion.getExtension()", arregloNombre[1],
                   maestroDefinicion.getExtension());
                 throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),

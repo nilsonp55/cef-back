@@ -182,6 +182,18 @@ public class OperacionesProgramadas {
   @Column(name = "CODIGO_SERVICIO_TDV", nullable = true)
   private String codigoServicioTdv;
   
+  @Column(name = "TRANSPORTADORA_ORIGEN")
+  private String transportadoraOrigen;
+
+  @Column(name = "TRANSPORTADORA_DESTINO")
+  private String transportadoraDestino;
+
+  @Column(name = "MUNICIPIO_ORIGEN")
+  private String municipioOrigen;
+
+  @Column(name = "MUNICIPIO_DESTINO")
+  private String municipioDestino;
+  
   /*
   * HU006 Determina si se liquida costo para la operacion
   */

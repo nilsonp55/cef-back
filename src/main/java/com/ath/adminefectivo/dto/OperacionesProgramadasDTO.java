@@ -96,6 +96,14 @@ public class OperacionesProgramadasDTO {
 	
 	private String tipoPuntoDestino;
 	
+	private String transportadoraOrigen;
+	
+	private String transportadoraDestino;
+	
+	private String municipioOrigen;
+	
+	private String municipioDestino;
+	
 	/*
 	 * HU006 Determina si se liquida costo para la operacion
 	 */

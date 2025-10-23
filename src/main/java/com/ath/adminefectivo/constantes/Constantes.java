@@ -419,6 +419,26 @@ public final class Constantes {
 	public static final String CAMPO_DETALLE_ARCHIVO_VALORTOTAL = "VALOR TOTAL";
 	
 	/**
+	 * Constante para identificar el campo municipio_origen del archivo
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_MUNICIPIOORIGEN = "CODIGOORIGEN";
+	
+	/**
+	 * Constante para identificar el campo municipio_destino del archivo
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_MUNICIPIODESTINO = "CODIGODESTINO";
+	
+	/**
+	 * Constante para identificar el campo municipio_destino del archivo
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_TDVORIGEN = "TRANSPORTADORAORIGEN";
+	
+	/**
+	 * Constante para identificar el campo municipio_destino del archivo
+	 */
+	public static final String CAMPO_DETALLE_ARCHIVO_TDVDESTINO = "TRANSPORTADORADESTINO";
+	
+	/**
 	 * Constante para identificar el campo id negociacion del archivo
 	 */
 	public static final String CAMPO_DETALLE_ARCHIVO_IDNEGOCIACION = "IDNEGOCIACION";

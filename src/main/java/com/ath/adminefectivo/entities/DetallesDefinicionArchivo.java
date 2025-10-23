@@ -54,4 +54,6 @@ public class DetallesDefinicionArchivo {
 	@Column(name = "EXPRESION_REGLA", length = 200, nullable = true)
 	private String expresionRegla;
 	
+	@Column(name = "NUMERO_CAMPO", insertable = false, updatable = false)
+	private Integer numeroCampo;
 }
