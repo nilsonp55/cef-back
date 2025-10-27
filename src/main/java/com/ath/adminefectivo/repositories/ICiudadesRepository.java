@@ -62,10 +62,10 @@ public interface ICiudadesRepository extends JpaRepository<Ciudades, String>, Qu
 	
 	
 	@Query(value = """
-	        SELECT c.codigo_dane 
-	        FROM controlefect.puntos p
-	        INNER JOIN controlefect.ciudades c ON c.codigo_dane = p.codigo_ciudad
-	        WHERE p.nombre_punto = :nombrePunto
-	        """, nativeQuery = true)
+			SELECT c.codigo_dane 
+			FROM controlefect.puntos p 
+			INNER JOIN controlefect.ciudades c ON c.codigo_dane = p.codigo_ciudad 
+			WHERE p.nombre_punto = :nombrePunto
+			""", nativeQuery = true)
 	    String findCodigoDaneByNombrePunto(@Param("nombrePunto") String nombrePunto);
 }
