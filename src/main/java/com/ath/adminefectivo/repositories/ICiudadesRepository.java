@@ -3,7 +3,9 @@ package com.ath.adminefectivo.repositories;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
+import org.springframework.data.repository.query.Param;
 
 import com.ath.adminefectivo.entities.Ciudades;
 
@@ -57,4 +59,13 @@ public interface ICiudadesRepository extends JpaRepository<Ciudades, String>, Qu
 	 * @author duvan.naranjo
 	 */
 	public List<Ciudades> findAllByOrderByNombreCiudadAsc();
+	
+	
+	@Query(value = """
+			SELECT c.codigo_dane 
+			FROM controlefect.puntos p 
+			INNER JOIN controlefect.ciudades c ON c.codigo_dane = p.codigo_ciudad 
+			WHERE p.nombre_punto = :nombrePunto
+			""", nativeQuery = true)
+	    String findCodigoDaneByNombrePunto(@Param("nombrePunto") String nombrePunto);
 }
