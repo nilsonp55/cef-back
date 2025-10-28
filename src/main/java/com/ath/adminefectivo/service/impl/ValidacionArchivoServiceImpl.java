@@ -270,31 +270,30 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
             List<String[]> contenido, ValidacionArchivoDTO validacionArchivo, List<ValidacionLineasDTO> respuesta) {
       log.debug("validarEstructura inicio");
       
-      boolean hayDiferencias = false;
-      long totalCampos = detallesDefinicionArchivoRepository
-				.contarPorIdArchivo(maestroDefinicion.getIdMaestroDefinicionArchivo());
-      
-      for (int i = 0; i < contenido.size(); i++) {
-    	  
-    	    String[] fila = contenido.get(i);
+		if (maestroDefinicion.getAgrupador().equals(Constantes.LIQUIDACION_AGRUPADOR)) {
+			boolean hayDiferencias = false;
+			long totalCampos = detallesDefinicionArchivoRepository
+					.contarPorIdArchivo(maestroDefinicion.getIdMaestroDefinicionArchivo());
 
-    	    if (fila.length != totalCampos) {
-    	    	
-    	    	hayDiferencias = true;
-    	    	
-    	        validacionArchivo = ArchivosLiquidacionDelegateImpl.agregarErrorValidacion(
-    	            validacionArchivo,
-    	            "El archivo no contiene registros válidos para procesar. Verifique que las filas cuenten con todos los campos requeridos y que el delimitador utilizado sea correcto.",
-    	            i + 1,
-    	            Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO
-    	        );
-    	    }
-    	}
-      
-   // Si al menos una fila tuvo diferencia, retorna error
-      if (hayDiferencias) {
-          return validacionArchivo;
-      }
+			for (int i = 0; i < contenido.size(); i++) {
+
+				String[] fila = contenido.get(i);
+
+				if (fila.length != totalCampos) {
+
+					hayDiferencias = true;
+
+					validacionArchivo = ArchivosLiquidacionDelegateImpl.agregarErrorValidacion(validacionArchivo,
+							"El archivo no contiene registros válidos para procesar. Verifique que las filas cuenten con todos los campos requeridos y que el delimitador utilizado sea correcto.",
+							i + 1, Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO);
+				}
+			}
+
+			// Si al menos una fila tuvo diferencia, retorna error
+			if (hayDiferencias) {
+				return validacionArchivo;
+			}
+		}
       
         if (maestroDefinicion.isValidaEstructura()) {
             validacionArchivo.setValidacionLineas(validarEstructuraCampos(maestroDefinicion, respuesta));
