@@ -268,34 +268,29 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
     @Override
     public ValidacionArchivoDTO validarEstructura(MaestrosDefinicionArchivoDTO maestroDefinicion,
             List<String[]> contenido, ValidacionArchivoDTO validacionArchivo, List<ValidacionLineasDTO> respuesta) {
-      log.debug("validarEstructura inicio");
+      log.debug("validarEstructura inicio - agrupador archivo: {}", maestroDefinicion.getAgrupador());
       
 		if (maestroDefinicion.getAgrupador().equals(Constantes.LIQUIDACION_AGRUPADOR)) {
-			boolean hayDiferencias = false;
+			
 			long totalCampos = detallesDefinicionArchivoRepository
 					.contarPorIdArchivo(maestroDefinicion.getIdMaestroDefinicionArchivo());
 
+			log.debug("Definicion archivo no. campos: {}", totalCampos);
 			for (int i = 0; i < contenido.size(); i++) {
 
 				String[] fila = contenido.get(i);
 
 				if (fila.length != totalCampos) {
-
-					hayDiferencias = true;
-
 					validacionArchivo = ArchivosLiquidacionDelegateImpl.agregarErrorValidacion(validacionArchivo,
 							"El archivo no contiene registros válidos para procesar. Verifique que las filas cuenten con todos los campos requeridos y que el delimitador utilizado sea correcto.",
 							i + 1, Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO);
+					return validacionArchivo;
 				}
-			}
-
-			// Si al menos una fila tuvo diferencia, retorna error
-			if (hayDiferencias) {
-				return validacionArchivo;
 			}
 		}
       
         if (maestroDefinicion.isValidaEstructura()) {
+        	log.debug("Valida estructura");
             validacionArchivo.setValidacionLineas(validarEstructuraCampos(maestroDefinicion, respuesta));
             int erroresTotales = validacionDeErrores(validacionArchivo.getValidacionLineas());
             if (erroresTotales > 0) {
@@ -306,6 +301,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
             }
             return validacionArchivo;
         } else {
+        	log.debug("No valida estructura");
             validacionArchivo.setValidacionLineas(respuesta);
             validacionArchivo.setEstadoValidacion(Dominios.ESTADO_VALIDACION_CORRECTO);
             validacionArchivo.setDescripcionErrorEstructura(Dominios.ESTADO_VALIDACION_CORRECTO);
