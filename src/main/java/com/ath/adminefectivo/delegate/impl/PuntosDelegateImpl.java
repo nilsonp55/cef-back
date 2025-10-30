@@ -236,6 +236,11 @@ public class PuntosDelegateImpl implements IPuntosDelegate {
       punto.setOficinas(oficina);
       // validar si Oficina Existe, se lazan exception si existe
       puntosService.validarPuntoOficinaUnique(punto, oficina);
+      Puntos puntoResponse = puntosService.actualizarPunto(punto);
+      Oficinas oficinaTrasnporte = oficinasRepository.findByCodigoPunto(createPuntosDTO.getCodigoPunto());
+      oficinaTrasnporte.setProgramaTransporte(createPuntosDTO.getProgramaTransporte());
+      oficinasRepository.save(oficinaTrasnporte);
+      return PuntosDTO.CONVERTER_DTO.apply(puntoResponse);
     }
     
     if (punto.getTipoPunto().equals(Constantes.PUNTO_BANC_REP)) {
@@ -244,10 +249,6 @@ public class PuntosDelegateImpl implements IPuntosDelegate {
     }
     
     Puntos puntoResponse = puntosService.actualizarPunto(punto);
-    
-    Oficinas oficinaTrasnporte = oficinasRepository.findByCodigoPunto(createPuntosDTO.getCodigoPunto());
-    oficinaTrasnporte.setProgramaTransporte(createPuntosDTO.getProgramaTransporte());
-    oficinasRepository.save(oficinaTrasnporte);
     
     return PuntosDTO.CONVERTER_DTO.apply(puntoResponse);
   }
