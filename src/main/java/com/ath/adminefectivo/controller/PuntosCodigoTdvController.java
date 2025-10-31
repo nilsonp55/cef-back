@@ -1,5 +1,7 @@
 package com.ath.adminefectivo.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -111,5 +113,17 @@ public class PuntosCodigoTdvController {
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
+	}
+	
+	/**
+	 * Consulta CodigosTDV por codigoPunto, listar los codigodPropiosTDV de un punto.
+	 * @param idCodigoPunto
+	 * @return Lista de CodigosPropioTDV de un punto dado.
+	 */
+	@GetMapping(value = "${endpoints.PuntosCodigoTdv.codigopunto}")
+	public ResponseEntity<ApiResponseADE<List<PuntosCodigoTdvDTO>>> consultarporCodigPunto(@PathVariable("idcodigopunto") Integer idCodigoPunto) {
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ApiResponseADE<>(puntosCodigoTdvService.getByCodigoPunto(idCodigoPunto), ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+				.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
 }

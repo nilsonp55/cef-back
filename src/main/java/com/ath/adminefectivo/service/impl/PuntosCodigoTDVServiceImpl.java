@@ -169,5 +169,14 @@ public class PuntosCodigoTDVServiceImpl implements IPuntosCodigoTdvService {
 		
 		return (puntosCodigoTdvEntity.getEstado() == Dominios.ESTADO_GENERAL_ELIMINADO);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<PuntosCodigoTdvDTO> getByCodigoPunto(Integer codigoPunto) {
+		return puntosCodigoTDVRepository.findByCodigoPunto(codigoPunto).stream()
+				.map(e -> PuntosCodigoTdvDTO.CONVERTER_DTO.apply(e)).toList();
+	}
 
 }
