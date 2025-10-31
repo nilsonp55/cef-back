@@ -45,4 +45,10 @@ public interface IPuntosCodigoTDVRepository
 	 */
 	public PuntosCodigoTDV findByCodigoPropioTDVAndCodigoTDVAndBancosAndCiudadFondo(String codigoPropioTdv, String codigoTdv, Bancos banco, String ciudadFondo);
 
+	/**
+	 * Lista CodigosTDV para un id CodigoPunto
+	 * @param codigoPunto
+	 * @return Lista de CodigosTDV de un Punto
+	 */
+	public List<PuntosCodigoTDV> findByCodigoPunto(Integer codigoPunto);
 }
