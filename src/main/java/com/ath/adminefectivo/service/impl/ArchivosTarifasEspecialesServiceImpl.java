@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -31,6 +32,7 @@ import org.springframework.stereotype.Service;
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.constantes.Parametros;
+import com.ath.adminefectivo.delegate.impl.ArchivosLiquidacionDelegateImpl;
 import com.ath.adminefectivo.dto.ArchivosLiquidacionDTO;
 import com.ath.adminefectivo.dto.ArchivosTarifasEspecialesDTO;
 import com.ath.adminefectivo.dto.DownloadDTO;
@@ -129,6 +131,10 @@ public class ArchivosTarifasEspecialesServiceImpl implements IArchivosTarifasEsp
     IBancoSimpleInfoRepository bancoSimpleInfoRepository;
        
     private ValidacionArchivoDTO validacionArchivo;
+    
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    
+    boolean reemplazoContieneA = false;
     
     @Value("${aws.s3.active}")
     Boolean s3aws;
@@ -393,9 +399,9 @@ public class ArchivosTarifasEspecialesServiceImpl implements IArchivosTarifasEsp
 			        .codigoDane(campos[mapping.get("codigoDane")])
 
 			        .codigoPunto(
-			        	    idMaestroDefinicion.equals(Constantes.MAESTRO_ARCHIVO_TARIFAS_ESPECIALES) 
-			        	        ? nullIfEmptyInt(getCampo(mapping, campos, "codigoPunto")) 
-			        	        : null
+			        	    idMaestroDefinicion.equals(Constantes.MAESTRO_ARCHIVO_TARIFAS_ESPECIALES)
+			        	        ? obtenerCodigoPunto(getCampo(mapping, campos, "codigoPunto"))
+			        	        : 0
 			        	)
 			        
 			        .tipoOperacion(campos[mapping.get("tipoOperacion")])
@@ -467,6 +473,13 @@ public class ArchivosTarifasEspecialesServiceImpl implements IArchivosTarifasEsp
 			map.put("estado", 15);
 		}
 		return map;
+	}
+	
+	private Integer obtenerCodigoPunto(String valor) {
+	    if (valor == null || valor.isBlank() || "TODOS".equalsIgnoreCase(valor.trim())) {
+	        return 0;
+	    }
+	    return nullIfEmptyInt(valor);
 	}
 	
 	private String getCampo(Map<String, Integer> mapping, String[] campos, String key) {
@@ -599,7 +612,7 @@ public class ArchivosTarifasEspecialesServiceImpl implements IArchivosTarifasEsp
 		                registroArchivo.setFechaCreacion(registroBD.getFechaCreacion());
 		                registroArchivo.setUsuarioModificacion(usuarioSesion);
 		                registroArchivo.setFechaModificacion(new Date());
-		                esCandidatoReemplazo = true;
+		                //esCandidatoReemplazo = true;
 		                break;
 		                
 		            } else {
@@ -615,6 +628,9 @@ public class ArchivosTarifasEspecialesServiceImpl implements IArchivosTarifasEsp
 		    // 2️ Validaciones normales
 		    if (!esCandidatoReemplazo) {
 		        for (TarifasEspecialesClienteDTO registroBD : bd) {
+		        	
+		        	String claveUnicareg = generarClaveUnica(registroArchivo);
+		        	String claveUnicadb = generarClaveUnica(registroBD);
 		        	
 		            // Duplicado exacto
 		            if (generarClaveUnica(registroArchivo).equals(generarClaveUnica(registroBD))) {
@@ -646,48 +662,46 @@ public class ArchivosTarifasEspecialesServiceImpl implements IArchivosTarifasEsp
 
 					if (!duplicadosExactos.contains(clavePar) && claveUnicaSinFechas(registroArchivo, registroBD)
 							&& fechasTraslapadas(registroArchivo, registroBD)) {
+						
+						//Si fecha inicio de vigencia es menor a fecha inicio vigencia de un registro 
+						//y fecha fin vigencia es mayor a fecha fin vigencia del mismo registro 
+						if(rangoContieneA(registroArchivo, registroBD)) {
+							
+							if (permiteReemplazo) {
+								reemplazoContieneA = true;
+								registroArchivo.setIdTarifaEspecial(registroBD.getIdTarifaEspecial());
+								registroArchivo.setUsuarioCreacion(registroBD.getUsuarioCreacion());
+								registroArchivo.setFechaCreacion(registroBD.getFechaCreacion());
+								registroArchivo.setUsuarioModificacion(usuarioSesion);
+								registroArchivo.setFechaModificacion(new Date());
+								continue;
 
+							} else {
+								errores.append(
+										"Se encontró traslape donde la fecha de inicio es menor y la fecha de fin es mayor entre la fila ")
+										.append(i + 1).append(" del archivo y el registro en BD con el idTarifa ")
+										.append(registroBD.getIdTarifaEspecial()).append(" | ");
+
+								continue;
+							}						
+						}
+						
 						int numeroLinea = i + 1;
-					    String mensajeErroresTxt = "Se encontró traslape de fechas de vigencia con un registro de la base de datos (idTarifa: "
-					            + registroBD.getIdTarifaEspecial() +")";					 
+						String mensajeErroresTxt = "Se encontró traslape de fechas de vigencia entre la fila "
+						        + numeroLinea + " del archivo y el registro en BD con idTarifa "
+						        + registroBD.getIdTarifaEspecial() + ".";					 
 					    
-					    //ValidacionLineasDTO
-					    ErroresCamposDTO error = ErroresCamposDTO.builder()
-					            .numeroCampo(0)
-					            .estado(Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO)
-					            .contenido("Traslape de fechas")
-					            .mensajeErrorTxt(mensajeErroresTxt)
-					            .mensajeError(List.of(mensajeErroresTxt))
-					            .build();
-
-					        // Buscas la línea correspondiente en validacionArchivo
-					        ValidacionLineasDTO linea = validacionArchivo.getValidacionLineas()
-					            .stream()
-					            .filter(vl -> vl.getNumeroLinea() == numeroLinea)
-					            .findFirst()
-					            .orElseGet(() -> {
-					                // si no existe la línea, la creas
-					                ValidacionLineasDTO nueva = ValidacionLineasDTO.builder()
-					                    .numeroLinea(numeroLinea)
-					                    .estado(Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO)
-					                    .campos(new ArrayList<>())
-					                    .build();
-					                validacionArchivo.getValidacionLineas().add(nueva);
-					                return nueva;
-					            });
-
-					        // Agregas el error a esa línea
-					        if (linea.getCampos() == null) {
-					            linea.setCampos(new ArrayList<>());
-					        }
-					        linea.getCampos().add(error);
-
-					        // Actualizas estado global del archivo
-					        validacionArchivo.setNumeroErrores(validacionArchivo.getNumeroErrores() + 1);
-					        validacionArchivo.setEstadoValidacion(Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO);
+						addErrorLinea(validacionArchivo, numeroLinea, mensajeErroresTxt, "Traslape de fechas");
 					}
 				}
 			}
+		    
+		    // Validar que la fecha de inicio sea mayor o igual al primer día del mes anterior de la fecha del sistema
+		    LocalDate fecInicioArchivo = toLocalDate(registroArchivo.getFechaInicioVigencia());
+		    String mensajeErroresTxt = validarFechaMinima(fecInicioArchivo, i+1);
+		    if (mensajeErroresTxt != null) {
+		    	addErrorLinea(validacionArchivo, i+1, mensajeErroresTxt, "Inicio vigencia menor al primer día del mes anterior");
+		    }
 		}
 		
 
@@ -713,7 +727,7 @@ public class ArchivosTarifasEspecialesServiceImpl implements IArchivosTarifasEsp
                 String.valueOf(r.getCodigoTdv()),
                 String.valueOf(r.getCodigoCliente()),
                 String.valueOf(r.getCodigoDane()),
-                String.valueOf(r.getCodigoPunto()),
+                String.valueOf(r.getCodigoPunto() == null ? 0 : r.getCodigoPunto()),
                 String.valueOf(r.getEscala()),
                 String.valueOf(r.getTipoOperacion()),
                 String.valueOf(r.getTipoServicio()),
@@ -729,7 +743,10 @@ public class ArchivosTarifasEspecialesServiceImpl implements IArchivosTarifasEsp
                Objects.equals(r1.getCodigoTdv(), r2.getCodigoTdv()) &&
                Objects.equals(r1.getCodigoCliente(), r2.getCodigoCliente()) &&
                Objects.equals(r1.getCodigoDane(), r2.getCodigoDane()) &&
-               Objects.equals(r1.getCodigoPunto(), r2.getCodigoPunto()) &&
+               Objects.equals(
+            		    r1.getCodigoPunto() == null ? 0 : r1.getCodigoPunto(),
+            		    r2.getCodigoPunto() == null ? 0 : r2.getCodigoPunto()
+            		) &&
                Objects.equals(r1.getEscala(), r2.getEscala()) &&
                Objects.equals(r1.getTipoOperacion(), r2.getTipoOperacion()) &&
                Objects.equals(r1.getTipoServicio(), r2.getTipoServicio()) &&
@@ -744,6 +761,16 @@ public class ArchivosTarifasEspecialesServiceImpl implements IArchivosTarifasEsp
 
 		// traslapan si los rangos se intersectan
 		return !(fin1.isBefore(inicio2) || inicio1.isAfter(fin2));
+	}
+	
+	private boolean rangoContieneA(TarifasEspecialesClienteDTO r1, TarifasEspecialesClienteDTO r2) {
+	    LocalDate inicio1 = toLocalDate(r1.getFechaInicioVigencia());
+	    LocalDate fin1 = toLocalDate(r1.getFechaFinVigencia());
+	    LocalDate inicio2 = toLocalDate(r2.getFechaInicioVigencia());
+	    LocalDate fin2 = toLocalDate(r2.getFechaFinVigencia());
+
+	    // inicio1 < inicio2  AND  fin1 > fin2
+	    return inicio1.isBefore(inicio2) && fin1.isAfter(fin2);
 	}
     
     /** Verdadero si fecha está dentro [inicio, fin], inclusivo. */
@@ -809,7 +836,7 @@ public class ArchivosTarifasEspecialesServiceImpl implements IArchivosTarifasEsp
                      .max(Date::compareTo)
                      .orElse(null);
 
-			entidades = tarifasOperacionRepository.findByFechaVigenciaBetween(fechaMin, fechaMax);
+			entidades = tarifasOperacionRepository.findByFechaVigencia(fechaMin, fechaMax);
 		}
 
 		return entidades.stream().map(this::mapEntityToDTO).collect(Collectors.toList());
@@ -900,43 +927,50 @@ public class ArchivosTarifasEspecialesServiceImpl implements IArchivosTarifasEsp
         return dto;
     }
     
-    private void persistirTarifasEspeciales(List<TarifasEspecialesClienteDTO> registroArchivo, Long idArchivoCargado) {
+	private void persistirTarifasEspeciales(List<TarifasEspecialesClienteDTO> registroArchivo, Long idArchivoCargado) {
 
-        List<TarifasEspecialesCliente> listTarifasEspeciales = registroArchivo.stream()
-            .map(dto -> {
-                TarifasEspecialesCliente entity;
+		List<TarifasEspecialesCliente> listTarifasEspeciales = registroArchivo.stream().map(dto -> {
+			TarifasEspecialesCliente entity;
 
-                if (dto.getIdTarifaEspecial() != null) {
+			if (dto.getIdTarifaEspecial() != null) {
 
-                    entity = tarifasEspeciales.findById(dto.getIdTarifaEspecial())
-                            .orElseThrow(() -> new IllegalStateException(
-                                    "No se encontró TarifaEspecial con id " + dto.getIdTarifaEspecial()));
+				entity = tarifasEspeciales.findById(dto.getIdTarifaEspecial())
+						.orElseThrow(() -> new IllegalStateException(
+								"No se encontró TarifaEspecial con id " + dto.getIdTarifaEspecial()));
 
-                    // Solo actualizar campos NO incluidos en la restricción de unicidad
-                    entity.setBilletes(dto.getBilletes());
-                    entity.setMonedas(dto.getMonedas());
-                    entity.setFajado(dto.getFajado());
-                    entity.setValorTarifa(dto.getValorTarifa());
-                    entity.setEstado(dto.isEstado());
-                    entity.setUsuarioModificacion(dto.getUsuarioModificacion());
-                    entity.setFechaModificacion(dto.getFechaModificacion());
-                    entity.setLimiteComisionAplicar(dto.getLimiteComisionAplicar());
-                    entity.setValorComisionAdicional(dto.getValorComisionAdicional());
-                    entity.setIdArchivoCargado(idArchivoCargado.intValue());
-                    entity.setIdRegistro(dto.getIdRegistro());
+				// Solo actualizar campos NO incluidos en la restricción de unicidad
+				entity.setBilletes(dto.getBilletes());
+				entity.setMonedas(dto.getMonedas());
+				entity.setFajado(dto.getFajado());
+				entity.setValorTarifa(dto.getValorTarifa());
+				entity.setEstado(dto.isEstado());
+				entity.setUsuarioModificacion(dto.getUsuarioModificacion());
+				entity.setFechaModificacion(dto.getFechaModificacion());
+				entity.setLimiteComisionAplicar(dto.getLimiteComisionAplicar());
+				entity.setValorComisionAdicional(dto.getValorComisionAdicional());
+				entity.setIdArchivoCargado(idArchivoCargado.intValue());
+				entity.setIdRegistro(dto.getIdRegistro());
 
-                } else {
-                    // Caso INSERT → crear nueva entidad completa
-                    entity = TarifasEspecialesClienteDTO.CONVERTER_ENTITY.apply(dto);
-                    entity.setIdArchivoCargado(idArchivoCargado.intValue());
-                }
+			} else {
+				// Caso INSERT → crear nueva entidad completa
 
-                return entity;
-            })
-            .collect(Collectors.toList());
+				if ("TODAS".equalsIgnoreCase(dto.getCodigoDane())) {
+					dto.setCodigoDane(null);
+				}
 
-        tarifasEspeciales.saveAll(listTarifasEspeciales);
-    }
+				if (dto.getCodigoPunto() != null && dto.getCodigoPunto() == 0) {
+					dto.setCodigoPunto(null);
+				}
+
+				entity = TarifasEspecialesClienteDTO.CONVERTER_ENTITY.apply(dto);
+				entity.setIdArchivoCargado(idArchivoCargado.intValue());
+			}
+
+			return entity;
+		}).collect(Collectors.toList());
+
+		tarifasEspeciales.saveAll(listTarifasEspeciales);
+	}
 
     
     private void persistirTarifaOperacion(List<TarifasEspecialesClienteDTO> registroArchivo, Long idArchivoCargado) {
@@ -962,6 +996,12 @@ public class ArchivosTarifasEspecialesServiceImpl implements IArchivosTarifasEsp
                     entity.setValorComisionAdicional(dto.getValorComisionAdicional());
                     entity.setIdArchivoCargado(idArchivoCargado.intValue());
                     entity.setIdRegistro(dto.getIdRegistro());
+                    
+                    if(reemplazoContieneA) {
+                    	entity.setFechaVigenciaIni(dto.getFechaInicioVigencia());
+                    	entity.setFechaVigenciaFin(dto.getFechaFinVigencia());
+                    	reemplazoContieneA = false;
+                    }
 
                 } else {
                     // Caso INSERT → crear nueva entidad completa
@@ -1001,7 +1041,70 @@ public class ArchivosTarifasEspecialesServiceImpl implements IArchivosTarifasEsp
         tarifasOperacionRepository.saveAll(listTarifasOperacion);
     }
 
+    
+	private void addErrorLinea(ValidacionArchivoDTO validacionArchivo, int numeroLinea, String mensajeErroresTxt,
+			String contenidoError) {
 
+		// Buscar línea existente o crear una nueva
+		ValidacionLineasDTO linea = validacionArchivo.getValidacionLineas().stream()
+				.filter(vl -> vl.getNumeroLinea() == numeroLinea).findFirst().orElseGet(() -> {
+					ValidacionLineasDTO nueva = ValidacionLineasDTO.builder().numeroLinea(numeroLinea)
+							.estado(Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO).campos(new ArrayList<>()).build();
+					validacionArchivo.getValidacionLineas().add(nueva);
+					return nueva;
+				});
+
+		// Si ya existe algún mensaje, concatenar nuevo mensaje y contenido
+		if (linea.getCampos() != null && !linea.getCampos().isEmpty()) {
+			ErroresCamposDTO campoExistente = linea.getCampos().get(0);
+
+			// Concatenar mensajes
+			String mensajeConcatenado = campoExistente.getMensajeErrorTxt() + " ; " + mensajeErroresTxt;
+			campoExistente.setMensajeErrorTxt(mensajeConcatenado);
+			campoExistente.getMensajeError().add(mensajeErroresTxt);
+
+			// Concatenar contenido (si aplica)
+			String contenidoConcatenado = campoExistente.getContenido() + " ; " + contenidoError;
+			campoExistente.setContenido(contenidoConcatenado);
+
+		} else {
+			// Crear nuevo error
+			ErroresCamposDTO error = ErroresCamposDTO.builder().numeroCampo(0)
+					.estado(Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO).contenido(contenidoError)
+					.mensajeErrorTxt(mensajeErroresTxt).mensajeError(new ArrayList<>(List.of(mensajeErroresTxt)))
+					.build();
+			linea.getCampos().add(error);
+		}
+
+		// Actualizar estado de la línea y del archivo
+		linea.setEstado(Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO);
+		validacionArchivo.setNumeroErrores(validacionArchivo.getNumeroErrores() + 1);
+		validacionArchivo.setEstadoValidacion(Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO);
+	}
+
+	
+	/**
+     * Valida si la fecha indicada es anterior al primer día del mes anterior.
+     * Si lo es, retorna el mensaje de error correspondiente.
+     * En caso contrario, retorna null.
+     */
+    public static String validarFechaMinima(LocalDate fecha, int row) {
+        if (fecha == null) {
+            return "La fechaInicioVigencia es requerida.";
+        }
+
+        LocalDate primerDiaMesAnterior = LocalDate.now()
+                .minusMonths(1)
+                .with(TemporalAdjusters.firstDayOfMonth());
+
+        if (fecha.isBefore(primerDiaMesAnterior)) {
+            String fechaFormato = primerDiaMesAnterior.format(FORMATTER);
+            return "La fechaInicioVigencia de la fila " + row + ", debe ser mayor o igual a la fecha mínima permitida: " + fechaFormato
+                    + " (primer día del mes anterior)";
+        }
+
+        return null; // Es válida, no hay mensaje de error
+    }
     
     @Getter 
     @AllArgsConstructor

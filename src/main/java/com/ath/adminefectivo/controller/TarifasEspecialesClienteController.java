@@ -85,4 +85,15 @@ public class TarifasEspecialesClienteController {
 		return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseADE<>(null, ResponseADE.builder()
 				.code(ApiResponseCode.SUCCESS.getCode()).description("Registro eliminado correctamente.").build()));
 	}
+	
+	@GetMapping("${endpoints.TarifasEspeciales.obtenerUnidadCobro}")
+	public ResponseEntity<ApiResponseADE<String>> obtenerUnidadCobro(
+			@RequestParam("tipoComision") String tipoComision) {
+
+		String resultado = tarifasService.obtenerUnidadCobro(tipoComision);
+
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ApiResponseADE<>(resultado, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
+	}
 }

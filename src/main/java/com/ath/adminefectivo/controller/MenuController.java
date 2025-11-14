@@ -1,10 +1,6 @@
 package com.ath.adminefectivo.controller;
 
 import java.util.List;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.HttpStatus;
@@ -38,7 +34,7 @@ public class MenuController {
 		this.menuService = menuService;
 	}
 
-	@GetMapping(value = "${endpoints.Menu.crud}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "${endpoints.Menu.crud}")
 	public ResponseEntity<ApiResponseADE<List<MenuDTO>>> getAllMenu(
 			@QuerydslPredicate(root = Menu.class) Predicate predicate) {
 
@@ -50,7 +46,7 @@ public class MenuController {
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
 	
-    @PostMapping(value = "${endpoints.Menu.crud}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "${endpoints.Menu.crud}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponseADE<MenuDTO>> createMenu(@RequestBody MenuDTO menu) {
       log.info("Create Menu nombre: {}", menu.getNombre());
       menu = menuService.createMenu(menu);
@@ -60,7 +56,7 @@ public class MenuController {
               .description(ApiResponseCode.SUCCESS.getDescription()).build()));
     }
 
-    @PutMapping(value = "${endpoints.Menu.crud}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "${endpoints.Menu.crud}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponseADE<MenuDTO>> updateMenu(@RequestBody MenuDTO menu) {
       log.info("Update Menu nombre: {}", menu.getNombre());
       menu = menuService.updateMenu(menu);
@@ -71,9 +67,9 @@ public class MenuController {
     }
     
     @DeleteMapping(value = "${endpoints.Menu.crud}{idMenu}")
-    public ResponseEntity<ApiResponseADE<Void>> deleteMenu(@PathVariable @NotNull @Valid Integer idMenu) {
+    public ResponseEntity<ApiResponseADE<Void>> deleteMenu(@PathVariable String idMenu) {
       log.info("Delete Menu Id: {}", idMenu);
-      menuService.deleteMenu(String.valueOf(idMenu));
+      menuService.deleteMenu(idMenu);
       log.info("Deleted Menu Id: {}", idMenu);
       return ResponseEntity.status(HttpStatus.NO_CONTENT)
           .body(new ApiResponseADE<Void>(null,

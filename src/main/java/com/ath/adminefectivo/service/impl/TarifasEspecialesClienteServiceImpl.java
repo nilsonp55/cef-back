@@ -1,6 +1,7 @@
 package com.ath.adminefectivo.service.impl;
 
 import com.ath.adminefectivo.constantes.Constantes;
+import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.TarifasEspecialesClienteDTO;
 import com.ath.adminefectivo.dto.VTarifasEspecialesClienteDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
@@ -47,17 +48,7 @@ public class TarifasEspecialesClienteServiceImpl implements ITarifasEspecialesCl
 
 	@Override
 	public TarifasEspecialesClienteDTO guardar(TarifasEspecialesClienteDTO dto) {
-		
-		// HENRY BORRAR
-		if (dto.getUnidadCobro() == null || dto.getUnidadCobro().trim().isEmpty()) {
-	        dto.setUnidadCobro("UNIDAD");
-	    }
-		
-		if (dto.getCodigoDane() == null || dto.getCodigoDane().trim().isEmpty()) {
-	        dto.setCodigoDane("68001");
-	    }
-		// HENRY BORRAR
-		
+				
 		validarCruceDeVigencias(dto);
 		dto.setFechaCreacion(new Date());
 		TarifasEspecialesCliente entity = TarifasEspecialesClienteDTO.CONVERTER_ENTITY.apply(dto);
@@ -73,16 +64,6 @@ public class TarifasEspecialesClienteServiceImpl implements ITarifasEspecialesCl
 						ApiResponseCode.ERROR_ID_TARIFA_NO_PROPORCIONADO.getDescription(),
 						ApiResponseCode.ERROR_ID_TARIFA_NO_PROPORCIONADO.getHttpStatus());
 		    }
-		 
-		// HENRY BORRAR
-			if (dto.getUnidadCobro() == null || dto.getUnidadCobro().trim().isEmpty()) {
-		        dto.setUnidadCobro("UNIDAD");
-		    }
-			
-			if (dto.getCodigoDane() == null || dto.getCodigoDane().trim().isEmpty()) {
-		        dto.setCodigoDane("68001");
-		    }
-			// HENRY BORRAR
 
 		validarCruceDeVigencias(dto);
 		dto.setFechaModificacion(new Date());
@@ -159,6 +140,50 @@ public class TarifasEspecialesClienteServiceImpl implements ITarifasEspecialesCl
 	    }
 	}
 
+	@Override
+	public String obtenerUnidadCobro(String tipoComision) {
+		String formula;
 
+		switch (tipoComision) {
+		case Dominios.COSTO_FIJO_PARADA:
+			formula = "numero_paradas";
+			break;
 
+		case Dominios.MILAJE_POR_RUTEO:
+		case Dominios.VERIFICACION_BILLETE:
+		case Dominios.CLASIFICACION_FAJADO_MILAJE:
+		case Dominios.CLASIFICACION_NO_FAJADO:
+		case Dominios.COSTO_PAQUETEO:
+			formula = "valor_total / 1000";
+			break;
+
+		case Dominios.COSTO_MONEDA:
+		case Dominios.CLASIFICACION_MONEDA:
+			formula = "numero_bolsas";
+			break;
+
+		case Dominios.CLASIFICACION_FAJADO:
+			formula = "numero_fajos";
+			break;
+
+		case Dominios.BILLETE_RESIDUO:
+			formula = "residuo_billetes";
+			break;
+
+		case Dominios.MONEDA_RESIDUO:
+			formula = "residuo_monedas";
+			break;
+
+		case Dominios.COSTO_EMISARIO:
+		case Dominios.TASA_AEROPORTUARIA:
+			formula = "1";
+			break;
+
+		default:
+			formula = "0";
+			break;
+		}
+
+		return formula;
+	}
 }

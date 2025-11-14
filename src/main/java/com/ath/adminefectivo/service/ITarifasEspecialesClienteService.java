@@ -13,5 +13,6 @@ public interface ITarifasEspecialesClienteService {
     TarifasEspecialesClienteDTO actualizar(TarifasEspecialesClienteDTO dto);
     Page<VTarifasEspecialesClienteDTO> consultarPorCodigoCliente(Integer codigoCliente, String vigencia, Pageable pageable);
     void eliminar(Long idTarifaEspecial);
+    String obtenerUnidadCobro(String tipoComision);
 
 }

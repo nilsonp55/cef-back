@@ -230,7 +230,7 @@ public class FilesServiceImpl implements IFilesService {
 	    if (Boolean.TRUE.equals(s3Bucket)) {
 	        return getResumenObjetosS3Bucket(url, start, end, fileName);
 	    } else {
-	        return getResumenDirectorioLocal(url,fileName);
+	        return getResumenDirectorioLocal(fileName, url);
 	    }
 	}
 
@@ -269,14 +269,6 @@ public class FilesServiceImpl implements IFilesService {
 	        return getResumenObjetoArchivo(fileOrDirectory);
 	    }
 	    return null;
-	}
-	
-	private String getLocalTemporalPath(String url) {
-		String temporalPath = TEMPORAL_URL;
-		if (!Objects.isNull(url) && !url.isEmpty() && !url.isBlank()) {
-			temporalPath = temporalPath.concat(url);
-	    }
-		return temporalPath;
 	}
 
 	private List<S3ObjectSummary> getResumenObjetosDirectorio(File directorio) {
@@ -325,11 +317,15 @@ public class FilesServiceImpl implements IFilesService {
 	        return s3Util.getFileContent(s3ObjectSummary.getKey());
 	    } else {
 	    	File file;
-	    	if (url.contains("Error")) {
-	    	    file = new File(TEMPORAL_URL_ERR + File.separator + s3ObjectSummary.getKey());
-	    	} else {
-	    	    file = new File(TEMPORAL_URL + File.separator + s3ObjectSummary.getKey());
-	    	}
+	    	
+	    	if(url.contains("Error")) {
+	    		file = new File(TEMPORAL_URL_ERR + File.separator + s3ObjectSummary.getKey());
+			}else if(url.contains("Procesado")) {
+				file = new File(TEMPORAL_URL_PROC + File.separator + s3ObjectSummary.getKey());
+			}else {
+				file = new File(TEMPORAL_URL + File.separator + s3ObjectSummary.getKey());
+			}
+	    	
 	    	return leerContenidoArchivo(file);
 	    }
 	}

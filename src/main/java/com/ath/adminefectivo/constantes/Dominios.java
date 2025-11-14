@@ -256,4 +256,18 @@ public final class Dominios {
 	//Dominios para Tarifas Especiales Cliente
 	public static final String COMISION_TARIFA_ESPECIAL_PROVISION = "COMISION_TARIFA_ESPECIAL_PROVISION";
 	public static final String COMISION_TARIFA_ESPECIAL_RECOLECCION = "COMISION_TARIFA_ESPECIAL_RECOLECCION";
+	public static final String COSTO_FIJO_PARADA = "COSTO FIJO PARADA";
+	public static final String MILAJE_POR_RUTEO = "MILAJE POR RUTEO";
+	public static final String VERIFICACION_BILLETE = "VERIFICACION BILLETE";
+	public static final String CLASIFICACION_FAJADO_MILAJE = "CLASIFICACION FAJADO-MILAJE";
+	public static final String CLASIFICACION_NO_FAJADO = "CLASIFICACION NO FAJADO";
+	public static final String COSTO_PAQUETEO = "COSTO PAQUETEO";
+	public static final String COSTO_MONEDA = "COSTO MONEDA";
+	public static final String CLASIFICACION_MONEDA = "CLASIFICACION MONEDA";
+	public static final String CLASIFICACION_FAJADO = "CLASIFICACION FAJADO";
+	public static final String BILLETE_RESIDUO = "BILLETE RESIDUO";
+	public static final String MONEDA_RESIDUO = "MONEDA RESIDUO";
+	public static final String COSTO_EMISARIO = "COSTO EMISARIO";
+	public static final String TASA_AEROPORTUARIA = "TASA AEROPORTUARIA";
+	
 }
