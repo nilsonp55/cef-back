@@ -950,6 +950,12 @@ public class ArchivosTarifasEspecialesServiceImpl implements IArchivosTarifasEsp
 				entity.setValorComisionAdicional(dto.getValorComisionAdicional());
 				entity.setIdArchivoCargado(idArchivoCargado.intValue());
 				entity.setIdRegistro(dto.getIdRegistro());
+				
+				if (reemplazoContieneA) {
+				    entity.setFechaInicioVigencia(dto.getFechaInicioVigencia());    	
+				    entity.setFechaFinVigencia(dto.getFechaFinVigencia());
+				    reemplazoContieneA = false;
+				}
 
 			} else {
 				// Caso INSERT → crear nueva entidad completa
