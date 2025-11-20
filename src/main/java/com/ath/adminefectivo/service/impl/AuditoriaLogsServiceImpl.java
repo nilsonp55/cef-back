@@ -47,20 +47,22 @@ public class AuditoriaLogsServiceImpl implements IAuditoriaLogsService{
 	    QAuditoriaLogEntity q = QAuditoriaLogEntity.auditoriaLogEntity;
 	    BooleanBuilder builder = new BooleanBuilder();
 
-	    // rango opcional de fechas
+	    // Rango opcional de fechas con lógica correcta
 	    if (fechaInicial != null && fechaFinal != null) {
 	        LocalDateTime inicio = fechaInicial.atStartOfDay();
-	        LocalDateTime fin = fechaFinal.atTime(LocalTime.MAX);
-	        builder.and(q.fechaHora.between(inicio, fin));
+	        LocalDateTime fin = fechaFinal.plusDays(1).atStartOfDay(); 
+	        builder.and(q.fechaHora.goe(inicio).and(q.fechaHora.lt(fin)));
+
 	    } else if (fechaInicial != null) {
 	        LocalDateTime inicio = fechaInicial.atStartOfDay();
 	        builder.and(q.fechaHora.goe(inicio));
+
 	    } else if (fechaFinal != null) {
-	        LocalDateTime fin = fechaFinal.atTime(LocalTime.MAX);
-	        builder.and(q.fechaHora.loe(fin));
+	        LocalDateTime fin = fechaFinal.plusDays(1).atStartOfDay();
+	        builder.and(q.fechaHora.lt(fin));
 	    }
 
-	    // opcionales
+	    // Filtros opcionales
 	    if (StringUtils.hasText(usuario)) {
 	        builder.and(q.usuario.equalsIgnoreCase(usuario));
 	    }

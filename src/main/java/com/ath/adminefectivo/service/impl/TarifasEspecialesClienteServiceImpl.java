@@ -67,6 +67,7 @@ public class TarifasEspecialesClienteServiceImpl implements ITarifasEspecialesCl
 
 		validarCruceDeVigencias(dto);
 		dto.setFechaModificacion(new Date());
+		dto.setCodigoPunto(dto.getCodigoPunto() == 0 ? null : dto.getCodigoPunto());
 		TarifasEspecialesCliente entity = TarifasEspecialesClienteDTO.CONVERTER_ENTITY.apply(dto);
 		TarifasEspecialesCliente savedEntity = tarifasEspeciales.save(entity);
 		return TarifasEspecialesClienteDTO.CONVERTER_DTO.apply(savedEntity);
