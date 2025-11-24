@@ -42,6 +42,7 @@ public class FilesServiceImpl implements IFilesService {
   private static final String TEMPORAL_URL = "C:\\Ath\\Docs\\";
   private static final String TEMPORAL_URL_ERR = "C:\\Ath\\Docs\\Error\\";
   private static final String TEMPORAL_URL_PROC = "C:\\Ath\\Docs\\Procesados\\";
+  private static final String ESTADO_PROCESADO = "Procesado";
   
   @Value("${aws.s3.active}")
   Boolean s3Bucket;
@@ -125,7 +126,7 @@ public class FilesServiceImpl implements IFilesService {
 					
 					if(path.contains("Error")) {
 						initialFile = new File(TEMPORAL_URL_ERR + File.separator + nombreArchivo);
-					}else if(path.contains("Procesado")) {
+					}else if(path.contains(ESTADO_PROCESADO)) {
 						initialFile = new File(TEMPORAL_URL_PROC + File.separator + nombreArchivo);
 					}else {
 						initialFile = new File(TEMPORAL_URL + File.separator + nombreArchivo);
@@ -172,7 +173,7 @@ public class FilesServiceImpl implements IFilesService {
     	
     	if (url.contains("Error")) {
     	    url = TEMPORAL_URL_ERR + "\\" + nombreArchivo;
-    	}else if (url.contains("Procesado")) {
+    	}else if (url.contains(ESTADO_PROCESADO)) {
         	    url = TEMPORAL_URL_PROC + "\\" + nombreArchivo;
     	} else {
     	    url = TEMPORAL_URL + "\\" + nombreArchivo;

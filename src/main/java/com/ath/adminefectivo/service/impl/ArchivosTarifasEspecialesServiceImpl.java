@@ -8,7 +8,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -21,18 +20,15 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
-import java.sql.Timestamp;
 
-import org.apache.poi.ss.formula.functions.T;
-import com.ath.adminefectivo.entities.Bancos;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.constantes.Parametros;
-import com.ath.adminefectivo.delegate.impl.ArchivosLiquidacionDelegateImpl;
 import com.ath.adminefectivo.dto.ArchivosLiquidacionDTO;
 import com.ath.adminefectivo.dto.ArchivosTarifasEspecialesDTO;
 import com.ath.adminefectivo.dto.DownloadDTO;
@@ -42,10 +38,8 @@ import com.ath.adminefectivo.dto.compuestos.ErroresCamposDTO;
 import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoDTO;
 import com.ath.adminefectivo.dto.compuestos.ValidacionLineasDTO;
 import com.ath.adminefectivo.dto.response.ApiResponseCode;
-import com.ath.adminefectivo.entities.ArchivosCargados;
-import com.ath.adminefectivo.entities.BancoSimpleInfoEntity;
+import com.ath.adminefectivo.entities.Bancos;
 import com.ath.adminefectivo.entities.ClientesCorporativos;
-import com.ath.adminefectivo.entities.CostosTransporte;
 import com.ath.adminefectivo.entities.TarifasEspecialesCliente;
 import com.ath.adminefectivo.entities.TarifasOperacion;
 import com.ath.adminefectivo.entities.Transportadoras;
@@ -612,7 +606,6 @@ public class ArchivosTarifasEspecialesServiceImpl implements IArchivosTarifasEsp
 		                registroArchivo.setFechaCreacion(registroBD.getFechaCreacion());
 		                registroArchivo.setUsuarioModificacion(usuarioSesion);
 		                registroArchivo.setFechaModificacion(new Date());
-		                //esCandidatoReemplazo = true;
 		                break;
 		                
 		            } else {
@@ -628,9 +621,6 @@ public class ArchivosTarifasEspecialesServiceImpl implements IArchivosTarifasEsp
 		    // 2️ Validaciones normales
 		    if (!esCandidatoReemplazo) {
 		        for (TarifasEspecialesClienteDTO registroBD : bd) {
-		        	
-		        	String claveUnicareg = generarClaveUnica(registroArchivo);
-		        	String claveUnicadb = generarClaveUnica(registroBD);
 		        	
 		            // Duplicado exacto
 		            if (generarClaveUnica(registroArchivo).equals(generarClaveUnica(registroBD))) {
@@ -772,18 +762,6 @@ public class ArchivosTarifasEspecialesServiceImpl implements IArchivosTarifasEsp
 	    // inicio1 < inicio2  AND  fin1 > fin2
 	    return inicio1.isBefore(inicio2) && fin1.isAfter(fin2);
 	}
-    
-    /** Verdadero si fecha está dentro [inicio, fin], inclusivo. */
-    private boolean fechaEntre(Date fecha, TarifasEspecialesClienteDTO rango) {
-        return !fecha.before(rango.getFechaInicioVigencia()) &&
-               !fecha.after(rango.getFechaFinVigencia());
-    }
-    
-    /** r1 contiene completamente a r2 (condición estricta de tu regla: menor/ mayor). */
-    private boolean contieneRango(TarifasEspecialesClienteDTO r1, TarifasEspecialesClienteDTO r2) {
-        return r1.getFechaInicioVigencia().before(r2.getFechaInicioVigencia()) &&
-               r1.getFechaFinVigencia().after(r2.getFechaFinVigencia());
-    }
     
     /** Convierte java.util.Date a java.time.LocalDate (ignora horas y zona horaria). */
     private LocalDate toLocalDate(Object fecha) {
