@@ -321,7 +321,7 @@ public class FilesServiceImpl implements IFilesService {
 	    	
 	    	if(url.contains("Error")) {
 	    		file = new File(TEMPORAL_URL_ERR + File.separator + s3ObjectSummary.getKey());
-			}else if(url.contains("Procesado")) {
+			}else if(url.contains(ESTADO_PROCESADO)) {
 				file = new File(TEMPORAL_URL_PROC + File.separator + s3ObjectSummary.getKey());
 			}else {
 				file = new File(TEMPORAL_URL + File.separator + s3ObjectSummary.getKey());
