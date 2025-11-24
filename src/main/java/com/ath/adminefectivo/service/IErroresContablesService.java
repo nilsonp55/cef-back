@@ -3,7 +3,7 @@ package com.ath.adminefectivo.service;
 import java.util.Date;
 import java.util.List;
 
-import com.ath.adminefectivo.dto.ErroresContablesConsultaDTO;
+import com.ath.adminefectivo.dto.ErroresContablesDTO;
 import com.ath.adminefectivo.dto.TransaccionesInternasDTO;
 import com.ath.adminefectivo.dto.compuestos.ResultadoErroresContablesDTO;
 
@@ -23,7 +23,7 @@ public interface IErroresContablesService {
 	 * @return ErroresContablesDTO
 	 * @author duvan.naranjo
 	 */
-	List<ErroresContablesConsultaDTO> consultarErroresContablesByFechaAndTipoProceso(Date fechaFin, String tipoProceso);
+	List<ErroresContablesDTO> consultarErroresContablesByFechaAndTipoProceso(Date fechaFin, String tipoProceso);
 
 	/**
 	 * Servicio encargado de generar el listado de los errores contables 

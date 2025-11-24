@@ -7,7 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ath.adminefectivo.dto.ErroresContablesConsultaDTO;
+import com.ath.adminefectivo.dto.ErroresContablesDTO;
 import com.ath.adminefectivo.dto.TransaccionesInternasDTO;
 import com.ath.adminefectivo.dto.compuestos.ResultadoErroresContablesDTO;
 import com.ath.adminefectivo.entities.ErroresContables;
@@ -31,8 +31,14 @@ public class ErroresContablesServiceImpl implements IErroresContablesService{
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<ErroresContablesConsultaDTO> consultarErroresContablesByFechaAndTipoProceso(Date fechaFin, String tipoProceso) {
-		 return erroresContablesRepository.findByFechaBetweenAndTipoProcesoNotRelation(fechaFin, tipoProceso);
+	public List<ErroresContablesDTO> consultarErroresContablesByFechaAndTipoProceso(Date fechaFin, String tipoProceso) {
+		List<ErroresContables> listadoErroresContablesEntity = erroresContablesRepository.findByFechaBetweenAndTipoProceso(fechaFin, tipoProceso);
+		List<ErroresContablesDTO> listadoErroresContablesDTO = new ArrayList<>();
+		listadoErroresContablesEntity.forEach(errorContableEntity ->
+			listadoErroresContablesDTO.add(ErroresContablesDTO.CONVERTER_DTO.apply(errorContableEntity))
+		);
+		
+		return listadoErroresContablesDTO;
 	}
 
 	/**

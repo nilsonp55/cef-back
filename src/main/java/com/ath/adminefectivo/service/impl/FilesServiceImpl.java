@@ -42,6 +42,7 @@ public class FilesServiceImpl implements IFilesService {
   private static final String TEMPORAL_URL = "C:\\Ath\\Docs\\";
   private static final String TEMPORAL_URL_ERR = "C:\\Ath\\Docs\\Error\\";
   private static final String TEMPORAL_URL_PROC = "C:\\Ath\\Docs\\Procesados\\";
+  private static final String ESTADO_PROCESADO = "Procesado";
   
   @Value("${aws.s3.active}")
   Boolean s3Bucket;
@@ -125,7 +126,7 @@ public class FilesServiceImpl implements IFilesService {
 					
 					if(path.contains("Error")) {
 						initialFile = new File(TEMPORAL_URL_ERR + File.separator + nombreArchivo);
-					}else if(path.contains("Procesado")) {
+					}else if(path.contains(ESTADO_PROCESADO)) {
 						initialFile = new File(TEMPORAL_URL_PROC + File.separator + nombreArchivo);
 					}else {
 						initialFile = new File(TEMPORAL_URL + File.separator + nombreArchivo);
@@ -172,7 +173,7 @@ public class FilesServiceImpl implements IFilesService {
     	
     	if (url.contains("Error")) {
     	    url = TEMPORAL_URL_ERR + "\\" + nombreArchivo;
-    	}else if (url.contains("Procesado")) {
+    	}else if (url.contains(ESTADO_PROCESADO)) {
         	    url = TEMPORAL_URL_PROC + "\\" + nombreArchivo;
     	} else {
     	    url = TEMPORAL_URL + "\\" + nombreArchivo;
@@ -230,7 +231,7 @@ public class FilesServiceImpl implements IFilesService {
 	    if (Boolean.TRUE.equals(s3Bucket)) {
 	        return getResumenObjetosS3Bucket(url, start, end, fileName);
 	    } else {
-	        return getResumenDirectorioLocal(url,fileName);
+	        return getResumenDirectorioLocal(fileName, url);
 	    }
 	}
 
@@ -269,14 +270,6 @@ public class FilesServiceImpl implements IFilesService {
 	        return getResumenObjetoArchivo(fileOrDirectory);
 	    }
 	    return null;
-	}
-	
-	private String getLocalTemporalPath(String url) {
-		String temporalPath = TEMPORAL_URL;
-		if (!Objects.isNull(url) && !url.isEmpty() && !url.isBlank()) {
-			temporalPath = temporalPath.concat(url);
-	    }
-		return temporalPath;
 	}
 
 	private List<S3ObjectSummary> getResumenObjetosDirectorio(File directorio) {
@@ -325,11 +318,15 @@ public class FilesServiceImpl implements IFilesService {
 	        return s3Util.getFileContent(s3ObjectSummary.getKey());
 	    } else {
 	    	File file;
-	    	if (url.contains("Error")) {
-	    	    file = new File(TEMPORAL_URL_ERR + File.separator + s3ObjectSummary.getKey());
-	    	} else {
-	    	    file = new File(TEMPORAL_URL + File.separator + s3ObjectSummary.getKey());
-	    	}
+	    	
+	    	if(url.contains("Error")) {
+	    		file = new File(TEMPORAL_URL_ERR + File.separator + s3ObjectSummary.getKey());
+			}else if(url.contains("Procesado")) {
+				file = new File(TEMPORAL_URL_PROC + File.separator + s3ObjectSummary.getKey());
+			}else {
+				file = new File(TEMPORAL_URL + File.separator + s3ObjectSummary.getKey());
+			}
+	    	
 	    	return leerContenidoArchivo(file);
 	    }
 	}

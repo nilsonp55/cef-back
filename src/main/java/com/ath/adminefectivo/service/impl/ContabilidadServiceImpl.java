@@ -10,7 +10,7 @@ import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.BancosDTO;
 import com.ath.adminefectivo.dto.CiudadesDTO;
-import com.ath.adminefectivo.dto.ErroresContablesConsultaDTO;
+import com.ath.adminefectivo.dto.ErroresContablesDTO;
 import com.ath.adminefectivo.dto.FondosDTO;
 import com.ath.adminefectivo.dto.OperacionesProgramadasDTO;
 import com.ath.adminefectivo.dto.PuntosDTO;
@@ -125,7 +125,7 @@ public class ContabilidadServiceImpl implements IContabilidadService {
 
     contabilidadDTO.setMensaje(mensaje);
 
-    List<ErroresContablesConsultaDTO> erroresContables = erroresContablesService
+    List<ErroresContablesDTO> erroresContables = erroresContablesService
         .consultarErroresContablesByFechaAndTipoProceso(fechaSistema, tipoContabilidad);
     contabilidadDTO.setErroresContablesDTO(erroresContables);
 
