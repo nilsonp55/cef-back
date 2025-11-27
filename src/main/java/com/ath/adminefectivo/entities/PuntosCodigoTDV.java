@@ -50,7 +50,7 @@ public class PuntosCodigoTDV extends AuditableEntity {
 	private String codigoPropioTDV;
 	
 	@ManyToOne
-	@JoinColumn(name = "COD_PUNTO", nullable = false)
+	@JoinColumn(name = "CODIGO_PUNTO", nullable = false, insertable = false, updatable = false)
 	private Puntos puntos;
 	
 	@ManyToOne

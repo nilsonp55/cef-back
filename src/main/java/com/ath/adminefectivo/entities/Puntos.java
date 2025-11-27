@@ -1,6 +1,7 @@
 package com.ath.adminefectivo.entities;
 
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -55,21 +56,21 @@ public class Puntos extends AuditableEntity {
   @Column(name = "ESTADO")
   private String estado;
 
-  @OneToOne(mappedBy = "punto", orphanRemoval = true, fetch = FetchType.LAZY)
+  @OneToOne(mappedBy = "punto", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
   private Oficinas oficinas;
 
-  @OneToOne(mappedBy = "punto", orphanRemoval = true, fetch = FetchType.LAZY)
+  @OneToOne(mappedBy = "punto", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
   private SitiosClientes sitiosClientes;
 
   @OneToMany(mappedBy = "puntos", fetch = FetchType.LAZY)
   private List<PuntosCodigoTDV> puntosCodigoTDV;
 
-  @OneToOne(mappedBy = "punto", orphanRemoval = true, fetch = FetchType.LAZY)
+  @OneToOne(mappedBy = "punto", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
   private Fondos fondos;
 
-  @OneToOne(mappedBy = "punto", orphanRemoval = true, fetch = FetchType.LAZY)
+  @OneToOne(mappedBy = "punto", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
   private CajerosATM cajeroATM;
 
-  @OneToOne(mappedBy = "punto", orphanRemoval = true, fetch = FetchType.LAZY)
+  @OneToOne(mappedBy = "punto", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
   private Bancos bancos;
 }

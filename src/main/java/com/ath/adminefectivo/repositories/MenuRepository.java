@@ -12,6 +12,9 @@ public interface MenuRepository extends JpaRepository<Menu, String>, QuerydslPre
 	
 	@Query("SELECT idMenu FROM Menu")
 		public List<String> getAllIdMenu();
+	
+	@Query(value = "select coalesce(max(cast(id_menu as integer)), 0)  from menu", nativeQuery = true)
+	Integer findMaxIdMenuQuery();
 
 	Optional<Menu> findByNombre(String nombre);
 }
