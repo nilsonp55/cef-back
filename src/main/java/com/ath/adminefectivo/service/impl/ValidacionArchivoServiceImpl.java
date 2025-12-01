@@ -261,43 +261,36 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
         return obtenerLineas(maestroDefinicion, contenidoValidado);
 
     }
-
+	
     /**
      * {@inheritDoc}
      */
     @Override
     public ValidacionArchivoDTO validarEstructura(MaestrosDefinicionArchivoDTO maestroDefinicion,
             List<String[]> contenido, ValidacionArchivoDTO validacionArchivo, List<ValidacionLineasDTO> respuesta) {
-      log.debug("validarEstructura inicio");
+      log.debug("validarEstructura inicio - agrupador archivo: {}", maestroDefinicion.getAgrupador());
       
-      boolean hayDiferencias = false;
-      long totalCampos = detallesDefinicionArchivoRepository
-				.contarPorIdArchivo(maestroDefinicion.getIdMaestroDefinicionArchivo());
-      
-      for (int i = 0; i < contenido.size(); i++) {
-    	  
-    	    String[] fila = contenido.get(i);
+		if (maestroDefinicion.getAgrupador().equals(Constantes.LIQUIDACION_AGRUPADOR)) {
+			
+			long totalCampos = detallesDefinicionArchivoRepository
+					.contarPorIdArchivo(maestroDefinicion.getIdMaestroDefinicionArchivo());
 
-    	    if (fila.length != totalCampos) {
-    	    	
-    	    	hayDiferencias = true;
-    	    	
-    	        validacionArchivo = ArchivosLiquidacionDelegateImpl.agregarErrorValidacion(
-    	            validacionArchivo,
-    	            "El archivo no contiene registros válidos para procesar. Verifique que las filas cuenten con todos los campos requeridos y que el delimitador utilizado sea correcto.",
-    	            i + 1,
-    	            Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO
-    	        );
-    	    }
-    	}
-      
-   // Si al menos una fila tuvo diferencia, retorna error
-      if (hayDiferencias) {
-          return validacionArchivo;
-      }
-      
+			log.debug("Definicion archivo no. campos: {}", totalCampos);
+			for (int i = 0; i < contenido.size(); i++) {
+
+				String[] fila = contenido.get(i);
+
+				if (fila.length != totalCampos) {
+					validacionArchivo = ArchivosLiquidacionDelegateImpl.agregarErrorValidacion(validacionArchivo,
+							"El archivo no contiene registros válidos para procesar. Verifique que las filas cuenten con todos los campos requeridos y que el delimitador utilizado sea correcto.",
+							i + 1, Dominios.ESTADO_VALIDACION_REGISTRO_ERRADO);
+					return validacionArchivo;
+				}
+			}
+		}
       
         if (maestroDefinicion.isValidaEstructura()) {
+        	log.debug("Valida estructura");
             validacionArchivo.setValidacionLineas(validarEstructuraCampos(maestroDefinicion, respuesta));
             int erroresTotales = validacionDeErrores(validacionArchivo.getValidacionLineas());
             if (erroresTotales > 0) {
@@ -308,6 +301,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
             }
             return validacionArchivo;
         } else {
+        	log.debug("No valida estructura");
             validacionArchivo.setValidacionLineas(respuesta);
             validacionArchivo.setEstadoValidacion(Dominios.ESTADO_VALIDACION_CORRECTO);
             validacionArchivo.setDescripcionErrorEstructura(Dominios.ESTADO_VALIDACION_CORRECTO);
@@ -316,20 +310,21 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
         return validacionArchivo;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean validarNombreArchivo(MaestrosDefinicionArchivoDTO maestroDefinicion, String nombreArchivo) {
-      log.debug("validarNombreArchivo inicio - maestroDefinicion: {} - nombreArchivo: {}", maestroDefinicion, nombreArchivo);
-        if (maestroDefinicion.getAgrupador().equals("CERTI")) {
-            String[] arregloNombre = nombreArchivo.split(Constantes.EXPRESION_REGULAR_PUNTO);
-            String inicioNombre = arregloNombre[0].substring(0, 2);
-            String fecha;
-            String mascaraFecha;
-            List<String> formatoFecha;
-            
-            if (!StringUtils.equalsIgnoreCase(arregloNombre[1], maestroDefinicion.getExtension())) {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean validarNombreArchivo(MaestrosDefinicionArchivoDTO maestroDefinicion, String nombreArchivo) {
+	  log.debug("validarNombreArchivo inicio - maestroDefinicion: {} - nombreArchivo: {}", maestroDefinicion, nombreArchivo);
+		if (maestroDefinicion.getAgrupador().equals("CERTI")) {
+			String[] arregloNombre = nombreArchivo.split(Constantes.EXPRESION_REGULAR_PUNTO);
+			String inicioNombre = arregloNombre[0].substring(0, 2);
+			String fecha;
+			String mascaraFecha;
+			List<String> formatoFecha;
+			
+			if (!StringUtils.equalsIgnoreCase(arregloNombre[1], maestroDefinicion.getExtension())) {
+
               log.debug("arregloNombre[1]: {} - maestroDefinicion.getExtension()", arregloNombre[1],
                   maestroDefinicion.getExtension());
                 throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),

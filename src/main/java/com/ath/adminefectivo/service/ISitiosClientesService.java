@@ -1,6 +1,8 @@
 package com.ath.adminefectivo.service;
 
 import java.util.List;
+
+import com.ath.adminefectivo.dto.PuntoCiudadesDTO;
 import com.ath.adminefectivo.dto.SitiosClientesDTO;
 import com.ath.adminefectivo.entities.SitiosClientes;
 import com.querydsl.core.types.Predicate;
@@ -54,4 +56,12 @@ public interface ISitiosClientesService {
 	 * @author prv_nparra
 	 */
 	void deteleSitioCliente(Integer codigoPunto);
+	
+	/**
+	 * Metodo que retorna los puntos asociados a un cliente utilizando el Codigo Cliente como parametro de entrada
+	 * @param codigoCliente
+	 * @return List<PuntoCiudadesDTO>
+	 * @author jose.pabon
+	 */
+	List<PuntoCiudadesDTO> getPuntoAsociadosClientes(Integer codigoPunto);
 }

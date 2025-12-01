@@ -2,11 +2,14 @@ package com.ath.adminefectivo.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.ath.adminefectivo.auditoria.listener.AuditoriaEntityListener;
 import com.ath.adminefectivo.entities.audit.AuditableEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,6 +23,7 @@ import lombok.Setter;
  *
  */
 @Entity
+@EntityListeners(AuditoriaEntityListener.class)
 @Table(name = "OFICINAS")
 @Getter
 @Setter
@@ -54,5 +58,8 @@ public class Oficinas extends AuditableEntity{
 	
 	@Column(name = "TARIFA_VERIFICACION")
 	private Double tarifaVerificacion;
+	
+	@Column(name = "PROGRAMA_TRANSPORTE")
+	private Boolean programaTransporte;
 	
 }

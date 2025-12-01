@@ -71,7 +71,7 @@ public class ClientesCorporativosController {
 	 *         ResponseEntity<ApiResponseADE<List<ClientesCorporativosDTO>>>
 	 * @author prv_nparra
 	 */
-	@GetMapping(value = "${endpoints.ClientesCorporativos.crud}")
+	@GetMapping
 	public ResponseEntity<ApiResponseADE<Page<ClientesCorporativosDTO>>> listarClientesCorporativos(
 			@QuerydslPredicate(root = ClientesCorporativos.class) Predicate predicate, Pageable page, String busqueda) {
 		log.debug("listarClientesCorporativos - predicate: {} - page: {}", predicate.toString(), page.getPageNumber());
@@ -108,7 +108,7 @@ public class ClientesCorporativosController {
 	 *         ResponseEntity<ApiResponseADE<ClientesCorporativosDTO>>
 	 * @author prv_nparra
 	 */
-	@PostMapping(value = "${endpoints.ClientesCorporativos.crud}")
+	@PostMapping
 	public ResponseEntity<ApiResponseADE<ClientesCorporativosDTO>> guardarClientesCorporativos(
 			@RequestBody @Valid ClientesCorporativosDTO clientesCorporativosDTO, BindingResult bindingResult) {
 
@@ -136,7 +136,7 @@ public class ClientesCorporativosController {
 	 * @return HttpStatus 200 - ResponseEntity<ApiResponseADE<ClientesCorporativosDTO>>
 	 * @author prv_nparra
 	 */
-	@PutMapping(value = "${endpoints.ClientesCorporativos.crud}")
+	@PutMapping
 	public ResponseEntity<ApiResponseADE<ClientesCorporativosDTO>> actualizarClientesCorporativos(
 			@RequestBody @Valid ClientesCorporativosDTO clientesCorporativosDTO, BindingResult bindingResult) {
 		// Validacion campos obligatorios del DTO

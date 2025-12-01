@@ -25,6 +25,9 @@ public interface DetallesDefinicionArchivoRepository
 	@Transactional(readOnly = true)
 	List<DetallesDefinicionArchivo> findByIdIdArchivo(String idArchivo);
 	
+	@Transactional(readOnly = true)
+	List<DetallesDefinicionArchivo> findByIdIdArchivoOrderByNumeroCampoAsc(String idArchivo);
+	
 	/**
 	 * 
 	 * @param idArchivo

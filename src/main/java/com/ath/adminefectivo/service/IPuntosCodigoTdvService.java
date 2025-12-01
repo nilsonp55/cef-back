@@ -84,4 +84,6 @@ public interface IPuntosCodigoTdvService {
 	 */
 	boolean eliminarPuntosCodigoTdv(Integer idPuntoCodigoTdv);
 	
+	List<PuntosCodigoTdvDTO> getByCodigoPunto(Integer codigoPunto);
+	
 }

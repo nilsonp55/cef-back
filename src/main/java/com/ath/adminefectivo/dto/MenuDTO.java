@@ -54,6 +54,9 @@ public class MenuDTO {
 	@NotEmpty
 	private String usuarioModificacion;
 	
+	private String codigoProceso;
+	
+	private Boolean esProceso;
 	/**
 	 * Convierte una instancia Entitie en una instancia DTO
 	 * @author nilsonparra

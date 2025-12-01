@@ -41,6 +41,7 @@ import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.ICiudadesRepository;
 import com.ath.adminefectivo.repositories.IDetalleOperacionesProgramadasRepository;
 import com.ath.adminefectivo.repositories.IOperacionesProgramadasRepository;
+import com.ath.adminefectivo.repositories.ITransportadorasRepository;
 import com.ath.adminefectivo.service.IArchivosCargadosService;
 import com.ath.adminefectivo.service.IBancosService;
 import com.ath.adminefectivo.service.ICajerosService;
@@ -121,6 +122,9 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
   @Autowired
   ICiudadesRepository ciudadesRepository;
+  
+  @Autowired
+  ITransportadorasRepository transportadorasRepository;
   
   @Autowired
   IFestivosNacionalesService festivosNacionalesService;
@@ -1196,7 +1200,44 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
     operacionesProgramadasDTO.setFechaCreacion(new Date());
     operacionesProgramadasDTO.setEsCambio(false);
 
-    return operacionesProgramadasDTO;
+    // Nuevos campos HU009
+	String codigoorigen = contenido[detalleArchivo.stream()
+			.filter(deta -> deta.getNombreCampo().equalsIgnoreCase(Constantes.CAMPO_DETALLE_ARCHIVO_MUNICIPIOORIGEN))
+			.findFirst().orElse(null).getId().getNumeroCampo() - 1].trim();
+
+	String transportadoraOrigenNombre = contenido[detalleArchivo.stream()
+			.filter(deta -> deta.getNombreCampo().equalsIgnoreCase(Constantes.CAMPO_DETALLE_ARCHIVO_TDVORIGEN))
+			.findFirst().orElse(null).getId().getNumeroCampo() - 1].trim();
+
+	String codigoDestino = contenido[detalleArchivo.stream()
+			.filter(deta -> deta.getNombreCampo().equalsIgnoreCase(Constantes.CAMPO_DETALLE_ARCHIVO_MUNICIPIODESTINO))
+			.findFirst().orElse(null).getId().getNumeroCampo() - 1].trim();
+
+	String transportadoraDestinoNombre = contenido[detalleArchivo.stream()
+			.filter(deta -> deta.getNombreCampo().equalsIgnoreCase(Constantes.CAMPO_DETALLE_ARCHIVO_TDVDESTINO))
+			.findFirst().orElse(null).getId().getNumeroCampo() - 1].trim();
+
+	// --- Consultar en base de datos los códigos ---
+
+	// Municipios
+	String codigoMunicipioOrigen = ciudadesRepository.findCodigoDaneByNombrePunto(codigoorigen);
+	
+	String codigoMunicipioDestino = ciudadesRepository.findCodigoDaneByNombrePunto(codigoDestino);
+
+	// Transportadoras
+	var transportadoraOrigenOpt = transportadorasRepository.findByNombreTransportadora(transportadoraOrigenNombre);
+	String codigoTransportadoraOrigen = transportadoraOrigenOpt != null ? transportadoraOrigenOpt.getCodigo() : null;
+
+	var transportadoraDestinoOpt = transportadorasRepository.findByNombreTransportadora(transportadoraDestinoNombre);
+	String codigoTransportadoraDestino = transportadoraDestinoOpt != null ? transportadoraDestinoOpt.getCodigo() : null;
+
+	// --- Asignar los valores al DTO ---
+	operacionesProgramadasDTO.setMunicipioOrigen(codigoMunicipioOrigen);
+	operacionesProgramadasDTO.setTransportadoraOrigen(codigoTransportadoraOrigen);
+	operacionesProgramadasDTO.setMunicipioDestino(codigoMunicipioDestino);
+	operacionesProgramadasDTO.setTransportadoraDestino(codigoTransportadoraDestino);
+
+	return operacionesProgramadasDTO;
   }
 
   /**
@@ -1955,5 +1996,9 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
         .findFirst().orElse(null).getId().getNumeroCampo() - 1].trim();
   }
 
+	@Override
+	public void saveAll(List<OperacionesProgramadas> OperacionesCertificadasDTOList) {
+		operacionesProgramadasRepository.saveAll(OperacionesCertificadasDTOList);
+	}
 
 }

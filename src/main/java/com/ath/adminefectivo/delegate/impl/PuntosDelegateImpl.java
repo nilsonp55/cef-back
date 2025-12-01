@@ -16,6 +16,7 @@ import com.ath.adminefectivo.entities.Fondos;
 import com.ath.adminefectivo.entities.Oficinas;
 import com.ath.adminefectivo.entities.Puntos;
 import com.ath.adminefectivo.entities.SitiosClientes;
+import com.ath.adminefectivo.repositories.IOficinasRepository;
 import com.ath.adminefectivo.service.IClientesCorporativosService;
 import com.ath.adminefectivo.service.IPuntosService;
 import com.querydsl.core.types.Predicate;
@@ -28,6 +29,9 @@ public class PuntosDelegateImpl implements IPuntosDelegate {
   
   @Autowired
   IClientesCorporativosService clientesServices;
+  
+  @Autowired
+  IOficinasRepository oficinasRepository;
 
   /**
    * {@inheritDoc}
@@ -123,6 +127,9 @@ public class PuntosDelegateImpl implements IPuntosDelegate {
       oficina.setRefajillado(createPuntosDTO.getRefagillado());
       oficina.setTarifaRuteo(createPuntosDTO.getTarifaRuteo());
       oficina.setTarifaVerificacion(createPuntosDTO.getTarifaVerificacion());
+      oficina.setProgramaTransporte(createPuntosDTO.getProgramaTransporte() != null 
+              ? createPuntosDTO.getProgramaTransporte()
+              : true);
 
       // validar si Oficina Existe, se lazan exception si existe
       puntosService.validarPuntoOficinaUnique(punto, oficina);
@@ -229,6 +236,11 @@ public class PuntosDelegateImpl implements IPuntosDelegate {
       punto.setOficinas(oficina);
       // validar si Oficina Existe, se lazan exception si existe
       puntosService.validarPuntoOficinaUnique(punto, oficina);
+      Puntos puntoResponse = puntosService.actualizarPunto(punto);
+      Oficinas oficinaTrasnporte = oficinasRepository.findByCodigoPunto(createPuntosDTO.getCodigoPunto());
+      oficinaTrasnporte.setProgramaTransporte(createPuntosDTO.getProgramaTransporte());
+      oficinasRepository.save(oficinaTrasnporte);
+      return PuntosDTO.CONVERTER_DTO.apply(puntoResponse);
     }
     
     if (punto.getTipoPunto().equals(Constantes.PUNTO_BANC_REP)) {
@@ -237,7 +249,7 @@ public class PuntosDelegateImpl implements IPuntosDelegate {
     }
     
     Puntos puntoResponse = puntosService.actualizarPunto(punto);
-
+    
     return PuntosDTO.CONVERTER_DTO.apply(puntoResponse);
   }
 

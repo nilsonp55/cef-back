@@ -97,6 +97,8 @@ public class RespuestaLiquidarCostosDTO {
 	
 	private Integer idSeqGrupo;
 	
+	private String observacionLiquidacion;
+	
 	
 	
 	

@@ -41,7 +41,7 @@ public class DetallesDefinicionArchivoServiceImpl implements IDetalleDefinicionA
 	 */
 	@Override
 	public List<DetallesDefinicionArchivoDTO> consultarDetalleDefinicionArchivoByIdMaestro(String idMaestro) {
-		var detalleDefinicion = detallesDefinicionArchivoRepository.findByIdIdArchivo(idMaestro);
+		var detalleDefinicion = detallesDefinicionArchivoRepository.findByIdIdArchivoOrderByNumeroCampoAsc(idMaestro);
 		
 		if (!detalleDefinicion.isEmpty()) {
 			List<DetallesDefinicionArchivoDTO> listDetalleDefinicionDto = new ArrayList<>();

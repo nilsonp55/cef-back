@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.ath.adminefectivo.dto.PuntoCiudadesDTO;
 import com.ath.adminefectivo.dto.SitiosClientesDTO;
 import com.ath.adminefectivo.entities.SitiosClientes;
 import com.ath.adminefectivo.exception.NotFoundException;
@@ -84,5 +86,28 @@ public class SitiosClientesServiceImpl implements ISitiosClientesService{
             throw new NotFoundException(SitiosClientes.class.getName(), codigoPunto.toString());
           });
     }
+    
+    /**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<PuntoCiudadesDTO> getPuntoAsociadosClientes(Integer codigoPunto) {
+		
+		List<Object[]> resultados = sitiosClientesRepository.findPuntoAsociadosClientes(codigoPunto);
 
+        List<PuntoCiudadesDTO> listaDto = new ArrayList<>();
+
+        for (Object[] fila : resultados) {
+            PuntoCiudadesDTO dto = new PuntoCiudadesDTO();
+            dto.setCodigoDane((String) fila[0]);
+            dto.setNombreCiudad((String) fila[1]);
+            dto.setCodigoNombreCiudad((String) fila[2]);
+            dto.setCodigoPunto(fila[3] != null ? ((Number) fila[3]).intValue() : null);
+            dto.setNombrePunto((String) fila[4]);
+            dto.setPuntosCliente((String) fila[5]);
+            listaDto.add(dto);
+        }
+
+        return listaDto;
+    }
 }

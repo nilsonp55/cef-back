@@ -4,6 +4,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,6 +13,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.ath.adminefectivo.auditoria.listener.AuditoriaEntityListener;
 import com.ath.adminefectivo.entities.audit.AuditableEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,6 +29,7 @@ import lombok.Setter;
  *
  */
 @Entity
+@EntityListeners(AuditoriaEntityListener.class)
 @Table(name = "PUNTOS")
 @Getter
 @Setter

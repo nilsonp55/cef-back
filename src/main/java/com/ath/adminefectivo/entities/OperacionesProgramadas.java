@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.ColumnResult;
 import javax.persistence.ConstructorResult;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,6 +20,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import com.ath.adminefectivo.auditoria.listener.AuditoriaEntityListener;
 import com.ath.adminefectivo.dto.compuestos.OperacionIntradiaDTO;
 
 import lombok.AllArgsConstructor;
@@ -60,6 +62,7 @@ import lombok.Setter;
         columns = {@ColumnResult(name = "bancoAVAL"), @ColumnResult(name = "codigoPunto"),
             @ColumnResult(name = "entradaSalida")}))
 @Entity
+@EntityListeners(AuditoriaEntityListener.class)
 @Table(name = "OPERACIONES_PROGRAMADAS")
 @Setter
 @Getter
@@ -175,6 +178,21 @@ public class OperacionesProgramadas {
 
   @Column(name = "TIPO_PUNTO_DESTINO")
   private String tipoPuntoDestino;
+  
+  @Column(name = "CODIGO_SERVICIO_TDV", nullable = true)
+  private String codigoServicioTdv;
+  
+  @Column(name = "TRANSPORTADORA_ORIGEN")
+  private String transportadoraOrigen;
+
+  @Column(name = "TRANSPORTADORA_DESTINO")
+  private String transportadoraDestino;
+
+  @Column(name = "MUNICIPIO_ORIGEN")
+  private String municipioOrigen;
+
+  @Column(name = "MUNICIPIO_DESTINO")
+  private String municipioDestino;
   
   /*
   * HU006 Determina si se liquida costo para la operacion

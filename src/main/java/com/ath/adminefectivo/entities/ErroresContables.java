@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.ColumnResult;
 import javax.persistence.ConstructorResult;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -16,6 +17,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
 
+import com.ath.adminefectivo.auditoria.listener.AuditoriaEntityListener;
 import com.ath.adminefectivo.dto.compuestos.ResultadoErroresContablesDTO;
 
 import lombok.AllArgsConstructor;
@@ -37,6 +39,7 @@ resultSetMapping = "Mapping.ResultadoErroresContablesDTO")
 		@ColumnResult(name = "nombrePuntoOrigen"),	@ColumnResult(name = "nombrePuntoDestino"),@ColumnResult(name = "codigoComision"),	
 		@ColumnResult(name = "codigoImpuesto"),	@ColumnResult(name = "valor"),	@ColumnResult(name = "mensajeError") }))
 @Entity
+@EntityListeners(AuditoriaEntityListener.class)
 @Table(name = "ERRORES_CONTABLES")
 @Data
 @Builder
