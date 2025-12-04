@@ -2,12 +2,17 @@ package com.ath.adminefectivo.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -92,5 +97,14 @@ public class TiposCuentasController {
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 
+	}
+	
+	@DeleteMapping(value = "/{idTiposCuentas}")
+	public ResponseEntity<ApiResponseADE<Void>> deleteTiposCuentas(
+			@PathVariable @NotNull @Valid String idTiposCuentas) {
+		tiposCuentasService.deleteTiposCuentasById(TiposCuentasDTO.builder().tipoCuenta(idTiposCuentas).build());
+		return ResponseEntity.status(HttpStatus.NO_CONTENT)
+				.body(new ApiResponseADE<Void>(null, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
 }

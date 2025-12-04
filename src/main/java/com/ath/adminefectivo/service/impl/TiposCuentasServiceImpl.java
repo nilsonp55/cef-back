@@ -14,11 +14,14 @@ import com.ath.adminefectivo.repositories.ITiposCuentasRepository;
 import com.ath.adminefectivo.service.ITiposCuentasService;
 import com.querydsl.core.types.Predicate;
 
+import lombok.extern.log4j.Log4j2;
+
 /**
  * Servicios para gestionar los tipos de cuentas
  * @author Bayron Perez
  */
 
+@Log4j2
 @Service
 public class TiposCuentasServiceImpl implements ITiposCuentasService {
 
@@ -73,10 +76,13 @@ public class TiposCuentasServiceImpl implements ITiposCuentasService {
 	@Override
 	public void deleteTiposCuentasById(TiposCuentasDTO tiposCuentasDTO) {
 		if (tiposCuentasDTO.getTipoCuenta() == null && !tiposCuentasRepository
-				.existsById(tiposCuentasDTO.getTipoCuenta())) {		
+				.existsById(tiposCuentasDTO.getTipoCuenta())) {
+			log.error("Throw exception, Eliminar Id TiposCuentas: {}", tiposCuentasDTO.getTipoCuenta());
 			throw new ConflictException(ApiResponseCode.ERROR_CUENTAS_PUC_NO_EXIST.getDescription());		
 		}
-		tiposCuentasRepository.delete(TiposCuentasDTO.CONVERTER_ENTITY.apply(tiposCuentasDTO));
+		log.debug("Eliminar Id TiposCuentas: {}", tiposCuentasDTO.getTipoCuenta());
+		tiposCuentasRepository.deleteById(tiposCuentasDTO.getTipoCuenta());
+		log.debug("Se elimino Id TiposCuentas: {}", tiposCuentasDTO.getTipoCuenta());
 	}
 
 }
