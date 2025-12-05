@@ -1,9 +1,22 @@
 package com.ath.adminefectivo.auditoria.filter;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.time.LocalDateTime;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.data.domain.AuditorAware;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
@@ -16,19 +29,6 @@ import com.ath.adminefectivo.constantes.Constantes;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.UUID;
-
 @Component
 public class RequestResponseCachingFilter extends OncePerRequestFilter {
 
@@ -39,9 +39,9 @@ public class RequestResponseCachingFilter extends OncePerRequestFilter {
     
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain)
+    protected void doFilterInternal(@NonNull HttpServletRequest request,
+                                    @NonNull HttpServletResponse response,
+                                    @NonNull FilterChain filterChain)
             throws ServletException, IOException {
     	
     	// Solo auditar si es POST, PUT o DELETE
@@ -135,20 +135,21 @@ public class RequestResponseCachingFilter extends OncePerRequestFilter {
     }
     
     private String getUserRequest(HttpServletRequest request) {
+    	String nameUser = "System";
         String headerAuth = request.getHeader("Authorization");
         if (headerAuth == null || !headerAuth.startsWith("Bearer ")) {
-            return "System";
+            return nameUser;
         }
         try {
             String[] partsToken = headerAuth.replace("Bearer ", "").split("\\.");
             if (partsToken.length < 2) {
-                return "System";
+                return nameUser;
             }
             String tokenAuth = partsToken[0] + "." + partsToken[1] + ".";
             DecodedJWT jwt = JWT.decode(tokenAuth);
             return jwt.getClaims().get("name").asString();
         } catch (Exception e) {
-            return "System";
+            return nameUser;
         }
     }
 }
