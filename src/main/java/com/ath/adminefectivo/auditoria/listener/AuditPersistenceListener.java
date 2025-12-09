@@ -16,7 +16,6 @@ import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
-import org.springframework.data.domain.AuditorAware;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +29,7 @@ public class AuditPersistenceListener {
     private final AuditLogProcessRepository auditLogProcessRepository;
 
 	public AuditPersistenceListener(AuditoriaLogRepository auditoriaLogRepository,
-			AuditLogProcessRepository auditLogProcessRepository, AuditorAware<String> auditorAware) {
+			AuditLogProcessRepository auditLogProcessRepository) {
 		this.auditoriaLogRepository = auditoriaLogRepository;
 		this.auditLogProcessRepository = auditLogProcessRepository;
 }

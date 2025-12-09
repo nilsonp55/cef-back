@@ -2,7 +2,7 @@ package com.ath.adminefectivo.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,11 +16,14 @@ import com.ath.adminefectivo.repositories.ITiposCentrosCostosRepository;
 import com.ath.adminefectivo.service.ITiposCentrosCostosService;
 import com.querydsl.core.types.Predicate;
 
+import lombok.extern.log4j.Log4j2;
+
 /**
  * Servicios para gestionar los TiposCentrosCostosService
  * @author Bayron Perez
  */
 
+@Log4j2
 @Service
 public class TiposCentrosCostosServiceImpl implements ITiposCentrosCostosService {
 
@@ -38,12 +41,12 @@ public class TiposCentrosCostosServiceImpl implements ITiposCentrosCostosService
 
 	@Override
 	public TiposCentrosCostosDTO getTiposCentrosCostosById(String idTiposCentrosCostos) {
-		var centros = tiposCentrosCostosRepository.findById(idTiposCentrosCostos);
-		if (Objects.isNull(centros)) {
+		Optional<TiposCentrosCostos> centros = tiposCentrosCostosRepository.findById(idTiposCentrosCostos);
+		if (centros.isEmpty()) {
 			throw new AplicationException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription()+ "no encontrado para tipos centros costos con id = "+idTiposCentrosCostos,
 					ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
-		} 
+		}
 		return TiposCentrosCostosDTO.CONVERTER_DTO.apply(centros.get());
 	}
 
@@ -74,10 +77,13 @@ public class TiposCentrosCostosServiceImpl implements ITiposCentrosCostosService
 	@Override
 	public void deleteTiposCentrosCostosById(TiposCentrosCostosDTO tiposCentrosCostosDTO) {
 		if (tiposCentrosCostosDTO.getTipoCentro() == null && !tiposCentrosCostosRepository
-				.existsById(tiposCentrosCostosDTO.getTipoCentro())) {		
+				.existsById(tiposCentrosCostosDTO.getTipoCentro())) {
+			log.error("Throw exception, Id TiposCentrosCostos no existe: {}", tiposCentrosCostosDTO.getTipoCentro());
 			throw new ConflictException(ApiResponseCode.ERROR_CUENTAS_PUC_NO_EXIST.getDescription());		
 		}
-		tiposCentrosCostosRepository.delete(TiposCentrosCostosDTO.CONVERTER_ENTITY.apply(tiposCentrosCostosDTO));
+		log.debug("Eliminar Id TiposCentrosCostos: {}", tiposCentrosCostosDTO.getTipoCentro());
+		tiposCentrosCostosRepository.deleteById(tiposCentrosCostosDTO.getTipoCentro());
+		log.debug("Se elimino Id TiposCentrosCostos: {}", tiposCentrosCostosDTO.getTipoCentro());
 	}
 
 }

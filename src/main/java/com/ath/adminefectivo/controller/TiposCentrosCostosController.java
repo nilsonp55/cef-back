@@ -2,12 +2,17 @@ package com.ath.adminefectivo.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,11 +27,14 @@ import com.ath.adminefectivo.entities.TiposCentrosCostos;
 import com.ath.adminefectivo.service.ITiposCentrosCostosService;
 import com.querydsl.core.types.Predicate;
 
+import lombok.extern.log4j.Log4j2;
+
 /**
  * Controlador responsable de exponer los metodos referentes a las TipoCentroCostos 
  * @author bayron.perez
  */
 
+@Log4j2
 @RestController
 @RequestMapping("${endpoints.TipoCentroCostos}")
 public class TiposCentrosCostosController {
@@ -92,5 +100,16 @@ public class TiposCentrosCostosController {
 						ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 
+	}
+	
+	@DeleteMapping(value = "/{idTipoCentroCosto}")
+	public ResponseEntity<ApiResponseADE<Void>> deleteTiposCentrosCostos(@PathVariable @NotNull @Valid String idTipoCentroCosto) {
+		log.info("Delete TipoCentrosCostos Id: {}", idTipoCentroCosto);
+		tiposCentrosCostosService
+				.deleteTiposCentrosCostosById(TiposCentrosCostosDTO.builder().tipoCentro(idTipoCentroCosto).build());
+		log.info("Deleted TipoCentrosCostos Id: {}", idTipoCentroCosto);
+		return ResponseEntity.status(HttpStatus.NO_CONTENT)
+				.body(new ApiResponseADE<Void>(null, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
 	}
 }

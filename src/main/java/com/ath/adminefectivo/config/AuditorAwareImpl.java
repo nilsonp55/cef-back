@@ -17,10 +17,10 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class AuditorAwareImpl implements AuditorAware<String> {
 
-  private final static String NAME_HEADER = "Authorization";
-  private final static String BEARER_STRING = "Bearer ";
-  private final static String USER_DEFAULT = "System";
-  private final static String NAME_CLAIM = "name";
+  private static final String NAME_HEADER = "Authorization";
+  private static final String BEARER_STRING = "Bearer ";
+  private static final String USER_DEFAULT = "System";
+  private static final String NAME_CLAIM = "name";
   
   @Override
   public @NonNull Optional<String> getCurrentAuditor() {
