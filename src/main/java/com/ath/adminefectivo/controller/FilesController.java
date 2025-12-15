@@ -105,7 +105,7 @@ public class FilesController {
 	 * @return ResponseEntity<InputStreamResource>
 	 * @author rparra
 	 */
-	@GetMapping("/descargar-idArchivo")
+	@GetMapping("${endpoints.Archivos.descargar-archivo}")
 	@ApiOperation(value = "Download files ", notes = "")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = SwaggerConstants.RESPONSE_MESSAGE_200) })
 	public ResponseEntity<InputStreamResource> downloadFileId(
