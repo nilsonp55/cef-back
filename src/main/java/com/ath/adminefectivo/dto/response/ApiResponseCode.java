@@ -107,9 +107,9 @@ public enum ApiResponseCode {
 			HttpStatus.PRECONDITION_FAILED),
 
 	/**
-	 * Error con la extención del archivo
+	 * Error con la extensión del archivo 
 	 */
-	ERROR_FORMATO_NO_VALIDO("E022", "El archivo no tiene la extención parametrizada en su maestro ",
+	ERROR_FORMATO_NO_VALIDO("E022", "El archivo no tiene la extensión parametrizada en su maestro ",
 			HttpStatus.PRECONDITION_FAILED),
 
 	/**
