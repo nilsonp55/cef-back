@@ -341,9 +341,9 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
                 formatoFecha.add(mascaraFecha);
                 if (!UtilsString.isFecha(fecha, formatoFecha)) {
                   log.debug("Exception AC isFecha fecha: {} - formatoFecha: {}", fecha, formatoFecha);
-                    throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
-                            ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
-                            ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
+                    throw new NegocioException(ApiResponseCode.ERROR_FECHA_NO_VALIDA.getCode(),
+                            ApiResponseCode.ERROR_FECHA_NO_VALIDA.getDescription().concat("{" + fecha + " - " + formatoFecha + "}"),
+                            ApiResponseCode.ERROR_FECHA_NO_VALIDA.getHttpStatus());
                 }
                 break;
             }
@@ -354,9 +354,9 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
                 formatoFecha.add(mascaraFecha);
                 if (!UtilsString.isFecha(fecha, formatoFecha)) {
                   log.debug("Exception BS, BI isFecha fecha: {} - formatoFecha: {}", fecha, formatoFecha);
-                    throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
-                            ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
-                            ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
+                    throw new NegocioException(ApiResponseCode.ERROR_FECHA_NO_VALIDA.getCode().concat("{" + fecha + " - " + formatoFecha + "}"),
+                            ApiResponseCode.ERROR_FECHA_NO_VALIDA.getDescription(),
+                            ApiResponseCode.ERROR_FECHA_NO_VALIDA.getHttpStatus());
                 }
                 break;
             }
@@ -367,9 +367,9 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
                 formatoFecha.add(mascaraFecha);
                 if (!UtilsString.isFecha(fecha, formatoFecha)) {
                   log.debug("Exception TH, VG isFecha fecha: {} - formatoFecha: {}", fecha, formatoFecha);
-                    throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
-                            ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
-                            ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
+                    throw new NegocioException(ApiResponseCode.ERROR_FECHA_NO_VALIDA.getCode().concat("{" + fecha + " - " + formatoFecha + "}"),
+                            ApiResponseCode.ERROR_FECHA_NO_VALIDA.getDescription(),
+                            ApiResponseCode.ERROR_FECHA_NO_VALIDA.getHttpStatus());
                 }
                 break;
             }
@@ -386,17 +386,17 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
                 formatoFecha.add(mascaraFecha);
                 if (!UtilsString.isFecha(fecha, formatoFecha)) {
                   log.debug("Exception SC isFecha fecha: {} - formatoFecha: {}", fecha, formatoFecha);
-                    throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
-                            ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
-                            ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
+                    throw new NegocioException(ApiResponseCode.ERROR_FECHA_NO_VALIDA.getCode(),
+                            ApiResponseCode.ERROR_FECHA_NO_VALIDA.getDescription().concat("{" + fecha + " - " + formatoFecha + "}"),
+                            ApiResponseCode.ERROR_FECHA_NO_VALIDA.getHttpStatus());
                 }
                 break;
             }
             default: {
-              log.debug("Exception default: {}", ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription());
-                throw new NegocioException(ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getCode(),
-                        ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getDescription(),
-                        ApiResponseCode.ERROR_FORMATO_NO_VALIDO.getHttpStatus());
+              log.debug("Exception default: {} - {}", ApiResponseCode.ERROR_MASCARA_NO_VALIDA.getDescription(), nombreArchivo);
+                throw new NegocioException(ApiResponseCode.ERROR_MASCARA_NO_VALIDA.getCode(),
+                        ApiResponseCode.ERROR_MASCARA_NO_VALIDA.getDescription().concat("{"+nombreArchivo+"}"),
+                        ApiResponseCode.ERROR_MASCARA_NO_VALIDA.getHttpStatus());
             }
             }
             log.debug("arregloNombre: {} - inicioNombre:{} - fecha:{} - mascaraFecha{}",
