@@ -321,23 +321,7 @@ public class GestionRetencionArchivosServiceImpl implements IGestionRetencionArc
 	}
 	
 	private String getStringFileCertiTH(String nombreArchivoS3) {
-		String fecha;
-		if(nombreArchivoS3.length() == 22) {
-			fecha = nombreArchivoS3.substring(14, 22);
-		}
-		else {
-			if(nombreArchivoS3.length() == 23) {
-				fecha = nombreArchivoS3.substring(15, 23);
-			}
-			else {
-				if(nombreArchivoS3.length() == 25) {
-					fecha = nombreArchivoS3.substring(17, 25);
-				} else {
-					fecha = null;
-				}
-			}
-		}
-		return fecha;
+		return nombreArchivoS3.substring(nombreArchivoS3.length()-8, nombreArchivoS3.length());
 	}
 	
 	private String extraerNombreArchivo (String pathfileS3, boolean sufijo) {
