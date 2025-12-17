@@ -292,6 +292,7 @@ public class PuntosServiceImpl implements IPuntosService {
    */
   @Override
   public PuntosDTO getPuntoByNombrePunto(String nombrePunto) {
+	  log.debug("Buscar nombrePunto: {}", nombrePunto);
     var punto = puntosRepository.findByNombrePunto(nombrePunto);
     if (!Objects.isNull(punto)) {
       return PuntosDTO.CONVERTER_DTO.apply(punto);

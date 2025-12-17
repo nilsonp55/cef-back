@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -816,10 +817,12 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
    */
   private OperacionesProgramadasDTO generarOperacionIntercambio(String[] contenido,
       List<DetallesDefinicionArchivoDTO> detallesArchivo, ArchivosCargadosDTO archivo) {
-
+	
+	  log.debug("Campo entidad origen:");
     PuntosDTO bancoOrigen = this.consultarPuntoPorDetalle(contenido, detallesArchivo,
         Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_ORIGEN);
-
+        
+    log.debug("Campo entidad destino:");
     PuntosDTO bancoDestino = this.consultarPuntoPorDetalle(contenido, detallesArchivo,
         Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_DESTINO);
 
@@ -1291,6 +1294,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
         .filter(deta -> deta.getNombreCampo().toUpperCase().equals(nombreCampo)).findFirst()
         .orElse(null);
     if (!Objects.isNull(detalle)) {
+    	log.debug("getPuntobyNombre: {}", Arrays.toString(contenido));
       return puntosService
           .getPuntoByNombrePunto(contenido[detalle.getId().getNumeroCampo() - 1].trim());
     }
