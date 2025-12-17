@@ -421,21 +421,7 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
 
     private String getString(String nombreArchivo) {
         String fecha;
-        if(nombreArchivo.length() == 26) {
-            fecha = nombreArchivo.substring(14, 22);
-        }
-        else {
-            if(nombreArchivo.length() == 27) {
-                fecha = nombreArchivo.substring(15, 23);
-            }
-            else {
-                if(nombreArchivo.length() == 29) {
-                    fecha = nombreArchivo.substring(17, 25);
-                } else {
-                    fecha = null;
-                }
-            }
-        }
+        fecha = nombreArchivo.substring(nombreArchivo.length()-12, nombreArchivo.length()-4); 
         log.debug("nombreArchivo: {} - longitud: {} - fechaString: {}", nombreArchivo, nombreArchivo.length(), fecha);
         return fecha;
     }
