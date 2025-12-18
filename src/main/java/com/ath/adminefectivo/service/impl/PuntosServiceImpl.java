@@ -293,11 +293,16 @@ public class PuntosServiceImpl implements IPuntosService {
   @Override
   public PuntosDTO getPuntoByNombrePunto(String nombrePunto) {
 	  log.debug("Buscar nombrePunto: {}", nombrePunto);
-    var punto = puntosRepository.findByNombrePunto(nombrePunto);
-    if (!Objects.isNull(punto)) {
-      return PuntosDTO.CONVERTER_DTO.apply(punto);
+    List<Puntos> puntos = puntosRepository.findByNombrePunto(nombrePunto);
+    if (puntos.size() == 1) {
+      return PuntosDTO.CONVERTER_DTO.apply(puntos.get(0));
+    } else if(puntos.size() == 0) {
+    	return null;
+    } else {
+    	throw new NegocioException(ApiResponseCode.ERROR_PUNTOS_ENCONTRADOS_REPETIDOS.getCode(), 
+    			ApiResponseCode.ERROR_PUNTOS_ENCONTRADOS_REPETIDOS.getDescription() + " - nombrePunto: " + nombrePunto, 
+    			ApiResponseCode.ERROR_PUNTOS_ENCONTRADOS_REPETIDOS.getHttpStatus());
     }
-    return null;
   }
 
   /**
