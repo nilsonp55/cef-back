@@ -43,7 +43,7 @@ public interface IPuntosRepository
    * @return Puntos
    * @author duvan.naranjo
    */
-  public Puntos findByNombrePunto(String nombrePunto);
+  public List<Puntos> findByNombrePunto(String nombrePunto);
 
   /**
    * Retorna el objeto Puntos consultado por nombrePunto

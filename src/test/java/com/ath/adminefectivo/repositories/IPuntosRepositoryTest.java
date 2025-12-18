@@ -117,10 +117,10 @@ class IPuntosRepositoryTest {
 	@Test
 	@Disabled("Se lanza excepcion cuando retorna mas de un registro")
 	void testFindByNombrePunto() {
-		Puntos puntoFind = puntosRepository.findByNombrePunto(puntosSearch.getNombrePunto());
+		List<Puntos> puntoFind = puntosRepository.findByNombrePunto(puntosSearch.getNombrePunto());
 
-		assertThat(puntoFind).isNotNull();
-		log.info("testFindByNombrePunto - id: {}", puntoFind.getCodigoPunto());
+		assertThat(puntoFind).hasSizeGreaterThan(0);
+		log.info("testFindByNombrePunto - id: {}", puntoFind.get(0));
 	}
 
 	@Test
