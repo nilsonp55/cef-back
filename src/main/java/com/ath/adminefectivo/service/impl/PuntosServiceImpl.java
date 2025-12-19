@@ -304,6 +304,15 @@ public class PuntosServiceImpl implements IPuntosService {
     			ApiResponseCode.ERROR_PUNTOS_ENCONTRADOS_REPETIDOS.getHttpStatus());
     }
   }
+  
+  @Override
+  public PuntosDTO getPuntoBancoByNombrePuntoTipoPunto(String nombrePunto, String tipoPunto) {
+	    var punto = puntosRepository.findByNombrePuntoAndTipoPunto(nombrePunto, tipoPunto);
+	    if (!Objects.isNull(punto)) {
+	      return PuntosDTO.CONVERTER_DTO.apply(punto);
+	    }
+	    return null;
+	  }
 
   /**
    * {@inheritDoc}
