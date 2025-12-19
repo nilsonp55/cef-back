@@ -297,4 +297,6 @@ public interface IPuntosService {
 	 * @author prv_nparra
 	 */
 	void validarPuntoClienteUnique(Puntos p, SitiosClientes sc) throws NegocioException;
+	
+	PuntosDTO getPuntoBancoByNombrePuntoTipoPunto(String nombrePunto, String tipoPunto);
 }

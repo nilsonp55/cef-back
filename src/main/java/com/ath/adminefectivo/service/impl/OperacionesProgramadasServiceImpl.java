@@ -36,7 +36,6 @@ import com.ath.adminefectivo.dto.response.ApiResponseCode;
 import com.ath.adminefectivo.entities.Fondos;
 import com.ath.adminefectivo.entities.OperacionesProgramadas;
 import com.ath.adminefectivo.entities.Puntos;
-import com.ath.adminefectivo.exception.AplicationException;
 import com.ath.adminefectivo.exception.NegocioException;
 import com.ath.adminefectivo.repositories.ICiudadesRepository;
 import com.ath.adminefectivo.repositories.IDetalleOperacionesProgramadasRepository;
@@ -522,20 +521,12 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
       boolean esCambio) {
 
     OperacionesProgramadasDTO operacionesProgramadasDTO = new OperacionesProgramadasDTO();
-    PuntosDTO puntoFondoOrigen = this.consultarPuntoPorDetalle(contenido, detalleArchivo,
-        Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN);
+    PuntosDTO puntoFondoOrigen = this.consultarPuntoPorNombreYTipo(contenido, detalleArchivo,
+        Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN, Constantes.PUNTO_FONDO);
     PuntosDTO puntoBancoDestino = this.consultarPuntoBanRepPorDetalle(contenido,
         detalleArchivo, Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO);
     
     String tipoOperacion = contenido[this.obtenerNumeroCampoTipoServ(detalleArchivo)];
-  
-	if (!Objects.isNull(puntoFondoOrigen)
-			&& !puntoFondoOrigen.getTipoPunto().toUpperCase().trim().equals(Constantes.PUNTO_FONDO)) {
-		throw new NegocioException(ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getCode(),
-				ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getDescription() + " no encontrado para fondo origen = "
-						+ contenido,
-				ApiResponseCode.ERROR_PUNTOS_NO_ENCONTRADO.getHttpStatus());
-	}
 	
 	if (!esCambio && !Objects.isNull(puntoBancoDestino)
 			&& !puntoBancoDestino.getTipoPunto().toUpperCase().trim().equals(Constantes.PUNTO_BANC_REP)) {
@@ -588,8 +579,8 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
     String tipoOperacion = contenido[this.obtenerNumeroCampoTipoServ(detalleArchivo)];
     
-    PuntosDTO puntoFondoDestino = this.consultarPuntoPorDetalle(contenido,
-        detalleArchivo, Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO);
+    PuntosDTO puntoFondoDestino = this.consultarPuntoPorNombreYTipo(contenido,
+        detalleArchivo, Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO, Constantes.PUNTO_FONDO);
     PuntosDTO puntoBancoOrigen = this.consultarPuntoBanRepPorDetalle(contenido,
         detalleArchivo, Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN);
 
@@ -598,12 +589,6 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 		throw new NegocioException(ApiResponseCode.ERROR_NO_ES_BANREP.getCode(),
 				ApiResponseCode.ERROR_NO_ES_BANREP.getDescription(),
 				ApiResponseCode.ERROR_NO_ES_BANREP.getHttpStatus());
-	}
-    
-	if (!Objects.isNull(puntoFondoDestino)
-			&& !puntoFondoDestino.getTipoPunto().toUpperCase().trim().equals(Constantes.PUNTO_FONDO)) {
-		throw new NegocioException(ApiResponseCode.ERROR_NO_ES_FONDO.getCode(),
-				ApiResponseCode.ERROR_NO_ES_FONDO.getDescription(), ApiResponseCode.ERROR_NO_ES_FONDO.getHttpStatus());
 	}
 
     if (Objects.isNull(puntoBancoOrigen) && esCambio) {
@@ -672,30 +657,23 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
     OperacionesProgramadasDTO operacionesProgramadasDTO = null;
 
-    PuntosDTO puntoFondoOrigen = this.consultarPuntoPorDetalle(contenido,
-        detalleArchivo, Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN);
+    PuntosDTO puntoFondoOrigen = this.consultarPuntoPorNombreYTipo(contenido,
+        detalleArchivo, Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN, Constantes.PUNTO_FONDO);
     PuntosDTO bancoOrigen = new PuntosDTO();
     PuntosDTO bancoDestino = null;
     var operacionProgramadaEnt = new OperacionesProgramadas();
+    
 	if (Objects.isNull(puntoFondoOrigen)) {
-		bancoOrigen = this.consultarPuntoPorDetalle(contenido, detalleArchivo,
-				Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_ORIGEN);
+		bancoOrigen = this.consultarPuntoPorNombreYTipo(contenido, detalleArchivo,
+				Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_ORIGEN, Constantes.PUNTO_BANCO);
 	}
 
-    PuntosDTO puntoFondoDestino = this.consultarPuntoPorDetalle(contenido, detalleArchivo,
-        Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO);
+    PuntosDTO puntoFondoDestino = this.consultarPuntoPorNombreYTipo(contenido, detalleArchivo,
+        Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO, Constantes.PUNTO_FONDO);
 
     if (Objects.isNull(puntoFondoDestino)) {
-      bancoDestino = this.consultarPuntoPorDetalle(contenido, detalleArchivo,
-          Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_DESTINO);
-    }
-
-
-    if (!Objects.isNull(puntoFondoOrigen)
-        && !puntoFondoOrigen.getTipoPunto().toUpperCase().trim().equals(Constantes.PUNTO_FONDO)) {
-      throw new NegocioException(ApiResponseCode.ERROR_NO_ES_FONDO.getCode(),
-          ApiResponseCode.ERROR_NO_ES_FONDO.getDescription(),
-          ApiResponseCode.ERROR_NO_ES_FONDO.getHttpStatus());
+      bancoDestino = this.consultarPuntoPorNombreYTipo(contenido, detalleArchivo,
+          Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_DESTINO, Constantes.PUNTO_BANCO);
     }
 
     if (Objects.isNull(puntoFondoOrigen) && !Objects.isNull(puntoFondoDestino) && !Objects.isNull(bancoOrigen)) {
@@ -817,14 +795,15 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
   private OperacionesProgramadasDTO generarOperacionIntercambio(String[] contenido,
       List<DetallesDefinicionArchivoDTO> detallesArchivo, ArchivosCargadosDTO archivo) {
 
-    PuntosDTO bancoOrigen = this.consultarPuntoPorDetalle(contenido, detallesArchivo,
-        Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_ORIGEN);
+    PuntosDTO bancoOrigen = this.consultarPuntoPorNombreYTipo(contenido, detallesArchivo,
+        Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_ORIGEN, Constantes.PUNTO_BANCO);
 
-    PuntosDTO bancoDestino = this.consultarPuntoPorDetalle(contenido, detallesArchivo,
-        Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_DESTINO);
+    PuntosDTO bancoDestino = this.consultarPuntoPorNombreYTipo(contenido, detallesArchivo,
+        Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_DESTINO, Constantes.PUNTO_BANCO);
+   
 
     OperacionesProgramadasDTO operacionesProgramadasIntercambio1 = null;
-    // SI LOS DOS BANCOS SON AVAL
+    // SI LOS DOS BANCOS SON AVAL no se enceuntra con con el nombre de entidad clos puntos de las transpiortadoras
     if (Objects.isNull(bancoOrigen) && Objects.isNull(bancoDestino)) {
       operacionesProgramadasIntercambio1 =
           this.generarOperacionIntercambioSalida(contenido, detallesArchivo, archivo, true);
@@ -841,8 +820,8 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
       operacionesProgramadasRepository.save(
           OperacionesProgramadasDTO.CONVERTER_ENTITY.apply(operacionesProgramadasIntercambio1));
-    } else // SI EL BANCO ORIGEN ES AVAL
-    if (Objects.isNull(bancoOrigen)) {
+    } else
+    if (Objects.isNull(bancoOrigen)) { // SI EL BANCO ORIGEN ES AVAL y el destino nio es aval
       if (Objects.isNull(bancoDestino)) {
         throw new NegocioException(ApiResponseCode.ERROR_BANCO_EXTERNO_NO_ENCONTRADO.getCode(),
             ApiResponseCode.ERROR_BANCO_EXTERNO_NO_ENCONTRADO.getDescription(),
@@ -912,25 +891,12 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
       List<DetallesDefinicionArchivoDTO> detallesArchivo, ArchivosCargadosDTO archivo) {
 
     OperacionesProgramadasDTO operacionesProgramadasDTO = null;
-    PuntosDTO puntoFondoOrigen = this.consultarPuntoPorDetalle(contenido, detallesArchivo,
-        Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN);
+    PuntosDTO puntoFondoOrigen = this.consultarPuntoPorNombreYTipo(contenido, detallesArchivo,
+        Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN, Constantes.PUNTO_FONDO);
 
-    PuntosDTO puntoFondoDestino = this.consultarPuntoPorDetalle(contenido, detallesArchivo,
-        Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO);
-
-    if (!Objects.isNull(puntoFondoOrigen)
-        && !puntoFondoOrigen.getTipoPunto().toUpperCase().trim().equals(Constantes.PUNTO_FONDO)) {
-      throw new AplicationException(ApiResponseCode.ERROR_NO_ES_FONDO.getCode(),
-          ApiResponseCode.ERROR_NO_ES_FONDO.getDescription(),
-          ApiResponseCode.ERROR_NO_ES_FONDO.getHttpStatus());
-    }
-    if (!Objects.isNull(puntoFondoDestino)
-        && !puntoFondoDestino.getTipoPunto().toUpperCase().trim().equals(Constantes.PUNTO_FONDO)) {
-      throw new AplicationException(ApiResponseCode.ERROR_NO_ES_FONDO.getCode(),
-          ApiResponseCode.ERROR_NO_ES_FONDO.getDescription(),
-          ApiResponseCode.ERROR_NO_ES_FONDO.getHttpStatus());
-    }
-
+    PuntosDTO puntoFondoDestino = this.consultarPuntoPorNombreYTipo(contenido, detallesArchivo,
+        Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO, Constantes.PUNTO_FONDO);
+    
     operacionesProgramadasDTO = OperacionesProgramadasDTO.builder()
         .codigoFondoTDV(puntoFondoOrigen.getCodigoPunto()).entradaSalida(Constantes.VALOR_SALIDA)
         .codigoPuntoOrigen(puntoFondoOrigen.getCodigoPunto())
@@ -957,11 +923,11 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
       List<DetallesDefinicionArchivoDTO> detallesArchivo, ArchivosCargadosDTO archivo) {
 
     OperacionesProgramadasDTO operacionesProgramadasDTO = null;
-    PuntosDTO puntoFondoOrigen = this.consultarPuntoPorDetalle(contenido, detallesArchivo,
-        Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN);
+    PuntosDTO puntoFondoOrigen = this.consultarPuntoPorNombreYTipo(contenido, detallesArchivo,
+        Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN, Constantes.PUNTO_FONDO);
 
-    PuntosDTO puntoFondoDestino = this.consultarPuntoPorDetalle(contenido, detallesArchivo,
-        Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO);
+    PuntosDTO puntoFondoDestino = this.consultarPuntoPorNombreYTipo(contenido, detallesArchivo,
+        Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO, Constantes.PUNTO_FONDO);
 
     operacionesProgramadasDTO = OperacionesProgramadasDTO.builder()
         .codigoFondoTDV(puntoFondoDestino.getCodigoPunto()).entradaSalida(Constantes.VALOR_ENTRADA)
@@ -992,30 +958,18 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
       boolean esAval) {
 
     OperacionesProgramadasDTO operacionesProgramadasDTO = null;
-    PuntosDTO puntoFondoOrigen = this.consultarPuntoPorDetalle(contenido, detallesArchivo,
-        Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN);
+    PuntosDTO puntoFondoOrigen = this.consultarPuntoPorNombreYTipo(contenido, detallesArchivo,
+        Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN, Constantes.PUNTO_FONDO);
 
-    PuntosDTO puntoFondoDestino = this.consultarPuntoPorDetalle(contenido, detallesArchivo,
-        Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO);
+    PuntosDTO puntoFondoDestino = this.consultarPuntoPorNombreYTipo(contenido, detallesArchivo,
+        Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO, Constantes.PUNTO_FONDO);
 
-    if (!Objects.isNull(puntoFondoOrigen)
-        && !puntoFondoOrigen.getTipoPunto().toUpperCase().trim().equals(Constantes.PUNTO_FONDO)) {
-      throw new NegocioException(ApiResponseCode.ERROR_NO_ES_FONDO.getCode(),
-          ApiResponseCode.ERROR_NO_ES_FONDO.getDescription(),
-          ApiResponseCode.ERROR_NO_ES_FONDO.getHttpStatus());
-    }
-    if (!Objects.isNull(puntoFondoDestino)
-        && !puntoFondoDestino.getTipoPunto().toUpperCase().trim().equals(Constantes.PUNTO_FONDO)) {
-      throw new NegocioException(ApiResponseCode.ERROR_NO_ES_FONDO.getCode(),
-          ApiResponseCode.ERROR_NO_ES_FONDO.getDescription(),
-          ApiResponseCode.ERROR_NO_ES_FONDO.getHttpStatus());
-    }
     int codigoPuntoDestino;
     if (esAval) {
       codigoPuntoDestino = puntoFondoDestino.getCodigoPunto();
     } else {
-      PuntosDTO puntoEntidadDestino = this.consultarPuntoPorDetalle(contenido, detallesArchivo,
-          Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_DESTINO);
+      PuntosDTO puntoEntidadDestino = this.consultarPuntoPorNombreYTipo(contenido, detallesArchivo,
+          Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_DESTINO, Constantes.PUNTO_BANCO);
       if (Objects.isNull(puntoEntidadDestino)) {
         throw new NegocioException(ApiResponseCode.ERROR_BANCO_EXTERNO_NO_ENCONTRADO.getCode(),
             ApiResponseCode.ERROR_BANCO_EXTERNO_NO_ENCONTRADO.getDescription(),
@@ -1050,26 +1004,21 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
       boolean esAval) {
 
     OperacionesProgramadasDTO operacionesProgramadasDTO = null;
-    PuntosDTO puntoFondoDestino = this.consultarPuntoPorDetalle(contenido, detallesArchivo,
-        Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO);
-
+    
     PuntosDTO puntoFondoOrigen = this.consultarPuntoPorDetalle(contenido, detallesArchivo,
-        Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN);
+            Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN);
+    
+    PuntosDTO puntoFondoDestino = this.consultarPuntoPorNombreYTipo(contenido, detallesArchivo,
+        Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO, Constantes.PUNTO_FONDO);
 
-    if (!Objects.isNull(puntoFondoDestino)
-        && !puntoFondoDestino.getTipoPunto().toUpperCase().trim().equals(Constantes.PUNTO_FONDO)) {
-      throw new AplicationException(ApiResponseCode.ERROR_NO_ES_FONDO.getCode(),
-          ApiResponseCode.ERROR_NO_ES_FONDO.getDescription(),
-          ApiResponseCode.ERROR_NO_ES_FONDO.getHttpStatus());
-    }
 
     int codigoPuntoOrigen;
     int codigoPuntoDestino = puntoFondoDestino.getCodigoPunto();
     if (esAval) {
       codigoPuntoOrigen = puntoFondoOrigen.getCodigoPunto();
     } else {
-      PuntosDTO puntoEntidadOrigen = this.consultarPuntoPorDetalle(contenido, detallesArchivo,
-          Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_ORIGEN);
+      PuntosDTO puntoEntidadOrigen = this.consultarPuntoPorNombreYTipo(contenido, detallesArchivo,
+          Constantes.CAMPO_DETALLE_ARCHIVO_ENTIDAD_ORIGEN, Constantes.PUNTO_BANCO);
       if (Objects.isNull(puntoEntidadOrigen)) {
         throw new NegocioException(ApiResponseCode.ERROR_BANCO_EXTERNO_NO_ENCONTRADO.getCode(),
             ApiResponseCode.ERROR_BANCO_EXTERNO_NO_ENCONTRADO.getDescription(),
@@ -1296,6 +1245,18 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
     }
     return null;
   }
+  
+  private PuntosDTO consultarPuntoPorNombreYTipo(String[] contenido,
+	      List<DetallesDefinicionArchivoDTO> detallesArchivo, String nombreCampo, String tipoPunto) {
+
+	    DetallesDefinicionArchivoDTO detalle = detallesArchivo.stream()
+	        .filter(deta -> deta.getNombreCampo().toUpperCase().equals(nombreCampo)).findFirst()
+	        .orElse(null);
+	    if (!Objects.isNull(detalle)) {
+	      return puntosService.getPuntoBancoByNombrePuntoTipoPunto(contenido[detalle.getId().getNumeroCampo() - 1].trim(), tipoPunto);
+	    }
+	    return null;
+	  }
 
   /**
    * Metodo encargado de realizar la consulta de un punto BanRep por detalle y nombre campo
