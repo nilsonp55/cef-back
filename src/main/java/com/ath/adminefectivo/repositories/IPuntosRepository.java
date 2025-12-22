@@ -250,4 +250,6 @@ public interface IPuntosRepository
           @Param(value = "codigoCiudad") String codigoCiudad,
           @Param(value = "identificadorCliente") String identificadorCliente,
           @Param(value = "codigoCliente") Integer codigoCliente);
+      
+      public Puntos findByNombrePuntoAndTipoPunto(String nombrePunto, String tipoPunto);
 }
