@@ -1007,8 +1007,8 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
 
     OperacionesProgramadasDTO operacionesProgramadasDTO = null;
     
-    PuntosDTO puntoFondoOrigen = this.consultarPuntoPorDetalle(contenido, detallesArchivo,
-            Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN);
+    PuntosDTO puntoFondoOrigen = this.consultarPuntoPorNombreYTipo(contenido, detallesArchivo,
+            Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_ORIGEN, Constantes.PUNTO_FONDO);
     
     PuntosDTO puntoFondoDestino = this.consultarPuntoPorNombreYTipo(contenido, detallesArchivo,
         Constantes.CAMPO_DETALLE_ARCHIVO_FONDO_DESTINO, Constantes.PUNTO_FONDO);
@@ -1226,29 +1226,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
     }
     return null;
   }
-
-  /**
-   * Metodo encargado de realizar la consulta de un punto por detalle y nombre campo
-   * 
-   * @param contenido
-   * @param detalle
-   * @return PuntosDTO
-   * @author duvan.naranjo
-   */
-  private PuntosDTO consultarPuntoPorDetalle(String[] contenido,
-      List<DetallesDefinicionArchivoDTO> detallesArchivo, String nombreCampo) {
-
-    DetallesDefinicionArchivoDTO detalle = detallesArchivo.stream()
-        .filter(deta -> deta.getNombreCampo().toUpperCase().equals(nombreCampo)).findFirst()
-        .orElse(null);
-    if (!Objects.isNull(detalle)) {
-    	log.debug("getPuntobyNombre: {}", Arrays.toString(contenido));
-      return puntosService
-          .getPuntoByNombrePunto(contenido[detalle.getId().getNumeroCampo() - 1].trim());
-    }
-    return null;
-  }
-  
+    
   private PuntosDTO consultarPuntoPorNombreYTipo(String[] contenido,
 	      List<DetallesDefinicionArchivoDTO> detallesArchivo, String nombreCampo, String tipoPunto) {
 
@@ -1295,7 +1273,7 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
   private Integer consultarBancoPorCiudad(String[] contenido,
       List<DetallesDefinicionArchivoDTO> detallesArchivo, String nombreCampo) {
     PuntosDTO puntoFondoDestino =
-        this.consultarPuntoPorDetalle(contenido, detallesArchivo, nombreCampo);
+        this.consultarPuntoPorNombreYTipo(contenido, detallesArchivo, nombreCampo, Constantes.PUNTO_FONDO);
     if (!Objects.isNull(puntoFondoDestino)) {
       PuntosDTO puntoBancoDestino = puntosService.getPuntoByTipoPuntoAndCodigoCiudad(
           Constantes.PUNTO_BANC_REP, puntoFondoDestino.getCodigoCiudad());
