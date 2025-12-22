@@ -29,6 +29,9 @@ public class AuditLogProcessDTO {
     private String respuestaProc;
     private String valorAnteriorProc;
     private String valorNuevoProc;
+    private String tablaProc;
+    private String idTablaProc;
+    private String eventosInternosProc;
 
     public static final Function<AuditLogProcessEntity, AuditLogProcessDTO> CONVERTER_DTO =
             (AuditLogProcessEntity entity) -> {
@@ -46,6 +49,10 @@ public class AuditLogProcessDTO {
                 dto.setEstadoHttpProc(entity.getEstadoHttpProc());
                 dto.setEstadoOperacionProc(entity.getEstadoOperacionProc());
                 dto.setMensajeRespuestaProc(entity.getMensajeRespuestaProc());
+                
+                dto.setTablaProc(entity.getTablaProc());
+                dto.setIdTablaProc(entity.getIdTablaProc());
+                dto.setEventosInternosProc(entity.getEventosInternosProc());
 
                 try {
                     if (entity.getPeticionProc() != null) {

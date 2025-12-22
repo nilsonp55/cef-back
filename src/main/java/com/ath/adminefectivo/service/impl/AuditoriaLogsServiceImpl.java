@@ -88,7 +88,7 @@ public class AuditoriaLogsServiceImpl implements IAuditoriaLogsService{
                                                         LocalDate fechaFinal,
                                                         String usuario,
                                                         String ipOrigen,
-                                                        String nombreProceso,
+                                                        String opcionMenu,
                                                         String estadoHttp,
                                                         Pageable pageable) {
 
@@ -113,8 +113,8 @@ public class AuditoriaLogsServiceImpl implements IAuditoriaLogsService{
         if (StringUtils.hasText(ipOrigen)) {
             builder.and(q.ipOrigenProc.equalsIgnoreCase(ipOrigen));
         }
-        if (StringUtils.hasText(nombreProceso)) {
-            builder.and(q.nombreProcesoProc.equalsIgnoreCase(nombreProceso));
+        if (StringUtils.hasText(opcionMenu)) {
+            builder.and(q.opcionMenuProc.equalsIgnoreCase(opcionMenu));
         }
         if (StringUtils.hasText(estadoHttp)) {
             builder.and(q.estadoHttpProc.equalsIgnoreCase(estadoHttp));

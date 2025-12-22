@@ -64,4 +64,13 @@ public class AuditoriaLogEntity {
 
     @Column(name = "valor_nuevo", columnDefinition = "text")
     private String valorNuevo;
+    
+    @Column(name = "tabla")
+    private String tabla;
+
+    @Column(name = "id_tabla")
+    private String idTabla;
+    
+    @Column(name = "eventos_internos", columnDefinition = "text")
+    private String eventosInternos;
 }

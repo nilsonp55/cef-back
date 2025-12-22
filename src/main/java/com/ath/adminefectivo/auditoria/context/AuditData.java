@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.ath.adminefectivo.auditoria.utils.AuditoriaHelper;
 import com.ath.adminefectivo.entities.audit.EntityChange;
 
 import lombok.Builder;
@@ -32,6 +33,8 @@ public class AuditData {
     private String estadoOperacion; // OK | ERROR
     @Builder.Default
     private List<EntityChange> cambios = new ArrayList<>();
+    @Builder.Default
+    private List<AuditoriaHelper.EventoInterno> eventosInternos = new ArrayList<>();
 
     public void addChange(EntityChange change) {
         if (change != null) this.cambios.add(change);

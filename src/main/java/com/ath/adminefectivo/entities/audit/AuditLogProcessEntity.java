@@ -64,4 +64,13 @@ public class AuditLogProcessEntity {
 
     @Column(name = "valor_nuevo", columnDefinition = "text")
     private String valorNuevoProc;
+    
+    @Column(name = "tabla_proc")
+    private String tablaProc;
+
+    @Column(name = "id_tabla_proc")
+    private String idTablaProc;
+    
+    @Column(name = "eventos_internos_proc", columnDefinition = "text")
+    private String eventosInternosProc;
 }
