@@ -11,6 +11,8 @@ import com.ath.adminefectivo.repositories.AuditLogProcessRepository;
 import com.ath.adminefectivo.repositories.AuditoriaLogRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.Collections;
 import java.util.UUID;
 import java.util.function.Consumer;
 import org.slf4j.Logger;
@@ -55,68 +57,128 @@ public class AuditPersistenceListener {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void persistAudit(AuditData data) {
         try {
-            if (Boolean.TRUE.equals(data.getIsProcess())) {
-                AuditLogProcessEntity entity = buildProcessEntity(data);
-                auditLogProcessRepository.save(entity);
-                logger.debug("Auditoría de proceso persistida correctamente para {}", data.getCodigoProceso());
-            } else {
-                AuditoriaLogEntity entity = buildAdminEntity(data);
-                auditoriaLogRepository.save(entity);
-                logger.debug("Auditoría admin persistida correctamente para {}", data.getCodigoProceso());
+
+            boolean isProcess = Boolean.TRUE.equals(data.getIsProcess());
+
+            // ==============================
+            // CASO 1: isProcess = true
+            // Guardar SOLO UN registro
+            // ==============================
+            if (isProcess) {
+                persistSingleAudit(data, null); // registro global del proceso
+                return;
             }
+
+            // ==============================
+            // CASO 2: isProcess = false
+            // Guardar un registro por cada modificación
+            // ==============================
+
+            // No hay cambios → registro normal
+            if (data.getCambios() == null || data.getCambios().isEmpty()) {
+                persistSingleAudit(data, null);
+                return;
+            }
+
+            // Guardar en orden natural del negocio
+            Collections.reverse(data.getCambios());
+
+            // Guardar un registro por cada EntityChange
+            for (EntityChange change : data.getCambios()) {
+                persistSingleAudit(data, change);
+            }
+
         } catch (Exception e) {
             logger.error("Error guardando auditoría: {}", e.getMessage(), e);
         }
     }
     
-    private AuditoriaLogEntity buildAdminEntity(AuditData data) throws JsonProcessingException {
-        AuditoriaLogEntity entity = new AuditoriaLogEntity();
+    private void persistSingleAudit(AuditData data, EntityChange change) throws JsonProcessingException {
+
+        boolean isProcess = Boolean.TRUE.equals(data.getIsProcess());
         ObjectMapper mapper = new ObjectMapper();
         mapper.findAndRegisterModules();
 
-        entity.setFechaHora(data.getFechaHora());
-        entity.setIpOrigen(data.getIpOrigen());
-        entity.setUsuario(data.getUsuario() != null ? data.getUsuario() : "System");
-        entity.setOpcionMenu(data.getOpcionMenu());
-        entity.setAccionHttp(resolveOperacion(data));
-        entity.setCodigoProceso(UUID.fromString(data.getCodigoProceso()));
-        entity.setNombreProceso(data.getNombreProceso());
-        entity.setEstadoHttp(HttpStatusDescripcion.descripcionDe(data.getEstadoHttp()));
-        entity.setEstadoOperacion(data.getEstadoOperacion());
-        entity.setMensajeRespuesta(data.getMensajeRespuesta());
+        if (!isProcess) {
+            // ===============================
+            // AUDITORÍA ADMINISTRATIVOS
+            // ===============================
+            AuditoriaLogEntity entity = new AuditoriaLogEntity();
+            
+            entity.setFechaHora(data.getFechaHora());
+            entity.setIpOrigen(data.getIpOrigen());
+            entity.setUsuario(data.getUsuario() != null ? data.getUsuario() : "System");
+            entity.setOpcionMenu(data.getOpcionMenu());
+            //entity.setAccionHttp(resolveOperacion(data));
+            entity.setAccionHttp(change != null ? change.getOperacion() : resolveOperacion(data));
+            entity.setCodigoProceso(UUID.fromString(data.getCodigoProceso()));
+            entity.setNombreProceso(data.getNombreProceso());
+            entity.setEstadoHttp(HttpStatusDescripcion.descripcionDe(data.getEstadoHttp()));
+            entity.setEstadoOperacion(data.getEstadoOperacion());
+            entity.setMensajeRespuesta(data.getMensajeRespuesta());
 
-        entity.setPeticion(serializeObject(mapper, data.getPeticion()));
-        entity.setRespuesta(serializeObject(mapper, data.getRespuesta()));
+            entity.setPeticion(data.getPeticion());
+            entity.setRespuesta(data.getRespuesta());
 
-        applyChanges(mapper, data, entity::setValorAnterior, entity::setValorNuevo);
+            if (change != null) {
+                entity.setValorAnterior(pretty(mapper, change.getValorAnterior()));
+                entity.setValorNuevo(pretty(mapper, change.getValorNuevo()));
+                entity.setTabla(change.getEntidad());
+                entity.setIdTabla(change.getIdEntidad());
+            }
 
-        return entity;
+            // ===============================
+            // Registrar eventos internos
+            // ===============================
+            if (data.getEventosInternos() != null && !data.getEventosInternos().isEmpty()) {
+                String eventosJson = mapper.writerWithDefaultPrettyPrinter()
+                                          .writeValueAsString(data.getEventosInternos());
+                entity.setEventosInternos(eventosJson);
+            }
+
+            auditoriaLogRepository.save(entity);
+
+        } else {
+            // ===============================
+            // AUDITORÍA PROCESOS
+            // ===============================
+            AuditLogProcessEntity entity = new AuditLogProcessEntity();
+
+            entity.setFechaHoraProc(data.getFechaHora());
+            entity.setIpOrigenProc(data.getIpOrigen());
+            entity.setUsuarioProc(data.getUsuario() != null ? data.getUsuario() : "System");
+            entity.setOpcionMenuProc(data.getOpcionMenu());
+            //entity.setAccionHttpProc(resolveOperacion(data));
+            entity.setAccionHttpProc(change != null ? change.getOperacion() : resolveOperacion(data));
+            entity.setCodigoProcesoProc(UUID.fromString(data.getCodigoProceso()));
+            entity.setNombreProcesoProc(data.getNombreProceso());
+            entity.setEstadoHttpProc(HttpStatusDescripcion.descripcionDe(data.getEstadoHttp()));
+            entity.setEstadoOperacionProc(data.getEstadoOperacion());
+            entity.setMensajeRespuestaProc(data.getMensajeRespuesta());
+
+            entity.setPeticionProc(data.getPeticion());
+            entity.setRespuestaProc(data.getRespuesta());
+
+            if (change != null) {
+                entity.setValorAnteriorProc(pretty(mapper, change.getValorAnterior()));
+                entity.setValorNuevoProc(pretty(mapper, change.getValorNuevo()));
+                entity.setTablaProc(change.getEntidad());
+                entity.setIdTablaProc(change.getIdEntidad());
+            }
+
+            // ===============================
+            // Registrar eventos internos
+            // ===============================
+            if (data.getEventosInternos() != null && !data.getEventosInternos().isEmpty()) {
+                String eventosJson = mapper.writerWithDefaultPrettyPrinter()
+                                          .writeValueAsString(data.getEventosInternos());
+                entity.setEventosInternosProc(eventosJson);
+            }
+
+            auditLogProcessRepository.save(entity);
+        }
     }
 
-    private AuditLogProcessEntity buildProcessEntity(AuditData data) throws JsonProcessingException {
-        AuditLogProcessEntity entity = new AuditLogProcessEntity();
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.findAndRegisterModules();
-
-        entity.setFechaHoraProc(data.getFechaHora());
-        entity.setIpOrigenProc(data.getIpOrigen());
-        entity.setUsuarioProc(data.getUsuario() != null ? data.getUsuario() : "System");
-        entity.setOpcionMenuProc(data.getOpcionMenu());
-        entity.setAccionHttpProc(resolveOperacion(data));
-        entity.setCodigoProcesoProc(UUID.fromString(data.getCodigoProceso()));
-        entity.setNombreProcesoProc(data.getNombreProceso());
-        entity.setEstadoHttpProc(HttpStatusDescripcion.descripcionDe(data.getEstadoHttp()));
-        entity.setEstadoOperacionProc(data.getEstadoOperacion());
-        entity.setMensajeRespuestaProc(data.getMensajeRespuesta());
-
-        entity.setPeticionProc(serializeObject(mapper, data.getPeticion()));
-        entity.setRespuestaProc(serializeObject(mapper, data.getRespuesta()));
-
-        applyChanges(mapper, data, entity::setValorAnteriorProc, entity::setValorNuevoProc);
-
-        return entity;
-    }
-    
     private String resolveOperacion(AuditData data) {
         if (data == null) {
             return Constantes.DESCONOCIDO;
@@ -144,44 +206,18 @@ public class AuditPersistenceListener {
         };
     }
     
-    private String serializeObject(ObjectMapper mapper, Object obj) throws JsonProcessingException {
-        if (obj == null) return null;
-        if (obj instanceof String s) {
-            return s;
+    private String pretty(ObjectMapper mapper, Object jsonString) {
+        if (jsonString == null) return null;
+        try {
+            if (jsonString instanceof String s) {
+                return mapper.writerWithDefaultPrettyPrinter()
+                        .writeValueAsString(mapper.readValue(s, Object.class));
+            }
+            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonString);
+        } catch (Exception e) {
+            return jsonString.toString();
         }
-        return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
     }
 
-	private <T> void applyChanges(ObjectMapper mapper, AuditData data, Consumer<T> setValorAnterior,
-			Consumer<T> setValorNuevo) {
-		if (data.getCambios() == null || data.getCambios().isEmpty()) {
-			setValorAnterior.accept(null);
-			setValorNuevo.accept(null);
-			return;
-		}
-		try {
-			EntityChange first = data.getCambios().get(0);
-			EntityChange last = data.getCambios().get(data.getCambios().size() - 1);
-
-			if (first.getValorAnterior() != null) {
-				setValorAnterior.accept((T) prettyPrint(mapper, first.getValorAnterior()));
-			}
-			if (last.getValorNuevo() != null) {
-				setValorNuevo.accept((T) prettyPrint(mapper, last.getValorNuevo()));
-			}
-		} catch (Exception e) {
-			logger.warn("Error procesando cambios: {}", e.getMessage());
-			setValorAnterior.accept(null);
-			setValorNuevo.accept(null);
-		}
-	}
-
-    private String prettyPrint(ObjectMapper mapper, Object value) throws JsonProcessingException {
-        if (value instanceof String s) {
-            return mapper.writerWithDefaultPrettyPrinter()
-                         .writeValueAsString(mapper.readValue(s, Object.class));
-        }
-        return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(value);
-    }
 
 }

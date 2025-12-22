@@ -240,7 +240,9 @@ public class AuditoriaEntityListener {
             }
         }
 
-        audit.addChange(new EntityChange(realClass.getSimpleName(), id, before, after, Constantes.ACTUALIZAR));
+        //audit.addChange(new EntityChange(realClass.getSimpleName(), id, before, after, Constantes.ACTUALIZAR));
+        String tableName = getTableName(realClass);
+        audit.addChange(new EntityChange(tableName, id, before, after, Constantes.ACTUALIZAR));
 
         if (key != null && after != null) {
             ORIGINAL_STATES_BY_ID.put(key, after);
@@ -266,8 +268,10 @@ public class AuditoriaEntityListener {
             after = readFromDB(realClass, id);
         }
 
-        audit.addChange(new EntityChange(realClass.getSimpleName(), id, null, after, Constantes.CREAR));
-
+        //audit.addChange(new EntityChange(realClass.getSimpleName(), id, null, after, Constantes.CREAR));
+        String tableName = getTableName(realClass);
+        audit.addChange(new EntityChange(tableName, id, null, after, Constantes.CREAR));
+        
         if (key != null && after != null) {
             ORIGINAL_STATES_BY_ID.put(key, after);
         }
@@ -287,8 +291,10 @@ public class AuditoriaEntityListener {
         String id = extractId(entity);
         String before = safeSerialize(entity);
 
-        audit.addChange(new EntityChange(realClass.getSimpleName(), id, before, null, Constantes.ELIMINAR));
-
+        //audit.addChange(new EntityChange(realClass.getSimpleName(), id, before, null, Constantes.ELIMINAR));      
+        String tableName = getTableName(realClass);
+        audit.addChange(new EntityChange(tableName, id, before, null, Constantes.ELIMINAR));
+        
         logger.debug("preRemove: change added for {}#{} beforeLen={}", realClass.getSimpleName(),
                 id, before != null ? before.length() : 0);
 
@@ -413,5 +419,12 @@ public class AuditoriaEntityListener {
         String name = cls.getName();
         if (name.contains("$$")) return cls.getSuperclass().getName();
         return name;
+    }
+    
+    private String getTableName(Class<?> cls) {
+        if (cls.isAnnotationPresent(javax.persistence.Table.class)) {
+            return cls.getAnnotation(javax.persistence.Table.class).name();
+        }
+        return cls.getSimpleName();
     }
 }

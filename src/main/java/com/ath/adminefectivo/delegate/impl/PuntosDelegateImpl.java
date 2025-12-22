@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.delegate.IPuntosDelegate;
 import com.ath.adminefectivo.dto.CreatePuntosDTO;
@@ -249,7 +250,7 @@ public class PuntosDelegateImpl implements IPuntosDelegate {
     }
     
     Puntos puntoResponse = puntosService.actualizarPunto(punto);
-    
+
     return PuntosDTO.CONVERTER_DTO.apply(puntoResponse);
   }
 

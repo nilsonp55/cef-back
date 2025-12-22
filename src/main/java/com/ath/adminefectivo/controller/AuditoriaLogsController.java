@@ -63,18 +63,18 @@ public class AuditoriaLogsController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFinal,
             @RequestParam(required = false) String usuario,
             @RequestParam(required = false, name = "ipOrigen") String ipOrigen,
-            @RequestParam(required = false) String nombreProceso,
+            @RequestParam(required = false) String opcionMenu,
             @RequestParam(required = false) String estadoHttp,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
-        log.debug("Solicitud consultarAuditoriaProcess - fechaInicial: {}, fechaFinal: {}, usuario: {}, ipOrigen: {}, codigoProceso: {}, estadoHttp: {}",
-                fechaInicial, fechaFinal, usuario, ipOrigen, nombreProceso, estadoHttp);
+        log.debug("Solicitud consultarAuditoriaProcess - fechaInicial: {}, fechaFinal: {}, usuario: {}, ipOrigen: {}, opcionMenu: {}, estadoHttp: {}",
+                fechaInicial, fechaFinal, usuario, ipOrigen, opcionMenu, estadoHttp);
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "fechaHoraProc"));
 
         Page<AuditLogProcessDTO> resultados = auditoriaLogService.consultarLogProceso(
-                fechaInicial, fechaFinal, usuario, ipOrigen, nombreProceso, estadoHttp, pageable
+                fechaInicial, fechaFinal, usuario, ipOrigen, opcionMenu, estadoHttp, pageable
         );
 
         return ResponseEntity.ok(resultados);

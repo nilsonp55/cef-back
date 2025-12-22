@@ -29,6 +29,9 @@ public class AuditoriaLogDTO {
     private String respuesta;
     private String valorAnterior;
     private String valorNuevo;
+    private String tabla;
+    private String idTabla;
+    private String eventosInternos;
 
     public static final Function<AuditoriaLogEntity, AuditoriaLogDTO> CONVERTER_DTO =
             (AuditoriaLogEntity entity) -> {
