@@ -1,17 +1,20 @@
 package com.ath.adminefectivo.auditoria.utils;
 
+import java.util.ArrayList;
+
 import com.ath.adminefectivo.auditoria.context.AuditData;
 import com.ath.adminefectivo.auditoria.context.AuditoriaContext;
 import com.ath.adminefectivo.constantes.Constantes;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class AuditoriaHelper {
 
-    private static final String WARNING = "WARNING";
+	private static final String WARNING = "WARNING";
     private static final String ACTION = "ACTION";
     private static final String ERROR = "ERROR";
+    
+    public AuditoriaHelper() {
+    	throw new IllegalStateException("Utility class");
+	}
 
     /**
      * Registra un error interno en la auditoría sin lanzar excepción.

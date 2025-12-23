@@ -1,5 +1,7 @@
 package com.ath.adminefectivo.delegate.impl;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -128,9 +130,7 @@ public class PuntosDelegateImpl implements IPuntosDelegate {
       oficina.setRefajillado(createPuntosDTO.getRefagillado());
       oficina.setTarifaRuteo(createPuntosDTO.getTarifaRuteo());
       oficina.setTarifaVerificacion(createPuntosDTO.getTarifaVerificacion());
-      oficina.setProgramaTransporte(createPuntosDTO.getProgramaTransporte() != null 
-              ? createPuntosDTO.getProgramaTransporte()
-              : true);
+      oficina.setProgramaTransporte(Optional.ofNullable(createPuntosDTO.getProgramaTransporte()).orElse(Boolean.TRUE));
 
       // validar si Oficina Existe, se lazan exception si existe
       puntosService.validarPuntoOficinaUnique(punto, oficina);
