@@ -12,7 +12,7 @@ public class AuditoriaHelper {
     private static final String ACTION = "ACTION";
     private static final String ERROR = "ERROR";
     
-    public AuditoriaHelper() {
+    private AuditoriaHelper() {
     	throw new IllegalStateException("Utility class");
 	}
 
