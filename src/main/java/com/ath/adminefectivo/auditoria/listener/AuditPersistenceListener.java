@@ -1,5 +1,15 @@
 package com.ath.adminefectivo.auditoria.listener;
 
+import java.util.Collections;
+import java.util.UUID;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.event.EventListener;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.ath.adminefectivo.auditoria.context.AuditData;
 import com.ath.adminefectivo.auditoria.utils.AuditReadyEvent;
 import com.ath.adminefectivo.auditoria.utils.HttpStatusDescripcion;
@@ -11,16 +21,6 @@ import com.ath.adminefectivo.repositories.AuditLogProcessRepository;
 import com.ath.adminefectivo.repositories.AuditoriaLogRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.util.Collections;
-import java.util.UUID;
-import java.util.function.Consumer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.event.EventListener;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class AuditPersistenceListener {
@@ -109,7 +109,6 @@ public class AuditPersistenceListener {
             entity.setIpOrigen(data.getIpOrigen());
             entity.setUsuario(data.getUsuario() != null ? data.getUsuario() : "System");
             entity.setOpcionMenu(data.getOpcionMenu());
-            //entity.setAccionHttp(resolveOperacion(data));
             entity.setAccionHttp(change != null ? change.getOperacion() : resolveOperacion(data));
             entity.setCodigoProceso(UUID.fromString(data.getCodigoProceso()));
             entity.setNombreProceso(data.getNombreProceso());
@@ -148,7 +147,6 @@ public class AuditPersistenceListener {
             entity.setIpOrigenProc(data.getIpOrigen());
             entity.setUsuarioProc(data.getUsuario() != null ? data.getUsuario() : "System");
             entity.setOpcionMenuProc(data.getOpcionMenu());
-            //entity.setAccionHttpProc(resolveOperacion(data));
             entity.setAccionHttpProc(change != null ? change.getOperacion() : resolveOperacion(data));
             entity.setCodigoProcesoProc(UUID.fromString(data.getCodigoProceso()));
             entity.setNombreProcesoProc(data.getNombreProceso());

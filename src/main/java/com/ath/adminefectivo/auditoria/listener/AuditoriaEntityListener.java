@@ -1,6 +1,36 @@
 package com.ath.adminefectivo.auditoria.listener;
 
 
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.math.BigInteger;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.PostLoad;
+import javax.persistence.PostPersist;
+import javax.persistence.PostUpdate;
+import javax.persistence.PreRemove;
+import javax.persistence.Transient;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
+
 import com.ath.adminefectivo.auditoria.context.AuditData;
 import com.ath.adminefectivo.auditoria.context.AuditoriaContext;
 import com.ath.adminefectivo.auditoria.utils.AuditReadyEvent;
@@ -10,6 +40,9 @@ import com.ath.adminefectivo.entities.audit.EntityChange;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.BeanDescription;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationConfig;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -19,38 +52,6 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
 import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationEventPublisher;
-
-import javax.persistence.PostLoad;
-import javax.persistence.PreRemove;
-import javax.persistence.Transient;
-import javax.persistence.PostPersist;
-import javax.persistence.PostUpdate;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityManager;
-import com.fasterxml.jackson.databind.JavaType;
-import javax.persistence.Entity;
-
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.math.BigInteger;
-import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.time.LocalDateTime;
-import com.fasterxml.jackson.databind.BeanDescription;
-import com.fasterxml.jackson.databind.JsonSerializer;
 
 
 /**
@@ -240,7 +241,6 @@ public class AuditoriaEntityListener {
             }
         }
 
-        //audit.addChange(new EntityChange(realClass.getSimpleName(), id, before, after, Constantes.ACTUALIZAR));
         String tableName = getTableName(realClass);
         audit.addChange(new EntityChange(tableName, id, before, after, Constantes.ACTUALIZAR));
 
@@ -268,7 +268,6 @@ public class AuditoriaEntityListener {
             after = readFromDB(realClass, id);
         }
 
-        //audit.addChange(new EntityChange(realClass.getSimpleName(), id, null, after, Constantes.CREAR));
         String tableName = getTableName(realClass);
         audit.addChange(new EntityChange(tableName, id, null, after, Constantes.CREAR));
         
@@ -290,8 +289,7 @@ public class AuditoriaEntityListener {
         Class<?> realClass = getRealClass(entity);
         String id = extractId(entity);
         String before = safeSerialize(entity);
-
-        //audit.addChange(new EntityChange(realClass.getSimpleName(), id, before, null, Constantes.ELIMINAR));      
+     
         String tableName = getTableName(realClass);
         audit.addChange(new EntityChange(tableName, id, before, null, Constantes.ELIMINAR));
         
