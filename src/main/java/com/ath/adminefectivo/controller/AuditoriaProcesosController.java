@@ -81,7 +81,7 @@ public class AuditoriaProcesosController {
 	 * @param auditoriaProcesosDTO
 	 * @return ResponseEntity<ApiResponseADE<Void>>
 	 */
-	@PostMapping(value = "${endpoints.AuditoriaProcesos.crud}")
+	@PostMapping
 	public ResponseEntity<ApiResponseADE<AuditoriaProcesosDTO>> crearAuditoriaProceso(
 			@RequestBody AuditoriaProcesosDTO auditoriaProcesosDTO) {
 		log.debug("Creando AuditoriaProceso - id: {}", auditoriaProcesosDTO.getId());
@@ -98,7 +98,7 @@ public class AuditoriaProcesosController {
 	 * @param fechaProceso
 	 * @return
 	 */
-	@DeleteMapping(value = "${endpoints.AuditoriaProcesos.crud}")
+	@DeleteMapping
 	public ResponseEntity<ApiResponseADE<Void>> deleteAuditoriaProceso(
 			@PathVariable @NotNull @Valid String codigoProceso, @PathVariable @NotNull @Valid Date fechaProceso) {
 		log.debug("Eliminando AuditoriaProceso - codigoProceso: {} - fechaProceso: {}", codigoProceso, codigoProceso);
