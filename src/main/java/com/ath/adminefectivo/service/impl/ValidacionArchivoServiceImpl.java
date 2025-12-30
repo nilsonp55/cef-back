@@ -537,9 +537,9 @@ public class ValidacionArchivoServiceImpl implements IValidacionArchivoService {
                     
                 }
             }
-            log.info("Obtener fecha archivo: {} - mascaraFecha: {} - fechaString: {}",
+            log.debug("Obtener fecha archivo: {} - mascaraFecha: {} - fechaString: {}",
                 nombreArchivo, mascaraFecha, fecha);
-            Optional.of(fechaArchivo).ifPresent(t -> log.info("fechaArchivo: {}", t.toString()));
+            Optional.of(fechaArchivo).ifPresent(t -> log.debug("fechaArchivo: {}", t.toString()));
         } catch (Exception e) {
             log.error("Exception: {}", e);
             fechaArchivo = null;
