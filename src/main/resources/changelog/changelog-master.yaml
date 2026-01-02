@@ -1,0 +1,4 @@
+databaseChangeLog:
+  - include:
+      file: changelog/0001-change-menu-table.sql
+      file: changelog/0002-change-oficinas-table.sql
