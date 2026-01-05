@@ -107,24 +107,24 @@ public class OperacionesCertificadasServiceImpl implements IOperacionesCertifica
    */
   @Override
   public Boolean actualizarEstadoEnCertificadas(Integer idCertificacion, String estado) {
-
+	  log.debug("Actualizar estado operacion certificada id: {} - estado: {}", idCertificacion, estado);
     Optional<OperacionesCertificadas> operaciones =
         operacionesCertificadasRepository.findById(idCertificacion);
     if (!operaciones.isPresent()) {
+    	log.error("No se encontro operacion certificada id: {}", idCertificacion);
       throw new NegocioException(
           ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getCode(),
           ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getDescription(),
           ApiResponseCode.ERROR_OPERACIONES_CERTIFICADAS_NO_ENCONTRADO.getHttpStatus());
     }
-    try {
+    
       operaciones.get().setEstadoConciliacion(estado);
       operaciones.get().setFechaModificacion(new Date());
       operaciones.get().setUsuarioModificacion(USER1);
       operaciones.get().setConciliable(Constantes.SI);
       operacionesCertificadasRepository.save(operaciones.get());
-    } catch (Exception e) {
-      log.error("Failed to actualizarEstadoEnCertificadas: {}", e);
-    }
+      log.debug("Actualizada operacion programada id: {}", idCertificacion);
+
     return true;
   }
 

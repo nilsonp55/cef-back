@@ -4,7 +4,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -147,23 +146,23 @@ public class OperacionesProgramadasServiceImpl implements IOperacionesProgramada
    */
   @Override
   public Boolean actualizarEstadoEnProgramadas(Integer idOperacion, String estado) {
-
+	  log.debug("Actualizar estado operacion programada id: {} - estado: {}", idOperacion, estado);
     Optional<OperacionesProgramadas> operacionesP =
         operacionesProgramadasRepository.findById(idOperacion);
     if (!operacionesP.isPresent()) {
+    	log.error("No se encontro operacion programada id: {}", idOperacion);
       throw new NegocioException(
           ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getCode(),
           ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getDescription(),
           ApiResponseCode.ERROR_OPERACIONES_PROGRAMADAS_NO_ENCONTRADO.getHttpStatus());
     }
-    try {
+    
       operacionesP.get().setEstadoConciliacion(estado);
       operacionesP.get().setFechaModificacion(new Date());
       operacionesP.get().setUsuarioModificacion("user1");
       operacionesProgramadasRepository.save(operacionesP.get());
-    } catch (Exception e) {
-      e.getMessage();
-    }
+      log.debug("Actualizada operacion programada id: {}", idOperacion);
+    
     return true;
   }
 

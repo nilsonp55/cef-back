@@ -313,11 +313,15 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
   @Override
   @Transactional
   public Boolean conciliacionManual(List<ParametrosConciliacionDTO> conciliacionManualDTO) {
-
+	  log.debug("Conciliacion manual de programada vs certtificadas: {}", conciliacionManualDTO.toString());
     for (ParametrosConciliacionDTO elemento : conciliacionManualDTO) {
+		log.debug("Validar operacion programada id: {} vs certificacion id: {}", elemento.getIdOperacion(),
+				elemento.getIdCertificacion());
       var conciliaciones = operacionesProgramadasRepository.conciliacionManual(
           estadoConciliacionNoConciliado, elemento.getIdOperacion(), elemento.getIdCertificacion());
       if (Objects.isNull(conciliaciones)) {
+    	  log.error("Validando operacion programada: {} vs operacion certificada: {}", elemento.getIdOperacion(),
+  				elemento.getIdCertificacion());
         throw new NegocioException(
             ApiResponseCode.ERROR_OPERACIONES_A_CONCILIAR_NO_ENCONTRADO.getCode(),
             ApiResponseCode.ERROR_OPERACIONES_A_CONCILIAR_NO_ENCONTRADO.getDescription(),
@@ -326,12 +330,16 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
     }
 
     for (ParametrosConciliacionDTO elemento : conciliacionManualDTO) {
+    	log.debug("Actualizar estado operacion programada id: {} vs certificacion id: {}", elemento.getIdOperacion(),
+				elemento.getIdCertificacion());
       operacionesProgramadasService.actualizarEstadoEnProgramadas(elemento.getIdOperacion(),
           estadoConciliacionConciliado);
       operacionesCertificadasService.actualizarEstadoEnCertificadas(elemento.getIdCertificacion(),
           estadoConciliacionConciliado);
       elemento.setTipoConciliacion(tipoConciliacionManual);
       conciliacionServicesService.crearRegistroConciliacion(elemento);
+      log.debug("Registro conciliacion creado para operacion programada id: {} vs certificacion id: {}", elemento.getIdOperacion(),
+				elemento.getIdCertificacion());
     }
     return true;
   }
