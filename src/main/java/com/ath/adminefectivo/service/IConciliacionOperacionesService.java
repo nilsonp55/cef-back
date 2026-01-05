@@ -97,6 +97,6 @@ public interface IConciliacionOperacionesService {
 	 * @return Boolean
 	 * @author cesar.castano
 	 */
-	Boolean cierreConciliaciones();
+	String cierreConciliaciones();
 
 }

@@ -387,9 +387,10 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
    */
   @Override
   @Transactional
-  public Boolean cierreConciliaciones() {
+  public String cierreConciliaciones() {
+	  log.debug("Inicio lanzar proc: validarcierreconciliacion()");
     String resultado = conciliacionOperacionesRepository.validarcierreconciliacion();
-
+    log.debug("Finaliza proc: validarcierreconciliacion() - resultado: {}", resultado);
     if (resultado.toUpperCase().startsWith("OK")) {
       LogProcesoDiario logProcesoDiario = logProcesoDiarioService
           .obtenerEntidadLogProcesoDiario(Dominios.CODIGO_PROCESO_LOG_CONCILIACION);
@@ -404,9 +405,9 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
       logProcesoDiarioDTO.setUsuarioModificacion(logProcesoDiario.getUsuarioModificacion());
       logProcesoDiarioDTO.setEstadoProceso(Dominios.ESTADO_PROCESO_DIA_COMPLETO);
       logProcesoDiarioService.actualizarLogProcesoDiario(logProcesoDiarioDTO);
-      return true;
+      log.debug("Actualizar log proceso diario: {}", Dominios.CODIGO_PROCESO_LOG_CONCILIACION);
     }
-    return false;
+    return resultado;
 
   }
 
