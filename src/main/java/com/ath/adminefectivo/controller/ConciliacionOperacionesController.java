@@ -158,9 +158,9 @@ public class ConciliacionOperacionesController {
 			consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponseADE<Boolean>> conciliacionManual(
 			@RequestBody(required = true) List<ParametrosConciliacionDTO> conciliacionManualDTO) {
-
+		log.info("Conciliacion manual operaciones programda vs certificada: ", conciliacionManualDTO.toString());
 		Boolean respuesta = conciliacionOperacionesService.conciliacionManual(conciliacionManualDTO);
-
+		log.info("Respuesta conciliacion manual programada vs certificada: ", respuesta);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(respuesta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));

@@ -17,6 +17,9 @@ import com.ath.adminefectivo.repositories.IConciliacionOperacionesRepository;
 import com.ath.adminefectivo.service.IConciliacionServiciosService;
 import com.ath.adminefectivo.service.IParametroService;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
 @Service
 public class ConciliacionServiciosServiceImpl implements IConciliacionServiciosService {
 
@@ -52,7 +55,8 @@ public class ConciliacionServiciosServiceImpl implements IConciliacionServiciosS
 	 */
 	@Override
 	public Boolean crearRegistroConciliacion(ParametrosConciliacionDTO elemento) {
-		try {
+		log.debug("Crear registro conciliacion programacion id: {} - certificacion id: {}", elemento.getIdOperacion(),
+				elemento.getIdCertificacion());
 			Date fechaSistema = parametroService.valorParametroDate(Constantes.FECHA_DIA_PROCESO);
 			var conciliacion = new ConciliacionDTO();
 			conciliacion.setFechaConciliacion(fechaSistema);
@@ -63,9 +67,8 @@ public class ConciliacionServiciosServiceImpl implements IConciliacionServiciosS
 			conciliacion.setUsuarioModificacion("user1");
 			conciliacion.setUsuarioCreacion("user1");
 			conciliacionServiciosRepository.save(ConciliacionDTO.CONVERTER_ENTITY.apply(conciliacion));
-		} catch (Exception e) {
-			e.getMessage();
-		}
+			log.debug("Registro creado de conciliacion programacion id: {} - certificacion id: {}", elemento.getIdOperacion(),
+					elemento.getIdCertificacion());
 		return true;
 	}
 
