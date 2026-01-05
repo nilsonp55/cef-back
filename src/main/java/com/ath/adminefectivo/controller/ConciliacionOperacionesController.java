@@ -193,13 +193,20 @@ public class ConciliacionOperacionesController {
 	 * @author cesar.castano
 	 */
 	@PostMapping(value = "${endpoints.conciliacion.cierre}")
-	public ResponseEntity<ApiResponseADE<Boolean>> cierreConciliaciones() {
-
-		Boolean consulta = conciliacionOperacionesService.cierreConciliaciones();
-
-		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
+	public ResponseEntity<ApiResponseADE<String>> cierreConciliaciones() {
+		log.info("Inicio cierre de conciliaciones");
+		String resultado = conciliacionOperacionesService.cierreConciliaciones();
+		log.info("Finaliza cierre de conciliaciones - resultado: {}", resultado);
+		
+		if (resultado.toUpperCase().startsWith("OK")) {
+			return ResponseEntity.status(HttpStatus.OK)
+				.body(new ApiResponseADE<>(resultado, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
 						.description(ApiResponseCode.SUCCESS.getDescription()).build()));
+		} else {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body(new ApiResponseADE<>(resultado, ResponseADE.builder().code(ApiResponseCode.GENERIC_ERROR.getCode())
+							.description(ApiResponseCode.GENERIC_ERROR.getDescription()).build()));
+		}
 	}
 	
 }
