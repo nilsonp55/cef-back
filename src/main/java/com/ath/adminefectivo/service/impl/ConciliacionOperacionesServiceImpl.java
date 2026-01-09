@@ -323,9 +323,9 @@ public class ConciliacionOperacionesServiceImpl implements IConciliacionOperacio
     	  log.error("Validando operacion programada: {} vs operacion certificada: {}", elemento.getIdOperacion(),
   				elemento.getIdCertificacion());
         throw new NegocioException(
-            ApiResponseCode.ERROR_OPERACIONES_A_CONCILIAR_NO_ENCONTRADO.getCode(),
-            ApiResponseCode.ERROR_OPERACIONES_A_CONCILIAR_NO_ENCONTRADO.getDescription(),
-            ApiResponseCode.ERROR_OPERACIONES_A_CONCILIAR_NO_ENCONTRADO.getHttpStatus());
+            ApiResponseCode.ERROR_OPERACIONES_A_CONCILIAR_NO_COINCIDEN_CRITERIOS.getCode(),
+            ApiResponseCode.ERROR_OPERACIONES_A_CONCILIAR_NO_COINCIDEN_CRITERIOS.getDescription(),
+            ApiResponseCode.ERROR_OPERACIONES_A_CONCILIAR_NO_COINCIDEN_CRITERIOS.getHttpStatus());
       }
     }
 

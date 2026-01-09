@@ -237,6 +237,9 @@ public enum ApiResponseCode {
 	 */
 	ERROR_OPERACIONES_A_CONCILIAR_NO_ENCONTRADO("E910", "No hay datos de operaciones a conciliar",
 			HttpStatus.PRECONDITION_FAILED),
+	
+	ERROR_OPERACIONES_A_CONCILIAR_NO_COINCIDEN_CRITERIOS("E910", "Las operaciones a conciliar no coinciden en alguno de los criterios: Nombre Fondo, Entrada-Salida, Fecha origen/destino Certificada igual o mayor a Programada ",
+			HttpStatus.PRECONDITION_FAILED),
 
 	/**
 	 * Ocurrió un error al consultar la tabla de transportadoras
