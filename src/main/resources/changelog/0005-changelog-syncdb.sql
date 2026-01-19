@@ -3,13 +3,13 @@
  
 ALTER TABLE controlefect.centros_ciudad_ppal ALTER COLUMN banco_aval TYPE int4 USING banco_aval::int4;
 
-DROP VIEW controlefect.v_detalle_liquidacion_procesamiento;
+DROP VIEW IF EXISTS controlefect.v_detalle_liquidacion_procesamiento;
 ALTER TABLE controlefect.costos_procesamiento ALTER COLUMN id_archivo_cargado TYPE int8 USING id_archivo_cargado::int8;
 ALTER TABLE controlefect.costos_procesamiento ALTER COLUMN id_liquidacion TYPE int4 USING id_liquidacion::int4;
 ALTER TABLE controlefect.costos_procesamiento ALTER COLUMN porcentaje_aiu TYPE int4 USING porcentaje_aiu::int4;
 ALTER TABLE controlefect.costos_procesamiento ALTER COLUMN porcentaje_iva TYPE int4 USING porcentaje_iva::int4;
 
-DROP VIEW controlefect.v_detalle_liquidacion_transporte;
+DROP VIEW IF EXISTS controlefect.v_detalle_liquidacion_transporte;
 ALTER TABLE controlefect.costos_transporte ALTER COLUMN id_archivo_cargado TYPE int8 USING id_archivo_cargado::int8;
 ALTER TABLE controlefect.costos_transporte ALTER COLUMN id_liquidacion TYPE int4 USING id_liquidacion::int4;
 

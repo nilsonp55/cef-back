@@ -1,7 +1,7 @@
 --liquibase formatted sql
 --changeset prv_nparra:0004 
 
-DROP VIEW controlefect.v_tarifas_especiales_cliente;
+DROP VIEW IF EXISTS controlefect.v_tarifas_especiales_cliente;
 
 ALTER TABLE controlefect.tarifas_especiales_cliente ALTER COLUMN fecha_creacion TYPE timestamp USING fecha_creacion::timestamp;
 ALTER TABLE controlefect.tarifas_especiales_cliente ALTER COLUMN fecha_modificacion TYPE timestamp USING fecha_modificacion::timestamp;
