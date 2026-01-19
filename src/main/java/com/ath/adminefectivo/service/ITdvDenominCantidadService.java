@@ -25,7 +25,7 @@ public interface ITdvDenominCantidadService {
 	 * @return TdvDenominCantidadDTO
 	 * @author duvan.naranjo
 	 */
-	TdvDenominCantidadDTO getTdvDenominCantidadById(Integer idTdvDenominCantidad);
+	TdvDenominCantidadDTO getTdvDenominCantidadById(Long idTdvDenominCantidad);
 
 	/**
 	 * Servicio encargado de contener la logica guardar o persistir
@@ -53,7 +53,7 @@ public interface ITdvDenominCantidadService {
 	 * @return boolean
 	 * @author duvan.naranjo
 	 */
-	boolean eliminarTdvDenominCantidad(Integer idTdvDenominCantidad);
+	boolean eliminarTdvDenominCantidad(Long idTdvDenominCantidad);
 
 	
 

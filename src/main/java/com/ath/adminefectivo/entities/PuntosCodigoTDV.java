@@ -38,7 +38,7 @@ public class PuntosCodigoTDV extends AuditableEntity {
 	@Id
 	@Column(name = "id_punto_codigo_tdv")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer idPuntoCodigoTdv;
+	private Long idPuntoCodigoTdv;
 	
 	@Column(name = "CODIGO_PUNTO")
 	private Integer codigoPunto;

@@ -51,8 +51,8 @@ public class ComprobantesContables {
 	@Column(name = "FECHA")
 	private Date fecha;
 	
-	@Column(name = "TIPO_PROCESO")
-	private char tipoProceso;
+	@Column(name = "TIPO_PROCESO", length = 2)
+	private String tipoProceso;
 	
 	@Column(name = "ESTADO")
 	private String estado;

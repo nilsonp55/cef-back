@@ -1,4 +1,7 @@
 databaseChangeLog:
   - include:
       file: changelog/0002-change-oficinas-table.sql
+  - include:
       file: changelog/0003-change-menu-table.sql
+  - include:
+      file: changelog/0004-change-tarifas-cliente.sql

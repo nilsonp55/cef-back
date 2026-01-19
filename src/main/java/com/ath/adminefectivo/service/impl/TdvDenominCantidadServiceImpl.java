@@ -40,7 +40,7 @@ public class TdvDenominCantidadServiceImpl implements ITdvDenominCantidadService
 	 * {@inheritDoc}
 	 */
 	@Override
-	public TdvDenominCantidadDTO getTdvDenominCantidadById(Integer idTdvDenominCantidad) {
+	public TdvDenominCantidadDTO getTdvDenominCantidadById(Long idTdvDenominCantidad) {
 		TdvDenominCantidad tdvDenominCantidadEntity = tdvDenominCantidadRepository.findById(idTdvDenominCantidad).get();
 		if(Objects.isNull(tdvDenominCantidadEntity)) {
 			throw new NegocioException(ApiResponseCode.ERROR_ESCALAS_NO_ENCONTRADO.getCode(),
@@ -85,18 +85,14 @@ public class TdvDenominCantidadServiceImpl implements ITdvDenominCantidadService
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean eliminarTdvDenominCantidad(Integer idTdvDenominCantidad) {
+	public boolean eliminarTdvDenominCantidad(Long idTdvDenominCantidad) {
 		TdvDenominCantidad tdvDenominCantidadEntity = tdvDenominCantidadRepository.
 				findById(idTdvDenominCantidad).get();
 		
 		tdvDenominCantidadEntity.setEstado(Dominios.ESTADO_GENERAL_ELIMINADO);
 		TdvDenominCantidad tdvDenominCantidadActualizado = tdvDenominCantidadRepository.save(tdvDenominCantidadEntity);
 		
-		if(!Objects.isNull(tdvDenominCantidadActualizado)) {
-			return (tdvDenominCantidadActualizado.getEstado() == Dominios.ESTADO_GENERAL_ELIMINADO);
-		}else {
-			return false;
-		}
+		return (tdvDenominCantidadActualizado.getEstado() == Dominios.ESTADO_GENERAL_ELIMINADO);
 	}
 	
 }

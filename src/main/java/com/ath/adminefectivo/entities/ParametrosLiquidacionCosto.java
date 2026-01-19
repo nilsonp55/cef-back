@@ -17,6 +17,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import com.ath.adminefectivo.auditoria.listener.AuditoriaEntityListener;
 import com.ath.adminefectivo.dto.compuestos.EstimadoClasificacionCostosDTO;
@@ -61,7 +63,7 @@ public class ParametrosLiquidacionCosto {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID_LIQUIDACION")
-	private Long idLiquidacion;
+	private Integer idLiquidacion;
 
 	@Column(name = "BILLETES")
 	private String billetes;
@@ -134,6 +136,7 @@ public class ParametrosLiquidacionCosto {
 	@JsonIgnore
 	private ValoresLiquidados valoresLiquidados;
 
+	@Temporal(TemporalType.DATE)
 	@Column(name = "fecha_concilia")
 	private Date fechaConcilia;
 

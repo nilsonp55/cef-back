@@ -21,9 +21,11 @@ public class OtrosCostosFondo {
     @EmbeddedId
     private OtrosCostosFondoPK id;
 
+    @Temporal(TemporalType.DATE)
     @Column(name = "fecha_creacion")
     private Date fechaCreacion;
 
+    @Temporal(TemporalType.DATE)
     @Column(name = "fecha_liquidacion")
     private Date fechaLiquidacion;
 

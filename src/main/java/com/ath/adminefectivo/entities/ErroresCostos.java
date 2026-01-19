@@ -36,7 +36,7 @@ public class ErroresCostos {
 	@Id
 	@Column(name = "ID_ERRORES_COSTOS")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer idErroresCostos;
+	private Long idErroresCostos;
 	
 	@Column(name = "FECHA")
 	private Date fecha;
@@ -48,5 +48,5 @@ public class ErroresCostos {
 	private Integer seqGrupo;
 	
 	@Column(name = "ESTADO")
-	private String estado;
+	private Integer estado;
 }

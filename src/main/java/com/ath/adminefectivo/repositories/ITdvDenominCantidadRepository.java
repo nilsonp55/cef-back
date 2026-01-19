@@ -11,6 +11,6 @@ import com.ath.adminefectivo.entities.TdvDenominCantidad;
  * @author duvan.naranjo
  */
 public interface ITdvDenominCantidadRepository
-		extends JpaRepository<TdvDenominCantidad, Integer>, QuerydslPredicateExecutor<TdvDenominCantidad> {
+		extends JpaRepository<TdvDenominCantidad, Long>, QuerydslPredicateExecutor<TdvDenominCantidad> {
 
 }

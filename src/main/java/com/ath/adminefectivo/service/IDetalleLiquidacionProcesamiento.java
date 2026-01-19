@@ -5,7 +5,7 @@ import java.math.BigInteger;
 
 public interface IDetalleLiquidacionProcesamiento {
 
-	String getConsecutivoRegistro();
+	Integer getConsecutivoRegistro();
 	Integer getIdArchivoCargado();
 	String getIdRegistro();
 	String getIdsLiquidacionApp();

@@ -37,7 +37,7 @@ public class ValoresLiquidados {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID_VALORES_LIQ")
-	private Long idValoresLiq;
+	private Integer idValoresLiq;
 	
 	@Column(name = "CLASIFICACION_FAJADO")
 	private Double clasificacionFajado;

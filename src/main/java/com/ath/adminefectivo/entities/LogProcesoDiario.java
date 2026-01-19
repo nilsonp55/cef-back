@@ -56,14 +56,14 @@ public class LogProcesoDiario {
 	@Column(name = "USUARIO_CREACION")
 	private String usuarioCreacion;
 
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "FECHA_CREACION")
 	private Date fechaCreacion;
 
 	@Column(name = "USUARIO_MODIFICACION")
 	private String usuarioModificacion;
 
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "FECHA_MODIFICACION")
 	private Date fechaModificacion;
 

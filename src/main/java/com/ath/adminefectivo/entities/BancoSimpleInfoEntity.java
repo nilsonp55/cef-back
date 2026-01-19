@@ -39,6 +39,6 @@ public class BancoSimpleInfoEntity {
 	private String nombreBanco;
 	
 	@Column(name = "ES_AVAL")
-	private String esAval;
+	private Boolean esAval;
 
 }

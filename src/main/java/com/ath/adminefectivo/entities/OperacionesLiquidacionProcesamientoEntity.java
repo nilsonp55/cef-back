@@ -2,10 +2,8 @@ package com.ath.adminefectivo.entities;
 
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.Date;
+import java.time.LocalDate;
 
-import javax.inject.Named;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -13,7 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.ath.adminefectivo.auditoria.listener.AuditoriaEntityListener;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,25 +28,22 @@ public class OperacionesLiquidacionProcesamientoEntity {
 	
 	@Id
     @Column(name = "CONSECUTIVO_REGISTRO")
-    private Integer recordConsecutive;
+    private String recordConsecutive;
 
     @Column(name = "ID_ARCHIVO_CARGADO")
-    private Integer loadedFileId;
+    private Long loadedFileId;
 
     @Column(name = "ID_REGISTRO")
-    private Integer recordId;
-
-    @Column(name = "ID_LIQUIDACION")
-    private Integer settlementId;
+    private String recordId;
 
     @Column(name = "TIPO_TRANSACCION")
-    private Integer transactionType;
+    private Long transactionType;
 
     @Column(name = "ENTIDAD")
     private String entity;
 
     @Column(name = "FECHA_SERVICIO_TRANSPORTE")
-    private LocalDateTime transportServiceDate;
+    private LocalDate transportServiceDate;
 
     @Column(name = "IDENTIFICACION_CLIENTE")
     private String clientIdentification;
@@ -103,40 +97,40 @@ public class OperacionesLiquidacionProcesamientoEntity {
     private BigDecimal processSubtotalTdv;
 
     @Column(name = "IVA")
-    private BigDecimal tax;
+    private String tax;
 
     @Column(name = "VALOR_TOTAL")
-    private BigDecimal totalname;
+    private Double totalname;
     
     @Column(name = "CLASIFICACION_FAJADO")
-    private BigDecimal classificationBundled;
+    private Double classificationBundled;
 
     @Column(name = "CLASIFICACION_FAJADO_TDV")
-    private BigDecimal classificationBundledTdv;
+    private Double classificationBundledTdv;
     
     @Column(name = "CLASIFICACION_NO_FAJADO")
-    private BigDecimal classificationUnbundled;
+    private Double classificationUnbundled;
 
     @Column(name = "CLASIFICACION_NO_FAJADO_TDV")
-    private BigDecimal classificationUnbundledTdv;
+    private Double classificationUnbundledTdv;
     
     @Column(name = "COSTO_PAQUETEO")
-    private BigDecimal packagingCost;
+    private Double packagingCost;
     
     @Column(name = "COSTO_PAQUETEO_TDV")
-    private BigDecimal packagingCostTdv;
+    private Double packagingCostTdv;
     
     @Column(name = "MONEDA_RESIDUO")
-    private BigDecimal coinResidue;
+    private Double coinResidue;
     
     @Column(name = "MONEDA_RESIDUO_TDV")
-    private BigDecimal coinResidueTdv;
+    private Double coinResidueTdv;
     
     @Column(name = "BILLETE_RESIDUO")
-    private BigDecimal billResidue;
+    private Double billResidue;
     
     @Column(name = "BILLETE_RESIDUO_TDV")
-    private BigDecimal billResidueTdv;
+    private Double billResidueTdv;
     
     @Column(name = "VALOR_ALMACENAMIENTO_BILLETE")
     private BigDecimal storageValueBill;

@@ -1,6 +1,10 @@
 package com.ath.adminefectivo.service.impl;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -71,12 +75,12 @@ public class ParametrosLiquidacionCostosServiceImpl implements IParametrosLiquid
 
 	@Override
 	public Optional<ParametrosLiquidacionCosto> getParametrosLiquidacionCostosById(Long idLiquidacion) {
-		return parametrosLiquidacionCostosRepository.findById(idLiquidacion);
+		return parametrosLiquidacionCostosRepository.findById(idLiquidacion.intValue());
 	}
 
 	@Override
 	public ParametrosLiquidacionCostoFlat getParametrosLiquidacionCostosByIdFlat(Long idLiquidacion) {
-		return parametrosLiquidacionCostosRepositoryFlat.findById(idLiquidacion).orElse(null); 
+		return parametrosLiquidacionCostosRepositoryFlat.findById(idLiquidacion.intValue()).orElse(null); 
 	}
 	
 	@Transactional
@@ -97,7 +101,7 @@ public class ParametrosLiquidacionCostosServiceImpl implements IParametrosLiquid
 	    }
 	    
 	    // Consultar y desvincular `ValoresLiquidadosFlat`
-	    var valorLiq = valoresLiquidadosFlatRepository.consultarPorIdLiquidacion(eliminar.getIdLiquidacionFlat());
+	    var valorLiq = valoresLiquidadosFlatRepository.consultarPorIdLiquidacion(eliminar.getIdLiquidacionFlat().longValue());
 	    if (Objects.nonNull(valorLiq)) {
 	        // Desvincular la relación antes de eliminar
 	        if (Objects.nonNull(valorLiq.getParametrosLiquidacionCostoFlat())) {
@@ -132,7 +136,7 @@ public class ParametrosLiquidacionCostosServiceImpl implements IParametrosLiquid
 	    }
 	    
 	    // Consultar y desvincular `ValoresLiquidadosFlat`
-	    var valorLiq = valoresLiquidadosFlatRepository.consultarPorIdLiquidacion(eliminar.getIdLiquidacionFlat());
+	    var valorLiq = valoresLiquidadosFlatRepository.consultarPorIdLiquidacion(eliminar.getIdLiquidacionFlat().longValue());
 	    if (Objects.nonNull(valorLiq)) {
 	        // Desvincular la relación antes de eliminar
 	        if (Objects.nonNull(valorLiq.getParametrosLiquidacionCostoFlat())) {

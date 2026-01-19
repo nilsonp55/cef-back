@@ -37,7 +37,7 @@ public class TdvDenominCantidad {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id_tdv_den_cant")
-	private Integer idTdvDenCant;
+	private Long idTdvDenCant;
 
 	@ManyToOne
 	@JoinColumn(name = "CODIGO_TDV", nullable = false)

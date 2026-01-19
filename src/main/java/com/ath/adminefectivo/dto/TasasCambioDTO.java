@@ -1,5 +1,6 @@
 package com.ath.adminefectivo.dto;
 
+import java.math.BigDecimal;
 import java.util.function.Function;
 
 import com.ath.adminefectivo.entities.TasasCambio;
@@ -16,7 +17,7 @@ public class TasasCambioDTO {
 
 	private TasasCambioPK tasasCambioPK;
 
-	private Double tasaCambio;
+	private BigDecimal tasaCambio;
 	
 	/**
 	 * Funcion que retorna la entidad recibiendo un DTO 

@@ -73,7 +73,7 @@ public class TarifasOperacionController {
 	 * @author duvan.naranjo
 	 */
 	@GetMapping(value = "${endpoints.TarifasOperacion.consultar}/{id}")
-	public ResponseEntity<ApiResponseADE<TarifasOperacionDTO>> getPunto(@RequestParam("id") Integer idTarifaOperacion) {
+	public ResponseEntity<ApiResponseADE<TarifasOperacionDTO>> getPunto(@RequestParam("id") Long idTarifaOperacion) {
 		TarifasOperacionDTO consulta = tarifasOperacionService.getTarifasOperacionById(idTarifaOperacion);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
@@ -101,7 +101,7 @@ public class TarifasOperacionController {
 	 * @author duvan.naranjo
 	 */
 	@DeleteMapping(value = "${endpoints.TarifasOperacion.eliminar}/{id}")
-	public ResponseEntity<ApiResponseADE<Boolean>> eliminar(@RequestParam("id") Integer idTarifaOperacion) {
+	public ResponseEntity<ApiResponseADE<Boolean>> eliminar(@RequestParam("id") Long idTarifaOperacion) {
 		boolean consulta = tarifasOperacionService.eliminarTarifasOperacion(idTarifaOperacion);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())

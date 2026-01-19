@@ -116,7 +116,7 @@ public class PuntosCodigoTDVJdbcRepositoryImpl implements IPuntosCodigoTDVJdbcRe
 
     private PuntosCodigoTDV mapResultSetToEntity(ResultSet rs) throws SQLException {
         return PuntosCodigoTDV.builder()
-            .idPuntoCodigoTdv(rs.getInt("id_punto_codigo_tdv"))
+            .idPuntoCodigoTdv(rs.getLong("id_punto_codigo_tdv"))
             .codigoPunto(rs.getInt("codigo_punto"))
             .codigoTDV(rs.getString("codigo_tdv"))
             .codigoPropioTDV(rs.getString("codigo_propio_tdv"))

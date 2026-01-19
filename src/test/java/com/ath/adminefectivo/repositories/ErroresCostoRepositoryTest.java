@@ -30,7 +30,7 @@ class ErroresCostoRepositoryTest {
 	void setup() throws Exception {
 		
 		erroresCostos = ErroresCostos.builder()
-				.estado("A")
+				.estado(1)
 				.fecha(Date.from(Instant.now()))
 				.mensajeError("Mensaje error proceso generar costos")
 				.seqGrupo(123)
@@ -43,14 +43,14 @@ class ErroresCostoRepositoryTest {
 		
 		Integer seqGrupo_find = 123;
 		ErroresCostos erroresCostos2 = ErroresCostos.builder()
-				.estado("A")
+				.estado(1)
 				.fecha(Date.from(Instant.now()))
 				.mensajeError("Mensaje error 2")
 				.seqGrupo(123)
 				.build();
 		// este reg no debe salir en el resultado dle FindBySeqGrupo
 		ErroresCostos erroresCostos3 = ErroresCostos.builder()
-				.estado("A")
+				.estado(1)
 				.fecha(Date.from(Instant.now()))
 				.mensajeError("Mensaje error 3")
 				.seqGrupo(1343)
@@ -85,7 +85,7 @@ class ErroresCostoRepositoryTest {
 	void testErroresCostosFindAll() {
 		
 		ErroresCostos erroresCostos2 = ErroresCostos.builder()
-				.estado("A")
+				.estado(1)
 				.fecha(Date.from(Instant.now()))
 				.mensajeError("Error proceso generar costos")
 				.seqGrupo(987)
@@ -119,7 +119,7 @@ class ErroresCostoRepositoryTest {
 		log.info("testErroresCostosFindById - Id saved: {}", erroresCostosSaved.getIdErroresCostos());
 		
 		ErroresCostos erroresCostosFind = erroresCostosRepository.findById(erroresCostosSaved.getIdErroresCostos()).get();
-		erroresCostosFind.setEstado("E");
+		erroresCostosFind.setEstado(0);
 		erroresCostosFind.setFecha(Date.from(Instant.now()));
 		erroresCostosFind.setMensajeError("Mensaje test");
 		erroresCostosFind.setSeqGrupo(916);

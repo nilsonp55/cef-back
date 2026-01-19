@@ -12,7 +12,7 @@ import com.ath.adminefectivo.entities.Escalas;
  *
  * @author duvan.naranjo
  */
-public interface IEscalasRepository extends JpaRepository<Escalas, Integer>, QuerydslPredicateExecutor<Escalas> {
+public interface IEscalasRepository extends JpaRepository<Escalas, Long>, QuerydslPredicateExecutor<Escalas> {
 
 
 }

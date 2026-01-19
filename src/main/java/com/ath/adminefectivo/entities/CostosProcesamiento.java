@@ -12,6 +12,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import com.ath.adminefectivo.auditoria.listener.AuditoriaEntityListener;
@@ -39,7 +41,7 @@ public class CostosProcesamiento {
 	@Id
 	@Column(name = "CONSECUTIVO_REGISTRO")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long consecutivo;
+	private Integer consecutivo;
 	
 	@Column(name = "ENTIDAD")
 	private String entidad;
@@ -51,9 +53,11 @@ public class CostosProcesamiento {
 	private String tipoRegistro;
 	
 	@Column(name = "FECHA_SERVICIO_TRANSPORTE")
+	@Temporal(TemporalType.DATE)
 	private Date fechaServicioTransporte;
 
 	@Column(name = "FECHA_PROCESAMIENTO")
+	@Temporal(TemporalType.DATE)
 	private Date fechaProcesamiento;
 	
 	@Column(name = "IDENTIFICACION_CLIENTE")
@@ -132,7 +136,7 @@ public class CostosProcesamiento {
 	private Long idArchivoCargado;
 
 	@Column(name = "ID_REGISTRO")
-	private Long idRegistro;
+	private Integer idRegistro;
 
 	@Column(name = "USUARIO_CREACION")
 	private String usuarioCreacion;
@@ -147,7 +151,7 @@ public class CostosProcesamiento {
 	private Timestamp fechaModificacion;
 	
 	@Column(name = "ID_LIQUIDACION")
-	private Long idLiquidacion;
+	private Integer idLiquidacion;
 	
 	@Column(name = "TIPO_TRANSACCION")
 	private Integer tipoTransaccion;

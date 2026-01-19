@@ -1,5 +1,7 @@
 package com.ath.adminefectivo.entities;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -33,7 +35,7 @@ public class PuntosCostos {
 
 	@Id
 	@Column(name= "id_puntos_costos")
-	private int idPuntosCostos;
+	private Long idPuntosCostos;
 
 	@ManyToOne
 	@JoinColumn(name = "codigo_punto", nullable = false)
@@ -42,14 +44,14 @@ public class PuntosCostos {
 	@Column(name= "costo_personalizado")
 	private String costoPersonalizado;
 
-	@Column(name= "costo_fijo")
-	private int costoFijo;
+	@Column(name= "costo_fijo", precision = 10, scale = 3)
+	private BigDecimal costoFijo;
 
-	@Column(name= "costo_milaje_ruteo")
-	private int costoMilajeRuteo;
+	@Column(name= "costo_milaje_ruteo", precision = 10, scale = 3)
+	private BigDecimal costoMilajeRuteo;
 
-	@Column(name= "costo_moneda")
-	private int costoMoneda;
+	@Column(name= "costo_moneda", precision = 10, scale = 3)
+	private BigDecimal costoMoneda;
 
 	@Column(name= "fajado")
 	private boolean fajado;

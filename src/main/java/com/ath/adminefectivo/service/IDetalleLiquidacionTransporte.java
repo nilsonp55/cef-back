@@ -6,7 +6,7 @@ import java.math.BigInteger;
 public interface IDetalleLiquidacionTransporte {
 	
 	Integer getIdLlave();
-    String getConsecutivoRegistro();
+    Integer getConsecutivoRegistro();
     Integer getIdArchivoCargado();
     String getIdRegistro();
     String getIdsLiquidacionApp();

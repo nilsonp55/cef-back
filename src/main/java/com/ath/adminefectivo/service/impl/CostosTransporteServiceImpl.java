@@ -1,6 +1,5 @@
 package com.ath.adminefectivo.service.impl;
 
-import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Timestamp;
@@ -34,10 +33,8 @@ import com.ath.adminefectivo.dto.compuestos.RegistrosAceptarRechazarListDTO;
 import com.ath.adminefectivo.dto.compuestos.RegistrosConciliacionListDTO;
 import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoDTO;
 import com.ath.adminefectivo.dto.compuestos.ValidacionLineasDTO;
-
 import com.ath.adminefectivo.entities.CostosTransporte;
 import com.ath.adminefectivo.entities.DetallesLiquidacionCostoFlatEntity;
-import com.ath.adminefectivo.service.IDetalleLiquidacionProcesamiento;
 import com.ath.adminefectivo.entities.EstadoConciliacionParametrosLiquidacion;
 import com.ath.adminefectivo.entities.OperacionesLiquidacionTransporteEntity;
 import com.ath.adminefectivo.entities.ParametrosLiquidacionCosto;
@@ -51,6 +48,7 @@ import com.ath.adminefectivo.service.IArchivosLiquidacionService;
 import com.ath.adminefectivo.service.IBancosService;
 import com.ath.adminefectivo.service.ICostosProcesamientoService;
 import com.ath.adminefectivo.service.ICostosTransporteService;
+import com.ath.adminefectivo.service.IDetalleLiquidacionProcesamiento;
 import com.ath.adminefectivo.service.IDetalleLiquidacionTransporte;
 import com.ath.adminefectivo.service.IDetallesLiquidacionCostoService;
 import com.ath.adminefectivo.service.IEstadoConciliacionParametrosLiquidacionService;
@@ -61,11 +59,10 @@ import com.ath.adminefectivo.service.ITransportadorasService;
 import com.ath.adminefectivo.service.IValoresLiquidadosFlatService;
 import com.ath.adminefectivo.utils.UtilsParsing;
 import com.ath.adminefectivo.utils.UtilsString;
-import java.util.function.Consumer;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import lombok.extern.log4j.Log4j2;
 
 @Service
@@ -186,18 +183,18 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 			costoTransporteObj.setNumeroFajosTransporte(UtilsString.toDecimal(contenidoArchivoTransporteObj.get(21), Constantes.DECIMAL_SEPARATOR));
 			costoTransporteObj.setNumeroBolsasMonedaTransporte(UtilsString.toDecimal(contenidoArchivoTransporteObj.get(22), Constantes.DECIMAL_SEPARATOR));
 
-			costoTransporteObj.setCostoFijoTransporte(UtilsString.toLong(contenidoArchivoTransporteObj.get(23)));
+			costoTransporteObj.setCostoFijoTransporte(Integer.valueOf(contenidoArchivoTransporteObj.get(23)));
 
 			costoTransporteObj.setCostoMilajeTransporte(UtilsString.toDecimal(contenidoArchivoTransporteObj.get(24), Constantes.DECIMAL_SEPARATOR));
 			costoTransporteObj.setCostoBolsaTransporte(UtilsString.toDecimal(contenidoArchivoTransporteObj.get(25), Constantes.DECIMAL_SEPARATOR));
 
-			costoTransporteObj.setCostoFletesTransporte(UtilsString.toLong(contenidoArchivoTransporteObj.get(26)));
-			costoTransporteObj.setCostoEmisariosTransporte(UtilsString.toLong(contenidoArchivoTransporteObj.get(27)));
-			costoTransporteObj.setOtros1(UtilsString.toLong(contenidoArchivoTransporteObj.get(28)));
-			costoTransporteObj.setOtros2(UtilsString.toLong(contenidoArchivoTransporteObj.get(29)));
-			costoTransporteObj.setOtros3(UtilsString.toLong(contenidoArchivoTransporteObj.get(30)));
-			costoTransporteObj.setOtros4(UtilsString.toLong(contenidoArchivoTransporteObj.get(31)));
-			costoTransporteObj.setOtros5(UtilsString.toLong(contenidoArchivoTransporteObj.get(32)));
+			costoTransporteObj.setCostoFletesTransporte(Integer.valueOf(contenidoArchivoTransporteObj.get(26)));
+			costoTransporteObj.setCostoEmisariosTransporte(Integer.valueOf(contenidoArchivoTransporteObj.get(27)));
+			costoTransporteObj.setOtros1(Integer.valueOf(contenidoArchivoTransporteObj.get(28)));
+			costoTransporteObj.setOtros2(Integer.valueOf(contenidoArchivoTransporteObj.get(29)));
+			costoTransporteObj.setOtros3(Integer.valueOf(contenidoArchivoTransporteObj.get(30)));
+			costoTransporteObj.setOtros4(Integer.valueOf(contenidoArchivoTransporteObj.get(31)));
+			costoTransporteObj.setOtros5(Integer.valueOf(contenidoArchivoTransporteObj.get(32)));
 
 			costoTransporteObj.setSubtotalTransporte(UtilsString.toDecimal(contenidoArchivoTransporteObj.get(33), Constantes.DECIMAL_SEPARATOR));
 			costoTransporteObj.setIvaTransporte(UtilsString.toDecimal(contenidoArchivoTransporteObj.get(34), Constantes.DECIMAL_SEPARATOR));
@@ -210,7 +207,7 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 			costoTransporteObj.setEstadoTransporte(Constantes.REGISTRO_ACTIVO);
 
 			costoTransporteObj.setIdArchivoCargadoTransporte(validacionArchivoTransporte.getIdArchivo());
-			costoTransporteObj.setIdRegistroTransporte(Long.valueOf(f.getNumeroLinea()));
+			costoTransporteObj.setIdRegistroTransporte(Integer.valueOf(f.getNumeroLinea()));
 
 			costoTransporteObj.setUsuarioCreacionTransporte(Constantes.USUARIO_PROCESA_ARCHIVO);
 
@@ -562,7 +559,7 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 			    if (continuarFlag) {
 					//actualizar estado de registro inicial
 			    	 for (CostosTransporte costoTranporte : costoTranporteList) {
-			    		 costoTranporte.setIdLiquidacionTransporte(idLiquidacionTransporte);
+			    		 costoTranporte.setIdLiquidacionTransporte(idLiquidacionTransporte.intValue());
 			    		 costoTranporte.setTipoTransaccionTransporte(0);
 			    		 costoTranporte.setEstadoConciliacionTransporte(Dominios.ESTADO_VALIDACION_EN_CONCILIACION);
 			    		 costoTranporte.setUsuarioModificacionTransporte(Constantes.USUARIO_PROCESA_ARCHIVO);
@@ -611,7 +608,7 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 					{
 						continuarTransporte = true;
 						for (CostosTransporte costoTranporte : costoTranporteList) {
-				            costoTranporte.setIdLiquidacionTransporte(idLiquidacionParametros);
+				            costoTranporte.setIdLiquidacionTransporte(idLiquidacionParametros.intValue());
 				            costoTranporte.setTipoTransaccionTransporte(1);
 				            costoTranporte.setEstadoConciliacionTransporte(Constantes.ESTADO_CONCILIACION_MANUAL);
 				        }
@@ -817,7 +814,7 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 			valoresLiquidadosFlatEntity.setCostoEmisarioFlat(vwCostoRegistroLiqTransporte.getCostoEmisarioTdv().doubleValue());
 						
 			parametroLiqCosto = parametrosLiquidacionCostosService.f2actualizarParametrosLiquidacionCostos(parametroLiqCosto);
-			idLiquidacion= parametroLiqCosto.getIdLiquidacion();
+			idLiquidacion= parametroLiqCosto.getIdLiquidacion().longValue();
 			
 			valoresLiquidadosFlatEntity.setIdLiquidacionFlat(idLiquidacion);
 			valoresLiquidadosFlatService.f2actualizarvaloresLiquidadosRepository(valoresLiquidadosFlatEntity);
@@ -936,7 +933,7 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 					{	
 						continuarBandera = true;
 						for (CostosTransporte costoTranporte : costoTranporteList) {
-							costoTranporte.setIdLiquidacionTransporte(idLiquidacionTransporteDif);
+							costoTranporte.setIdLiquidacionTransporte(idLiquidacionTransporteDif.intValue());
 							costoTranporte.setTipoTransaccionTransporte(2);
 							costoTranporte.setEstadoConciliacionTransporte(Constantes.ESTADO_CONCILIACION_MANUAL);
 						}
@@ -1048,9 +1045,9 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 				
 				// Consulta si existe una entidad previamente guardada
 				var existeEstadoLiquidacion = estadoConciliacionParametrosLiquidacionService
-				                    .buscarLiquidacion(liquidacionCostoParametro.getIdLiquidacion(), 2);
+				                    .buscarLiquidacion(liquidacionCostoParametro.getIdLiquidacion().longValue(), 2);
 				
-				estadoConciliacionParametrosLiquidacion.setIdLiquidacion(liquidacionCostoParametro.getIdLiquidacion());
+				estadoConciliacionParametrosLiquidacion.setIdLiquidacion(liquidacionCostoParametro.getIdLiquidacion().longValue());
 				estadoConciliacionParametrosLiquidacion.setDatosParametrosLiquidacionCostos(imgParametroLiqCostos);
 				estadoConciliacionParametrosLiquidacion.setDatosValoresLiquidados(imgparametroValLiquidados);
 				estadoConciliacionParametrosLiquidacion.setEstado(2);
@@ -1302,11 +1299,11 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 	    BigDecimal numeroFajos = BigDecimal.ZERO;
 	    BigDecimal valorTotalTransportado = BigDecimal.ZERO;
 	    BigDecimal numeroBolsas = BigDecimal.ZERO;
-	    Long costoFijo = 0L;
+	    Integer costoFijo = 0;
 	    BigDecimal costoMilaje = BigDecimal.ZERO;
 	    BigDecimal costoBolsa = BigDecimal.ZERO;
-	    Long costoFlete = 0L;
-	    Long costoEmisario = 0L;
+	    Integer costoFlete = 0;
+	    Integer costoEmisario = 0;
 
 	    for (IDetalleLiquidacionTransporte d : detalles) {
 	        if (d.getNumeroFajos() != null && d.getNumeroFajosTdv() != null) {
@@ -1336,7 +1333,7 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 	        }
 
 	        if (d.getCostoFlete() != null && d.getCostoFleteTdv() != null) {
-	            costoFlete += d.getCostoFleteTdv() - d.getCostoFlete().longValue();
+	            costoFlete += d.getCostoFleteTdv() - d.getCostoFlete();
 	        }
 
 	        if (d.getCostoEmisario() != null && d.getCostoEmisarioTdv() != null) {
@@ -1365,8 +1362,8 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 	    for (T d : detalles) {
 	        String valor = switch (tipo) {
 	            case Constantes.LISTA_CONCILIACION_CONSECUTIVO ->
-	                (d instanceof IDetalleLiquidacionTransporte trans) ? trans.getConsecutivoRegistro()
-	                : ((IDetalleLiquidacionProcesamiento) d).getConsecutivoRegistro();
+	                (d instanceof IDetalleLiquidacionTransporte trans) ? trans.getConsecutivoRegistro().toString()
+	                : ((IDetalleLiquidacionProcesamiento) d).getConsecutivoRegistro().toString();
 
 	            case Constantes.LISTA_CONCILIACION_IDLIQUIDACIONAPP ->
 	                (d instanceof IDetalleLiquidacionTransporte trans) ? trans.getIdsLiquidacionApp()
@@ -1397,7 +1394,7 @@ public class CostosTransporteServiceImpl implements ICostosTransporteService {
 	        return new ArrayList<>();
 	    }
 
-	    List<Long> listaConsecutivos = UtilsParsing.parseStringToList(detalles.get(0).getConsecutivoRegistro());
+	    List<Long> listaConsecutivos = UtilsParsing.parseStringToList(detalles.get(0).getConsecutivoRegistro().toString());
 	    List<CostosTransporte> costoTranporteList = new ArrayList<>();
 
 	    for (Long idReg : listaConsecutivos) {

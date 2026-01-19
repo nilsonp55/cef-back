@@ -12,7 +12,7 @@ import com.ath.adminefectivo.entities.ErroresCostos;
  * @author bayron.perez
  */
 
-public interface ErroresCostosRepository extends JpaRepository<ErroresCostos, Integer>, 
+public interface ErroresCostosRepository extends JpaRepository<ErroresCostos, Long>, 
 		QuerydslPredicateExecutor<ErroresCostos> {
 
 	List<ErroresCostos> findBySeqGrupo(Integer idSeqGrupo);

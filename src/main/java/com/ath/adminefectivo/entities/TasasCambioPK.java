@@ -22,7 +22,7 @@ public class TasasCambioPK implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Temporal(TemporalType.TIMESTAMP)
+	@Temporal(TemporalType.DATE)
 	@Column(name = "FECHA_TASA")
 	private Date fechaTasa;
 	
