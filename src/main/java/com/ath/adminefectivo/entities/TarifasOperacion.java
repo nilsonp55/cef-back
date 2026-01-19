@@ -41,7 +41,7 @@ public class TarifasOperacion {
 	@Id
 	@Column(name = "ID_TARIFAS_OPERACION")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int idTarifasOperacion;
+	private Long idTarifasOperacion;
 
 	@ManyToOne
 	@JoinColumn(name = "CODIGO_BANCO", nullable = false)
@@ -75,8 +75,8 @@ public class TarifasOperacion {
 	@Column(name = "COMISION_APLICAR")
 	private String comisionAplicar;
 
-	@Column(name = "VALOR_TARIFA")
-	private Double valorTarifa; 
+	@Column(name = "VALOR_TARIFA", precision = 16, scale = 6)
+	private BigDecimal valorTarifa; 
 
 	@Column(name = "ESTADO", nullable = true)
 	private int estado;
@@ -84,7 +84,7 @@ public class TarifasOperacion {
 	@Column(name = "USUARIO_CREACION")
 	private String usuarioCreacion;
 	
-	@Temporal(TemporalType.TIMESTAMP)
+	@Temporal(TemporalType.DATE)
 	@Column(name = "FECHA_CREACION")
 	private Date fechaCreacion;
 
@@ -95,9 +95,11 @@ public class TarifasOperacion {
 	@Column(name = "FECHA_MODIFICACION")
 	private Date fechaModificacion;
 
+	@Temporal(TemporalType.DATE)
 	@Column(name = "FECHA_VIGENCIA_INI")
 	private Date fechaVigenciaIni;
 
+	@Temporal(TemporalType.DATE)
 	@Column(name = "FECHA_VIGENCIA_FIN")
 	private Date fechaVigenciaFin;
 	

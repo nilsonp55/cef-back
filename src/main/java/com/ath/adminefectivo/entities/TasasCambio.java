@@ -1,5 +1,7 @@
 package com.ath.adminefectivo.entities;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -27,6 +29,6 @@ public class TasasCambio {
 	@EmbeddedId
 	private TasasCambioPK tasasCambioPK;
 	
-	@Column(name = "TASA_CAMBIO")
-	private Double tasaCambio;
+	@Column(name = "TASA_CAMBIO", precision = 16, scale = 10)
+	private BigDecimal tasaCambio;
 }

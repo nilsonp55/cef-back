@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -23,14 +24,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ath.adminefectivo.constantes.Constantes;
 import com.ath.adminefectivo.constantes.Dominios;
+import com.ath.adminefectivo.dto.ParametrosFiltroCostoProcesamientoDTO;
 import com.ath.adminefectivo.dto.RegistroAceptarRechazarDTO;
 import com.ath.adminefectivo.dto.RegistroOperacionConciliacionDTO;
-import com.ath.adminefectivo.dto.ParametrosFiltroCostoProcesamientoDTO;
 import com.ath.adminefectivo.dto.compuestos.OperacionesLiquidacionProcesamientoDTO;
 import com.ath.adminefectivo.dto.compuestos.RegistrosAceptarRechazarListDTO;
 import com.ath.adminefectivo.dto.compuestos.RegistrosConciliacionListDTO;
 import com.ath.adminefectivo.entities.CostosProcesamiento;
-import com.ath.adminefectivo.entities.CostosTransporte;
 import com.ath.adminefectivo.entities.EstadoConciliacionParametrosLiquidacion;
 import com.ath.adminefectivo.entities.OperacionesLiquidacionProcesamientoEntity;
 import com.ath.adminefectivo.entities.OtrosCostosFondo;
@@ -45,7 +45,6 @@ import com.ath.adminefectivo.service.IBancosService;
 import com.ath.adminefectivo.service.IConciliacionOperacionesProcesamientoService;
 import com.ath.adminefectivo.service.ICostosProcesamientoService;
 import com.ath.adminefectivo.service.IDetalleLiquidacionProcesamiento;
-import com.ath.adminefectivo.service.IDetalleLiquidacionTransporte;
 import com.ath.adminefectivo.service.IEstadoConciliacionParametrosLiquidacionService;
 import com.ath.adminefectivo.service.IOtrosCostosFondoService;
 import com.ath.adminefectivo.service.IParametrosLiquidacionCostosService;
@@ -54,7 +53,6 @@ import com.ath.adminefectivo.utils.UtilsParsing;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.BeanUtils;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -288,7 +286,7 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 			    if (continuar) {
 					//actualizar estado de registro inicial
 			    	 for (CostosProcesamiento costoProcesamiento : costoProcesamientoList) {
-			    		 costoProcesamiento.setIdLiquidacion(idLiquidacion);
+			    		 costoProcesamiento.setIdLiquidacion(idLiquidacion.intValue());
 			    		 costoProcesamiento.setTipoTransaccion(0);
 			    		 costoProcesamiento.setEstadoConciliacion(Dominios.ESTADO_VALIDACION_EN_CONCILIACION);
 			    		 costoProcesamiento.setUsuarioModificacion(Constantes.USUARIO_PROCESA_ARCHIVO);
@@ -341,7 +339,7 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 					{
 						continuar = true;
 						for (CostosProcesamiento costoProcesamiento : costoProcesamientoList) {
-							costoProcesamiento.setIdLiquidacion(idLiquidacion);
+							costoProcesamiento.setIdLiquidacion(idLiquidacion.intValue());
 							costoProcesamiento.setTipoTransaccion(1);
 							costoProcesamiento.setEstadoConciliacion(Constantes.ESTADO_CONCILIACION_MANUAL);
 						}
@@ -513,7 +511,6 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 		{
 			var parametro = new ParametrosLiquidacionCosto();
 			var valoresLiquidadosFlatEntity = new ValoresLiquidadosFlatEntity();
-			List<OtrosCostosFondo> costosAlmacenamiento;
 			
 			var banco = bancoService.findBancoByAbreviatura(costo.getEntidad());
 			
@@ -546,7 +543,7 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 			valoresLiquidadosFlatEntity.setBilleteResiduoFlat(vwCosto.getBillResidueTdv().doubleValue());
 			
 			parametro = parametrosLiquidacionCostosService.f2actualizarParametrosLiquidacionCostos(parametro);
-			idLiquidacion= parametro.getIdLiquidacion();
+			idLiquidacion=  parametro.getIdLiquidacion().longValue();
 			
 			valoresLiquidadosFlatEntity.setIdLiquidacionFlat(idLiquidacion);
 			valoresLiquidadosFlatService.f2actualizarvaloresLiquidadosRepository(valoresLiquidadosFlatEntity);
@@ -609,7 +606,7 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 					if (idLiquidacion.compareTo(0l) > 0) {
 						continuar = true;
 						for (CostosProcesamiento costoProcesamiento : costoProcesamientoList) {
-							costoProcesamiento.setIdLiquidacion(idLiquidacion);
+							costoProcesamiento.setIdLiquidacion(idLiquidacion.intValue());
 							costoProcesamiento.setTipoTransaccion(2);
 							costoProcesamiento.setEstadoConciliacion(Constantes.ESTADO_CONCILIACION_MANUAL);
 						}
@@ -716,9 +713,9 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 			
 			// Consulta si existe una entidad previamente guardada
 			var existeEstadoLiquidacion = estadoConciliacionParametrosLiquidacionService
-			                    .buscarLiquidacion(parametroLiquidacionCosto.getIdLiquidacion(), 2);
+			                    .buscarLiquidacion(parametroLiquidacionCosto.getIdLiquidacion().longValue(), 2);
 
-			estadoConciliacion.setIdLiquidacion(parametroLiquidacionCosto.getIdLiquidacion());
+			estadoConciliacion.setIdLiquidacion(parametroLiquidacionCosto.getIdLiquidacion().longValue());
 			estadoConciliacion.setDatosParametrosLiquidacionCostos(imgParametroLiquidacionCostos);
 			estadoConciliacion.setEstado(2);
 			
@@ -824,7 +821,7 @@ public class ConciliacionOperacionesProcesamientoServiceImpl implements IConcili
 	        return new ArrayList<>();
 	    }
 
-	    List<Long> listaConsecutivos = UtilsParsing.parseStringToList(detalles.get(0).getConsecutivoRegistro());
+	    List<Long> listaConsecutivos = UtilsParsing.parseStringToList(detalles.get(0).getConsecutivoRegistro().toString());
 	    List<CostosProcesamiento> costoProcesamientoList = new ArrayList<>();
 
 	    for (Long idReg : listaConsecutivos) {

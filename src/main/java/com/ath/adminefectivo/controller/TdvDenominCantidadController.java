@@ -71,7 +71,7 @@ public class TdvDenominCantidadController {
 	 * @author duvan.naranjo
 	 */
 	@GetMapping(value = "${endpoints.TdvDenominCantidad.consultar}/{id}")
-	public ResponseEntity<ApiResponseADE<TdvDenominCantidadDTO>> getTdvDenominCantidadById(@RequestParam("id") Integer idTdvDenominCantidad) {
+	public ResponseEntity<ApiResponseADE<TdvDenominCantidadDTO>> getTdvDenominCantidadById(@RequestParam("id") Long idTdvDenominCantidad) {
 		TdvDenominCantidadDTO consulta = tdvDenominCantidadService.getTdvDenominCantidadById(idTdvDenominCantidad);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())
@@ -99,7 +99,7 @@ public class TdvDenominCantidadController {
 	 * @author duvan.naranjo
 	 */
 	@DeleteMapping(value = "${endpoints.TdvDenominCantidad.eliminar}/{id}")
-	public ResponseEntity<ApiResponseADE<Boolean>> eliminar(@RequestParam("id") Integer idTdvDenominCantidad) {
+	public ResponseEntity<ApiResponseADE<Boolean>> eliminar(@RequestParam("id") Long idTdvDenominCantidad) {
 		boolean consulta = tdvDenominCantidadService.eliminarTdvDenominCantidad(idTdvDenominCantidad);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ApiResponseADE<>(consulta, ResponseADE.builder().code(ApiResponseCode.SUCCESS.getCode())

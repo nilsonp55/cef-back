@@ -1,5 +1,6 @@
 package com.ath.adminefectivo.entities;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -8,6 +9,8 @@ import javax.persistence.EntityListeners;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import com.ath.adminefectivo.auditoria.listener.AuditoriaEntityListener;
 
@@ -33,7 +36,7 @@ public class SaldosFondos {
 
 	@Id
 	@Column(name= "id_saldos_fondos")
-	private int idSaldosFondos;
+	private Long idSaldosFondos;
 
 	@Column(name= "codigo_fondo")
 	private int codigoFondo;
@@ -47,14 +50,15 @@ public class SaldosFondos {
 	@Column(name= "codigo_ciudad")
 	private String codigoCiudad;
 
+	@Temporal(TemporalType.DATE)
 	@Column(name= "fecha")
 	private Date fecha;
 
-	@Column(name= "saldo_inicial_monedas")
-	private long saldoInicialMonedas;
+	@Column(name= "saldo_inicial_monedas", precision = 18, scale = 3)
+	private BigDecimal saldoInicialMonedas;
 
-	@Column(name= "saldo_final_monedas")
-	private long saldoFinalMonedas;
+	@Column(name= "saldo_final_monedas", precision = 18, scale = 3)
+	private BigDecimal saldoFinalMonedas;
 
 	@Column(name= "saldo_inicial_rem")
 	private long saldoInicialRem;

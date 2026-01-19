@@ -47,7 +47,7 @@ public class DetallesLiquidacionCostoFlatEntity {
 	private String denominacionFlat;
 
 	@Column(name = "ID_LIQUIDACION")
-	private Long idLiquidacionFlat;
+	private Integer idLiquidacionFlat;
 	
 	@Column(name = "NUMERO_FAJOS_BOLSAS")
 	private Integer numeroFajosBolsasFlat;

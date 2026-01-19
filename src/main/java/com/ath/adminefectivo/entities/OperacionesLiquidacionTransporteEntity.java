@@ -2,10 +2,8 @@ package com.ath.adminefectivo.entities;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 import javax.inject.Named;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.Id;
@@ -29,19 +27,16 @@ public class OperacionesLiquidacionTransporteEntity {
 
 	@Id
     @Named(value = "CONSECUTIVO_REGISTRO")
-    private Integer consecutivoRegistro;
+    private String consecutivoRegistro;
 
     @Named(value = "ID_ARCHIVO_CARGADO")
-    private Integer idArchivoCargado;
+    private Long idArchivoCargado;
 
     @Named(value = "ID_REGISTRO")
-    private Integer idRegistro;
-
-    @Named(value = "ID_LIQUIDACION")
-    private Integer idLiquidacion;
+    private String idRegistro;
 
     @Named(value = "TIPO_TRANSACCION")
-    private Integer tipoTransaccion;
+    private Long tipoTransaccion;
 
     @Named(value = "ENTIDAD")
     private String entidad;
@@ -170,7 +165,7 @@ public class OperacionesLiquidacionTransporteEntity {
     private BigDecimal subtotalTdv;
 
     @Named(value = "IVA")
-    private BigDecimal iva;
+    private String iva;
 
     @Named(value = "VALOR_TOTAL")
     private BigDecimal valorTotal;

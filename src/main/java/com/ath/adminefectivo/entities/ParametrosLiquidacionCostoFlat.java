@@ -33,7 +33,7 @@ public class ParametrosLiquidacionCostoFlat {
 
 	@Id
 	@Column(name = "ID_LIQUIDACION")
-	private Long idLiquidacionFlat;
+	private Integer idLiquidacionFlat;
 
 	@Column(name = "BILLETES")
 	private String billetesFlat;

@@ -35,7 +35,7 @@ public class DetallesLiquidacionCosto {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID_DETALLE_LIQ")
-	private Long idDetalleLiq;
+	private Integer idDetalleLiq;
 	
 	@Column(name = "BILLETE_MONEDA")
 	private String billeteMoneda;

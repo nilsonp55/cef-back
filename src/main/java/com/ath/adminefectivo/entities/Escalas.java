@@ -36,7 +36,7 @@ public class Escalas {
 	@Id
 	@Column(name = "id_escalas")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int idEscala;
+	private Long idEscala;
 
 	@ManyToOne
 	@JoinColumn(name = "codigo_banco", nullable = false)

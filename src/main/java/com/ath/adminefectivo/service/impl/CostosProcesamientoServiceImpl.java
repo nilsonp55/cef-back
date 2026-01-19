@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.poi.hpsf.Decimal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +14,6 @@ import com.ath.adminefectivo.constantes.Dominios;
 import com.ath.adminefectivo.dto.compuestos.ValidacionArchivoDTO;
 import com.ath.adminefectivo.dto.compuestos.ValidacionLineasDTO;
 import com.ath.adminefectivo.entities.CostosProcesamiento;
-import com.ath.adminefectivo.entities.CostosTransporte;
 import com.ath.adminefectivo.repositories.ICostosProcesamientoRepository;
 import com.ath.adminefectivo.repositories.IPuntosRepository;
 import com.ath.adminefectivo.repositories.MaestroLlavesCostosRepository;
@@ -123,7 +121,7 @@ public class CostosProcesamientoServiceImpl implements ICostosProcesamientoServi
 			costo.setObservacionesTdv(contenido.get(26));
 
 			costo.setIdArchivoCargado(validacionArchivo.getIdArchivo());
-			costo.setIdRegistro(Long.valueOf(f.getNumeroLinea()));
+			costo.setIdRegistro(f.getNumeroLinea());
 
 			costo.setUsuarioCreacion(Constantes.USUARIO_PROCESA_ARCHIVO);
 

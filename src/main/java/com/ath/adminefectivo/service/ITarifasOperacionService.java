@@ -29,7 +29,7 @@ public interface ITarifasOperacionService {
 	 * @return TarifasOperacionDTO
 	 * @author duvan.naranjo
 	 */
-	TarifasOperacionDTO getTarifasOperacionById(Integer idTarifaOperacion);
+	TarifasOperacionDTO getTarifasOperacionById(Long idTarifaOperacion);
 
 	/**
 	 * Servicio encargado de contener la logica guardar o persistir una 
@@ -57,7 +57,7 @@ public interface ITarifasOperacionService {
 	 * @return boolean
 	 * @author duvan.naranjo
 	 */
-	boolean eliminarTarifasOperacion(Integer idTarifaOperacion);
+	boolean eliminarTarifasOperacion(Long idTarifaOperacion);
 
 	/**
 	 * Metodo encargado de consultar las tarifas de las operaciones 

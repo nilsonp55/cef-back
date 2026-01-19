@@ -43,7 +43,7 @@ public class EscalasServiceImpl implements IEscalasService {
 	 */
 	@Override
 	public EscalasDTO getEscalasById(Integer idEscalas) {
-		Escalas escalasEntity = escalasRepository.findById(idEscalas).get();
+		Escalas escalasEntity = escalasRepository.findById(Long.valueOf(idEscalas)).get();
 		if(Objects.isNull(escalasEntity)) {
 			throw new NegocioException(ApiResponseCode.ERROR_ESCALAS_NO_ENCONTRADO.getCode(),
 					ApiResponseCode.ERROR_ESCALAS_NO_ENCONTRADO.getDescription(),
@@ -74,17 +74,12 @@ public class EscalasServiceImpl implements IEscalasService {
 	 */
 	@Override
 	public boolean eliminarEscalas(Integer idEscalas) {
-		Escalas escalasEntity = escalasRepository.findById(idEscalas).get();
+		Escalas escalasEntity = escalasRepository.findById(Long.valueOf(idEscalas)).get();
 		
 		escalasEntity.setEstado(Dominios.ESTADO_GENERAL_ELIMINADO);
 		Escalas escalasActualizado = escalasRepository.save(escalasEntity);
 		
-		if(!Objects.isNull(escalasActualizado)) {
-			return (escalasActualizado.getEstado() == Dominios.ESTADO_GENERAL_ELIMINADO);
-			
-		}else {
-			return false;
-		}
+		return (escalasActualizado.getEstado() == Dominios.ESTADO_GENERAL_ELIMINADO);
 	}
 	
 }

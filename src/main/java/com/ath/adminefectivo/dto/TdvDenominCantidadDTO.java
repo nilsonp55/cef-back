@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 public class TdvDenominCantidadDTO {
 
 
-	private Integer idTdvDenCant;
+	private Long idTdvDenCant;
 
 	private TransportadorasDTO transportadoraDTO; 
 

@@ -1,6 +1,5 @@
 package com.ath.adminefectivo.repositories;
 
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -16,7 +15,7 @@ import com.ath.adminefectivo.entities.TarifasOperacion;
  *
  * @author duvan.naranjo
  */
-public interface ITarifasOperacionRepository extends JpaRepository<TarifasOperacion, Integer>, QuerydslPredicateExecutor<TarifasOperacion> {
+public interface ITarifasOperacionRepository extends JpaRepository<TarifasOperacion, Long>, QuerydslPredicateExecutor<TarifasOperacion> {
 
 	@Query(value ="SELECT x.* FROM tarifas_operacion x "
 			+ "WHERE x.fajado IS NULL AND "

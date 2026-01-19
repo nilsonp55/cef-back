@@ -12,6 +12,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import com.ath.adminefectivo.auditoria.listener.AuditoriaEntityListener;
 
@@ -38,7 +40,7 @@ public class CostosTransporte {
 	@Id
 	@Column(name = "CONSECUTIVO_REGISTRO")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long consecutivoTransporte;
+	private Integer consecutivoTransporte;
 	
 	@Column(name = "ENTIDAD")
 	private String entidadTransporte;
@@ -50,6 +52,7 @@ public class CostosTransporte {
 	private String tipoRegistroTransporte;
 	
 	@Column(name = "FECHA_SERVICIO_TRANSPORTE")
+	@Temporal(TemporalType.DATE)
 	private Date fechaServicioTransporte;
 
 	@Column(name = "IDENTIFICACION_CLIENTE")
@@ -110,7 +113,7 @@ public class CostosTransporte {
 	private BigDecimal numeroBolsasMonedaTransporte;
 	
 	@Column(name = "COSTO_FIJO")
-	private Long costoFijoTransporte;
+	private Integer costoFijoTransporte;
 	
 	@Column(name = "COSTO_POR_MILAJE")
 	private BigDecimal costoMilajeTransporte;
@@ -119,25 +122,25 @@ public class CostosTransporte {
 	private BigDecimal costoBolsaTransporte;
 
 	@Column(name = "COSTO_FLETES")
-	private Long costoFletesTransporte;
+	private Integer costoFletesTransporte;
 
 	@Column(name = "COSTO_EMISARIOS")
-	private Long costoEmisariosTransporte;
+	private Integer costoEmisariosTransporte;
 
 	@Column(name = "OTROS_1")
-	private Long otros1;
+	private Integer otros1;
 	
 	@Column(name = "OTROS_2")
-	private Long otros2;
+	private Integer otros2;
 	
 	@Column(name = "OTROS_3")
-	private Long otros3;
+	private Integer otros3;
 	
 	@Column(name = "OTROS_4")
-	private Long otros4;
+	private Integer otros4;
 	
 	@Column(name = "OTROS_5")
-	private Long otros5;
+	private Integer otros5;
 	
 	@Column(name = "SUBTOTAL")
 	private BigDecimal subtotalTransporte;
@@ -164,7 +167,7 @@ public class CostosTransporte {
 	private Long idArchivoCargadoTransporte;
 
 	@Column(name = "ID_REGISTRO")
-	private Long idRegistroTransporte;
+	private Integer idRegistroTransporte;
 
 	@Column(name = "USUARIO_CREACION")
 	private String usuarioCreacionTransporte;
@@ -179,7 +182,7 @@ public class CostosTransporte {
 	private Timestamp fechaModificacionTransporte;
 	
 	@Column(name = "ID_LIQUIDACION")
-	private Long idLiquidacionTransporte;
+	private Integer idLiquidacionTransporte;
 	
 	@Column(name = "TIPO_TRANSACCION")
 	private Integer tipoTransaccionTransporte;

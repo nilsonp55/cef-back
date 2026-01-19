@@ -38,7 +38,7 @@ public class LogProcesoMensual {
 	@Id
 	@Column(name = "ID_LOG")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long idLog;
+	private Integer idLog;
 
 	@Column(name = "CODIGO_PROCESO")
 	private String codigoProceso;
@@ -46,6 +46,7 @@ public class LogProcesoMensual {
 	@Column(name = "ESTADO_PROCESO")
 	private String estadoProceso;
 	
+	@Temporal(TemporalType.DATE)
 	@Column(name = "MES")
 	private Date mes;
 

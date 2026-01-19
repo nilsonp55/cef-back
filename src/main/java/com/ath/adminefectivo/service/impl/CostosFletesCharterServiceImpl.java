@@ -68,7 +68,7 @@ public class CostosFletesCharterServiceImpl implements ICostosFleteCharterServic
 			parametrosDTO.setNombreFondo(puntosService.getNombrePunto(parametros.getPuntoOrigen()));
 			parametrosDTO.setNombrePunto(puntosService.getNombrePunto(parametros.getPuntoDestino()));
 			parametrosDTO.setValoresLiquidadosDTO(
-					valoresLiquidadosService.consultarValoresLiquidadosPorIdLiquidacion(parametros.getIdLiquidacion()));
+					valoresLiquidadosService.consultarValoresLiquidadosPorIdLiquidacion(parametros.getIdLiquidacion().longValue()));
 
 			listCostosCharter.add(parametrosDTO);
 		}

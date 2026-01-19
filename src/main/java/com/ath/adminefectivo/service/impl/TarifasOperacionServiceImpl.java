@@ -51,7 +51,7 @@ public class TarifasOperacionServiceImpl implements ITarifasOperacionService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public TarifasOperacionDTO getTarifasOperacionById(Integer idTarifaOperacion) {
+	public TarifasOperacionDTO getTarifasOperacionById(Long idTarifaOperacion) {
 		TarifasOperacion tarifaOperacionEntity = tarifasOperacionRepository.findById(idTarifaOperacion).get();
 		if(Objects.isNull(tarifaOperacionEntity)) {
 			throw new NegocioException(ApiResponseCode.ERROR_TARIFAS_OPERACION_NO_ENCONTRADO.getCode(),
@@ -82,7 +82,7 @@ public class TarifasOperacionServiceImpl implements ITarifasOperacionService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean eliminarTarifasOperacion(Integer idTarifaOperacion) {
+	public boolean eliminarTarifasOperacion(Long idTarifaOperacion) {
 		TarifasOperacion tarifaOperacionEntity = tarifasOperacionRepository.findById(idTarifaOperacion).get();
 		
 		tarifaOperacionEntity.setEstado(Dominios.ESTADO_GENERAL_ELIMINADO);

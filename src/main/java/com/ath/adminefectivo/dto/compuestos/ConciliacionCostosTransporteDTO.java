@@ -23,7 +23,7 @@ public class ConciliacionCostosTransporteDTO implements Serializable {
 	
 	static final long serialVersionUID = 6512941737390567965L;
 	
-	private Long consecutivo;
+	private Integer consecutivo;
 	
 	private String entidad;
 	
@@ -71,25 +71,25 @@ public class ConciliacionCostosTransporteDTO implements Serializable {
 	
 	private BigDecimal numeroBolsasMoneda;
 	
-	private Long costoFijo;
+	private Integer costoFijo;
 	
 	private BigDecimal costoMilaje;
 
 	private BigDecimal costoBolsa;
 
-	private Long costoFletes;
+	private Integer costoFletes;
 
-	private Long costoEmisarios;
+	private Integer costoEmisarios;
 
-	private Long otros1;
+	private Integer otros1;
 	
-	private Long otros2;
+	private Integer otros2;
 	
-	private Long otros3;
+	private Integer otros3;
 	
-	private Long otros4;
+	private Integer otros4;
 	
-	private Long otros5;
+	private Integer otros5;
 	
 	private BigDecimal subtotal;
 	
@@ -107,7 +107,7 @@ public class ConciliacionCostosTransporteDTO implements Serializable {
 
 	private Long idArchivoCargado;
 
-	private Long idRegistro;
+	private Integer idRegistro;
 
 	private String usuarioCreacion;
 	

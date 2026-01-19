@@ -14,7 +14,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import com.ath.adminefectivo.auditoria.listener.AuditPersistenceListener;
 import com.ath.adminefectivo.auditoria.listener.AuditoriaEntityListener;
 
 import lombok.AllArgsConstructor;

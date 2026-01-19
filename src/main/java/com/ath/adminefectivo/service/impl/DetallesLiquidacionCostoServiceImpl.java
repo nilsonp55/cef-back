@@ -46,7 +46,7 @@ public class DetallesLiquidacionCostoServiceImpl implements IDetallesLiquidacion
 	@Override
 	public List<DetallesLiquidacionCosto> consultarPorIdLiquidacion(Long idLiquidacion) {
 		
-		return detallesLiquidacionCostoRepository.consultarPorIdLiquidacion(idLiquidacion);
+		return detallesLiquidacionCostoRepository.consultarPorIdLiquidacion(idLiquidacion.intValue());
 	}
 
 	/**

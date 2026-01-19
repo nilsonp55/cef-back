@@ -14,7 +14,7 @@ import com.ath.adminefectivo.entities.ParametrosLiquidacionCostoFlat;
  * @author jose.pabon
  */
 
-public interface IParametrosLiquidacionCostosRepositoryFlat extends JpaRepository<ParametrosLiquidacionCostoFlat, Long>, QuerydslPredicateExecutor<ParametrosLiquidacionCostoFlat> {
+public interface IParametrosLiquidacionCostosRepositoryFlat extends JpaRepository<ParametrosLiquidacionCostoFlat, Integer>, QuerydslPredicateExecutor<ParametrosLiquidacionCostoFlat> {
 
 
 	

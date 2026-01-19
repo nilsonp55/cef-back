@@ -890,7 +890,7 @@ public class ArchivosTarifasEspecialesServiceImpl implements IArchivosTarifasEsp
             dto.setBilletes(e.getBilletes());
             dto.setMonedas(e.getMonedas());
             dto.setFajado(e.getFajado());
-            dto.setValorTarifa(e.getValorTarifa() != null ? BigDecimal.valueOf(e.getValorTarifa()) : null);
+            dto.setValorTarifa(e.getValorTarifa() != null ?e.getValorTarifa() : null);
             dto.setFechaInicioVigencia(e.getFechaVigenciaIni());
             dto.setFechaFinVigencia(e.getFechaVigenciaFin());
             dto.setLimiteComisionAplicar(e.getLimiteComisionAplicar());
@@ -964,7 +964,7 @@ public class ArchivosTarifasEspecialesServiceImpl implements IArchivosTarifasEsp
                 TarifasOperacion entity;
 
                 if (dto.getIdTarifaEspecial() != null) {
-                    entity = tarifasOperacionRepository.findById(dto.getIdTarifaEspecial().intValue())
+                    entity = tarifasOperacionRepository.findById(dto.getIdTarifaEspecial())
                             .orElseThrow(() -> new IllegalStateException(
                                     "No se encontró TarifaOperacion con id " + dto.getIdTarifaEspecial()));
 
@@ -972,7 +972,7 @@ public class ArchivosTarifasEspecialesServiceImpl implements IArchivosTarifasEsp
                     entity.setBilletes(dto.getBilletes());
                     entity.setMonedas(dto.getMonedas());
                     entity.setFajado(dto.getFajado());
-                    entity.setValorTarifa(dto.getValorTarifa() != null ? dto.getValorTarifa().doubleValue() : null);
+                    entity.setValorTarifa(dto.getValorTarifa() != null ? dto.getValorTarifa() : null);
                     entity.setEstado(dto.isEstado() ? 1 : 0);
                     entity.setUsuarioModificacion(dto.getUsuarioModificacion());
                     entity.setFechaModificacion(dto.getFechaModificacion());
@@ -1006,7 +1006,7 @@ public class ArchivosTarifasEspecialesServiceImpl implements IArchivosTarifasEsp
                     entity.setBilletes(dto.getBilletes());
                     entity.setMonedas(dto.getMonedas());
                     entity.setFajado(dto.getFajado());
-                    entity.setValorTarifa(dto.getValorTarifa() != null ? dto.getValorTarifa().doubleValue() : null);
+                    entity.setValorTarifa(dto.getValorTarifa() != null ? dto.getValorTarifa() : null);
                     entity.setEstado(dto.isEstado() ? 1 : 0);
                     entity.setUsuarioCreacion(dto.getUsuarioCreacion());
                     entity.setFechaCreacion(dto.getFechaCreacion());

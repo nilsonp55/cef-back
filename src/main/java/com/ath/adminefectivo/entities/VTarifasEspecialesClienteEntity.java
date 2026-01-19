@@ -111,14 +111,14 @@ public class VTarifasEspecialesClienteEntity {
     private String usuarioCreacion;
 
     @Column(name = "FECHA_CREACION")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date fechaCreacion;
 
     @Column(name = "USUARIO_MODIFICACION", length = 50)
     private String usuarioModificacion;
 
     @Column(name = "FECHA_MODIFICACION")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date fechaModificacion;
 
     @Column(name = "ESTADO")

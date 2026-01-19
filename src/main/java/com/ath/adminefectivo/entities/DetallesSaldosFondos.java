@@ -33,7 +33,7 @@ public class DetallesSaldosFondos {
 
 	@Id
 	@Column(name= "id_detalle_saldos_fondos")
-	private int idDetallesSaldosFondos;
+	private Long idDetallesSaldosFondos;
 
 	@ManyToOne
 	@JoinColumn(name="id_saldos_fondos")
@@ -43,7 +43,7 @@ public class DetallesSaldosFondos {
 	private String calidad;
 
 	@Column(name= "denominacion")
-	private long denominacion;
+	private Integer denominacion;
 
 	@Column(name= "tipo_moneda")
 	private String tipoMoneda;
