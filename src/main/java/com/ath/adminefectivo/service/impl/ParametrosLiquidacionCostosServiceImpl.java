@@ -92,36 +92,7 @@ public class ParametrosLiquidacionCostosServiceImpl implements IParametrosLiquid
 	    // Guarda el estado de cómo estaba el parámetro de liquidación antes del cambio
 	    estadoConciliacionParametrosLiquidacionService.save(estadoConciliacionLiqTransporte);
 	    
-	 // Consultar y eliminar `DetallesLiquidacionCosto`
-	    var detallesLiq = detallesLiquidacionCostoRepository.consultarPorIdLiquidacion(eliminar.getIdLiquidacionFlat());
-	    if (Objects.nonNull(detallesLiq) && !detallesLiq.isEmpty()) {
-	        // Sincronización antes de la eliminación en batch
-	        detallesLiquidacionCostoRepository.deleteAll(detallesLiq);
-	        detallesLiquidacionCostoRepository.flush();
-	    }
-	    
-	    // Consultar y desvincular `ValoresLiquidadosFlat`
-	    var valorLiq = valoresLiquidadosFlatRepository.consultarPorIdLiquidacion(eliminar.getIdLiquidacionFlat().longValue());
-	    if (Objects.nonNull(valorLiq)) {
-	        // Desvincular la relación antes de eliminar
-	        if (Objects.nonNull(valorLiq.getParametrosLiquidacionCostoFlat())) {
-	            valorLiq.setParametrosLiquidacionCostoFlat(null);
-
-	            // Guardar y sincronizar
-	            valoresLiquidadosFlatRepository.save(valorLiq);
-	            valoresLiquidadosFlatRepository.flush(); // sincronizar para actualizar referencia en DB
-	        }
-
-	        // Proceder con la eliminación de `valorLiq`
-	        valoresLiquidadosFlatRepository.delete(valorLiq);
-	    }
-	    
-	    // Finalmente, eliminar el objeto `ParametrosLiquidacionCostoFlat`
-	    if (parametrosLiquidacionCostosRepositoryFlat.existsById(eliminar.getIdLiquidacionFlat())) {
-	        parametrosLiquidacionCostosRepositoryFlat.delete(eliminar);
-	    }
-
-	    return eliminar;
+	    return this.f2eliminarParametrosLiquidacionCostos(eliminar);
 	}
 	
 	@Override
