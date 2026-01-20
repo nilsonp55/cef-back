@@ -3,6 +3,7 @@
 
 DROP VIEW IF EXISTS controlefect.v_tarifas_especiales_cliente;
 
+DROP TABLE IF EXISTS controlefect.tarifas_especiales_cliente;
 CREATE TABLE IF NOT EXISTS controlefect.tarifas_especiales_cliente (
 	id_tarifa_especial bigserial NOT NULL,
 	id_archivo_cargado int4 NULL,
