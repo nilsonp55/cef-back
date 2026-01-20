@@ -40,8 +40,8 @@ CREATE TABLE IF NOT EXISTS controlefect.tarifas_especiales_cliente (
 	CONSTRAINT fk_codigo_dane FOREIGN KEY (codigo_dane) REFERENCES controlefect.ciudades(codigo_dane),
 	CONSTRAINT fk_codigo_tdv FOREIGN KEY (codigo_tdv) REFERENCES controlefect.transportadoras(codigo)
 );
-CREATE UNIQUE INDEX tarifas_especiales_cliente_idx ON controlefect.tarifas_especiales_cliente USING btree (codigo_banco, codigo_tdv, codigo_cliente, codigo_dane, codigo_punto, tipo_operacion, tipo_servicio, tipo_comision, escala, fecha_inicio_vigencia, fecha_fin_vigencia);
-CREATE UNIQUE INDEX uq_tarifas_archivo_registro ON controlefect.tarifas_especiales_cliente USING btree (id_archivo_cargado, id_registro);
+CREATE UNIQUE INDEX IF NOT EXISTS tarifas_especiales_cliente_idx ON controlefect.tarifas_especiales_cliente USING btree (codigo_banco, codigo_tdv, codigo_cliente, codigo_dane, codigo_punto, tipo_operacion, tipo_servicio, tipo_comision, escala, fecha_inicio_vigencia, fecha_fin_vigencia);
+CREATE UNIQUE INDEX IF NOT EXISTS uq_tarifas_archivo_registro ON controlefect.tarifas_especiales_cliente USING btree (id_archivo_cargado, id_registro);
 
 CREATE OR REPLACE VIEW controlefect.v_tarifas_especiales_cliente
 AS SELECT tec.id_tarifa_especial,
