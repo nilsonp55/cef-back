@@ -7,3 +7,5 @@ databaseChangeLog:
       file: changelog/0004-change-tarifas-cliente.sql
   - include:
       file: changelog/0005-changelog-syncdb.sql
+  - include:
+      file: changelog/0006-changelog-syncdb-2.sql
