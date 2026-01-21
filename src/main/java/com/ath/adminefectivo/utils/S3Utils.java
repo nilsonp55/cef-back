@@ -268,14 +268,18 @@ public class S3Utils {
     log.info("file to convert: {}", nombreArchivo);
     try (FileOutputStream fos = new FileOutputStream(new File(key + nombreArchivo))) {
       String pathArchivo = key + nombreArchivo;
+      log.debug("to create file: {}", pathArchivo);
       File file = new File(pathArchivo);
       if(file.createNewFile()) {
         byte[] bytearr = archivo.getBytes();
         log.debug("byte length: {} - Size: {}", bytearr.length, archivo.getSize());
         fos.write(archivo.getBytes());
+        log.debug("FileOutputStream write: {}", file.getAbsolutePath());
         s3.putObject(bucketName, pathArchivo, file);
+        log.debug("s3 put: {} - {}", bucketName, file.getName());
       }
     } catch (SdkClientException | IOException e) {
+    	log.error("error: {} - cause: {}", e.getMessage(), e.getCause().getMessage());
       throw new NegocioException(ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getCode(),
           ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getDescription(),
           ApiResponseCode.ERROR_GUARDANDO_ARCHIVO.getHttpStatus());
